@@ -522,7 +522,7 @@ export const pushStateHistoryModal = (setVisible, getStack) => {
 }
 //-------------------------------------------------------------------
 export function ycStorage(auth) {
-    return "https://storage.yandexcloud.net/" + ycBucket(auth)
+    return "https://storage.yandexcloud.net/"
 }
 //-------------------------------------------------------------------
 export function JSX(render) {
