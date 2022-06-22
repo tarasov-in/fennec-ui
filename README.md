@@ -4,7 +4,6 @@
 
 
 Make with - [create-react-library](https://www.npmjs.com/package/create-react-library).
-
 Update with - [npm-check-updates](https://www.npmjs.com/package/npm-check-updates).
 
 [![NPM](https://img.shields.io/npm/v/fennec-ui.svg)](https://www.npmjs.com/package/fennec-ui) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
