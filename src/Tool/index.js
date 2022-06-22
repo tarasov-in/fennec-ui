@@ -521,13 +521,6 @@ export const pushStateHistoryModal = (setVisible, getStack) => {
     };
 }
 //-------------------------------------------------------------------
-export function ycBucket(auth) {
-    var bucketName = "federation"
-    if (auth.appProfile != "prod") {
-        bucketName = "federation-dev"
-    }
-    return bucketName;
-}
 export function ycStorage(auth) {
     return "https://storage.yandexcloud.net/" + ycBucket(auth)
 }
