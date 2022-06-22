@@ -137,5 +137,5 @@ export {
 }
 
 export const ExampleComponent = ({ text }) => {
-  return <div className={styles.test}>Example Component: {text}</div>
+  return <div className={styles.test}>Component: {text}</div>
 }
