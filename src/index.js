@@ -64,8 +64,16 @@ import {
   typeIsNumber,
   getFormatFieldValueTableView,
   priceFormat,
-  MetaColumns,
+  MetaColumns
 } from './Tool'
+
+import {
+  AuthService,
+  AuthProvider,
+  useAuth,
+  useNavigation,
+  RequireAuth
+} from './Auth'
 
 export {
   publish,
@@ -131,7 +139,13 @@ export {
   typeIsNumber,
   getFormatFieldValueTableView,
   priceFormat,
-  MetaColumns
+  MetaColumns,
+
+  AuthService,
+  AuthProvider,
+  useAuth,
+  useNavigation,
+  RequireAuth
 }
 
 export const ExampleComponent = ({ text }) => {
