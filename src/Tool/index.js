@@ -16,6 +16,17 @@ export const unsubscribe = (token) => {
     PubSub.unsubscribe(token);
 };
 //--------------------------------------------------------------
+export const HasRoleID = (user, roleID) => {
+    if (user && user.roleUser) {
+        for (let i = 0; i < user.roleUser.length; i++) {
+            const element = user.roleUser[i];
+            if (element.roleID === roleID) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
 export const HasRole = (user, name) => {
     if (user && user.roleUser) {
         for (let i = 0; i < user.roleUser.length; i++) {
