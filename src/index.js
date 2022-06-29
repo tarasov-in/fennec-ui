@@ -76,10 +76,10 @@ import {
   RequireAuth
 } from './Auth'
 
+import Action from './Components/Action'
 import {
   ActionPickerItem,
-  FooterButton,
-  Action
+  FooterButton
 } from './Components/Action'
 
 export {
