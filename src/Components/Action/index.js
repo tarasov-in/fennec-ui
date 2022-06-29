@@ -821,5 +821,4 @@ export function Action(props) {
         {content && content()}
     </>);
 }
-export default React.memo(Action)
 // Action.whyDidYouRender = true
