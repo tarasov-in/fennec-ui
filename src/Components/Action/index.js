@@ -504,44 +504,6 @@ export function Action(props) {
                 return (props.trigger) ? props.trigger(click) : <React.Fragment></React.Fragment>;
             } else if (mode == "MenuItem") {
                 return (props.trigger) ? props.trigger(click) : <React.Fragment></React.Fragment>;
-                // return (<Menu.Item
-                //     {...triggerOptions}
-                //     style={triggerStyle }
-                //     // {...props} - так делать нельзя, потому что тогда все свойства переданные в Action передаются в Menu.Item и мешают его нормальной работе
-                //     active={props.active}
-                //     builtinplacements={props.builtinPlacements}
-                //     direction={props.direction}
-                //     eventKey={props.eventKey}
-                //     expandicon={props.expandIcon}
-                //     focusable={props.focusable}
-                //     forcesubmenurender={props.forceSubMenuRender}
-                //     index={props.index}
-                //     inlineindent={props.inlineIndent}
-                //     itemIcon={props.itemIcon}
-                //     manualref={props.manualRef}
-                //     motion={props.motion}
-                //     multiple={props.multiple}
-                //     // onDeselect={props.onDeselect}
-                //     // onOpenChange={props.onOpenChange}
-                //     onSelect={props.onSelect}
-                //     openkeys={props.openKeys}
-                //     parentmenu={props.parentMenu}
-                //     prefixcls={props.prefixCls}
-                //     rendermenuitem={props.renderMenuItem}
-                //     selectable={props.selectable}
-                //     selectedkeys={props.selectedKeys}
-                //     submenuclosedelay={props.subMenuCloseDelay}
-                //     submenukey={props.subMenuKey}
-                //     submenuopendelay={props.subMenuOpenDelay}
-                //     triggersubmenuaction={props.triggerSubMenuAction}
-
-                //     rootprefixcls={props.rootPrefixCls}
-                //     disabled={props.disabled}
-                //     level={props.level}
-                //     title={props.title}
-                //     // onItemHover={props.onItemHover}
-                //     onClick={click}
-                // >{props.title}</Menu.Item>);
             } else if (mode == "Tag") {
                 if (props.tooltip) {
                     if (props.color) {
@@ -817,8 +779,6 @@ export function Action(props) {
     }, [mode, steps, stepObject, currentStep, stepObject, props.auth, loading, titles, opened, fire, visible, formWraperStyle, next, action, form]);
 
     return (<React.Fragment>
-        {/* <Form form={form}></Form> */}
         {content && content()}
     </React.Fragment>);
 }
-// Action.whyDidYouRender = true
