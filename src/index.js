@@ -76,6 +76,12 @@ import {
   RequireAuth
 } from './Auth'
 
+import {
+  ActionPickerItem,
+  FooterButton,
+  Action
+} from './Components/Action'
+
 export {
   publish,
   subscribe,
@@ -147,7 +153,11 @@ export {
   AuthProvider,
   useAuth,
   useNavigation,
-  RequireAuth
+  RequireAuth,
+
+  ActionPickerItem,
+  FooterButton,
+  Action
 }
 
 export const ExampleComponent = ({ text }) => {
