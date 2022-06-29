@@ -92,6 +92,7 @@ import {
   MetaContext,
   useMetaContext
 } from './Components/Context'
+
 import {
   Field
 } from './Components/Desktop/Field'
@@ -186,6 +187,6 @@ export {
   Field
 }
 
-export const ExampleComponent = ({ text }) => {
-  return <div className={styles.test}>Component: {text}</div>
-}
+// export const ExampleComponent = ({ text }) => {
+//   return <div className={styles.test}>Component: {text}</div>
+// }
