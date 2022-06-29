@@ -118,7 +118,7 @@ export function ActionPickerItem({ auth, item, value, onChange }) {
     //     modify: (values)=>{},
     //     modifyDuplex: (values)=>{},
     // }
-    return (<>
+    return (<React.Fragment>
         <Action
             auth={auth}
 
@@ -140,7 +140,7 @@ export function ActionPickerItem({ auth, item, value, onChange }) {
             action={_action}
             swipe={swipe}
         />
-    </>);
+    </React.Fragment>);
 }
 export const FooterButton = ({ key, name, callback, options, isDesktopOrLaptop }) => {
     if (isDesktopOrLaptop) {
@@ -496,14 +496,14 @@ export function Action(props) {
         ]
     }, [props.footer, isDesktopOrLaptop, currentStep, form, object, unlock, close, mode, readonly, loading]);
     const trigger = React.useCallback(() => {
-        if (fire) return <></>;
+        if (fire) return <React.Fragment></React.Fragment>;
         if (isDesktopOrLaptop) {
             if (mode == "inline") {
-                return <></>;
+                return <React.Fragment></React.Fragment>;
             } else if (mode == "func") {
-                return (props.trigger) ? props.trigger(click) : <></>;
+                return (props.trigger) ? props.trigger(click) : <React.Fragment></React.Fragment>;
             } else if (mode == "MenuItem") {
-                return (props.trigger) ? props.trigger(click) : <></>;
+                return (props.trigger) ? props.trigger(click) : <React.Fragment></React.Fragment>;
                 // return (<Menu.Item
                 //     {...triggerOptions}
                 //     style={triggerStyle }
@@ -583,7 +583,7 @@ export function Action(props) {
         } else {
             if (mode == "func") {
                 // console.log(props.object);
-                return (props.trigger) ? props.trigger(click) : <></>;
+                return (props.trigger) ? props.trigger(click) : <React.Fragment></React.Fragment>;
             } else {
                 const getTitle = () => {
                     return props.label || props.title || ((props.titles) ? props.titles.header : "");
@@ -603,13 +603,13 @@ export function Action(props) {
                         {(!brief && placeholder) && <Brief>{placeholder}</Brief>}
                     </MobileList.Item>);
                 return (
-                    <>
+                    <React.Fragment>
                         {swipe &&
                             <MobileSwipeAction autoClose right={swipe}>
                                 {view}
                             </MobileSwipeAction>}
                         {!swipe && view}
-                    </>
+                    </React.Fragment>
                 );
             }
         }
@@ -621,7 +621,7 @@ export function Action(props) {
             if (mode == "inline") {
                 return (<div style={{ width: "100%", height: "100%", resize: "none" }} className='action-content'>
                     <Spin spinning={loading}>
-                        {steps && <>
+                        {steps && <React.Fragment>
                             <CurrentForm
                                 setSubmit={setSubmit}
                                 auth={props.auth}
@@ -636,7 +636,7 @@ export function Action(props) {
                                     next(values, steps[currentStep], currentStep);
                                 }}
                             />
-                        </>}
+                        </React.Fragment>}
                         {(!steps && props.form) &&
                             <ContentForm {...props} submit={action} form={(!noAntForm) ? form : undefined} />
                         }
@@ -648,7 +648,7 @@ export function Action(props) {
                     </Spin>
                 </div>)
             } else {
-                return (<>
+                return (<React.Fragment>
                     <Modal
                         afterClose={props.afterClose}
                         width={width}
@@ -665,7 +665,7 @@ export function Action(props) {
                     >
                         <div style={{ width: "100%", height: "100%", resize: "none" }}>
                             <Spin spinning={loading}>
-                                {steps && <>
+                                {steps && <React.Fragment>
                                     <CurrentForm
                                         setSubmit={setSubmit}
                                         auth={props.auth}
@@ -680,7 +680,7 @@ export function Action(props) {
                                             next(values, steps[currentStep], currentStep);
                                         }}
                                     />
-                                </>}
+                                </React.Fragment>}
                                 {(!steps && props.form) &&
                                     <ContentForm
                                         {...props}
@@ -693,11 +693,11 @@ export function Action(props) {
                         </div>
                     </Modal>
                     {trigger && trigger()}
-                </>)
+                </React.Fragment>)
             }
         } else {
             if (mode == "inline") {
-                return (<>
+                return (<React.Fragment>
                     <div style={{
                             display: "flex",
                             flexDirection: "column",
@@ -705,7 +705,7 @@ export function Action(props) {
                     }}>
                         <div style={{ textAlign: "center", fontWeight: "600", fontSize: "14px", minHeight: ((titles && titles.header)) ? "47px" : "0px" }}>{(titles && titles.subheader) ? titles.subheader : ""}</div>
                         {!loading && <div style={{ height: "100%", overflowY: "scroll", padding: "0px", ...formWraperStyle }}>
-                            {steps && <>
+                            {steps && <React.Fragment>
                                 <CurrentForm
                                     setSubmit={setSubmit}
                                     auth={props.auth}
@@ -720,7 +720,7 @@ export function Action(props) {
                                         next(values, steps[currentStep], currentStep);
                                     }}
                                 />
-                            </>}
+                            </React.Fragment>}
                             {(!steps && props.form) &&
                                 <ContentForm
                                     {...props}
@@ -752,9 +752,9 @@ export function Action(props) {
                             </div>
                         </div>
                     </div>
-                </>);
+                </React.Fragment>);
             } else {
-                return (<>
+                return (<React.Fragment>
                     <RenderToLayer>
                         <MobileModal
                             visible={opened || (fire && visible)}
@@ -775,7 +775,7 @@ export function Action(props) {
                         >
                             <div style={{ textAlign: "center", fontWeight: "600", fontSize: "14px", minHeight: (!(titles && titles.header)) ? "47px" : "0px" }}>{(titles && titles.subheader) ? titles.subheader : ""}</div>
                             {!loading && <div style={{ padding: "0px 15px 15px 15px" }}>
-                                {steps && <>
+                                {steps && <React.Fragment>
                                     <CurrentForm
                                         setSubmit={setSubmit}
                                         auth={props.auth}
@@ -790,7 +790,7 @@ export function Action(props) {
                                             next(values, steps[currentStep], currentStep);
                                         }}
                                     />
-                                </>}
+                                </React.Fragment>}
                                 {(!steps && props.form) &&
                                     <ContentForm
                                         {...props}
@@ -811,14 +811,14 @@ export function Action(props) {
                         </MobileModal>
                     </RenderToLayer>
                     {trigger && trigger()}
-                </>);
+                </React.Fragment>);
             }
         }
     }, [mode, steps, stepObject, currentStep, stepObject, props.auth, loading, titles, opened, fire, visible, formWraperStyle, next, action, form]);
 
-    return (<>
+    return (<React.Fragment>
         {/* <Form form={form}></Form> */}
         {content && content()}
-    </>);
+    </React.Fragment>);
 }
 // Action.whyDidYouRender = true
