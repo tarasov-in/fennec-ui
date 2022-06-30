@@ -5,7 +5,7 @@ import 'moment/locale/ru';
 import { InputItem, TextareaItem, DatePicker, Picker, Checkbox, SwipeAction, List, SearchBar } from 'antd-mobile';
 import { AutoSizer, List as ListVirt } from 'react-virtualized';
 import 'react-virtualized/styles.css';
-import Action from '../../Action'
+import { Action } from '../../Action'
 import {
     Form,
     Typography,
