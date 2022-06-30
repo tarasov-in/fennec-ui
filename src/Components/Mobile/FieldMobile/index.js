@@ -6,7 +6,7 @@ import { errorCatch, getDisplay, getObjectValue, GETWITH, QueryDetail, QueryOrde
 import moment from 'moment';
 import { Checkbox, InputItem, List, TextareaItem, Range, Picker, WingBlank } from 'antd-mobile';
 import { createUseStyles } from 'react-jss';
-import CalendarItem from '../CalendarItem';
+import {CalendarItem} from '../CalendarItem';
 import { useMetaContext } from '../../Context';
 var _ = require('lodash');
 
