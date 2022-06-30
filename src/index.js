@@ -97,6 +97,10 @@ import {
   Field
 } from './Components/Desktop/Field'
 
+import {
+  Field as FieldMobile
+} from './Components/Mobile/Field'
+
 export {
   publish,
   subscribe,
@@ -184,7 +188,8 @@ export {
   MetaContext,
   useMetaContext,
 
-  Field
+  Field,
+  FieldMobile
 }
 
 // export const ExampleComponent = ({ text }) => {
