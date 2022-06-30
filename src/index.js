@@ -101,6 +101,18 @@ import {
   FieldMobile
 } from './Components/Mobile/FieldMobile'
 
+import {
+  Model
+} from './Components/Desktop/Model'
+
+import {
+  CollectionServer
+} from './Components/Desktop/CollectionServer'
+
+import {
+  DropdownAction
+} from './Components/Desktop/DropdownAction'
+
 export {
   publish,
   subscribe,
@@ -189,7 +201,10 @@ export {
   useMetaContext,
 
   Field,
-  FieldMobile
+  FieldMobile,
+  Model,
+  CollectionServer,
+  DropdownAction
 }
 
 // export const ExampleComponent = ({ text }) => {

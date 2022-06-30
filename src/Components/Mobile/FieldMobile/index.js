@@ -583,7 +583,6 @@ function Obj({ auth, item, value, onChange }) {
         // </Select>
     )
 }
-// Obj.whyDidYouRender = true
 function DateTime({ item, value, onChange }) {
     const classes = useStyles()
     return (
