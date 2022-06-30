@@ -77,13 +77,13 @@ export function CalendarItem(props) {
     const format = (pickTime) => {
         return (pickTime)?"YYYY-MM-DD HH:mm":"YYYY-MM-DD";
     };
-    return (<>
+    return (<React.Fragment>
         <List.Item arrow="horizontal"
             className={props.className || classes.Time}
             onClick={() => {
                 setVisible(true);
             }}
-            // extra={(value) ? <span>{value[0].format("YYYY-MM-DD")} - {value[1].format("YYYY-MM-DD")}</span> : <></>}
+            // extra={(value) ? <span>{value[0].format("YYYY-MM-DD")} - {value[1].format("YYYY-MM-DD")}</span> : <React.Fragment></React.Fragment>}
         >
             
             <div>{name}</div>
@@ -129,5 +129,5 @@ export function CalendarItem(props) {
             defaultDate={new Date()}
             defaultValue={nativeValue}
         />
-    </>);
+    </React.Fragment>);
 }

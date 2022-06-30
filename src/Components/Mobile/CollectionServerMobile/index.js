@@ -117,7 +117,7 @@ function SortingField(props) {
             onSortingChangeString(v[0], filters.find(i => i.name === v[0]))
         }
     }, [filters, onSortingChangeString]);
-    return (<>
+    return (<React.Fragment>
         <div>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px", marginTop: "25px", paddingRight: "10px" }}>
                 <div style={{
@@ -145,7 +145,7 @@ function SortingField(props) {
                         data={s}
                         cols={1}
                         value={rval}
-                        extra={<></>}
+                        extra={<React.Fragment></React.Fragment>}
                         onOk={onOk}
                         okText="Выбрать"
                         dismissText="Отмена">
@@ -157,7 +157,7 @@ function SortingField(props) {
                 </List>
             </div>
         </div>
-    </>)
+    </React.Fragment>)
 }
 function FilteringField(props) {
     const classes = useStyles()
@@ -205,8 +205,8 @@ function FilteringField(props) {
         let filtr = { ...value, [item.name]: v };
         onChange(filtr);
     }, [value]);
-    return (<>
-        <>
+    return (<React.Fragment>
+        <React.Fragment>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px", marginTop: "25px", paddingRight: "10px" }}>
                 <div style={{
                     fontFamily: "-apple-system, BlinkMacSystemFont, Roboto, 'Open Sans', 'Helvetica Neue', 'Noto Sans Armenian', 'Noto Sans Bengali', 'Noto Sans Cherokee', 'Noto Sans Devanagari', 'Noto Sans Ethiopic', 'Noto Sans Georgian', 'Noto Sans Hebrew', 'Noto Sans Kannada', 'Noto Sans Khmer', 'Noto Sans Lao', 'Noto Sans Osmanya', 'Noto Sans Tamil', 'Noto Sans Telugu', 'Noto Sans Thai', sans-serif",
@@ -226,8 +226,8 @@ function FilteringField(props) {
                     </List>
                 </div>
             </div>
-        </>
-    </>)
+        </React.Fragment>
+    </React.Fragment>)
 }
 function SortingFiltering(props) {
     const classes = useStyles()
@@ -573,9 +573,9 @@ export function CollectionServerMobile(props) {
         })
     };
     const RenderOnModelActions = React.useCallback((item, index) => {
-        if (!modelActions) return <></>;
+        if (!modelActions) return <React.Fragment></React.Fragment>;
         let values = unwrap(modelActions(item, index));
-        if (!values || !values.length) return <></>;
+        if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <DropdownMobile>
             {values.map((e, idx) => <ActionPickerItem
                 key={idx}
@@ -590,9 +590,9 @@ export function CollectionServerMobile(props) {
         </DropdownMobile>;
     }, [auth, modelActions]);
     const RenderOnCollectionActions = React.useCallback(() => {
-        if (!collectionActions) return <></>;
+        if (!collectionActions) return <React.Fragment></React.Fragment>;
         let values = unwrap(collectionActions());
-        if (!values || !values.length) return <></>;
+        if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <div>
             {values.map((e, idx) => <Action
                 key={idx}
@@ -680,7 +680,7 @@ export function CollectionServerMobile(props) {
                 return title
             }
         }
-        return <></>
+        return <React.Fragment></React.Fragment>
     }, [title, titleFunc]);
     const titleExtra = React.useCallback(() => {
         if (extra || extraFunc) {
@@ -690,7 +690,7 @@ export function CollectionServerMobile(props) {
                 return extra
             }
         }
-        return <></>
+        return <React.Fragment></React.Fragment>
     }, [extra, extraFunc]);
     const act = React.useCallback((values, unlock, close) => {
         // applyFilter
@@ -731,7 +731,7 @@ export function CollectionServerMobile(props) {
     ), [state.filter])
     const PaginatorChange = React.useCallback((v) => setState({ ...state, current: v }), [state]);
     return (
-        <>
+        <React.Fragment>
             {!noheader && <BlockHeaderMobile
                 title={titleView()}
                 extra={titleExtra()}
@@ -802,6 +802,6 @@ export function CollectionServerMobile(props) {
                     </div>
                 </div>
             }
-        </>
+        </React.Fragment>
     );
 }

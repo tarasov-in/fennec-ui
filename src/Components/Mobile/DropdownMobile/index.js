@@ -22,7 +22,7 @@ export function DropdownMobile(props) {
     }
 
     return (
-        <>
+        <React.Fragment>
             <Action
                 key={uuid()}
                 auth={auth}
@@ -58,6 +58,6 @@ export function DropdownMobile(props) {
                     </Button>
                 )}
             />
-        </>
+        </React.Fragment>
     );
 };

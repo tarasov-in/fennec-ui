@@ -478,9 +478,9 @@ export function CollectionServer(props) {
                     }
                 }))
             } />)
-        if (!modelActions) return <></>;
+        if (!modelActions) return <React.Fragment></React.Fragment>;
         let values = unwrap(modelActions(item, index));
-        if (!values || !values.length) return <></>;
+        if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <DropdownAction items={values.map((e, idx) => ({
             key: e.key || idx,
             auth: auth,
@@ -536,9 +536,9 @@ export function CollectionServer(props) {
                 }}
             />)}
         </div>;
-        if (!collectionActions) return <></>;
+        if (!collectionActions) return <React.Fragment></React.Fragment>;
         let values = unwrap(collectionActions());
-        if (!values || !values.length) return <></>;
+        if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <div>
             {values.map((e, idx) => <Action
                 key={e.key || idx}
@@ -615,8 +615,8 @@ export function CollectionServer(props) {
             );
         });
         return (
-            <>
-                {(fl.length > 0) && <>
+            <React.Fragment>
+                {(fl.length > 0) && <React.Fragment>
                     <Divider type="horizontal"
                         orientation="left"
                         style={{ margin: "12px 0", fontSize: "13px", fontWeight: "600", padding: "0px 15px 0px 5px" }} >
@@ -627,8 +627,8 @@ export function CollectionServer(props) {
                             {f}
                         </div>
                     </div>
-                </>}
-            </>
+                </React.Fragment>}
+            </React.Fragment>
         );
     }, [funcStat, state, mobject]);
     const sorting_ui = React.useMemo(() => (filters) => {
@@ -639,7 +639,7 @@ export function CollectionServer(props) {
             );
         });
         return (
-            <>
+            <React.Fragment>
                 {(so.length > 0) && <div>
                     <Divider type="horizontal"
                         orientation="left"
@@ -669,7 +669,7 @@ export function CollectionServer(props) {
                         </div>
                     </div>
                 </div>}
-            </>
+            </React.Fragment>
         );
     }, [sorting]);
     const sortingOrder = () => {
@@ -756,10 +756,10 @@ export function CollectionServer(props) {
                 return <Divider type="horizontal" orientation="left">{title}</Divider>
             }
         }
-        return <></>
+        return <React.Fragment></React.Fragment>
     };
     return (
-        <>
+        <React.Fragment>
             <div className="filtered">
                 <Card size="small" bordered={(size !== "small")} className={(size === "small") ? classes.cardSmallHeader : ""}>
                     <div className="filtered-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -792,16 +792,16 @@ export function CollectionServer(props) {
                         {JSX(() => {
                             const fl = filters.filter(i => i.filter);
                             if (filtered && fl.length > 0) {
-                                return (<>
+                                return (<React.Fragment>
                                     <div style={{ margin: "10px" }}>
                                         <Button style={{ width: "100%" }} disabled={!state.filterChanged} type="primary" onClick={applyFilter}>Применить</Button>
                                     </div>
                                     <div style={{ margin: "10px" }}>
                                         <Button style={{ width: "100%" }} disabled={_.isEmpty(state.filter)} onClick={clearFilter}>Очистить</Button>
                                     </div>
-                                </>)
+                                </React.Fragment>)
                             }
-                            return (<></>)
+                            return (<React.Fragment></React.Fragment>)
                         })}
                         {sorting_ui(filters)}
                         {filters_ui(filters)}
@@ -817,6 +817,6 @@ export function CollectionServer(props) {
                     />
                 </Card>}
             </div>
-        </>
+        </React.Fragment>
     );
 }

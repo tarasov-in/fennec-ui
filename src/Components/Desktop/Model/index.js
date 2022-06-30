@@ -89,7 +89,7 @@ function Frm(props) {
     }, [gmeta]);
 
     var properties = GetMetaProperties(meta);
-    if (!properties) return <></>;
+    if (!properties) return <React.Fragment></React.Fragment>;
     const propertiesFiltered = properties.filter(e => e.name.toUpperCase() !== "ID").filter(e => (!e.relation || (e.relation && e.relation.type !== "one-many")));
     const propertiesOneMany = properties.filter(e => e.relation && e.relation.type === "one-many");
 
@@ -190,10 +190,10 @@ export function Model(props) {
     const classes = useStyles()
     const { auth, meta, options, object, form, submit, funcStat, contextFilters } = props;
     var xmeta = GetMeta(meta);
-    if (!xmeta) return <></>;
+    if (!xmeta) return <React.Fragment></React.Fragment>;
     return (
-        <>
+        <React.Fragment>
             {<Frm className={classes.Frm} auth={auth} form={form} contextFilters={contextFilters} submit={submit} meta={meta} options={options} object={object} funcStat={funcStat}></Frm>}
-        </>
+        </React.Fragment>
     )
 };

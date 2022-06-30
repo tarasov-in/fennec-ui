@@ -258,7 +258,7 @@ function Unknown({ item }) {
 }
 function Act({ auth, item, value, onChange, changed }) {
     const classes = useStyles()
-    return (<>
+    return (<React.Fragment>
         <Action
             auth={auth}
             brief={(!value) ? undefined : (item.display) ? item.display(changed[item.duplex] || value) : undefined}
@@ -298,7 +298,7 @@ function Act({ auth, item, value, onChange, changed }) {
                 },
             ]}
         />
-    </>);
+    </React.Fragment>);
 }
 function Obj({ auth, item, options = {}, value, onChange, changed }) {
     const classes = useStyles()
@@ -701,7 +701,7 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
         form.resetFields();
     }, [object]);
     var properties = GetMetaProperties(meta);
-    if (!properties) return <></>;
+    if (!properties) return <React.Fragment></React.Fragment>;
     const propertiesFiltered = properties.filter(e => e.name.toUpperCase() !== "ID").filter(e => (!e.relation || (e.relation && e.relation.type !== "one-many")));
     const propertiesOneMany = properties.filter(e => e.relation && e.relation.type === "one-many");
     const propertiesDocuments = properties.filter(e => e.type === "document");
@@ -889,10 +889,10 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
 export function ModelMobile({ auth, meta, options, form, submit, object, virtualized, search, steps }) {
     const classes = useStyles()
     var xmeta = GetMeta(meta);
-    if (!xmeta) return <></>;
+    if (!xmeta) return <React.Fragment></React.Fragment>;
     return (
-        <>
+        <React.Fragment>
             {<Frm className={classes.Frm} auth={auth} form={form} meta={meta} options={options} submit={submit} object={object} virtualized={virtualized} search={search} steps={steps}></Frm>}
-        </>
+        </React.Fragment>
     )
 };
