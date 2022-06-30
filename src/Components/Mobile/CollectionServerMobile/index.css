@@ -1,0 +1,25 @@
+.row-dragging {
+    background: #fafafa;
+    border: 1px solid #ccc;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+  
+.row-dragging td {
+    padding: 5px;
+}
+
+.row-dragging .drag-visible {
+    visibility: visible;
+}
+
+.row-dragging td .ant-table-cell-fix-left, .ant-table-cell-fix-right {
+    background: transparent;
+}
+
+
+.row-dragging td:not(:first-child):not(:last-child) {
+    flex: auto;
+}

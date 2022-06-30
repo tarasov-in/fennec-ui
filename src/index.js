@@ -113,6 +113,18 @@ import {
   DropdownAction
 } from './Components/Desktop/DropdownAction'
 
+import {
+  ModelMobile
+} from './Components/Mobile/ModelMobile'
+
+import {
+  CollectionServerMobile
+} from './Components/Mobile/CollectionServerMobile'
+
+import {
+  BlockHeaderMobile
+} from './Components/Mobile/BlockHeaderMobile'
+
 export {
   publish,
   subscribe,
@@ -204,7 +216,10 @@ export {
   FieldMobile,
   Model,
   CollectionServer,
-  DropdownAction
+  DropdownAction,
+  ModelMobile,
+  CollectionServerMobile,
+  BlockHeaderMobile
 }
 
 // export const ExampleComponent = ({ text }) => {
