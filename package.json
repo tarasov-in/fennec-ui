@@ -1,6 +1,6 @@
 {
   "name": "fennec-ui",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "UI package for Fennec Toolkit",
   "author": "tarasovin",
   "license": "MIT",
@@ -37,7 +37,8 @@
     "react-jss": "^10.9.0",
     "rc-util": "^5.22.5",
     "react-icofont": "^1.0.19",
-    "react-responsive": "^9.0.0-beta.10"
+    "react-responsive": "^9.0.0-beta.10",
+    "react-virtualized": "^9.22.3"
   },
   "devDependencies": {
     "antd": "~4.20",
@@ -70,7 +71,8 @@
     "react-responsive": "^9.0.0-beta.10",
     "react-router-dom": "^6.3.0",
     "react-scripts": "^5.0.1",
-    "react-uuid": "^1.0.2"
+    "react-uuid": "^1.0.2",
+    "react-virtualized": "^9.22.3"
   },
   "files": [
     "dist"

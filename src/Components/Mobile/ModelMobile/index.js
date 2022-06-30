@@ -4,15 +4,15 @@ import { useMediaQuery } from 'react-responsive'
 import 'moment/locale/ru';
 import { InputItem, TextareaItem, DatePicker, Picker, Checkbox, SwipeAction, List, SearchBar } from 'antd-mobile';
 import { AutoSizer, List as ListVirt } from 'react-virtualized';
-import 'react-virtualized/styles.css'; 
+import 'react-virtualized/styles.css';
 import Action from '../../Action'
 import {
     Form,
     Typography,
 } from 'antd';
 import Icofont from 'react-icofont';
-import CalendarItem from '../CalendarItem';
-import { GET, errorCatch, uncapitalize, GetMeta, GetMetaProperties } from 'fennec-ui';
+import { CalendarItem } from '../CalendarItem';
+import { GET, errorCatch, uncapitalize, GetMeta, GetMetaProperties } from '../../../Tool';
 var _ = require('lodash');
 const { Text, Link } = Typography;
 const CheckboxItem = Checkbox.CheckboxItem;
@@ -306,10 +306,10 @@ function Obj({ auth, item, options = {}, value, onChange, changed }) {
     useEffect(() => {
         if (item && item.relation && item.relation.reference && item.relation.reference.url) {
             GET(auth, item.relation.reference.url,
-                ({data}) => {
+                ({ data }) => {
                     setData(data);
                 },
-                (err, type)=>errorCatch(err, type)
+                (err, type) => errorCatch(err, type)
             );
         } else if (item && item.relation && item.relation.reference && item.relation.reference.data) {
             setData(item.relation.reference.data);
@@ -702,7 +702,7 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
     }, [object]);
     var properties = GetMetaProperties(meta);
     if (!properties) return <></>;
-    const propertiesFiltered = properties.filter(e=>e.name.toUpperCase() !== "ID").filter(e => (!e.relation || (e.relation && e.relation.type !== "one-many")));
+    const propertiesFiltered = properties.filter(e => e.name.toUpperCase() !== "ID").filter(e => (!e.relation || (e.relation && e.relation.type !== "one-many")));
     const propertiesOneMany = properties.filter(e => e.relation && e.relation.type === "one-many");
     const propertiesDocuments = properties.filter(e => e.type === "document");
 
