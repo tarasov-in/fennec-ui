@@ -98,8 +98,8 @@ import {
 } from './Components/Desktop/Field'
 
 import {
-  Field as FieldMobile
-} from './Components/Mobile/Field'
+  FieldMobile
+} from './Components/Mobile/FieldMobile'
 
 export {
   publish,

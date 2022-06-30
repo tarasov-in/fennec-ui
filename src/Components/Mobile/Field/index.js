@@ -743,7 +743,7 @@ function Unknown({ item }) {
 //     source: "/api/query/name"
 // }
 
-export function Field({ auth, item, value, onChange }) {
+export function FieldMobile({ auth, item, value, onChange }) {
     switch (item.filterType) {
         case "group":
             switch (item.type) {
