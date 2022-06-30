@@ -46,7 +46,7 @@ const useStyles = createUseStyles({
     },
 })
 
-export default function CalendarItem(props) {
+export function CalendarItem(props) {
     const classes = useStyles()
     const { onChange, value, name, placeholder, pickTime } = props;
     const [visible, setVisible] = useState(false);
