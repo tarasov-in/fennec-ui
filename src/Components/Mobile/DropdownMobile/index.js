@@ -9,7 +9,7 @@ import { JSXMap, unwrap } from '../../../Tool';
 import uuid from 'react-uuid';
 var _ = require('lodash');
 
-export default function DropdownMobile(props) {
+export function DropdownMobile(props) {
     const { auth, buttonStyle, icon, titles, items } = props;
     const [actions, setActions] = useState([]);
     useEffect(() => {
