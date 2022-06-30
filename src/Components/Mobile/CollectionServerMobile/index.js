@@ -8,8 +8,8 @@ import { Action, ActionPickerItem } from '../../Action';
 import { SortAscendingOutlined, SortDescendingOutlined } from '@ant-design/icons';
 import { FieldMobile } from '../FieldMobile';
 import { useMetaContext } from '../../Context';
-import BlockHeaderMobile from '../BlockHeaderMobile';
-import DropdownMobile from '../DropdownMobile'
+import { BlockHeaderMobile } from '../BlockHeaderMobile';
+import { DropdownMobile } from '../DropdownMobile'
 import "./index.css"
 import 'moment/locale/ru';
 
