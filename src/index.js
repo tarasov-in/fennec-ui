@@ -125,6 +125,11 @@ import {
   BlockHeaderMobile
 } from './Components/Mobile/BlockHeaderMobile'
 
+import {
+  DropdownMobile
+} from './Components/Mobile/DropdownMobile'
+
+
 export {
   publish,
   subscribe,
@@ -217,6 +222,7 @@ export {
   Model,
   CollectionServer,
   DropdownAction,
+  DropdownMobile,
   ModelMobile,
   CollectionServerMobile,
   BlockHeaderMobile
