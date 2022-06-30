@@ -129,6 +129,10 @@ import {
   DropdownMobile
 } from './Components/Mobile/DropdownMobile'
 
+import {
+  CalendarItem
+} from './Components/Mobile/CalendarItem'
+
 export {
   publish,
   subscribe,
@@ -224,7 +228,8 @@ export {
   DropdownMobile,
   ModelMobile,
   CollectionServerMobile,
-  BlockHeaderMobile
+  BlockHeaderMobile,
+  CalendarItem
 }
 
 // export const ExampleComponent = ({ text }) => {
