@@ -1,7 +1,7 @@
 import React, {  } from 'react';
 import 'moment/locale/ru';
 
-export default function BlockHeaderMobile(props) {
+export function BlockHeaderMobile(props) {
     const { title, extra, style } = props;
     return (
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px", marginTop: "10px", paddingRight: "10px", ...style }}>
