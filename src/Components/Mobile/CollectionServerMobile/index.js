@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Badge, List, Picker, SwipeAction, Pagination } from 'antd-mobile';
+import { Form, Button, Badge, List, Picker, SwipeAction, PageIndicator, Stepper } from 'antd-mobile';
 import { unwrap, errorCatch, Request, QueryParam, GETWITH, READWITH, updateInArray, deleteInArray, GetMetaPropertyByPath, QueryFunc, If } from '../../../Tool'
 import Icofont from 'react-icofont';
 import { createUseStyles } from 'react-jss';
@@ -793,11 +793,33 @@ export function CollectionServerMobile(props) {
                         ))}
                     </List>
                     <div style={{ paddingTop: "15px" }}>
-                        {(total > 1) && <Pagination className="filtered-pagination" size="small"
-                            current={state.current}
-                            total={total}
-                            onChange={PaginatorChange}
-                        />}
+                        {(total > 1) &&
+                            <div style={{display:"flex", justifyContent:"space-between"}}>
+                                <PageIndicator
+                                    total={total}
+                                    current={state.current}
+                                    style={{
+                                        '--dot-size': '10px',
+                                        '--active-dot-size': '30px',
+                                        '--dot-border-radius': '50%',
+                                        '--active-dot-border-radius': '15px',
+                                        '--dot-spacing': '8px',
+                                    }}
+                                />
+                                <Stepper
+                                    step={1}
+                                    defaultValue={1}
+                                    min={1}
+                                    max={total}
+                                    value={state.current}
+                                    onChange={PaginatorChange} />
+                            </div>
+                            // <Pagination className="filtered-pagination" size="small"
+                            //     current={state.current}
+                            //     total={total}
+                            //     onChange={PaginatorChange}
+                            // />
+                        }
                     </div>
                 </div>
             }
