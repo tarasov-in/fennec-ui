@@ -10,7 +10,7 @@ import {
     SwipeAction as MobileSwipeAction,
     Modal as MobileModal,
     List as MobileList,
-    ActivityIndicator as MobileActivityIndicator
+    SpinLoading
 } from 'antd-mobile';
 import RenderToLayer from '../RenderToLayer'
 import Icofont from 'react-icofont';
@@ -695,7 +695,7 @@ export function Action(props) {
                         {loading && <div className="loading" style={{height: "100%"}}>
                             <div className="align" style={{ textAlign: "center" }}>
                                 <div style={{ display: "flex", justifyContent: "center" }}>
-                                    <MobileActivityIndicator size="large" />
+                                <SpinLoading style={{ '--size': '48px' }} />
                                 </div>
                                 <span style={{ marginTop: 8 }}>Отправка ...</span>
                             </div>
@@ -765,7 +765,7 @@ export function Action(props) {
                             {loading && <div className="loading">
                                 <div className="align" style={{ textAlign: "center" }}>
                                     <div style={{ display: "flex", justifyContent: "center" }}>
-                                        <MobileActivityIndicator size="large" />
+                                    <SpinLoading style={{ '--size': '48px' }} />
                                     </div>
                                     <span style={{ marginTop: 8 }}>Отправка ...</span>
                                 </div>

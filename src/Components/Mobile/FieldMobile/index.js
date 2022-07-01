@@ -4,7 +4,7 @@ import {
     DatePicker} from 'antd';
 import { errorCatch, getDisplay, getObjectValue, GETWITH, QueryDetail, QueryOrder, READWITH } from '../../../Tool';
 import moment from 'moment';
-import { Checkbox, InputItem, List, TextareaItem, Range, Picker, WingBlank } from 'antd-mobile';
+import { Checkbox, InputItem, List, TextareaItem, Range, Picker } from 'antd-mobile';
 import { createUseStyles } from 'react-jss';
 import {CalendarItem} from '../CalendarItem';
 import { useMetaContext } from '../../Context';
@@ -379,7 +379,7 @@ function RangeFloat({ item, value, onChange }) {
         }
     };
     return (
-        <WingBlank size="lg" style={{ margin: 0 }}>
+        <div style={{ margin: 0 }}>
             <p className="sub-title" style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'" }}>{item.label}</p>
             <div style={{ paddingBottom: "18px", display: "flex", justifyContent: "space-between" }}>
                 <div style={{ flex: "50%" }}>
@@ -413,7 +413,7 @@ function RangeFloat({ item, value, onChange }) {
                 onChange={setVal}
                 onAfterChange={onChange}
             />
-        </WingBlank>
+        </div>
     )
 }
 function RangeInteger({ item, value, onChange }) {
@@ -437,7 +437,7 @@ function RangeInteger({ item, value, onChange }) {
         }
     };
     return (
-        <WingBlank size="lg" style={{ margin: 0 }}>
+        <div style={{ margin: 0 }}>
             <p className="sub-title" style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'" }}>{item.label}</p>
             <div style={{ paddingBottom: "18px", display: "flex", justifyContent: "space-between" }}>
                 <div style={{ flex: "50%" }}>
@@ -471,7 +471,7 @@ function RangeInteger({ item, value, onChange }) {
                 onChange={setVal}
                 onAfterChange={onChange}
             />
-        </WingBlank>
+        </div>
     )
 }
 function Obj({ auth, item, value, onChange }) {
