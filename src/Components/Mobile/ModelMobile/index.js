@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createUseStyles } from 'react-jss'
 import { useMediaQuery } from 'react-responsive'
 import 'moment/locale/ru';
-import { Form, Input, TextareaItem, DatePicker, Picker, Checkbox, SwipeAction, List, SearchBar } from 'antd-mobile';
+import { Form, Input, TextArea, DatePicker, Picker, Checkbox, SwipeAction, List, SearchBar } from 'antd-mobile';
 import { AutoSizer, List as ListVirt } from 'react-virtualized';
 import 'react-virtualized/styles.css';
 import { Action } from '../../Action'
@@ -629,7 +629,7 @@ function Integer({ item, value, onChange }) {
 function String({ item, value, onChange }) {
     const classes = useStyles()
     return (
-        <TextareaItem
+        <TextArea
             disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
             onChange={(e) => onChange(e, item)}
             value={value}

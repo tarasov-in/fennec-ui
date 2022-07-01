@@ -4,7 +4,7 @@ import {
     DatePicker} from 'antd';
 import { errorCatch, getDisplay, getObjectValue, GETWITH, QueryDetail, QueryOrder, READWITH } from '../../../Tool';
 import moment from 'moment';
-import { Checkbox, Input, List, TextareaItem, Range, Picker } from 'antd-mobile';
+import { Checkbox, Input, List, TextArea, Range, Picker } from 'antd-mobile';
 import { createUseStyles } from 'react-jss';
 import {CalendarItem} from '../CalendarItem';
 import { useMetaContext } from '../../Context';
@@ -714,7 +714,7 @@ function Integer({ item, value, onChange }) {
 function String({ item, value, onChange }) {
     const classes = useStyles()
     return (
-        <TextareaItem
+        <TextArea
             disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
             onChange={onChange}
             value={value}
