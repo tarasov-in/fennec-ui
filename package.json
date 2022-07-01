@@ -5,15 +5,18 @@
   "author": "tarasovin",
   "license": "MIT",
   "repository": "tarasov-in/fennec-ui",
-  "main": "dist/index.js",
-  "module": "dist/index.modern.js",
+  "main": "dist/fennec-ui.js",
+  "module": "dist/fennec-ui.modern.js",
   "source": "src/index.js",
   "engines": {
     "node": ">=10"
   },
   "scripts": {
-    "build": "microbundle-crl --no-compress --format modern,cjs",
-    "start": "microbundle-crl watch --no-compress --format modern,cjs",
+    "build": "microbundle-crl -o ./dist --no-compress --format modern,cjs",
+    "prestart": "mkdir -p ../fennec-ui-dev && cp -r ./package.json ../fennec-ui-dev/",
+    "start": "microbundle-crl watch -o ../fennec-ui-dev/dist --no-compress --format modern,cjs",
+    "buildorigin": "microbundle-crl --no-compress --format modern,cjs",
+    "startorigin": "microbundle-crl watch --no-compress --format modern,cjs",
     "prepare": "run-s build",
     "test": "run-s test:unit test:lint test:build",
     "test:build": "run-s build",
