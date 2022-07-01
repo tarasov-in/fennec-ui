@@ -4,7 +4,7 @@ import {
     DatePicker} from 'antd';
 import { errorCatch, getDisplay, getObjectValue, GETWITH, QueryDetail, QueryOrder, READWITH } from '../../../Tool';
 import moment from 'moment';
-import { Checkbox, Input, List, TextArea, Range, Picker } from 'antd-mobile';
+import { Checkbox, Input, List, TextArea, Slider, Picker } from 'antd-mobile';
 import { createUseStyles } from 'react-jss';
 import {CalendarItem} from '../CalendarItem';
 import { useMetaContext } from '../../Context';
@@ -402,13 +402,13 @@ function RangeFloat({ item, value, onChange }) {
                     />
                 </div>
             </div>
-            <Range
-                style={{ marginLeft: 15, marginRight: 15, height: "22px" }}
+            <Slider
+                // style={{ marginLeft: 15, marginRight: 15, height: "22px" }}
                 defaultValue={def}
                 min={(xmin - (xmin % xstep))}
                 max={(xmax + (xstep - xmax % xstep))}
                 step={xstep}
-                included={true}
+                // included={true}
                 value={val || def}
                 onChange={setVal}
                 onAfterChange={onChange}
@@ -460,13 +460,13 @@ function RangeInteger({ item, value, onChange }) {
                     />
                 </div>
             </div>
-            <Range
-                style={{ marginLeft: 15, marginRight: 15, height: "22px" }}
+            <Slider
+                // style={{ marginLeft: 15, marginRight: 15, height: "22px" }}
                 defaultValue={def}
                 min={(xmin - (xmin % xstep))}
                 max={(xmax + (xstep - xmax % xstep))}
                 step={xstep}
-                included={true}
+                // included={true}
                 value={val || def}
                 onChange={setVal}
                 onAfterChange={onChange}
