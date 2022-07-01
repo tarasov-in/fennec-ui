@@ -4,7 +4,7 @@ import {
     DatePicker} from 'antd';
 import { errorCatch, getDisplay, getObjectValue, GETWITH, QueryDetail, QueryOrder, READWITH } from '../../../Tool';
 import moment from 'moment';
-import { Checkbox, InputItem, List, TextareaItem, Range, Picker } from 'antd-mobile';
+import { Checkbox, Input, List, TextareaItem, Range, Picker } from 'antd-mobile';
 import { createUseStyles } from 'react-jss';
 import {CalendarItem} from '../CalendarItem';
 import { useMetaContext } from '../../Context';
@@ -383,7 +383,7 @@ function RangeFloat({ item, value, onChange }) {
             <p className="sub-title" style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'" }}>{item.label}</p>
             <div style={{ paddingBottom: "18px", display: "flex", justifyContent: "space-between" }}>
                 <div style={{ flex: "50%" }}>
-                    <InputItem
+                    <Input
                         className={classes.RangeFloatInput}
                         type={"number"}
                         moneyKeyboardWrapProps={moneyKeyboardWrapProps}
@@ -393,7 +393,7 @@ function RangeFloat({ item, value, onChange }) {
                 </div>
                 <div></div>
                 <div style={{ flex: "50%" }}>
-                    <InputItem
+                    <Input
                         className={classes.RangeFloatInput}
                         type={"number"}
                         moneyKeyboardWrapProps={moneyKeyboardWrapProps}
@@ -441,7 +441,7 @@ function RangeInteger({ item, value, onChange }) {
             <p className="sub-title" style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'" }}>{item.label}</p>
             <div style={{ paddingBottom: "18px", display: "flex", justifyContent: "space-between" }}>
                 <div style={{ flex: "50%" }}>
-                    <InputItem
+                    <Input
                         className={classes.RangeFloatInput}
                         type={"number"}
                         moneyKeyboardWrapProps={moneyKeyboardWrapProps}
@@ -451,7 +451,7 @@ function RangeInteger({ item, value, onChange }) {
                 </div>
                 <div></div>
                 <div style={{ flex: "50%" }}>
-                    <InputItem
+                    <Input
                         className={classes.RangeFloatInput}
                         type={"number"}
                         moneyKeyboardWrapProps={moneyKeyboardWrapProps}
@@ -684,7 +684,7 @@ function Boolean({ item, value, onChange }) {
 function Float({ item, value, onChange }) {
     const classes = useStyles()
     return (
-        <InputItem
+        <Input
             disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
             className={classes.Float}
             type={"money"}
@@ -693,13 +693,13 @@ function Float({ item, value, onChange }) {
             moneyKeyboardWrapProps={moneyKeyboardWrapProps}
             onChange={onChange}
             value={value}
-        >{item.label}</InputItem>
+        >{item.label}</Input>
     )
 }
 function Integer({ item, value, onChange }) {
     const classes = useStyles()
     return (
-        <InputItem
+        <Input
             disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
             className={classes.Integer}
             type={"number"}
@@ -708,7 +708,7 @@ function Integer({ item, value, onChange }) {
             moneyKeyboardWrapProps={moneyKeyboardWrapProps}
             onChange={onChange}
             value={value}
-        >{item.label}</InputItem>
+        >{item.label}</Input>
     )
 }
 function String({ item, value, onChange }) {

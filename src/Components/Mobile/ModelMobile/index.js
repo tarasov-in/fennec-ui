@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { createUseStyles } from 'react-jss'
 import { useMediaQuery } from 'react-responsive'
 import 'moment/locale/ru';
-import { InputItem, TextareaItem, DatePicker, Picker, Checkbox, SwipeAction, List, SearchBar } from 'antd-mobile';
+import { Form, Input, TextareaItem, DatePicker, Picker, Checkbox, SwipeAction, List, SearchBar } from 'antd-mobile';
 import { AutoSizer, List as ListVirt } from 'react-virtualized';
 import 'react-virtualized/styles.css';
 import { Action } from '../../Action'
 import {
-    Form,
     Typography,
 } from 'antd';
 import Icofont from 'react-icofont';
@@ -600,7 +599,7 @@ function Boolean({ item, value, onChange }) {
 function Float({ item, value, onChange }) {
     const classes = useStyles()
     return (
-        <InputItem
+        <Input
             disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
             className={classes.Float}
             type={"number"}
@@ -609,13 +608,13 @@ function Float({ item, value, onChange }) {
             moneyKeyboardWrapProps={moneyKeyboardWrapProps}
             onChange={(e) => onChange(e, item)}
             value={value}
-        >{item.label}</InputItem>
+        >{item.label}</Input>
     )
 }
 function Integer({ item, value, onChange }) {
     const classes = useStyles()
     return (
-        <InputItem
+        <Input
             disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
             className={classes.Integer}
             type={"number"}
@@ -624,7 +623,7 @@ function Integer({ item, value, onChange }) {
             moneyKeyboardWrapProps={moneyKeyboardWrapProps}
             onChange={(e) => onChange(e, item)}
             value={value}
-        >{item.label}</InputItem>
+        >{item.label}</Input>
     )
 }
 function String({ item, value, onChange }) {
