@@ -807,7 +807,7 @@ export function CollectionServer(props) {
                         {filters_ui(filters)}
                     </Sider>}
                 </Layout>
-                {(!!count && !!total) && <Card size="small" bordered={(size !== "small")} className={(size === "small") ? classes.cardSmall : ""} style={{ display: "flex", justifyContent: "flex-end", paddingTop: "10px" }}>
+                {(!!count && !!total) && <Card size="small" bordered={(size !== "small")} className={(size === "small") ? classes.cardSmall : ""} style={{ display: "flex", justifyContent: "flex-end", paddingTop: "10px", paddingBottom: "10px" }}>
                     <Pagination className="filtered-pagination" size="small"
                         current={current}
                         onChange={setCurrent}

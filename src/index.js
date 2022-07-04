@@ -232,6 +232,6 @@ export {
   CalendarItem
 }
 
-// export const ExampleComponent = ({ text }) => {
-//   return <div className={styles.test}>Component: {text}</div>
-// }
+export const ExampleComponent = ({ text }) => {
+  return <div className={styles.test}>Component: {text}</div>
+}
