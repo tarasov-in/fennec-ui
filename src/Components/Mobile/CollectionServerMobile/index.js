@@ -555,35 +555,37 @@ export function CollectionServerMobile(props) {
         }
         return c;
     }, [modelActions, lock, auth, unlock]);
-    const intermediate = (values, unlock, close, item, index) => {
-        return Request(values, item, {
-            auth,
-            collection,
-            setCollection: setCollection,
-            onData: onData || ((values, context) => values.data),
+    // const intermediate = (values, unlock, close, item, index) => {
+    //     return Request(values, item, {
+    //         auth,
+    //         collection,
+    //         setCollection: setCollection,
+    //         onData: onData || ((values, context) => values.data),
 
-            index,
-            unlock,
-            close,
-            onValues,
-            onClose,
-            onError,
-            onDispatch
-        })
-    };
+    //         index,
+    //         unlock,
+    //         close,
+    //         onValues,
+    //         onClose,
+    //         onError,
+    //         onDispatch
+    //     })
+    // };
     const RenderOnModelActions = React.useCallback((item, index) => {
         if (!modelActions) return <React.Fragment></React.Fragment>;
         let values = unwrap(modelActions(item, index));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <DropdownMobile>
             {values.map((e, idx) => <ActionPickerItem
-                key={idx}
+                key={uuid()} //{idx}
                 auth={auth}
                 mode={"MenuItem"}
                 object={item}
                 {...{
+                    collection: collection,
+                    setCollection: setCollection,
                     ...e,
-                    action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
+                    // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
                 }}
             />)}
         </DropdownMobile>;
@@ -594,12 +596,14 @@ export function CollectionServerMobile(props) {
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <div>
             {values.map((e, idx) => <Action
-                key={idx}
+                key={uuid()} //{idx}
                 auth={auth}
                 mode={"button"}
                 {...{
+                    collection: collection,
+                    setCollection: setCollection,
                     ...e,
-                    action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
+                    // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
                 }}
             />)}
         </div>;
