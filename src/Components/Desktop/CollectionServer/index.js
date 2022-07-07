@@ -11,6 +11,7 @@ import 'moment/locale/ru';
 import { Field } from '../Field';
 import { Model } from '../Model';
 import { useMetaContext } from '../../Context';
+import uuid from 'react-uuid';
 
 const { CheckableTag } = Tag;
 const { Sider } = Layout;
@@ -397,22 +398,22 @@ export function CollectionServer(props) {
         }
         return c;
     };
-    const intermediate = (values, unlock, close, item, index) => {
-        return Request(values, item, {
-            auth,
-            collection,
-            setCollection: setCollection,
-            onData: onData || ((values) => values.data),
+    // const intermediate = (values, unlock, close, item, index) => {
+    //     return Request(values, item, {
+    //         auth,
+    //         collection,
+    //         setCollection: setCollection,
+    //         onData: onData || ((values) => values.data),
 
-            index,
-            unlock,
-            close,
-            onValues,
-            onClose,
-            onError,
-            onDispatch
-        })
-    };
+    //         index,
+    //         unlock,
+    //         close,
+    //         onValues,
+    //         onClose,
+    //         onError,
+    //         onDispatch
+    //     })
+    // };
     const RenderOnModelActions = (item, index) => {
         let defaultAction = (!name) ? [] : [
             {
@@ -468,13 +469,15 @@ export function CollectionServer(props) {
         if (defaultModelActions) return (<DropdownAction
             items={
                 defaultAction.map((e, idx) => ({
-                    key: e.key || idx,
+                    key: uuid(), //e.key || idx,
                     auth: auth,
                     mode: "MenuItem",
                     object: item,
                     ...{
+                        collection,
+                        setCollection: setCollection,
                         ...e,
-                        action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
+                        // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
                     }
                 }))
             } />)
@@ -482,13 +485,15 @@ export function CollectionServer(props) {
         let values = unwrap(modelActions(item, index));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <DropdownAction items={values.map((e, idx) => ({
-            key: e.key || idx,
+            key: uuid(), //e.key || idx,
             auth: auth,
             mode: "MenuItem",
             object: item,
             ...{
+                collection,
+                setCollection: setCollection,
                 ...e,
-                action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
+                // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
             }
         }))} />
     };
@@ -527,12 +532,14 @@ export function CollectionServer(props) {
         ];
         if (defaultCollectionActions) return <div>
             {defaultAction.map((e, idx) => <Action
-                key={e.key || idx}
+                key={uuid()} // {e.key || idx}
                 auth={auth}
                 mode={"button"}
                 {...{
+                    collection,
+                    setCollection: setCollection,
                     ...e,
-                    action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
+                    // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
                 }}
             />)}
         </div>;
@@ -541,12 +548,14 @@ export function CollectionServer(props) {
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <div>
             {values.map((e, idx) => <Action
-                key={e.key || idx}
+                key={uuid()} //{e.key || idx}
                 auth={auth}
                 mode={"button"}
                 {...{
+                    collection,
+                    setCollection: setCollection,
                     ...e,
-                    action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
+                    // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
                 }}
             />)}
         </div>;
