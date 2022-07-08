@@ -468,7 +468,7 @@ export function CollectionServer(props) {
         if (defaultModelActions) return (<DropdownAction
             items={
                 defaultAction.map((e, idx) => ({
-                    key: uuid(), //e.key || idx,
+                    key: e.key || idx,
                     auth: auth,
                     mode: "MenuItem",
                     object: item,
@@ -485,7 +485,7 @@ export function CollectionServer(props) {
         let values = unwrap(modelActions(item, index));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <DropdownAction items={values.map((e, idx) => ({
-            key: uuid(), //e.key || idx,
+            key: e.key || idx,
             auth: auth,
             mode: "MenuItem",
             object: item,

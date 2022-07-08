@@ -578,7 +578,7 @@ export function CollectionServerMobile(props) {
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <DropdownMobile>
             {values.map((e, idx) => <ActionPickerItem
-                key={uuid()} //{idx}
+                key={idx}
                 auth={auth}
                 mode={"MenuItem"}
                 object={item}
