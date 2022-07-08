@@ -474,8 +474,10 @@ export function CollectionServer(props) {
                     mode: "MenuItem",
                     object: item,
                     ...{
+                        collection,
+                        setCollection: setCollection,
                         ...e,
-                        action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
+                        // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
                     }
                 }))
             } />)
@@ -488,8 +490,10 @@ export function CollectionServer(props) {
             mode: "MenuItem",
             object: item,
             ...{
+                collection,
+                setCollection: setCollection,
                 ...e,
-                action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
+                // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
             }
         }))} />
     };
@@ -532,8 +536,10 @@ export function CollectionServer(props) {
                 auth={auth}
                 mode={"button"}
                 {...{
+                    collection,
+                    setCollection: setCollection,
                     ...e,
-                    action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
+                    // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
                 }}
             />)}
         </div>;
@@ -546,8 +552,10 @@ export function CollectionServer(props) {
                 auth={auth}
                 mode={"button"}
                 {...{
+                    collection,
+                    setCollection: setCollection,
                     ...e,
-                    action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
+                    // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
                 }}
             />)}
         </div>;
