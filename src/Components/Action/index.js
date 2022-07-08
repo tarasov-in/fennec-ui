@@ -292,7 +292,7 @@ export function Action(props) {
         if (hideMenu) {
             hideMenu();
         }
-    }, [steps, excludeKeyPressed, hideMenu])
+    }, [steps, excludeKeyPressed, hideMenu, props.collection])
     const action = React.useCallback((_values) => {
         // console.log("action",_values);
 
