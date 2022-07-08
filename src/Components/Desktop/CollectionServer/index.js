@@ -472,13 +472,13 @@ export function CollectionServer(props) {
                     auth: auth,
                     mode: "MenuItem",
                     object: item,
-                    // collection: collection,
-                    // setCollection: setCollection,
-                    // ...e
-                    ...{
-                        ...e,
-                        action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
-                    }
+                    collection: collection,
+                    setCollection: setCollection,
+                    ...e
+                    // ...{
+                    //     ...e,
+                    //     action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
+                    // }
                 }))
             } />)
         if (!modelActions) return <React.Fragment></React.Fragment>;
@@ -489,13 +489,13 @@ export function CollectionServer(props) {
             auth: auth,
             mode: "MenuItem",
             object: item,
-            // collection: collection,
-            // setCollection: setCollection,
-            // ...e
-            ...{
-                ...e,
-                action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
-            }
+            collection: collection,
+            setCollection: setCollection,
+            ...e
+            // ...{
+            //     ...e,
+            //     action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
+            // }
         }))} />
     };
     const RenderOnCollectionActions = () => {
@@ -537,10 +537,10 @@ export function CollectionServer(props) {
                 auth={auth}
                 mode={"button"}
                 {...{
-                    // collection: collection,
-                    // setCollection: setCollection,
+                    collection: collection,
+                    setCollection: setCollection,
                     ...e,
-                    action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
+                    // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
                 }}
             />)}
         </div>;
@@ -553,10 +553,10 @@ export function CollectionServer(props) {
                 auth={auth}
                 mode={"button"}
                 {...{
-                    // collection: collection,
-                    // setCollection: setCollection,
+                    collection: collection,
+                    setCollection: setCollection,
                     ...e,
-                    action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
+                    // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
                 }}
             />)}
         </div>;

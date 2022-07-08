@@ -583,10 +583,10 @@ export function CollectionServerMobile(props) {
                 mode={"MenuItem"}
                 object={item}
                 {...{
-                    // collection: collection,
-                    // setCollection: setCollection,
+                    collection: collection,
+                    setCollection: setCollection,
                     ...e,
-                    action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
+                    // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
                 }}
             />)}
         </DropdownMobile>;
@@ -601,10 +601,10 @@ export function CollectionServerMobile(props) {
                 auth={auth}
                 mode={"button"}
                 {...{
-                    // collection: collection,
-                    // setCollection: setCollection,
+                    collection: collection,
+                    setCollection: setCollection,
                     ...e,
-                    action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
+                    // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
                 }}
             />)}
         </div>;
