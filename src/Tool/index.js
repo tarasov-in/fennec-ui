@@ -351,6 +351,13 @@ export const deleteInArray = (array, item) => {
     // mutate the original array and return removed elements
     // _.remove(array, e=>e.ID === item.ID);
 }
+export const triggerInArray = (array, item) => {
+    if (array.find(x => x.ID === item.ID) !== undefined) {
+        return deleteInArray(array, item);
+    } else {
+        return updateInArray(array, item);
+    }
+}
 export const emptyInArray = (array, item) => {
     return [];
 }
