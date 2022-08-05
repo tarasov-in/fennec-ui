@@ -365,6 +365,46 @@ export const undefinedInArray = (array, item) => {
     return undefined;
 }
 //--------------------------------------------------------------
+export const createArrayInArray = (array, item) => {
+    return updateArrayInArray(array, item);
+}
+export const updateArrayInArray = (array, item) => {
+    if(_.isArray(item)){
+        let tmp = [...array];
+        for (let i = 0; i < item.length; i++) {
+            const it = item[i];
+            tmp = updateInArray(tmp, it);
+        }
+        return tmp;
+    } else {
+        return updateInArray(array, item);
+    }
+}
+export const deleteArrayInArray = (array, item) => {
+    if(_.isArray(item)){
+        let tmp = [...array];
+        for (let i = 0; i < item.length; i++) {
+            const it = item[i];
+            tmp = deleteInArray(tmp, it);
+        }
+        return tmp;
+    } else {
+        return deleteInArray(array, item);
+    }
+}
+export const triggerArrayInArray = (array, item) => {
+    if(_.isArray(item)){
+        let tmp = [...array];
+        for (let i = 0; i < item.length; i++) {
+            const it = item[i];
+            tmp = triggerInArray(tmp, it);
+        }
+        return tmp;
+    } else {
+        return triggerInArray(array, item);
+    }
+}
+//--------------------------------------------------------------
 export const makeFormData = (values) => {
     const formData = new FormData();
     for (const key in values) {
