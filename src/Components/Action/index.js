@@ -616,7 +616,7 @@ export function Action(props) {
                         width={width}
                         className={classes.modal}
                         title={title}
-                        visible={opened || (fire && visible)}
+                        open={opened || (fire && visible)}
                         closable={true}
                         destroyOnClose={true}
                         onCancel={closePopup}

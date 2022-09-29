@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Badge, List, Picker, SwipeAction, PageIndicator, Stepper } from 'antd-mobile';
-import { unwrap, errorCatch, Request, QueryParam, GETWITH, READWITH, updateInArray, deleteInArray, GetMetaPropertyByPath, QueryFunc, If } from '../../../Tool'
+import { unwrap, errorCatch, Request, QueryParam, GETWITH, READWITH, updateInArray, deleteInArray, GetMetaPropertyByPath, QueryFunc, If, QueryDetail } from '../../../Tool'
 import Icofont from 'react-icofont';
 import { createUseStyles } from 'react-jss';
 import { Action, ActionPickerItem } from '../../Action';
@@ -293,7 +293,7 @@ export function CollectionServerMobile(props) {
     };
     useEffect(() => {
         if (name && meta) {
-            let mo = meta[name];
+           let mo = meta[name] || meta[name.toLowerCase()];
             if (mo) {
                 setMObject(mo);
                 if (props.filters) {
@@ -447,6 +447,7 @@ export function CollectionServerMobile(props) {
 
         if (source) {
             GETWITH(auth, source, [
+                QueryDetail("model"),
                 QueryParam(`page`, state.current),
                 QueryParam(`count`, count),
                 If(state.sorting.name, QueryParam(`s-${state.sorting.name}`, state.sorting.order)),
@@ -463,6 +464,7 @@ export function CollectionServerMobile(props) {
             }, (err, type) => errorCatch(err, type, unlock));
         } else {
             READWITH(auth, name, [
+                QueryDetail("model"),
                 QueryParam(`page`, state.current),
                 QueryParam(`count`, count),
                 If(state.sorting.name, QueryParam(`s-${state.sorting.name}`, state.sorting.order)),
