@@ -337,6 +337,7 @@ export const createInArray = (array, item) => {
 }
 export const updateInArray = (array, item) => {
     if (!item || !item.ID) return array;
+    if (!array) array = [];
     if (_.findIndex(array, { ID: item.ID }) >= 0) {
         return array.map(e => IfElse(e.ID === item.ID, item, e));
     } else {
@@ -369,7 +370,7 @@ export const createArrayInArray = (array, item) => {
     return updateArrayInArray(array, item);
 }
 export const updateArrayInArray = (array, item) => {
-    if(_.isArray(item)){
+    if (_.isArray(item)) {
         let tmp = [...array];
         for (let i = 0; i < item.length; i++) {
             const it = item[i];
@@ -381,7 +382,7 @@ export const updateArrayInArray = (array, item) => {
     }
 }
 export const deleteArrayInArray = (array, item) => {
-    if(_.isArray(item)){
+    if (_.isArray(item)) {
         let tmp = [...array];
         for (let i = 0; i < item.length; i++) {
             const it = item[i];
@@ -393,7 +394,7 @@ export const deleteArrayInArray = (array, item) => {
     }
 }
 export const triggerArrayInArray = (array, item) => {
-    if(_.isArray(item)){
+    if (_.isArray(item)) {
         let tmp = [...array];
         for (let i = 0; i < item.length; i++) {
             const it = item[i];
@@ -596,7 +597,7 @@ export function JSXPathMap(object, path, render) {
 }
 export function JSXIndex(array, index, render) {
     if (!array) return <React.Fragment></React.Fragment>;
-    if(!_.isArray(index)){
+    if (!_.isArray(index)) {
         if (array.length < index) return <React.Fragment></React.Fragment>;
         return render(array[index], index);
     } else {
@@ -607,13 +608,13 @@ export function JSXIndex(array, index, render) {
 export function GetMetaPropertyByPath(meta, obj, path) {
     let properties = GetMetaProperties(obj);
     let array = path.split(".");
-    if(array.length>1){
+    if (array.length > 1) {
         for (let i = 0; i < array.length; i++) {
             const element = array[i];
             let property = properties.find(e => e.name.toLowerCase() == element.toLowerCase())
-            let nobj = _.get(property,"relation.reference.object");
-            let type = _.get(property,"relation.type");
-            if(nobj){
+            let nobj = _.get(property, "relation.reference.object");
+            let type = _.get(property, "relation.type");
+            if (nobj) {
                 let mnobj = meta[nobj];
                 if (mnobj) {
                     return GetMetaPropertyByPath(meta, mnobj, array.slice(1, array.length).join("."))
