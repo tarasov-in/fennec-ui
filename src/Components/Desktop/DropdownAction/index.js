@@ -31,7 +31,9 @@ export function DropdownAction(props) {
     };
 
     return (
-        <div>
+        <div onClick={(e) => {
+            e.stopPropagation();
+        }}>
             {JSXMap(actions.filter(e=>!!e.action), (e, idx) => (<div key={idx}>
                 <Action
                     key={e.key || idx}
