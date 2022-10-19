@@ -14,12 +14,12 @@ export function DropdownAction(props) {
     const { button, menuOptions, items } = props;
     const auth = useAuth();
     const [actions, setActions] = useState([]);
-    useEffect(()=>{
-        if(items){
-            setActions(items.filter(e=>!!e).map(e=>({...e, uuid: uuid()})))
+    useEffect(() => {
+        if (items) {
+            setActions(items.filter(e => !!e).map(e => ({ ...e, uuid: uuid() })))
         }
-    },[items])
-    
+    }, [items])
+
     const btn = () => {
         if (button) {
             return button();
@@ -32,7 +32,7 @@ export function DropdownAction(props) {
 
     return (
         <div>
-            {JSXMap(actions, (e, idx) => (<div key={idx}>
+            {JSXMap(actions.filter(e=>!!e.action), (e, idx) => (<div key={idx}>
                 <Action
                     key={e.key || idx}
                     auth={auth}
@@ -42,14 +42,18 @@ export function DropdownAction(props) {
                 />
             </div>))}
             <Dropdown trigger={['click']} {...props} overlay={
-                <Menu {...menuOptions} selectable={false} items={(actions && actions.length) ? actions.map((e, idx) => ({
-                    key: e.uuid,
-                    label: e.title || ((e.modal) ? e.modal.title : "")
-                })) : []} onClick={(e) => {
-                    if(e.key){
-                        publish(`action.${e.key}.click`, e.key);
-                    }
-                }}>
+                <Menu
+                    {...menuOptions}
+                    selectable={false}
+                    items={(actions && actions.length) ? actions.map((e, idx) => ({
+                        key: e.uuid,
+                        label: e.title || ((e.modal) ? e.modal.title : "")
+                    })) : []}
+                    onClick={(e) => {
+                        if (e.key) {
+                            publish(`action.${e.key}.click`, e.key);
+                        }
+                    }}>
                 </Menu>}>
                 {btn()}
             </Dropdown>
