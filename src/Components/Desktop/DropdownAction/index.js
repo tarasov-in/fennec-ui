@@ -50,6 +50,7 @@ export function DropdownAction(props) {
                         label: e.title || ((e.modal) ? e.modal.title : "")
                     })) : []}
                     onClick={(e) => {
+                        e.stopPropagation();
                         if (e.key) {
                             publish(`action.${e.key}.click`, e.key);
                         }
