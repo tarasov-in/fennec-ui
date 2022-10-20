@@ -337,6 +337,9 @@ export const createInArray = (array, item) => {
 }
 export const updateInArray = (array, item) => {
     if (!item || !item.ID) return array;
+    if(!array) {
+        array = [];
+    }
     if (_.findIndex(array, { ID: item.ID }) >= 0) {
         return array.map(e => IfElse(e.ID === item.ID, item, e));
     } else {
