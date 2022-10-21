@@ -336,10 +336,8 @@ export const createInArray = (array, item) => {
     return updateInArray(array, item);
 }
 export const updateInArray = (array, item) => {
+    if (!array) array = [];
     if (!item || !item.ID) return array;
-    if(!array) {
-        array = [];
-    }
     if (_.findIndex(array, { ID: item.ID }) >= 0) {
         return array.map(e => IfElse(e.ID === item.ID, item, e));
     } else {
@@ -348,7 +346,7 @@ export const updateInArray = (array, item) => {
     return;
 }
 export const deleteInArray = (array, item) => {
-    if (!array) return array;
+    if (!array) array = [];
     if (!item || !item.ID) return array;
     return array.filter(e => e.ID !== item.ID);
     // mutate the original array and return removed elements
