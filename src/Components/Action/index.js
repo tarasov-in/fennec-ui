@@ -10,6 +10,7 @@ import {
     SwipeAction as MobileSwipeAction,
     Modal as MobileModal,
     List as MobileList,
+    Popup,
     SpinLoading
 } from 'antd-mobile';
 import RenderToLayer from '../RenderToLayer'
@@ -75,7 +76,7 @@ const CurrentForm = (props) => {
     />
 };
 
-export function ActionPickerItem({ auth, item, value, onChange }) {
+export function ActionPickerItem({ auth, item, mode, value, onChange }) {
     const classes = useStyles()
     const _brief = React.useMemo(() => (!value) ? undefined : (item.display) ? item.display(value) : value, [value, item]);
     const okText = React.useMemo(() => item.okText || "Выбрать", [item]);
@@ -96,13 +97,14 @@ export function ActionPickerItem({ auth, item, value, onChange }) {
     }, [onChange, item]);
     const swipe = React.useMemo(() => [
         {
+            key: 'danger',
             text: (<Icofont icon="close" />),
-            onPress: () => {
+            onClick: () => {
                 if (onChange) {
                     onChange(undefined, item, undefined);
                 }
             },
-            style: { backgroundColor: '#F4333C', color: 'white' },
+            color: 'danger',
         },
     ], [onChange, item]);
     // item: {
@@ -120,6 +122,7 @@ export function ActionPickerItem({ auth, item, value, onChange }) {
     // }
     return (<React.Fragment>
         <Action
+            mode={mode}
             auth={auth}
 
             form={item.form}
@@ -133,6 +136,7 @@ export function ActionPickerItem({ auth, item, value, onChange }) {
             dismissText={dismissText}
 
             triggerOptions={triggerOptions}
+            triggerStyle={item.triggerStyle}
             placeholder={placeholder}
             closable={false}
 
@@ -550,26 +554,28 @@ export function Action(props) {
                 const getTitle = () => {
                     return props.label || props.title || ((props.titles) ? props.titles.header : "");
                 }
-                let view = (
+                let view = (<React.Fragment>
                     <MobileList.Item
-                        className={classes.Obj}
+                        // className={classes.Obj}
                         disabled={disabled}
                         {...triggerOptions}
                         style={{ textAlign: "left", ...triggerStyle }}
-                        arrow="horizontal"
-                        multipleLine
-                        wrap
+                        arrow={false}
+                        // multipleLine
+                        // wrap
                         onClick={click}>
                         <div>{getTitle()}</div>
-                        {brief && <Brief>{brief}</Brief>}
-                        {(!brief && placeholder) && <Brief>{placeholder}</Brief>}
-                    </MobileList.Item>);
+                        {brief && <div>{brief}</div>}
+                        {(!brief && placeholder) && <div>{placeholder}</div>}
+                    </MobileList.Item>
+                </React.Fragment>);
                 return (
                     <React.Fragment>
                         {swipe &&
-                            <MobileSwipeAction autoClose right={swipe}>
+                            <MobileSwipeAction closeOnAction={true} closeOnTouchOutside={true} rightActions={swipe}>
                                 {view}
-                            </MobileSwipeAction>}
+                            </MobileSwipeAction>
+                        }
                         {!swipe && view}
                     </React.Fragment>
                 );
@@ -661,9 +667,9 @@ export function Action(props) {
             if (mode == "inline") {
                 return (<React.Fragment>
                     <div style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        height: "100%",
                     }}>
                         <div style={{ textAlign: "center", fontWeight: "600", fontSize: "14px", minHeight: ((titles && titles.header)) ? "47px" : "0px" }}>{(titles && titles.subheader) ? titles.subheader : ""}</div>
                         {!loading && <div style={{ height: "100%", overflowY: "scroll", padding: "0px", ...formWraperStyle }}>
@@ -692,10 +698,10 @@ export function Action(props) {
                                 />
                             }
                         </div>}
-                        {loading && <div className="loading" style={{height: "100%"}}>
+                        {loading && <div className="loading" style={{ height: "100%" }}>
                             <div className="align" style={{ textAlign: "center" }}>
                                 <div style={{ display: "flex", justifyContent: "center" }}>
-                                <SpinLoading style={{ '--size': '48px' }} />
+                                    <SpinLoading style={{ '--size': '48px' }} />
                                 </div>
                                 <span style={{ marginTop: 8 }}>Отправка ...</span>
                             </div>
@@ -718,59 +724,64 @@ export function Action(props) {
             } else {
                 return (<React.Fragment>
                     <RenderToLayer>
-                        <MobileModal
+                        <Popup
                             visible={opened || (fire && visible)}
-                            className={classes.fullModal}
-                            transparent={false}
-                            popup={false}
-                            animationType={"slide-up"}
-                            closable={true}
+                            showCloseButton
+                            bodyStyle={{ height: '100vh' }}
                             onClose={closePopup}
-                            title={(titles && titles.header) ?
-                                <div style={{ display: "flex", justifyContent: "center", padding: "10px 30px 0px 15px", fontSize: "16px" }}>
-                                    {titles.header}
-                                </div> : undefined
-                            }
-                            wrapProps={{ onTouchStart: onWrapTouchStart }}
-                            afterClose={props.afterClose}
-                            footer={footer()}
                         >
-                            <div style={{ textAlign: "center", fontWeight: "600", fontSize: "14px", minHeight: (!(titles && titles.header)) ? "47px" : "0px" }}>{(titles && titles.subheader) ? titles.subheader : ""}</div>
-                            {!loading && <div style={{ padding: "0px 15px 15px 15px" }}>
-                                {steps && <React.Fragment>
-                                    <CurrentForm
-                                        setSubmit={setSubmit}
-                                        auth={props.auth}
-                                        current={currentStep}
-                                        steps={steps}
-                                        object={stepObject}
-                                        action={(values) => {
-                                            let o = {
-                                                ...stepObject,
-                                                [steps[currentStep].key]: { ...steps[currentStep].object, ...values }
-                                            };
-                                            next(values, steps[currentStep], currentStep);
-                                        }}
-                                    />
-                                </React.Fragment>}
-                                {(!steps && props.form) &&
-                                    <ContentForm
-                                        {...props}
-                                        subheader={(titles && titles.subheader) ? titles.subheader : ""}
-                                        submit={action}
-                                        form={form}
-                                    />
-                                }
-                            </div>}
-                            {loading && <div className="loading">
-                                <div className="align" style={{ textAlign: "center" }}>
-                                    <div style={{ display: "flex", justifyContent: "center" }}>
-                                    <SpinLoading style={{ '--size': '48px' }} />
-                                    </div>
-                                    <span style={{ marginTop: 8 }}>Отправка ...</span>
+                            <div style={{ height: '100vh', display: "flex", flexDirection: "column" }}>
+                                <div style={{ flex: "0" }}>
+                                    {(titles && titles.header) ?
+                                        <div style={{ display: "flex", justifyContent: "center", padding: "10px 30px 10px 15px", fontSize: "16px" }}>
+                                            {titles.header}
+                                        </div> : undefined
+                                    }
                                 </div>
-                            </div>}
-                        </MobileModal>
+                                <div style={{ overflowY: 'scroll', flex: "1" }}>
+                                    <div style={{ textAlign: "center", fontWeight: "600", fontSize: "14px", minHeight: (!(titles && titles.header)) ? "47px" : "0px" }}>{(titles && titles.subheader) ? titles.subheader : ""}</div>
+                                    {!loading && <div style={{ padding: "0px 15px 15px 15px" }}>
+                                        {steps && <React.Fragment>
+                                            <CurrentForm
+                                                setSubmit={setSubmit}
+                                                auth={props.auth}
+                                                current={currentStep}
+                                                steps={steps}
+                                                object={stepObject}
+                                                action={(values) => {
+                                                    let o = {
+                                                        ...stepObject,
+                                                        [steps[currentStep].key]: { ...steps[currentStep].object, ...values }
+                                                    };
+                                                    next(values, steps[currentStep], currentStep);
+                                                }}
+                                            />
+                                        </React.Fragment>}
+                                        {(!steps && props.form) &&
+                                            <ContentForm
+                                                {...props}
+                                                subheader={(titles && titles.subheader) ? titles.subheader : ""}
+                                                submit={action}
+                                                form={form}
+                                            />
+                                        }
+                                    </div>}
+                                    {loading && <div className="loading">
+                                        <div className="align" style={{ textAlign: "center" }}>
+                                            <div style={{ display: "flex", justifyContent: "center" }}>
+                                                <SpinLoading style={{ '--size': '48px' }} />
+                                            </div>
+                                            <span style={{ marginTop: 8 }}>Отправка ...</span>
+                                        </div>
+                                    </div>}
+                                </div>
+                                <div style={{ flex: "0" }}>
+                                    <div style={{ display: "flex", justifyContent: "space-between", gap: "10px", padding: "10px" }}>
+                                        {footer().map((e, idx) => <Button key={idx} style={{ flex: "auto" }} type="ghost" {...e.options} onClick={e.onPress}>{e.text}</Button>)}
+                                    </div>
+                                </div>
+                            </div>
+                        </Popup>
                     </RenderToLayer>
                     {trigger && trigger()}
                 </React.Fragment>);
