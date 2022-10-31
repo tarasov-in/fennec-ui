@@ -566,7 +566,7 @@ function Obj({ auth, item, value, onChange }) {
             }}
             okText={item.okText || 'Выбрать'}
             dismissText={item.dismissText || 'Отмена'}>
-            <List.Item className={classes.Obj} arrow="horizontal">
+            <List.Item className={classes.Obj} /*arrow="horizontal"*/>
                 {item.label}
             </List.Item>
         </Picker>
@@ -607,7 +607,7 @@ function DateTime({ item, value, onChange }) {
             value={value}
             onChange={onChange}
         >
-            <List.Item className={classes.Time} arrow="horizontal">{item.label}</List.Item>
+            <List.Item className={classes.Time} /*arrow="horizontal"*/>{item.label}</List.Item>
         </DatePicker>
     )
 }
@@ -635,7 +635,7 @@ function Date({ item, value, onChange }) {
             value={value}
             onChange={onChange}
         >
-            <List.Item className={classes.Time} arrow="horizontal">{item.label}</List.Item>
+            <List.Item className={classes.Time} /*arrow="horizontal"*/>{item.label}</List.Item>
         </DatePicker>
     )
 }
@@ -663,7 +663,7 @@ function Time({ item, value, onChange }) {
             value={value}
             onChange={onChange}
         >
-            <List.Item className={classes.Time} arrow="horizontal">{item.label}</List.Item>
+            <List.Item className={classes.Time} /*arrow="horizontal"*/>{item.label}</List.Item>
         </DatePicker>
     )
 }

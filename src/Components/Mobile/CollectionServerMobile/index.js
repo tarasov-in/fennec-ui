@@ -149,7 +149,7 @@ function SortingField(props) {
                         onOk={onOk}
                         okText="Выбрать"
                         dismissText="Отмена">
-                        <List.Item className={classes.Obj} arrow="horizontal">
+                        <List.Item className={classes.Obj} /*arrow="horizontal"*/>
                             {/* {l && l.label} */}
                             Сортировка по полю
                         </List.Item>

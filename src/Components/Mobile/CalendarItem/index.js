@@ -78,7 +78,7 @@ export function CalendarItem(props) {
         return (pickTime)?"YYYY-MM-DD HH:mm":"YYYY-MM-DD";
     };
     return (<React.Fragment>
-        <List.Item arrow="horizontal"
+        <List.Item /*arrow="horizontal"*/
             className={props.className || classes.Time}
             onClick={() => {
                 setVisible(true);

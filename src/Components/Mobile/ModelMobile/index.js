@@ -395,7 +395,7 @@ function Obj({ auth, item, options = {}, value, onChange, changed }) {
                 }}
                 okText={item.okText || 'Выбрать'}
                 dismissText={item.dismissText || 'Отмена'}>
-                <List.Item className={classes.Obj} arrow="horizontal">
+                <List.Item className={classes.Obj} /*arrow="horizontal"*/>
                     {item.label}
                 </List.Item>
             </Picker>
@@ -495,7 +495,7 @@ function Time({ item, value, onChange }) {
                 value={value}
                 onChange={date => onChange(date, item)}
             >
-                <List.Item className={classes.Time} arrow="horizontal">{item.label}</List.Item>
+                <List.Item className={classes.Time} /*arrow="horizontal"*/>{item.label}</List.Item>
             </DatePicker>
         </SwipeAction>
     )
@@ -536,7 +536,7 @@ function Date({ item, value, onChange }) {
                 value={value}
                 onChange={date => onChange(date, item)}
             >
-                <List.Item className={classes.Time} arrow="horizontal">{item.label}</List.Item>
+                <List.Item className={classes.Time} /*arrow="horizontal"*/>{item.label}</List.Item>
             </DatePicker>
         </SwipeAction>
     )
@@ -577,7 +577,7 @@ function DateTime({ item, value, onChange }) {
                 value={value}
                 onChange={date => onChange(date, item)}
             >
-                <List.Item className={classes.Time} arrow="horizontal">{item.label}</List.Item>
+                <List.Item className={classes.Time} /*arrow="horizontal"*/>{item.label}</List.Item>
             </DatePicker>
         </SwipeAction>
     )
