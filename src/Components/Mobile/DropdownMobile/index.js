@@ -43,7 +43,7 @@ export function DropdownMobile(props) {
                                     object={e}
                                     {...e}
                                     trigger={(click) => (
-                                        <List.Item key={idx} arrow="horizontal" multipleLine wrap onClick={click} style={{fontSize:"13px"}}>
+                                        <List.Item key={idx} /*arrow="horizontal"*/ multipleLine wrap onClick={click} style={{fontSize:"13px"}}>
                                             {getTitle(e)}
                                         </List.Item>
                                     )}
