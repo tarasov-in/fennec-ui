@@ -4,9 +4,6 @@ import { createUseStyles } from 'react-jss'
 import moment from 'moment-timezone';
 import 'moment/locale/ru';
 
-const Item = List.Item;
-const Brief = Item.Brief;
-
 const useStyles = createUseStyles({
     Obj: {
         '&.am-list-item': {
@@ -75,7 +72,7 @@ export function CalendarItem(props) {
     }
     const nativeValue = (value && value.length === 2) ? [value[0].toDate(), value[1].toDate()] : [];
     const format = (pickTime) => {
-        return (pickTime)?"YYYY-MM-DD HH:mm":"YYYY-MM-DD";
+        return (pickTime) ? "YYYY-MM-DD HH:mm" : "YYYY-MM-DD";
     };
     return (<React.Fragment>
         <List.Item /*arrow="horizontal"*/
@@ -83,51 +80,52 @@ export function CalendarItem(props) {
             onClick={() => {
                 setVisible(true);
             }}
-            // extra={(value) ? <span>{value[0].format("YYYY-MM-DD")} - {value[1].format("YYYY-MM-DD")}</span> : <React.Fragment></React.Fragment>}
+        // extra={(value) ? <span>{value[0].format("YYYY-MM-DD")} - {value[1].format("YYYY-MM-DD")}</span> : <React.Fragment></React.Fragment>}
         >
-            
+
             <div>{name}</div>
-                {value && <Brief>{value[0].format(format(pickTime))} - {value[1].format(format(pickTime))}</Brief>}
-                {(!value && placeholder) && <Brief>{placeholder}</Brief>}
+            {value && <div>{value[0].format(format(pickTime))} - {value[1].format(format(pickTime))}</div>}
+            {(!value && placeholder) && <div>{placeholder}</div>}
         </List.Item>
         <Calendar
-            locale={{
-                am: "AM",
-                begin: "Начало",
-                begin_over: "S/E",
-                clear: "Очистить",
-                confirm: "Выбрать",
-                dateFormat: "yyyy-MM-dd",
-                dateTimeFormat: "dd-MM-yyyy hh:mm",
-                end: "Конец",
-                lastMonth: "Этот месяц",
-                lastWeek: "Эта неделя",
-                loadPrevMonth: "Загрузка предыдущего месяца",
-                month: "Месяц",
-                monthTitle: "yyyy-MM",
-                noChoose: "Не выбрана",
-                over: "Конец",
-                pm: "PM",
-                selectEndTime: "Выберите время окончания",
-                selectStartTime: "Выберите время начала",
-                selectTime: "Выберете время",
-                start: "Начало",
-                title: "Календарь",
-                today: "Сегодня",
-                week: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
-                year: "Год",
-                yesterday: "Вчера",
-            }}
-            pickTime={pickTime}
-            showShortcut={false}
-            type={"range"}
-            visible={visible}
-            onCancel={onCancel}
-            onConfirm={onConfirm}
-            // onSelectHasDisableDate={this.onSelectHasDisableDate}
-            // getDateExtra={this.getDateExtra}
-            defaultDate={new Date()}
-            defaultValue={nativeValue}
+            // selectionMode='range'
+        locale={{
+            am: "AM",
+            begin: "Начало",
+            begin_over: "S/E",
+            clear: "Очистить",
+            confirm: "Выбрать",
+            dateFormat: "yyyy-MM-dd",
+            dateTimeFormat: "dd-MM-yyyy hh:mm",
+            end: "Конец",
+            lastMonth: "Этот месяц",
+            lastWeek: "Эта неделя",
+            loadPrevMonth: "Загрузка предыдущего месяца",
+            month: "Месяц",
+            monthTitle: "yyyy-MM",
+            noChoose: "Не выбрана",
+            over: "Конец",
+            pm: "PM",
+            selectEndTime: "Выберите время окончания",
+            selectStartTime: "Выберите время начала",
+            selectTime: "Выберете время",
+            start: "Начало",
+            title: "Календарь",
+            today: "Сегодня",
+            week: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
+            year: "Год",
+            yesterday: "Вчера",
+        }}
+        pickTime={pickTime}
+        showShortcut={false}
+        type={"range"}
+        visible={visible}
+        onCancel={onCancel}
+        onConfirm={onConfirm}
+        // onSelectHasDisableDate={this.onSelectHasDisableDate}
+        // getDateExtra={this.getDateExtra}
+        defaultDate={new Date()}
+        defaultValue={nativeValue}
         />
     </React.Fragment>);
 }

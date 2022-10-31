@@ -701,9 +701,9 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
     }, [object]);
     var properties = GetMetaProperties(meta);
     if (!properties) return <React.Fragment></React.Fragment>;
-    const propertiesFiltered = properties.filter(e => e.name.toUpperCase() !== "ID").filter(e => (!e.relation || (e.relation && e.relation.type !== "one-many")));
-    const propertiesOneMany = properties.filter(e => e.relation && e.relation.type === "one-many");
-    const propertiesDocuments = properties.filter(e => e.type === "document");
+    const propertiesFiltered = properties?.filter(e => e.name.toUpperCase() !== "ID")?.filter(e => (!e.relation || (e.relation && e.relation.type !== "one-many")));
+    const propertiesOneMany = properties?.filter(e => e.relation && e.relation.type === "one-many");
+    const propertiesDocuments = properties?.filter(e => e.type === "document");
 
     // console.log(propertiesFiltered);
     // console.log(propertiesOneMany);
@@ -765,7 +765,7 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
             setChanged({ ...changed, ...splitedValue(item.name, value) });
         }
     };
-    const propertiesVirtualized = propertiesFiltered.filter(e => !!e).filter(searchFilteredProperties);
+    const propertiesVirtualized = propertiesFiltered?.filter(e => !!e)?.filter(searchFilteredProperties);
     const virtualizedItem = (item, idx) => {
         if (item && !item.view || (item && item.view && item.view.unvisible === false)) {
             return (
@@ -819,7 +819,7 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
                         submit(splitedObject(values));
                     }}
                     {...options}
-                    labelAlign={"left"}
+                    // labelalign={"left"}
                     layout={"vertical"}
                     initialValues={{
                         ...mergedObject(propertiesVirtualized, object)
@@ -839,8 +839,8 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
                             )
                         }}
                     </AutoSizer>}
-                    {!virtualized && propertiesVirtualized.map((item, idx) => virtualizedItem(item, idx))}
-                    {/* {steps && [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30].map(e => <div key={e} style={{ minHeight: "50px", backgroundColor: "#"+Math.floor(Math.random()*16777215).toString(16) }}>{e}</div>)} */}
+                    {!virtualized && propertiesVirtualized?.map((item, idx) => virtualizedItem(item, idx))}
+                    {/* {steps && [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]?.map(e => <div key={e} style={{ minHeight: "50px", backgroundColor: "#"+Math.floor(Math.random()*16777215).toString(16) }}>{e}</div>)} */}
                 </Form>
             </div>}
             {visible && <div>
@@ -854,7 +854,7 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
                             return 1;
                         }
                         return 0;
-                    }).map((e, idx) => (
+                    })?.map((e, idx) => (
                         <div key={idx} style={{ paddingLeft: "10px" }}>
                             <Link href="#">
                                 {e.label}
@@ -872,7 +872,7 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
                             return 1;
                         }
                         return 0;
-                    }).map((e, idx) => (
+                    })?.map((e, idx) => (
                         <div key={idx} style={{ paddingLeft: "10px" }}>
                             <Link href="#">
                                 {e.label}

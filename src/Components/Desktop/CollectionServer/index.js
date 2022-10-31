@@ -117,7 +117,7 @@ export function CollectionServer(props) {
             if (mo) {
                 setMObject(mo);
                 if (props.filters) {
-                    let f = props.filters().map(pf => {
+                    let f = props.filters()?.map(pf => {
                         let field = GetMetaPropertyByPath(meta, mo, pf.name);
                         return {
                             ...field,
@@ -467,7 +467,7 @@ export function CollectionServer(props) {
         ];
         if (defaultModelActions) return (<DropdownAction
             items={
-                defaultAction.map((e, idx) => ({
+                defaultAction?.map((e, idx) => ({
                     key: e.key || idx,
                     auth: auth,
                     mode: "MenuItem",
@@ -484,7 +484,7 @@ export function CollectionServer(props) {
         if (!modelActions) return <React.Fragment></React.Fragment>;
         let values = unwrap(modelActions(item, index));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
-        return <DropdownAction items={values.map((e, idx) => ({
+        return <DropdownAction items={values?.map((e, idx) => ({
             key: e.key || idx,
             auth: auth,
             mode: "MenuItem",
@@ -532,7 +532,7 @@ export function CollectionServer(props) {
             }
         ];
         if (defaultCollectionActions) return <div>
-            {defaultAction.map((e, idx) => <Action
+            {defaultAction?.map((e, idx) => <Action
                 key={e.key || idx}
                 auth={auth}
                 mode={"button"}
@@ -548,7 +548,7 @@ export function CollectionServer(props) {
         let values = unwrap(collectionActions());
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <div>
-            {values.map((e, idx) => <Action
+            {values?.map((e, idx) => <Action
                 key={e.key || idx}
                 auth={auth}
                 mode={"button"}
@@ -609,7 +609,7 @@ export function CollectionServer(props) {
     };
     const filters_ui = React.useMemo(() => (filters) => {
         const fl = filters.filter(i => i.filter);
-        const f = fl.map((item) => {
+        const f = fl?.map((item) => {
             return (
                 <div key={((mobject) ? mobject.name : "") + item.name} style={{ marginBottom: "10px" }}>
                     {item.filter && (item.type !== "bool" || item.type !== "boolean") && <Text>{item.label}</Text>}
@@ -643,7 +643,7 @@ export function CollectionServer(props) {
     }, [funcStat, state, mobject]);
     const sorting_ui = React.useMemo(() => (filters) => {
         const so = filters.filter(f => f.sort);
-        const s = so.map((item, idx) => {
+        const s = so?.map((item, idx) => {
             return (
                 <Option key={idx} value={item.name}>{item.label}</Option>
             );
@@ -800,7 +800,7 @@ export function CollectionServer(props) {
                     </div>
                     {filtered && <Sider width={240} theme={"light"} style={{ margin: "0 1px 5px 5px" }} className="filtered-sider">
                         {JSX(() => {
-                            const fl = filters.filter(i => i.filter);
+                            const fl = filters?.filter(i => i.filter);
                             if (filtered && fl.length > 0) {
                                 return (<React.Fragment>
                                     <div style={{ margin: "10px" }}>

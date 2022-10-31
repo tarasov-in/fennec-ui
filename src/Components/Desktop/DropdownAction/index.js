@@ -16,7 +16,7 @@ export function DropdownAction(props) {
     const [actions, setActions] = useState([]);
     useEffect(() => {
         if (items) {
-            setActions(items.filter(e => !!e).map(e => ({ ...e, uuid: uuid() })))
+            setActions(items?.filter(e => !!e)?.map(e => ({ ...e, uuid: uuid() })))
         }
     }, [items])
 
@@ -34,7 +34,7 @@ export function DropdownAction(props) {
         <div onClick={(e) => {
             e.stopPropagation();
         }}>
-            {JSXMap(actions.filter(e=>!!e.action), (e, idx) => (<div key={idx}>
+            {JSXMap(actions?.filter(e=>!!e.action), (e, idx) => (<div key={idx}>
                 <Action
                     key={e.key || idx}
                     auth={auth}
@@ -47,7 +47,7 @@ export function DropdownAction(props) {
                 <Menu
                     {...menuOptions}
                     selectable={false}
-                    items={(actions && actions.length) ? actions.map((e, idx) => ({
+                    items={(actions && actions.length) ? actions?.map((e, idx) => ({
                         key: e.uuid,
                         label: e.title || ((e.modal) ? e.modal.title : "")
                     })) : []}

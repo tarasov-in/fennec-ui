@@ -280,7 +280,7 @@ const useStyles = createUseStyles({
 
 //     const elements = (data) => {
 //         if (item.display) {
-//             return data.map(i => (
+//             return data?.map(i => (
 //                 <Option key={i.ID} value={i.ID}>{item.display(i)}</Option>
 //             ));
 //         } else {
@@ -290,7 +290,7 @@ const useStyles = createUseStyles({
 //                     return display
 //                 }
 //             }
-//             return data.map(i => (
+//             return data?.map(i => (
 //                 <Option key={i.ID} value={i.ID}>{getDisplay(i, display(item.relation.display) || display(fieldMeta.display), fieldMeta, meta)}</Option>
 //             ));
 //         }

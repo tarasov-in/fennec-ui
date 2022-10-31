@@ -83,15 +83,15 @@ function Frm(props) {
         let prop = [];
         let p = _.get(gmeta[name.toLowerCase()], "properties");
         if (p) {
-            prop = p.filter(e => _.get(e, "relation.type") !== "one-many").map(e => ({ ...e, sort: true, filter: true, func: (e.filterType == "range") ? ["min", "max"] : undefined }))
+            prop = p?.filter(e => _.get(e, "relation.type") !== "one-many")?.map(e => ({ ...e, sort: true, filter: true, func: (e.filterType == "range") ? ["min", "max"] : undefined }))
         }
         return prop;
     }, [gmeta]);
 
     var properties = GetMetaProperties(meta);
     if (!properties) return <React.Fragment></React.Fragment>;
-    const propertiesFiltered = properties.filter(e => e.name.toUpperCase() !== "ID").filter(e => (!e.relation || (e.relation && e.relation.type !== "one-many")));
-    const propertiesOneMany = properties.filter(e => e.relation && e.relation.type === "one-many");
+    const propertiesFiltered = properties?.filter(e => e.name.toUpperCase() !== "ID")?.filter(e => (!e.relation || (e.relation && e.relation.type !== "one-many")));
+    const propertiesOneMany = properties?.filter(e => e.relation && e.relation.type === "one-many");
 
     return (
         <div>
@@ -117,7 +117,7 @@ function Frm(props) {
                     {...options}
                     labelAlign={"left"}
                     layout={"vertical"}>
-                    {propertiesFiltered.filter(e => (excludeFields[e.name.toLowerCase()]) ? false : true).map((item) => {
+                    {propertiesFiltered?.filter(e => (excludeFields[e.name.toLowerCase()]) ? false : true)?.map((item) => {
                         return (
                             <Form.Item className={classes.FormItem}
                                 key={item.name}
@@ -140,7 +140,7 @@ function Frm(props) {
             </div>
             {/* <div style={{ display: (visible) ? "block" : "none" }}>
                 <Tabs>
-                    {propertiesOneMany.map((e, idx) => {
+                    {propertiesOneMany?.map((e, idx) => {
                         let p = getObjectValue(e, "relation.reference.property");
                         let n = getObjectValue(e, "relation.reference.object");
                         if (!n) return;

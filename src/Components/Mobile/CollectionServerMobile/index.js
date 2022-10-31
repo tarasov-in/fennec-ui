@@ -91,15 +91,15 @@ function SortingField(props) {
     // console.log("SortingField", value);
 
     const s = React.useMemo(() => {
-        const so = filters.filter(f => f.sort);
-        return so.map((item, idx) => {
+        const so = filters?.filter(f => f.sort);
+        return so?.map((item, idx) => {
             return {
                 label: item.label,
                 value: item.name,
                 item
             };
         });
-        const l = s.find(e => e.value === value.name);
+        // const l = s.find(e => e.value === value.name);
     }, [filters]);
     const sortingOrder = React.useCallback(() => {
         if (value.order === "ASC") {
@@ -117,6 +117,7 @@ function SortingField(props) {
             onSortingChangeString(v[0], filters.find(i => i.name === v[0]))
         }
     }, [filters, onSortingChangeString]);
+    const [visible, setVisible] = useState(false);
     return (<React.Fragment>
         <div>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px", marginTop: "25px", paddingRight: "10px" }}>
@@ -132,16 +133,31 @@ function SortingField(props) {
                 <div style={{ flex: "auto", margin: "10px 10px", height: "1px", backgroundColor: "#f0f0f0" }}></div>
                 <div>
                     {value.order === "ASC" &&
-                        <Button icon={<SortAscendingOutlined />} onClick={sortingOrder} />
+                        <Button onClick={sortingOrder}><SortAscendingOutlined /></Button>
                     }
                     {value.order === "DESC" &&
-                        <Button icon={<SortDescendingOutlined />} onClick={sortingOrder} />
+                        <Button onClick={sortingOrder}><SortDescendingOutlined /></Button>
                     }
                 </div>
             </div>
             <div style={{ margin: "10px" }} className={classes.FilterList}>
                 <List style={{ backgroundColor: 'white' }} className="picker-list">
                     <Picker
+                        columns={[s]}
+                        visible={visible}
+                        onClose={() => {
+                            setVisible(false)
+                        }}
+                        cancelText="Отмена"
+                        confirmText="Выбрать"
+                        value={rval}
+                        // defaultValue={rval}
+                        onConfirm={onOk}
+                    />
+                    <List.Item className={classes.Obj} onClick={() => setVisible(true)}>
+                        Сортировка по полю
+                    </List.Item>
+                    {/* <Picker
                         data={s}
                         cols={1}
                         value={rval}
@@ -149,11 +165,10 @@ function SortingField(props) {
                         onOk={onOk}
                         okText="Выбрать"
                         dismissText="Отмена">
-                        <List.Item className={classes.Obj} /*arrow="horizontal"*/>
-                            {/* {l && l.label} */}
+                        <List.Item className={classes.Obj} >
                             Сортировка по полю
                         </List.Item>
-                    </Picker>
+                    </Picker> */}
                 </List>
             </div>
         </div>
@@ -165,8 +180,8 @@ function FilteringField(props) {
     // const [state, setState] = useState({})
     // console.log("FilteringField", value);
     const f = React.useMemo(() => {
-        const fl = filters.filter(i => i.filter);
-        return fl.map((item, idx) => {
+        const fl = filters?.filter(i => i.filter);
+        return fl?.map((item, idx) => {
             // console.log("value[item.name] = ", value[item.name]);
             return (
                 <div key={idx} style={{ marginBottom: "10px" }}>
@@ -293,11 +308,11 @@ export function CollectionServerMobile(props) {
     };
     useEffect(() => {
         if (name && meta) {
-           let mo = meta[name] || meta[name.toLowerCase()];
+            let mo = meta[name] || meta[name.toLowerCase()];
             if (mo) {
                 setMObject(mo);
                 if (props.filters) {
-                    let f = props.filters().map(pf => {
+                    let f = props.filters()?.map(pf => {
                         let field = GetMetaPropertyByPath(meta, mo, pf.name);
                         return {
                             ...field,
@@ -579,7 +594,7 @@ export function CollectionServerMobile(props) {
         let values = unwrap(modelActions(item, index));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <DropdownMobile>
-            {values.map((e, idx) => <ActionPickerItem
+            {values?.map((e, idx) => <ActionPickerItem
                 key={idx}
                 auth={auth}
                 mode={"MenuItem"}
@@ -598,7 +613,7 @@ export function CollectionServerMobile(props) {
         let values = unwrap(collectionActions());
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <div>
-            {values.map((e, idx) => <Action
+            {values?.map((e, idx) => <Action
                 key={idx}
                 auth={auth}
                 mode={"button"}
@@ -632,9 +647,9 @@ export function CollectionServerMobile(props) {
     };
     const onSelection = (item, index) => {
         if (!selection) return {};
-        let sr = selectedRows.filter(e => e.ID !== item.ID);
-        let srk = selectedRowKeys.filter(e => e !== item.ID);
-        let vsr = value.filter(e => e.ID !== item.ID);
+        let sr = selectedRows?.filter(e => e.ID !== item.ID);
+        let srk = selectedRowKeys?.filter(e => e !== item.ID);
+        let vsr = value?.filter(e => e.ID !== item.ID);
         if (sr.length !== selectedRows.length) {
             setSelectedRowKeys(srk);
             setSelectedRows(sr);
@@ -745,7 +760,7 @@ export function CollectionServerMobile(props) {
             {filters.length == 0 && <div>
                 {(collection && collection.length > 0) && <div>
                     <List className="my-list">
-                        {(collection && collection.length > 0) && collection.map((item, index) => (
+                        {(collection && collection.length > 0) && collection?.map((item, index) => (
                             <Item key={index} multipleLine align="top" wrap style={{ paddingLeft: "0px" }}>
                                 {_render(item, index)}
                             </Item>
@@ -793,7 +808,7 @@ export function CollectionServerMobile(props) {
                         </div>
                     </div>
                     <List className="my-list">
-                        {(collection && collection.length > 0) && collection.map((item, index) => (
+                        {(collection && collection.length > 0) && collection?.map((item, index) => (
                             <Item key={index} multipleLine align="top" wrap style={{ paddingLeft: "0px" }}>
                                 {_render(item, index)}
                             </Item>
@@ -801,7 +816,7 @@ export function CollectionServerMobile(props) {
                     </List>
                     <div style={{ paddingTop: "15px" }}>
                         {(total > 1) &&
-                            <div style={{display:"flex", justifyContent:"space-between"}}>
+                            <div style={{ display: "flex", justifyContent: "space-between" }}>
                                 <PageIndicator
                                     total={total}
                                     current={state.current}
@@ -821,11 +836,6 @@ export function CollectionServerMobile(props) {
                                     value={state.current}
                                     onChange={PaginatorChange} />
                             </div>
-                            // <Pagination className="filtered-pagination" size="small"
-                            //     current={state.current}
-                            //     total={total}
-                            //     onChange={PaginatorChange}
-                            // />
                         }
                     </div>
                 </div>

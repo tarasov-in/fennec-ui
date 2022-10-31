@@ -339,7 +339,7 @@ export const updateInArray = (array, item) => {
     if (!array) array = [];
     if (!item || !item.ID) return array;
     if (_.findIndex(array, { ID: item.ID }) >= 0) {
-        return array.map(e => IfElse(e.ID === item.ID, item, e));
+        return array?.map(e => IfElse(e.ID === item.ID, item, e));
     } else {
         return [...array, item];
     }
@@ -348,7 +348,7 @@ export const updateInArray = (array, item) => {
 export const deleteInArray = (array, item) => {
     if (!array) array = [];
     if (!item || !item.ID) return array;
-    return array.filter(e => e.ID !== item.ID);
+    return array?.filter(e => e.ID !== item.ID);
     // mutate the original array and return removed elements
     // _.remove(array, e=>e.ID === item.ID);
 }
@@ -592,7 +592,7 @@ export function JSX(render) {
 }
 export function JSXMap(array, render) {
     if (!array) return <React.Fragment></React.Fragment>;
-    return array.map((e, idx) => render(e, idx));
+    return array?.map((e, idx) => render(e, idx));
 }
 export function JSXPathMap(object, path, render) {
     let array = _.get(object, path);
@@ -604,7 +604,7 @@ export function JSXIndex(array, index, render) {
         if (array.length < index) return <React.Fragment></React.Fragment>;
         return render(array[index], index);
     } else {
-        return index.map((i, idx) => JSXIndex(array, i, render));
+        return index?.map((i, idx) => JSXIndex(array, i, render));
     }
 }
 //-------------------------------------------------------------------
@@ -633,7 +633,7 @@ export function GetMetaProperties(meta, exclude) {
     if (typeof xmeta === "object" && !Array.isArray(xmeta)) {
         let p = xmeta.properties;
         if (p && exclude) {
-            p = p.filter(e => exclude.findIndex(f => f.toLowerCase() === e.name.toLowerCase()) < 0);
+            p = p?.filter(e => exclude.findIndex(f => f.toLowerCase() === e.name.toLowerCase()) < 0);
         }
         return p;
     } else if (typeof xmeta === "object" && Array.isArray(xmeta)) {
@@ -666,7 +666,7 @@ export function getObjectValue(object, subObject) {
                 return item.replace(".", "<<8>>")
             })
             .split(".")
-            .map(function (item) {
+            ?.map(function (item) {
                 return item.replace(/<<8>>/g, ".");
             });
         //Перебираем под объекты
@@ -770,7 +770,7 @@ export function getDisplay(data, display, metaObject, meta) {
         //получили поле, получили значение поля
         var field = display.fields[i];
 
-        var name_field = field.value.split(".").map((e) => uncapitalize(e)).join(".");
+        var name_field = field.value.split(".")?.map((e) => uncapitalize(e)).join(".");
 
         var value_field = getObjectValue(data, name_field);
 
@@ -878,7 +878,7 @@ export function getSortingDisplayFields(display, metaObject, meta, parent, resul
             continue;
         }
 
-        var name_field = field.value.split(".").map((e) => uncapitalize(e)).join(".");
+        var name_field = field.value.split(".")?.map((e) => uncapitalize(e)).join(".");
         var metaField = metaGetFieldByName(metaObject, name_field);
 
         if (parent) {
@@ -988,7 +988,7 @@ export function MetaColumns(properties, meta, onColumnClick) {
                 request(record, { action: onColumnClick[item.name] });
             }
         };
-        return properties.map((item, idx) => {
+        return properties?.map((item, idx) => {
             if (item.type === "object" || item.type === "document") {
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
                 const display = (display) => {

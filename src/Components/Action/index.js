@@ -461,7 +461,7 @@ export function Action(props) {
         if (props.footerExtendedButtons) {
             let btns = props.footerExtendedButtons(parameters);
             if (btns) {
-                return btns.map(e => FooterButton({ isDesktopOrLaptop, ...e }))
+                return btns?.map(e => FooterButton({ isDesktopOrLaptop, ...e }))
             }
         }
         return []
@@ -483,7 +483,7 @@ export function Action(props) {
         if (props.footer) {
             let btns = props.footer(ctx);
             if (btns) {
-                let a = btns.map(e => FooterButton({ isDesktopOrLaptop, ...e }))
+                let a = btns?.map(e => FooterButton({ isDesktopOrLaptop, ...e }))
                 return a
             }
         }
@@ -716,7 +716,7 @@ export function Action(props) {
                             backgroundColor: "white"
                         }}>
                             <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                {footer().map((e, idx) => <Button key={idx} style={{ flex: "auto" }} type="ghost" {...e.options} onClick={e.onPress}>{e.text}</Button>)}
+                                {footer()?.map((e, idx) => <Button key={idx} style={{ flex: "auto" }} type="ghost" {...e.options} onClick={e.onPress}>{e.text}</Button>)}
                             </div>
                         </div>
                     </div>
@@ -777,7 +777,7 @@ export function Action(props) {
                                 </div>
                                 <div style={{ flex: "0" }}>
                                     <div style={{ display: "flex", justifyContent: "space-between", gap: "10px", padding: "10px" }}>
-                                        {footer().map((e, idx) => <Button key={idx} style={{ flex: "auto" }} type="ghost" {...e.options} onClick={e.onPress}>{e.text}</Button>)}
+                                        {footer()?.map((e, idx) => <Button key={idx} style={{ flex: "auto" }} type="ghost" {...e.options} onClick={e.onPress}>{e.text}</Button>)}
                                     </div>
                                 </div>
                             </div>

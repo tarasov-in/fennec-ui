@@ -14,7 +14,7 @@ export function DropdownMobile(props) {
     const [actions, setActions] = useState([]);
     useEffect(() => {
         let i = unwrap(items);
-        setActions(i.filter(e => !!e).map(e => ({ ...e, uuid: uuid() })))
+        setActions(i?.filter(e => !!e)?.map(e => ({ ...e, uuid: uuid() })))
     }, [items])
 
     const getTitle = (item) => {
