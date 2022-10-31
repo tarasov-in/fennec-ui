@@ -150,7 +150,7 @@ function SortingField(props) {
                         }}
                         cancelText="Отмена"
                         confirmText="Выбрать"
-                        value={rval}
+                        // value={rval}
                         // defaultValue={rval}
                         onConfirm={onOk}
                     />
@@ -260,9 +260,9 @@ function SortingFiltering(props) {
         <Form.Item name="sorting">
             <SortingField auth={auth} filters={filters} />
         </Form.Item>
-        <Form.Item name="filter">
+        {/* <Form.Item name="filter">
             <FilteringField auth={auth} filters={filters} funcStat={funcStat} />
-        </Form.Item>
+        </Form.Item> */}
     </Form>)
 }
 

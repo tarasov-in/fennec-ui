@@ -17,9 +17,6 @@ import RenderToLayer from '../RenderToLayer'
 import Icofont from 'react-icofont';
 import { EllipsisOutlined } from '@ant-design/icons';
 
-const Item = MobileList.Item;
-const Brief = Item.Brief;
-
 var _ = require('lodash');
 
 function closest(el, selector) {
