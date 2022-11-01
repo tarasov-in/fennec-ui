@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import 'moment/locale/ru';
-import {
-    DatePicker
-} from 'antd';
 import { errorCatch, getDisplay, getObjectValue, GETWITH, QueryDetail, QueryOrder, READWITH } from '../../../Tool';
 import moment from 'moment';
-import { Checkbox, Input, List, TextArea, Slider, Picker } from 'antd-mobile';
+import { Checkbox, Input, List, TextArea, Slider, Picker, DatePicker, Button } from 'antd-mobile';
 import { createUseStyles } from 'react-jss';
 import { CalendarItem } from '../CalendarItem';
 import { useMetaContext } from '../../Context';
 import { ActionPickerItem } from '../../Action';
+import Icofont from 'react-icofont';
 var _ = require('lodash');
 
 const { RangePicker } = DatePicker;
@@ -250,6 +248,7 @@ const useStyles = createUseStyles({
     }
 })
 
+
 function ActionItem({ auth, item, value, onChange, changed }) {
     const classes = useStyles()
     return (<React.Fragment>
@@ -305,24 +304,88 @@ function ActionItem({ auth, item, value, onChange, changed }) {
 function RangeDate({ item, value, onChange }) {
     // console.log("RangeDate", { item, value });
     const classes = useStyles()
-    const [val, setVal] = useState();
+    const [visible1, setVisible1] = useState(false)
+    const [visible2, setVisible2] = useState(false)
+    const [val, setVal] = useState([]);
     useEffect(() => {
-        setVal(value);
+        if (value && value.length === 2) {
+            setVal([
+                moment(value[0]).toDate(),
+                moment(value[1]).toDate()
+            ]);
+        }
     }, [value]);
     return (
-        <div style={{ margin: 0 }}>
-            <p className="sub-title" style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'" }}>{item.label}</p>
-            <RangePicker
-                disabledTime
-                value={val}
-                // placeholder={item.placeholder || "введите " + item.label.toLowerCase()}
-                onCalendarChange={(value) => {
-                    onChange(value)
-                }}
-                onChange={(value) => {
-                    setVal(value)
-                }}
-            />
+        <div style={{ padding: "5px 0px" }}>
+            <div className='bg bg-grey'
+                style={{
+                    textAlign: "left",
+                    paddingLeft: "5px",
+                    marginBottom: "5px",
+                    display: "flex",
+                    justifyContent: "space-between"
+                }}>
+                <div>{item.label}</div>
+                <Button fill='none' size='mini' onClick={(v) => {setVal([]); onChange(undefined);}}>
+                    <Icofont icon="close" />
+                </Button>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
+                <div onClick={() => {
+                    setVisible1(true)
+                }} style={{
+                    flex: "1",
+                    border: "1px solid #e5e5e5",
+                    borderRadius: "4px",
+                    padding: "2px 6px"
+                }}>
+                    <DatePicker
+                        precision='day'
+                        max={val[1]}
+                        disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
+                        title={item.label}
+                        confirmText={item.okText || "Выбрать"}
+                        cancelText={item.dismissText || "Отмена"}
+                        visible={visible1}
+                        onClose={() => {
+                            setVisible1(false)
+                        }}
+                        onConfirm={(v) => onChange([moment(v), moment(val[1])])}
+                        value={val[0]}
+                    >
+                        {value =>
+                            value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || `выберите  ${item.label.toLowerCase()}`}</span>
+                        }
+                    </DatePicker>
+                </div>
+                <div onClick={() => {
+                    setVisible2(true)
+                }} style={{
+                    flex: "1",
+                    border: "1px solid #e5e5e5",
+                    borderRadius: "4px",
+                    padding: "2px 6px"
+                }}>
+                    <DatePicker
+                        precision='day'
+                        min={val[0]}
+                        disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
+                        title={item.label}
+                        confirmText={item.okText || "Выбрать"}
+                        cancelText={item.dismissText || "Отмена"}
+                        visible={visible2}
+                        onClose={() => {
+                            setVisible2(false)
+                        }}
+                        onConfirm={(v) => onChange([moment(val[0]), moment(v)])}
+                        value={val[1]}
+                    >
+                        {value =>
+                            value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || `выберите  ${item.label.toLowerCase()}`}</span>
+                        }
+                    </DatePicker>
+                </div>
+            </div>
         </div>
     )
 }
@@ -349,9 +412,10 @@ function RangeFloat({ item, value, onChange }) {
         }
     };
     return (
-        <div style={{ margin: 0 }}>
-            <p className="sub-title" style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'" }}>{item.label}</p>
-            <div style={{ paddingBottom: "10px", display: "flex", justifyContent: "space-between", gap: "5px" }}>
+        <div style={{ padding: "5px 0px" }}>
+            <div className='bg bg-grey' style={{ textAlign: "left", paddingLeft: "5px", marginBottom: "5px" }}>
+                {item.label}
+            </div><div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
                 <div style={{
                     flex: "1",
                     border: "1px solid #e5e5e5",
@@ -414,9 +478,10 @@ function RangeInteger({ item, value, onChange }) {
         }
     };
     return (
-        <div style={{ margin: 0 }}>
-            <p className="sub-title" style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'" }}>{item.label}</p>
-            <div style={{ paddingBottom: "10px", display: "flex", justifyContent: "space-between" }}>
+        <div style={{ padding: "5px 0px" }}>
+            <div className='bg bg-grey' style={{ textAlign: "left", paddingLeft: "5px", marginBottom: "5px" }}>
+                {item.label}
+            </div><div style={{ display: "flex", justifyContent: "space-between" }}>
                 <div style={{
                     flex: "1",
                     border: "1px solid #e5e5e5",
@@ -526,118 +591,164 @@ function Obj({ auth, item, value, onChange }) {
         return oui?.find(e => e.value === value)?.label;
     }, [value])
     return (
-        <div>
-            <Picker
-                visible={visible}
-                onClose={() => {
-                    setVisible(false)
-                }}
-                disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
-                value={[value]}
-                columns={[oui]}
-                onConfirm={e => {
-                    if (onChange) {
-                        onChange(e[0]);
-                    }
-                }}
-                confirmText={item.okText || 'Выбрать'}
-                cancelText={item.dismissText || 'Отмена'}>
-            </Picker>
-            <List.Item className={classes.Obj} onClick={() => setVisible(true)}
-                description={current || item.placeholder || "выберите " + item.label.toLowerCase()}>
+        <div style={{ padding: "5px 0px" }}>
+            <div className='bg bg-grey' style={{ textAlign: "left", paddingLeft: "5px", marginBottom: "5px" }}>
                 {item.label}
-            </List.Item>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
+                <div onClick={() => {
+                    setVisible(true)
+                }} style={{
+                    flex: "1",
+                    border: "1px solid #e5e5e5",
+                    borderRadius: "4px",
+                    padding: "2px 6px"
+                }}>
+                    <Picker
+                        visible={visible}
+                        onClose={() => {
+                            setVisible(false)
+                        }}
+                        disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
+                        value={[value]}
+                        columns={[oui]}
+                        onConfirm={e => {
+                            if (onChange) {
+                                onChange(e[0]);
+                            }
+                        }}
+                        confirmText={item.okText || 'Выбрать'}
+                        cancelText={item.dismissText || 'Отмена'}>
+                    </Picker>
+                    {current || <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || `выберите  ${item.label.toLowerCase()}`}</span>}
+                </div>
+            </div>
         </div>
     )
 }
-/** !!! antd */
 function Date({ item, value, onChange }) {
     // console.log("Date", { item, value });
     const classes = useStyles()
+    const [visible, setVisible] = useState(false)
     return (
-        <DatePicker
-            disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
-            mode="date"
-            title="Выберите дату"
-            extra={item.placeholder || "выберите " + item.label.toLowerCase()}
-            locale={{
-                DatePickerLocale: {
-                    year: "",
-                    month: "",
-                    day: "",
-                    hour: "",
-                    minute: "",
-                    am: "",
-                    pm: ""
-                },
-                okText: item.okText || "Выбрать",
-                dismissText: item.dismissText || "Отмена"
-            }}
-            value={value}
-            onChange={onChange}
-        >
-            {/* <List.Item className={classes.Time}>{item.label}</List.Item> */}
-        </DatePicker>
+        <div style={{ padding: "5px 0px" }}>
+            <div className='bg bg-grey' style={{ textAlign: "left", paddingLeft: "5px", marginBottom: "5px" }}>
+                {item.label}
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
+                <div onClick={() => {
+                    setVisible(true)
+                }} style={{
+                    flex: "1",
+                    border: "1px solid #e5e5e5",
+                    borderRadius: "4px",
+                    padding: "2px 6px"
+                }}>
+                    <DatePicker
+                        precision='day'
+
+                        disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
+                        title={item.label}
+                        confirmText={item.okText || "Выбрать"}
+                        cancelText={item.dismissText || "Отмена"}
+                        visible={visible}
+                        onClose={() => {
+                            setVisible(false)
+                        }}
+                        onConfirm={value => onChange(moment(value))}
+                        value={value}
+                    >
+                        {value =>
+                            value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || `выберите  ${item.label.toLowerCase()}`}</span>
+                        }
+                    </DatePicker>
+                </div>
+            </div>
+        </div>
     )
 }
-/** !!! antd */
+
 function DateTime({ item, value, onChange }) {
     // console.log("DateTime", { item, value });
     const classes = useStyles()
+    const [visible, setVisible] = useState(false)
     return (
-        <DatePicker
-            disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
-            mode="time"
-            title="Выберите дату"
-            extra={item.placeholder || "выберите " + item.label.toLowerCase()}
-            locale={{
-                DatePickerLocale: {
-                    year: "",
-                    month: "",
-                    day: "",
-                    hour: "",
-                    minute: "",
-                    am: "",
-                    pm: ""
-                },
-                okText: item.okText || "Выбрать",
-                dismissText: item.dismissText || "Отмена"
-            }}
-            value={value}
-            onChange={onChange}
-        >
-            {/* <List.Item className={classes.Time}>{item.label}</List.Item> */}
-        </DatePicker>
+        <div style={{ padding: "5px 0px" }}>
+            <div className='bg bg-grey' style={{ textAlign: "left", paddingLeft: "5px", marginBottom: "5px" }}>
+                {item.label}
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
+                <div onClick={() => {
+                    setVisible(true)
+                }} style={{
+                    flex: "1",
+                    border: "1px solid #e5e5e5",
+                    borderRadius: "4px",
+                    padding: "2px 6px"
+                }}>
+                    <DatePicker
+                        precision='minute'
+
+                        disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
+                        title={item.label}
+                        confirmText={item.okText || "Выбрать"}
+                        cancelText={item.dismissText || "Отмена"}
+                        visible={visible}
+                        onClose={() => {
+                            setVisible(false)
+                        }}
+                        onConfirm={value => onChange(moment(value))}
+                        value={value}
+                    >
+                        {value =>
+                            value ? moment(value).format('YYYY-MM-DD HH:mm:ss') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || `выберите  ${item.label.toLowerCase()}`}</span>
+                        }
+                    </DatePicker>
+                </div>
+            </div>
+        </div>
     )
 }
-/** !!! antd */
+
 function Time({ item, value, onChange }) {
     // console.log("Time", { item, value });
     const classes = useStyles()
+    const [visible, setVisible] = useState(false)
     return (
-        <DatePicker
-            disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
-            mode="time"
-            title="Выберите дату"
-            extra={item.placeholder || "выберите " + item.label.toLowerCase()}
-            locale={{
-                DatePickerLocale: {
-                    year: "",
-                    month: "",
-                    day: "",
-                    hour: "",
-                    minute: "",
-                    am: "",
-                    pm: ""
-                },
-                okText: item.okText || "Выбрать",
-                dismissText: item.dismissText || "Отмена"
-            }}
-            value={value}
-            onChange={onChange}
-        >
-            {/* <List.Item className={classes.Time} >{item.label}</List.Item> */}
-        </DatePicker>
+        <div style={{ padding: "5px 0px" }}>
+            <div className='bg bg-grey' style={{ textAlign: "left", paddingLeft: "5px", marginBottom: "5px" }}>
+                {item.label}
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
+                <div onClick={() => {
+                    setVisible(true)
+                }} style={{
+                    flex: "1",
+                    border: "1px solid #e5e5e5",
+                    borderRadius: "4px",
+                    padding: "2px 6px"
+                }}>
+                    <DatePicker
+                        precision='second'
+
+                        disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
+                        title={item.label}
+                        confirmText={item.okText || "Выбрать"}
+                        cancelText={item.dismissText || "Отмена"}
+                        visible={visible}
+                        onClose={() => {
+                            setVisible(false)
+                        }}
+                        onConfirm={value => onChange(moment(value))}
+                        value={value}
+                    >
+                        {value =>
+                            value ? moment(value).format('HH:mm:ss') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || `выберите  ${item.label.toLowerCase()}`}</span>
+                        }
+                    </DatePicker>
+                </div>
+            </div>
+        </div>
     )
 }
 function Boolean({ item, value, onChange }) {
@@ -657,41 +768,83 @@ function Float({ item, value, onChange }) {
     // console.log("Float", { item, value });
     const classes = useStyles()
     return (
-        <Input
-            disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
-            type={"money"}
-            placeholder={item.placeholder || "введите " + item.label.toLowerCase()}
-            clearable
-            onChange={onChange}
-            value={value}
-        />
+        <div style={{ padding: "5px 0px" }}>
+            <div className='bg bg-grey' style={{ textAlign: "left", paddingLeft: "5px", marginBottom: "5px" }}>
+                {item.label}
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
+                <div style={{
+                    flex: "1",
+                    border: "1px solid #e5e5e5",
+                    borderRadius: "4px",
+                    padding: "2px 6px"
+                }}>
+                    <Input
+                        disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
+                        type={"money"}
+                        placeholder={item.placeholder || "введите " + item.label.toLowerCase()}
+                        clearable
+                        onChange={onChange}
+                        value={value}
+                    />
+                </div>
+            </div>
+        </div>
     )
 }
 function Integer({ item, value, onChange }) {
     // console.log("Integer", { item, value });
     const classes = useStyles()
     return (
-        <Input
-            disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
-            type={"number"}
-            placeholder={item.placeholder || "введите " + item.label.toLowerCase()}
-            clearable
-            onChange={onChange}
-            value={value}
-        />
+        <div style={{ padding: "5px 0px" }}>
+            <div className='bg bg-grey' style={{ textAlign: "left", paddingLeft: "5px", marginBottom: "5px" }}>
+                {item.label}
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
+                <div style={{
+                    flex: "1",
+                    border: "1px solid #e5e5e5",
+                    borderRadius: "4px",
+                    padding: "2px 6px"
+                }}>
+                    <Input
+                        disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
+                        type={"number"}
+                        placeholder={item.placeholder || "введите " + item.label.toLowerCase()}
+                        clearable
+                        onChange={onChange}
+                        value={value}
+                    />
+                </div>
+            </div>
+        </div>
     )
 }
 function String({ item, value, onChange }) {
     // console.log("String", { item, value });
     const classes = useStyles()
     return (
-        <TextArea
-            disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
-            autoSize={{ minRows: 2, maxRows: 5 }}
-            onChange={onChange}
-            value={value}
-            placeholder={item.placeholder || "введите " + item.label.toLowerCase()}
-        />
+        <div style={{ padding: "5px 0px" }}>
+            <div className='bg bg-grey' style={{ textAlign: "left", paddingLeft: "5px", marginBottom: "5px" }}>
+                {item.label}
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
+                <div style={{
+                    flex: "1",
+                    border: "1px solid #e5e5e5",
+                    borderRadius: "4px",
+                    padding: "2px 6px"
+                }}>
+                    <TextArea
+                        disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
+                        autoSize={{ minRows: 2, maxRows: 5 }}
+                        onChange={onChange}
+                        value={value}
+                        placeholder={item.placeholder || "введите " + item.label.toLowerCase()}
+                    />
+                </div>
+            </div>
+        </div>
     )
 }
 function Unknown({ item }) {

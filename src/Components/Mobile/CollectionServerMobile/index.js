@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Badge, List, Picker, SwipeAction, PageIndicator, Stepper, PickerView, Popup, Space } from 'antd-mobile';
+import { Form, Button, Badge, List, Picker, SwipeAction, PageIndicator, Stepper, PickerView, Popup, Space, Empty as EmptyMobile, Mask, DotLoading } from 'antd-mobile';
 import { unwrap, errorCatch, Request, QueryParam, GETWITH, READWITH, updateInArray, deleteInArray, GetMetaPropertyByPath, QueryFunc, If, QueryDetail } from '../../../Tool'
 import Icofont from 'react-icofont';
 import { createUseStyles } from 'react-jss';
@@ -84,6 +84,31 @@ const useStyles = createUseStyles({
         }
     }
 })
+
+const MaskWithLoading = ({ visible, setVisible }) => {
+    return (
+        <Mask visible={visible} opacity='thin' onMaskClick={(setVisible) ? () => setVisible(false) : undefined}>
+            <div style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "24px",
+                width: "150px",
+                height: "150px",
+                marginTop: "-75px",
+                marginLeft: "-75px",
+                // background: "white",
+                // borderRadius: "16px",
+            }}>
+                <DotLoading color='white' />
+            </div>
+        </Mask >
+    )
+}
+
 function SortingField(props) {
     const classes = useStyles()
     const { filters, value, onChange } = props;
@@ -124,10 +149,10 @@ function SortingField(props) {
     }, [value])
     return (<React.Fragment>
         <div>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px", marginTop: "25px", paddingRight: "10px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px", paddingRight: "10px" }}>
                 <div style={{
                     fontFamily: "-apple-system, BlinkMacSystemFont, Roboto, 'Open Sans', 'Helvetica Neue', 'Noto Sans Armenian', 'Noto Sans Bengali', 'Noto Sans Cherokee', 'Noto Sans Devanagari', 'Noto Sans Ethiopic', 'Noto Sans Georgian', 'Noto Sans Hebrew', 'Noto Sans Kannada', 'Noto Sans Khmer', 'Noto Sans Lao', 'Noto Sans Osmanya', 'Noto Sans Tamil', 'Noto Sans Telugu', 'Noto Sans Thai', sans-serif",
-                    fontSize: "13px",
+                    // fontSize: "13px",
                     fontWeight: "600",
                     color: "rgba(0, 0, 0, 0.85)",
                     padding: "0px 21px 0px 11px"
@@ -135,45 +160,49 @@ function SortingField(props) {
                     Сортировка
                 </div>
                 <div style={{ flex: "auto", margin: "10px 10px", height: "1px", backgroundColor: "#f0f0f0" }}></div>
-                <div>
-                    {value.order === "ASC" &&
-                        <Button onClick={sortingOrder}><SortAscendingOutlined /></Button>
-                    }
-                    {value.order === "DESC" &&
-                        <Button onClick={sortingOrder}><SortDescendingOutlined /></Button>
-                    }
-                </div>
             </div>
-            <div style={{ margin: "10px" }} className={classes.FilterList}>
-                <List style={{ backgroundColor: 'white' }} className="picker-list">
-                    <Picker
-                        columns={[s]}
-                        visible={visible}
-                        onClose={() => {
-                            setVisible(false)
-                        }}
-                        cancelText="Отмена"
-                        confirmText="Выбрать"
-                        value={[value.name]}
-                        onConfirm={onOk}
-                    />
-                    <List.Item className={classes.Obj} onClick={() => setVisible(true)}
-                        description={current}>
-                        Сортировка по полю
-                    </List.Item>
-                    {/* <Picker
-                        data={s}
-                        cols={1}
-                        value={rval}
-                        extra={<React.Fragment></React.Fragment>}
-                        onOk={onOk}
-                        okText="Выбрать"
-                        dismissText="Отмена">
-                        <List.Item className={classes.Obj} >
-                            Сортировка по полю
-                        </List.Item>
-                    </Picker> */}
-                </List>
+            <div style={{ padding: "5px 0px", margin: "10px" }}>
+                <div className='bg bg-grey' style={{ textAlign: "left", paddingLeft: "5px", marginBottom: "5px" }}>
+                    Сортировать по
+                </div>
+                <div style={{ paddingBottom: "10px", display: "flex", justifyContent: "space-between", gap: "5px" }}>
+                    <div onClick={() => {
+                        setVisible(true)
+                    }} style={{
+                        flex: "1",
+                        border: "1px solid #e5e5e5",
+                        borderRadius: "4px",
+                        padding: "2px 6px"
+                    }}>
+                        <Picker
+                            columns={[s]}
+                            visible={visible}
+                            onClose={() => {
+                                setVisible(false)
+                            }}
+                            cancelText="Отмена"
+                            confirmText="Выбрать"
+                            value={[value.name]}
+                            onConfirm={onOk}
+                        />
+                        {current}
+                    </div>
+                    <div
+                        onClick={sortingOrder}
+                        style={{
+                            flex: "1",
+                            border: "1px solid #e5e5e5",
+                            borderRadius: "4px",
+                            padding: "2px 6px"
+                        }}>
+                        {value.order === "ASC" &&
+                            <span><SortDescendingOutlined /> Возростанию</span>
+                        }
+                        {value.order === "DESC" &&
+                            <span><SortAscendingOutlined /> Убыванию</span>
+                        }
+                    </div>
+                </div>
             </div>
         </div>
     </React.Fragment>)
@@ -226,10 +255,10 @@ function FilteringField(props) {
     }, [value]);
     return (<React.Fragment>
         <React.Fragment>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px", marginTop: "25px", paddingRight: "10px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px", paddingRight: "10px" }}>
                 <div style={{
                     fontFamily: "-apple-system, BlinkMacSystemFont, Roboto, 'Open Sans', 'Helvetica Neue', 'Noto Sans Armenian', 'Noto Sans Bengali', 'Noto Sans Cherokee', 'Noto Sans Devanagari', 'Noto Sans Ethiopic', 'Noto Sans Georgian', 'Noto Sans Hebrew', 'Noto Sans Kannada', 'Noto Sans Khmer', 'Noto Sans Lao', 'Noto Sans Osmanya', 'Noto Sans Tamil', 'Noto Sans Telugu', 'Noto Sans Thai', sans-serif",
-                    fontSize: "13px",
+                    // fontSize: "13px",
                     fontWeight: "600",
                     color: "rgba(0, 0, 0, 0.85)",
                     padding: "0px 21px 0px 11px"
@@ -238,13 +267,12 @@ function FilteringField(props) {
                 </div>
                 <div style={{ flex: "auto", margin: "10px 10px", height: "1px", backgroundColor: "#f0f0f0" }}></div>
             </div>
-            <div style={{ margin: "10px", paddingTop: "10px" }}>
-                <div className={classes.FilterList}>
-                    <List style={{ backgroundColor: 'white' }} className="picker-list">
-                        {f}
-                    </List>
-                </div>
+            <div className={classes.FilterList} style={{ margin: "10px" }}>
+                <List style={{ backgroundColor: 'white' }} className="picker-list">
+                    {f}
+                </List>
             </div>
+
         </React.Fragment>
     </React.Fragment>)
 }
@@ -254,14 +282,28 @@ function SortingFiltering(props) {
     // const [state, setState] = useState({ sorting: { name: "", order: "ASC" }, filter: {} })
     useEffect(() => {
         form.resetFields();
-    }, []);
+        if (object) {
+            form.setFieldsValue(object);
+        }
+    }, [object]);
     return (
         <div>
             <Form
                 form={form}
                 onFinish={props.submit}
                 initialValues={object}
+                style={{
+                    '--border-bottom': "none",
+                    '--border-inner': "none",
+                    '--border-top': "none"
+                }}
+            // footer={
+            //     <Button block color='primary' onClick={onSubmit} size='large'>
+            //         提交
+            //     </Button>
+            // }
             >
+                {/* <Form.Header>水平布局表单</Form.Header> */}
                 <Form.Item name="sorting">
                     <SortingField auth={auth} filters={filters} />
                 </Form.Item>
@@ -306,6 +348,7 @@ export function CollectionServerMobile(props) {
     const [count, setCount] = useState(15);
     const [total, setTotal] = useState(1);
 
+    // console.log(loading);
     const lock = () => {
         setLoading(true);
     };
@@ -467,6 +510,7 @@ export function CollectionServerMobile(props) {
         });
 
         if (source) {
+            lock();
             GETWITH(auth, source, [
                 QueryDetail("model"),
                 QueryParam(`page`, state.current),
@@ -484,13 +528,14 @@ export function CollectionServerMobile(props) {
                 unlock();
             }, (err, type) => errorCatch(err, type, unlock));
         } else {
+            lock();
             READWITH(auth, name, [
                 QueryDetail("model"),
                 QueryParam(`page`, state.current),
                 QueryParam(`count`, count),
                 If(state.sorting.name, QueryParam(`s-${state.sorting.name}`, state.sorting.order)),
                 ...flt,
-                ...func
+                ...funcunlock
             ], ({ data }) => {
                 if (!funcStat) {
                     setFuncStat(data.stat);
@@ -758,8 +803,8 @@ export function CollectionServerMobile(props) {
         </div>
     ), [state.filter])
     const PaginatorChange = React.useCallback((v) => setState({ ...state, current: v }), [state]);
-    const PaginatorRight = React.useCallback(() => setState({ ...state, current: state.current+1 }), [state]);
-    const PaginatorLeft = React.useCallback(() => setState({ ...state, current: state.current-1 }), [state]);
+    const PaginatorRight = React.useCallback(() => setState({ ...state, current: state.current + 1 }), [state]);
+    const PaginatorLeft = React.useCallback(() => setState({ ...state, current: state.current - 1 }), [state]);
     return (
         <React.Fragment>
             {!noheader && <BlockHeaderMobile
@@ -767,23 +812,27 @@ export function CollectionServerMobile(props) {
                 extra={titleExtra()}
             />}
             {filters.length == 0 && <div>
-                {(collection && collection.length > 0) && <div>
-                    <List className="my-list">
-                        {(collection && collection.length > 0) && collection?.map((item, index) => (
-                            <Item key={index} multipleLine align="top" wrap style={{ paddingLeft: "0px" }}>
-                                {_render(item, index)}
-                            </Item>
-                        ))}
-                    </List>
-                </div>}
-                {(!collection || collection.length == 0) && <div style={{
-                    textAlign: "center",
-                    fontSize: "18px",
-                    color: "rgba(0,0,0,0.4)",
-                    padding: "20px 0px"
-                }}>
-                    <span>Нет данных</span>
-                </div>}
+                {/* <MaskWithLoading loading={loading} /> */}
+                <div>
+                    {(collection && collection.length > 0) && <div>
+                        <List className="my-list">
+                            {(collection && collection.length > 0) && collection?.map((item, index) => (
+                                <Item key={index} multipleLine align="top" wrap style={{ paddingLeft: "0px" }}>
+                                    {_render(item, index)}
+                                </Item>
+                            ))}
+                        </List>
+                    </div>}
+                    {(!collection || collection.length == 0) && <div style={{
+                        textAlign: "center",
+                        fontSize: "18px",
+                        color: "rgba(0,0,0,0.4)",
+                        padding: "20px 0px"
+                    }}>
+                        <EmptyMobile />
+                        <div>Нет данных</div>
+                    </div>}
+                </div>
             </div>}
 
             {filters.length > 0 &&
@@ -816,28 +865,38 @@ export function CollectionServerMobile(props) {
                             />
                         </div>
                     </div>
+                    {/* <MaskWithLoading loading={loading} /> */}
                     <List className="my-list">
                         {(collection && collection.length > 0) && collection?.map((item, index) => (
                             <Item key={index} multipleLine align="top" wrap style={{ paddingLeft: "0px" }}>
                                 {_render(item, index)}
                             </Item>
                         ))}
+                        {(!collection || collection.length == 0) && <div style={{
+                            textAlign: "center",
+                            fontSize: "18px",
+                            color: "rgba(0,0,0,0.4)",
+                            padding: "20px 0px"
+                        }}>
+                            <EmptyMobile />
+                            <div>Нет данных</div>
+                        </div>}
                     </List>
                     <div style={{ paddingTop: "15px" }}>
                         {(total > 1) &&
                             <div style={{ display: "flex", justifyContent: "center" }}>
                                 <div>
-                                    <Button size='small' onClick={PaginatorLeft} disabled={(state.current <= 1 )}>
+                                    <Button size='small' onClick={PaginatorLeft} disabled={(state.current <= 1)}>
                                         <Space>
                                             <Icofont icon="rounded-left" />
                                         </Space>
                                     </Button>
                                 </div>
-                                <div style={{minWidth:"75px", fontSize:"14px", display:"flex", flexDirection:"column", alignItems:"center"}}>
+                                <div style={{ minWidth: "75px", fontSize: "14px", display: "flex", flexDirection: "column", alignItems: "center" }}>
                                     <div>{state.current}/{total}</div>
                                     <PageIndicator
-                                    total={3}
-                                    current={(state.current <= 1 )?0:(state.current >= total)?2:1}
+                                        total={3}
+                                        current={(state.current <= 1) ? 0 : (state.current >= total) ? 2 : 1}
                                     // style={{
                                     //     '--dot-size': '10px',
                                     //     '--active-dot-size': '30px',
@@ -845,10 +904,10 @@ export function CollectionServerMobile(props) {
                                     //     '--active-dot-border-radius': '15px',
                                     //     '--dot-spacing': '8px',
                                     // }}
-                                />
+                                    />
                                 </div>
                                 <div>
-                                    <Button size='small' onClick={PaginatorRight} disabled={(state.current >= total )}>
+                                    <Button size='small' onClick={PaginatorRight} disabled={(state.current >= total)}>
                                         <Space>
                                             <Icofont icon="rounded-right" />
                                         </Space>
