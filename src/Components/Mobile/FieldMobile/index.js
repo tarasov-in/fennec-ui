@@ -385,39 +385,44 @@ function RangeFloat({ item, value, onChange }) {
     return (
         <div style={{ margin: 0 }}>
             <p className="sub-title" style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'" }}>{item.label}</p>
-            <div style={{ paddingBottom: "18px", display: "flex", justifyContent: "space-between" }}>
-                <div style={{ flex: "50%" }}>
+            <div style={{ paddingBottom: "18px", display: "flex", justifyContent: "space-between", gap: "5px" }}>
+                <div style={{
+                    flex: "50%",
+                    border: "1px solid #e5e5e5",
+                    borderRadius: "4px",
+                    padding: "2px 6px"
+                }}>
                     <Input
-                        className={classes.RangeFloatInput}
                         type={"number"}
-                        moneyKeyboardWrapProps={moneyKeyboardWrapProps}
                         onChange={onChangeLeft}
                         value={(val && val.length > 1) ? val[0] : def[0]}
                     />
                 </div>
-                <div></div>
-                <div style={{ flex: "50%" }}>
+                <div style={{
+                    flex: "50%",
+                    border: "1px solid #e5e5e5",
+                    borderRadius: "4px",
+                    padding: "2px 6px"
+                }}>
                     <Input
-                        className={classes.RangeFloatInput}
                         type={"number"}
-                        moneyKeyboardWrapProps={moneyKeyboardWrapProps}
                         onChange={onChangeRight}
                         value={(val && val.length > 1) ? val[1] : def[1]}
                     />
                 </div>
             </div>
-            <Slider
-                // style={{ marginLeft: 15, marginRight: 15, height: "22px" }}
-                range
-                defaultValue={def}
-                min={(xmin - (xmin % xstep))}
-                max={(xmax + (xstep - xmax % xstep))}
-                step={xstep}
-                // included={true}
-                value={val || def}
-                onChange={setVal}
-                onAfterChange={onChange}
-            />
+            <div>
+                <Slider
+                    range
+                    defaultValue={def}
+                    min={(xmin - (xmin % xstep))}
+                    max={(xmax + (xstep - xmax % xstep))}
+                    step={xstep}
+                    value={val || def}
+                    onChange={setVal}
+                    onAfterChange={onChange}
+                />
+            </div>
         </div>
     )
 }
@@ -448,9 +453,9 @@ function RangeInteger({ item, value, onChange }) {
             <div style={{ paddingBottom: "18px", display: "flex", justifyContent: "space-between" }}>
                 <div style={{ flex: "50%" }}>
                     <Input
-                        className={classes.RangeFloatInput}
+                        // className={classes.RangeFloatInput}
                         type={"number"}
-                        moneyKeyboardWrapProps={moneyKeyboardWrapProps}
+                        // moneyKeyboardWrapProps={moneyKeyboardWrapProps}
                         onChange={onChangeLeft}
                         value={(val && val.length > 1) ? val[0] : def[0]}
                     />
@@ -458,9 +463,9 @@ function RangeInteger({ item, value, onChange }) {
                 <div></div>
                 <div style={{ flex: "50%" }}>
                     <Input
-                        className={classes.RangeFloatInput}
+                        // className={classes.RangeFloatInput}
                         type={"number"}
-                        moneyKeyboardWrapProps={moneyKeyboardWrapProps}
+                        // moneyKeyboardWrapProps={moneyKeyboardWrapProps}
                         onChange={onChangeRight}
                         value={(val && val.length > 1) ? val[1] : def[1]}
                     />
@@ -468,6 +473,7 @@ function RangeInteger({ item, value, onChange }) {
             </div>
             <Slider
                 // style={{ marginLeft: 15, marginRight: 15, height: "22px" }}
+                range
                 defaultValue={def}
                 min={(xmin - (xmin % xstep))}
                 max={(xmax + (xstep - xmax % xstep))}

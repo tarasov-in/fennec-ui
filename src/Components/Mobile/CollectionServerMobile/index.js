@@ -179,16 +179,13 @@ function SortingField(props) {
 function FilteringField(props) {
     const classes = useStyles()
     const { auth, filters, funcStat, value, onChange } = props;
-    // const [state, setState] = useState({})
     console.log("FilteringField", value);
     const f = React.useMemo(() => {
         const fl = filters?.filter(i => i.filter);
         return fl?.map((item, idx) => {
-            // console.log("value[item.name] = ", value[item.name]);
             return (
                 <div key={idx} style={{ marginBottom: "10px" }}>
-                    {/* {item.filter && (item.type !== "bool" || item.type !== "boolean") && <div>{item.label}</div>} */}
-                    {<SwipeAction
+                    {/* <SwipeAction
                         closeOnAction
                         closeOnTouchOutside
                         rightActions={[
@@ -199,17 +196,17 @@ function FilteringField(props) {
                                 onClick: () => {
                                     onFilterChange(undefined, item)
                                 },
-                                // style: { backgroundColor: '#F4333C', color: 'white' },
                             },
                         ]}
-                    >
-                        <FieldMobile
-                            key={idx}
-                            auth={auth}
-                            item={{ ...item, func: (funcStat && funcStat[item.name.toLowerCase()]) ? funcStat[item.name.toLowerCase()] : {} }}
-                            value={value[item.name]}
-                            onChange={(value) => onFilterChange(value, item)}
-                        /></SwipeAction>}
+                    > */}
+                    <FieldMobile
+                        key={idx}
+                        auth={auth}
+                        item={{ ...item, func: (funcStat && funcStat[item.name.toLowerCase()]) ? funcStat[item.name.toLowerCase()] : {} }}
+                        value={value[item.name]}
+                        onChange={(value) => onFilterChange(value, item)}
+                    />
+                    {/* </SwipeAction> */}
                 </div>
             );
         });
