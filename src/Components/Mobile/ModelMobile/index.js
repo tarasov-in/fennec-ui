@@ -287,13 +287,14 @@ function Act({ auth, item, value, onChange, changed }) {
             }}
             swipe={[
                 {
+                    key: 'danger',
                     text: (<Icofont icon="close" />),
-                    onPress: () => {
+                    onClick: () => {
                         if (onChange) {
                             onChange(undefined, item, undefined);
                         }
                     },
-                    style: { backgroundColor: '#F4333C', color: 'white' },
+                    color: 'danger',
                 },
             ]}
         />
@@ -371,11 +372,12 @@ function Obj({ auth, item, options = {}, value, onChange, changed }) {
             autoClose
             right={[
                 {
+                    key: 'danger',
                     text: (<Icofont icon="close" />),
-                    onPress: () => {
+                    onClick: () => {
                         onChange(undefined, item, undefined);
                     },
-                    style: { backgroundColor: '#F4333C', color: 'white' },
+                    color: 'danger',
                 },
             ]}
         >
@@ -409,11 +411,12 @@ function Calendar({ item, value, onChange }) {
             autoClose
             right={[
                 {
+                    key: 'danger',
                     text: (<Icofont icon="close" />),
-                    onPress: () => {
+                    onClick: () => {
                         onChange(undefined, item);
                     },
-                    style: { backgroundColor: '#F4333C', color: 'white' },
+                    color: 'danger',
                 },
             ]}
         >
@@ -437,11 +440,12 @@ function CalendarTime({ item, value, onChange }) {
             autoClose
             right={[
                 {
+                    key: 'danger',
                     text: (<Icofont icon="close" />),
-                    onPress: () => {
+                    onClick: () => {
                         onChange(undefined, item);
                     },
-                    style: { backgroundColor: '#F4333C', color: 'white' },
+                    color: 'danger',
                 },
             ]}
         >
@@ -466,11 +470,12 @@ function Time({ item, value, onChange }) {
             autoClose
             right={[
                 {
+                    key: 'danger',
                     text: (<Icofont icon="close" />),
-                    onPress: () => {
+                    onClick: () => {
                         onChange(undefined, item);
                     },
-                    style: { backgroundColor: '#F4333C', color: 'white' },
+                    color: 'danger',
                 },
             ]}
         >
@@ -507,11 +512,12 @@ function Date({ item, value, onChange }) {
             autoClose
             right={[
                 {
+                    key: 'danger',
                     text: (<Icofont icon="close" />),
-                    onPress: () => {
+                    onClick: () => {
                         onChange(undefined, item);
                     },
-                    style: { backgroundColor: '#F4333C', color: 'white' },
+                    color: 'danger',
                 },
             ]}
         >
@@ -548,11 +554,12 @@ function DateTime({ item, value, onChange }) {
             autoClose
             right={[
                 {
+                    key: 'danger',
                     text: (<Icofont icon="close" />),
-                    onPress: () => {
+                    onClick: () => {
                         onChange(undefined, item);
                     },
-                    style: { backgroundColor: '#F4333C', color: 'white' },
+                    color: 'danger',
                 },
             ]}
         >
