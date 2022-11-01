@@ -374,6 +374,10 @@ function Obj({ auth, item, options = {}, value, onChange, changed }) {
             }
         });
     }
+    const [visible, setVisible] = React.useState(false)
+    const current = React.useMemo(() => {
+        return oui?.find((e)=>e.value==value)?.label
+    }, [value, oui])
     return (
         <SwipeAction
             closeOnAction
@@ -390,25 +394,30 @@ function Obj({ auth, item, options = {}, value, onChange, changed }) {
             ]}
         >
             <Picker
+                visible={visible}
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
                 value={[value]}
-                onChange={e => {
-                    onChange(e[0], item, itemByProperty(item, e[0]));
-                }}
-                data={oui}
-                cols={1}
-                extra={item.placeholder || "выберите " + item.label.toLowerCase()}
-                onOk={e => {
+                // onChange={e => {
+                //     onChange(e[0], item, itemByProperty(item, e[0]));
+                // }}
+                columns={[oui]}
+                // cols={1}
+                // extra={item.placeholder || "выберите " + item.label.toLowerCase()}
+                onConfirm={e => {
                     if (onChange) {
                         onChange(e[0], item, itemByProperty(item, e[0]));
                     }
                 }}
-                okText={item.okText || 'Выбрать'}
-                dismissText={item.dismissText || 'Отмена'}>
-                <List.Item className={classes.Obj} /*arrow="horizontal"*/>
+                confirmText={item.okText || 'Выбрать'}
+                cancelText={item.dismissText || 'Отмена'}
+                onClose={()=>setVisible(false)}>
+            </Picker>
+            <List>
+                <List.Item onClick={()=>setVisible(true)} className={classes.Obj} 
+                    description={current || item.placeholder || "выберите " + item.label.toLowerCase()} /*arrow="horizontal"*/>
                     {item.label}
                 </List.Item>
-            </Picker>
+            </List>
         </SwipeAction>
     )
 }
