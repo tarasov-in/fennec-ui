@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Badge, List, Picker, SwipeAction, PageIndicator, Stepper } from 'antd-mobile';
+import { Form, Button, Badge, List, Picker, SwipeAction, PageIndicator, Stepper, PickerView, Popup } from 'antd-mobile';
 import { unwrap, errorCatch, Request, QueryParam, GETWITH, READWITH, updateInArray, deleteInArray, GetMetaPropertyByPath, QueryFunc, If, QueryDetail } from '../../../Tool'
 import Icofont from 'react-icofont';
 import { createUseStyles } from 'react-jss';
@@ -88,7 +88,7 @@ function SortingField(props) {
     const classes = useStyles()
     const { filters, value, onChange } = props;
     // const [state, setState] = useState({ name: "", order: "ASC" })
-    // console.log("SortingField", value);
+    console.log("SortingField", value);
 
     const s = React.useMemo(() => {
         const so = filters?.filter(f => f.sort);
@@ -108,10 +108,11 @@ function SortingField(props) {
             onChange({ name: value.name, order: "ASC" });
         }
     }, [value])
+
     const onSortingChangeString = React.useCallback((v, item) => {
         onChange({ name: v, order: value.order })
     }, [value]);
-    const rval = React.useMemo(() => [value.name], [value])
+    // const rval = React.useMemo(() => [value.name], [value])
     const onOk = React.useCallback((v) => {
         if (v.length) {
             onSortingChangeString(v[0], filters.find(i => i.name === v[0]))
@@ -151,6 +152,7 @@ function SortingField(props) {
                         cancelText="Отмена"
                         confirmText="Выбрать"
                         // value={rval}
+                        value={[value.name]}
                         // defaultValue={rval}
                         onConfirm={onOk}
                     />
@@ -178,7 +180,7 @@ function FilteringField(props) {
     const classes = useStyles()
     const { auth, filters, funcStat, value, onChange } = props;
     // const [state, setState] = useState({})
-    // console.log("FilteringField", value);
+    console.log("FilteringField", value);
     const f = React.useMemo(() => {
         const fl = filters?.filter(i => i.filter);
         return fl?.map((item, idx) => {
@@ -187,14 +189,17 @@ function FilteringField(props) {
                 <div key={idx} style={{ marginBottom: "10px" }}>
                     {/* {item.filter && (item.type !== "bool" || item.type !== "boolean") && <div>{item.label}</div>} */}
                     {<SwipeAction
-                        autoClose
-                        right={[
+                        closeOnAction
+                        closeOnTouchOutside
+                        rightActions={[
                             {
+                                key: "close",
                                 text: (<Icofont icon="close" />),
-                                onPress: () => {
+                                color: 'danger',
+                                onClick: () => {
                                     onFilterChange(undefined, item)
                                 },
-                                style: { backgroundColor: '#F4333C', color: 'white' },
+                                // style: { backgroundColor: '#F4333C', color: 'white' },
                             },
                         ]}
                     >
@@ -251,19 +256,21 @@ function SortingFiltering(props) {
     useEffect(() => {
         form.resetFields();
     }, []);
-
-    return (<Form
-        form={form}
-        onFinish={props.submit}
-        initialValues={object}
-    >
-        <Form.Item name="sorting">
-            <SortingField auth={auth} filters={filters} />
-        </Form.Item>
-        {/* <Form.Item name="filter">
-            <FilteringField auth={auth} filters={filters} funcStat={funcStat} />
-        </Form.Item> */}
-    </Form>)
+    return (
+        <div>
+            <Form
+                form={form}
+                onFinish={props.submit}
+                initialValues={object}
+            >
+                <Form.Item name="sorting">
+                    <SortingField auth={auth} filters={filters} />
+                </Form.Item>
+                <Form.Item name="filter">
+                    <FilteringField auth={auth} filters={filters} funcStat={funcStat} />
+                </Form.Item>
+            </Form>
+        </div>)
 }
 
 export function CollectionServerMobile(props) {
@@ -715,6 +722,7 @@ export function CollectionServerMobile(props) {
     }, [extra, extraFunc]);
     const act = React.useCallback((values, unlock, close) => {
         // applyFilter
+        // console.log(values);
         setState({ ...values, current: 1 });
         close();
     }, []);

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import 'moment/locale/ru';
 import {
-    DatePicker} from 'antd';
+    DatePicker
+} from 'antd';
 import { errorCatch, getDisplay, getObjectValue, GETWITH, QueryDetail, QueryOrder, READWITH } from '../../../Tool';
 import moment from 'moment';
 import { Checkbox, Input, List, TextArea, Slider, Picker } from 'antd-mobile';
 import { createUseStyles } from 'react-jss';
-import {CalendarItem} from '../CalendarItem';
+import { CalendarItem } from '../CalendarItem';
 import { useMetaContext } from '../../Context';
 var _ = require('lodash');
 
@@ -252,7 +253,7 @@ const useStyles = createUseStyles({
 //     const classes = useStyles()
 //     const [data, setData] = useState([]);
 //     const [disabled, setDisabled] = useState(true);
-    // const meta = useMetaContext();
+// const meta = useMetaContext();
 //     useEffect(() => {
 //         if (item.source) {
 //             GETWITH(auth, item.source, [
@@ -312,6 +313,7 @@ const useStyles = createUseStyles({
 //     )
 // }
 function RangeDate({ item, value, onChange }) {
+    console.log("RangeDate", { item, value });
     const classes = useStyles()
     var a = undefined;
     if (value && value[0] && value[1]) {
@@ -336,6 +338,7 @@ function RangeDate({ item, value, onChange }) {
     )
 }
 function RangeDateTime({ item, value, onChange }) {
+    console.log("RangeDateTime", { item, value });
     const classes = useStyles()
     var a = undefined;
     if (value && value[0] && value[1]) {
@@ -359,6 +362,7 @@ function RangeDateTime({ item, value, onChange }) {
     )
 }
 function RangeFloat({ item, value, onChange }) {
+    console.log("RangeFloat", { item, value });
     const classes = useStyles()
     const [val, setVal] = useState();
     useEffect(() => {
@@ -388,7 +392,7 @@ function RangeFloat({ item, value, onChange }) {
                         type={"number"}
                         moneyKeyboardWrapProps={moneyKeyboardWrapProps}
                         onChange={onChangeLeft}
-                        value={(val && val.length > 1)?val[0]:def[0]}
+                        value={(val && val.length > 1) ? val[0] : def[0]}
                     />
                 </div>
                 <div></div>
@@ -398,12 +402,13 @@ function RangeFloat({ item, value, onChange }) {
                         type={"number"}
                         moneyKeyboardWrapProps={moneyKeyboardWrapProps}
                         onChange={onChangeRight}
-                        value={(val && val.length > 1)?val[1]:def[1]}
+                        value={(val && val.length > 1) ? val[1] : def[1]}
                     />
                 </div>
             </div>
             <Slider
                 // style={{ marginLeft: 15, marginRight: 15, height: "22px" }}
+                range
                 defaultValue={def}
                 min={(xmin - (xmin % xstep))}
                 max={(xmax + (xstep - xmax % xstep))}
@@ -417,6 +422,7 @@ function RangeFloat({ item, value, onChange }) {
     )
 }
 function RangeInteger({ item, value, onChange }) {
+    console.log("RangeInteger", { item, value });
     const classes = useStyles()
     const [val, setVal] = useState();
     useEffect(() => {
@@ -446,7 +452,7 @@ function RangeInteger({ item, value, onChange }) {
                         type={"number"}
                         moneyKeyboardWrapProps={moneyKeyboardWrapProps}
                         onChange={onChangeLeft}
-                        value={(val && val.length > 1)?val[0]:def[0]}
+                        value={(val && val.length > 1) ? val[0] : def[0]}
                     />
                 </div>
                 <div></div>
@@ -456,7 +462,7 @@ function RangeInteger({ item, value, onChange }) {
                         type={"number"}
                         moneyKeyboardWrapProps={moneyKeyboardWrapProps}
                         onChange={onChangeRight}
-                        value={(val && val.length > 1)?val[1]:def[1]}
+                        value={(val && val.length > 1) ? val[1] : def[1]}
                     />
                 </div>
             </div>
@@ -475,6 +481,7 @@ function RangeInteger({ item, value, onChange }) {
     )
 }
 function Obj({ auth, item, value, onChange }) {
+    console.log("Obj", { item, value });
     const classes = useStyles()
     const [data, setData] = useState([]);
     const [disabled, setDisabled] = useState(true);
@@ -491,32 +498,32 @@ function Obj({ auth, item, value, onChange }) {
     // },[]);
     useEffect(() => {
         // if(available){
-            if (item.source) {
-                // console.log("Obj - 1");
-                GETWITH(auth, item.source, [
+        if (item.source) {
+            // console.log("Obj - 1");
+            GETWITH(auth, item.source, [
+                (!item.queryFilter) ? QueryDetail("model") : undefined,
+                (!item.queryFilter) ? QueryOrder("ID", "ASC") : undefined,
+                ...(item.queryFilter && _.isArray(item.queryFilter)) ? item.queryFilter : []
+            ], ({ data }) => {
+                // console.log("Obj - 2");
+                setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
+                // console.log("Obj - 3");
+                setDisabled(false);
+                // console.log("Obj - 4");
+            }, (err, type) => errorCatch(err, type, () => { }));
+        } else {
+            let src = getObjectValue(item, "relation.reference.object");
+            if (src) {
+                READWITH(auth, src, [
                     (!item.queryFilter) ? QueryDetail("model") : undefined,
                     (!item.queryFilter) ? QueryOrder("ID", "ASC") : undefined,
                     ...(item.queryFilter && _.isArray(item.queryFilter)) ? item.queryFilter : []
                 ], ({ data }) => {
-                    // console.log("Obj - 2");
                     setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
-                    // console.log("Obj - 3");
                     setDisabled(false);
-                    // console.log("Obj - 4");
                 }, (err, type) => errorCatch(err, type, () => { }));
-            } else {
-                let src = getObjectValue(item, "relation.reference.object");
-                if (src) {
-                    READWITH(auth, src, [
-                        (!item.queryFilter) ? QueryDetail("model") : undefined,
-                        (!item.queryFilter) ? QueryOrder("ID", "ASC") : undefined,
-                        ...(item.queryFilter && _.isArray(item.queryFilter)) ? item.queryFilter : []
-                    ], ({ data }) => {
-                        setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
-                        setDisabled(false);
-                    }, (err, type) => errorCatch(err, type, () => { }));
-                }
             }
+        }
         // }
     }, [auth, item]);
 
@@ -584,6 +591,7 @@ function Obj({ auth, item, value, onChange }) {
     )
 }
 function DateTime({ item, value, onChange }) {
+    console.log("DateTime", { item, value });
     const classes = useStyles()
     return (
         <DatePicker
@@ -612,6 +620,7 @@ function DateTime({ item, value, onChange }) {
     )
 }
 function Date({ item, value, onChange }) {
+    console.log("Date", { item, value });
     const classes = useStyles()
     return (
         <DatePicker
@@ -640,6 +649,7 @@ function Date({ item, value, onChange }) {
     )
 }
 function Time({ item, value, onChange }) {
+    console.log("Time", { item, value });
     const classes = useStyles()
     return (
         <DatePicker
@@ -668,6 +678,7 @@ function Time({ item, value, onChange }) {
     )
 }
 function Boolean({ item, value, onChange }) {
+    console.log("Boolean", { item, value });
     const classes = useStyles()
     return (
         <CheckboxItem
@@ -682,6 +693,7 @@ function Boolean({ item, value, onChange }) {
     )
 }
 function Float({ item, value, onChange }) {
+    console.log("Float", { item, value });
     const classes = useStyles()
     return (
         <Input
@@ -697,6 +709,7 @@ function Float({ item, value, onChange }) {
     )
 }
 function Integer({ item, value, onChange }) {
+    console.log("Integer", { item, value });
     const classes = useStyles()
     return (
         <Input
@@ -712,6 +725,7 @@ function Integer({ item, value, onChange }) {
     )
 }
 function String({ item, value, onChange }) {
+    console.log("String", { item, value });
     const classes = useStyles()
     return (
         <TextArea

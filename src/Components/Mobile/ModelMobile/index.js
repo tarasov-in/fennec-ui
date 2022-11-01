@@ -261,7 +261,7 @@ function Act({ auth, item, value, onChange, changed }) {
         <Action
             auth={auth}
             brief={(!value) ? undefined : (item.display) ? item.display(changed[item.duplex] || value) : undefined}
-            form={item.form || Model}
+            form={item.form || ModelMobile}
             okText={item.okText || "Выбрать"}
             dismissText={item.dismissText || "Отмена"}
 

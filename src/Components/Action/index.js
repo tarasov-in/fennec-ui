@@ -720,7 +720,7 @@ export function Action(props) {
                 </React.Fragment>);
             } else {
                 return (<React.Fragment>
-                    <RenderToLayer>
+                    {/* <RenderToLayer> */}
                         <Popup
                             visible={opened || (fire && visible)}
                             showCloseButton
@@ -779,7 +779,7 @@ export function Action(props) {
                                 </div>
                             </div>
                         </Popup>
-                    </RenderToLayer>
+                    {/* </RenderToLayer> */}
                     {trigger && trigger()}
                 </React.Fragment>);
             }
