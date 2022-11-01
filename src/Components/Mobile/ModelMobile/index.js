@@ -5,7 +5,7 @@ import 'moment/locale/ru';
 import { Form, Input, TextArea, DatePicker, Picker, Checkbox, SwipeAction, List, SearchBar } from 'antd-mobile';
 import { AutoSizer, List as ListVirt } from 'react-virtualized';
 import 'react-virtualized/styles.css';
-import { Action } from '../../Action'
+import { Action, ActionPickerItem } from '../../Action'
 import {
     Typography,
 } from 'antd';
@@ -258,7 +258,14 @@ function Unknown({ item }) {
 function Act({ auth, item, value, onChange, changed }) {
     const classes = useStyles()
     return (<React.Fragment>
-        <Action
+        <ActionPickerItem 
+            auth={auth}
+            mode="input"
+            item={item}
+            value={value}
+            onChange={onChange}
+        />
+        {/* <Action
             auth={auth}
             brief={(!value) ? undefined : (item.display) ? item.display(changed[item.duplex] || value) : undefined}
             form={item.form || ModelMobile}
@@ -297,7 +304,7 @@ function Act({ auth, item, value, onChange, changed }) {
                     color: 'danger',
                 },
             ]}
-        />
+        /> */}
     </React.Fragment>);
 }
 function Obj({ auth, item, options = {}, value, onChange, changed }) {
