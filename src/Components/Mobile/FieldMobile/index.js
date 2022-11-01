@@ -249,69 +249,6 @@ const useStyles = createUseStyles({
     }
 })
 
-// function GroupObj({ auth, item, value, onChange }) {
-//     const classes = useStyles()
-//     const [data, setData] = useState([]);
-//     const [disabled, setDisabled] = useState(true);
-// const meta = useMetaContext();
-//     useEffect(() => {
-//         if (item.source) {
-//             GETWITH(auth, item.source, [
-//                 (!item.queryFilter) ? QueryDetail("model") : undefined,
-//                 (!item.queryFilter) ? QueryOrder("ID", "ASC") : undefined,
-//                 ...(item.queryFilter && _.isArray(item.queryFilter)) ? item.queryFilter : []
-//             ], ({ data }) => {
-//                 setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
-//                 setDisabled(false);
-//             }, (err, type) => errorCatch(err, type, () => { }));
-//         } else {
-//             let src = getObjectValue(item, "relation.reference.object");
-//             if (src) {
-//                 READWITH(auth, src, [
-//                     (!item.queryFilter) ? QueryDetail("model") : undefined,
-//                     (!item.queryFilter) ? QueryOrder("ID", "ASC") : undefined,
-//                     ...(item.queryFilter && _.isArray(item.queryFilter)) ? item.queryFilter : []
-//                 ], ({ data }) => {
-//                     setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
-//                     setDisabled(false);
-//                 }, (err, type) => errorCatch(err, type, () => { }));
-//             }
-//         }
-//     }, []);
-
-//     const elements = (data) => {
-//         if (item.display) {
-//             return data?.map(i => (
-//                 <Option key={i.ID} value={i.ID}>{item.display(i)}</Option>
-//             ));
-//         } else {
-//             let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
-//             const display = (display) => {
-//                 if (display.fields) {
-//                     return display
-//                 }
-//             }
-//             return data?.map(i => (
-//                 <Option key={i.ID} value={i.ID}>{getDisplay(i, display(item.relation.display) || display(fieldMeta.display), fieldMeta, meta)}</Option>
-//             ));
-//         }
-//     };
-//     return (
-//         <Select
-//             mode="multiple"
-//             showSearch
-//             value={value}
-//             onChange={onChange}
-//             style={{ width: "100%" }}
-//             allowClear={true}
-//             disabled={disabled}
-//             filterOption={(input, element) =>
-//                 element.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-//             }>
-//             {elements(data)}
-//         </Select>
-//     )
-// }
 function RangeDate({ item, value, onChange }) {
     console.log("RangeDate", { item, value });
     const classes = useStyles()
@@ -385,9 +322,9 @@ function RangeFloat({ item, value, onChange }) {
     return (
         <div style={{ margin: 0 }}>
             <p className="sub-title" style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'" }}>{item.label}</p>
-            <div style={{ paddingBottom: "18px", display: "flex", justifyContent: "space-between", gap: "5px" }}>
+            <div style={{ paddingBottom: "10px", display: "flex", justifyContent: "space-between", gap: "5px" }}>
                 <div style={{
-                    flex: "50%",
+                    flex: "1",
                     border: "1px solid #e5e5e5",
                     borderRadius: "4px",
                     padding: "2px 6px"
@@ -399,7 +336,7 @@ function RangeFloat({ item, value, onChange }) {
                     />
                 </div>
                 <div style={{
-                    flex: "50%",
+                    flex: "1",
                     border: "1px solid #e5e5e5",
                     borderRadius: "4px",
                     padding: "2px 6px"
@@ -450,22 +387,27 @@ function RangeInteger({ item, value, onChange }) {
     return (
         <div style={{ margin: 0 }}>
             <p className="sub-title" style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'" }}>{item.label}</p>
-            <div style={{ paddingBottom: "18px", display: "flex", justifyContent: "space-between" }}>
-                <div style={{ flex: "50%" }}>
+            <div style={{ paddingBottom: "10px", display: "flex", justifyContent: "space-between" }}>
+            <div style={{
+                    flex: "1",
+                    border: "1px solid #e5e5e5",
+                    borderRadius: "4px",
+                    padding: "2px 6px"
+                }}>
                     <Input
-                        // className={classes.RangeFloatInput}
                         type={"number"}
-                        // moneyKeyboardWrapProps={moneyKeyboardWrapProps}
                         onChange={onChangeLeft}
                         value={(val && val.length > 1) ? val[0] : def[0]}
                     />
                 </div>
-                <div></div>
-                <div style={{ flex: "50%" }}>
+                <div style={{
+                    flex: "1",
+                    border: "1px solid #e5e5e5",
+                    borderRadius: "4px",
+                    padding: "2px 6px"
+                }}>
                     <Input
-                        // className={classes.RangeFloatInput}
                         type={"number"}
-                        // moneyKeyboardWrapProps={moneyKeyboardWrapProps}
                         onChange={onChangeRight}
                         value={(val && val.length > 1) ? val[1] : def[1]}
                     />
@@ -687,15 +629,13 @@ function Boolean({ item, value, onChange }) {
     console.log("Boolean", { item, value });
     const classes = useStyles()
     return (
-        <CheckboxItem
+        <Checkbox
             disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
-            onChange={(e) => onChange(e.target.checked)}
+            onChange={onChange}
             checked={value}
-            className={classes.Boolean}
-            onClick={() => onChange(!value)}
         >
             {item.label}
-        </CheckboxItem>
+        </Checkbox>
     )
 }
 function Float({ item, value, onChange }) {
@@ -704,14 +644,12 @@ function Float({ item, value, onChange }) {
     return (
         <Input
             disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
-            className={classes.Float}
             type={"money"}
             placeholder={item.placeholder || "введите " + item.label.toLowerCase()}
-            clear
-            moneyKeyboardWrapProps={moneyKeyboardWrapProps}
+            clearable
             onChange={onChange}
             value={value}
-        >{item.label}</Input>
+            />
     )
 }
 function Integer({ item, value, onChange }) {
@@ -720,14 +658,12 @@ function Integer({ item, value, onChange }) {
     return (
         <Input
             disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
-            className={classes.Integer}
             type={"number"}
             placeholder={item.placeholder || "введите " + item.label.toLowerCase()}
-            clear
-            moneyKeyboardWrapProps={moneyKeyboardWrapProps}
+            clearable
             onChange={onChange}
             value={value}
-        >{item.label}</Input>
+            />
     )
 }
 function String({ item, value, onChange }) {
@@ -736,13 +672,10 @@ function String({ item, value, onChange }) {
     return (
         <TextArea
             disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
+            autoSize={{ minRows: 2, maxRows: 5 }}
             onChange={onChange}
             value={value}
-            className={classes.String}
-            title={item.label}
-            rows={1}
             placeholder={item.placeholder || "введите " + item.label.toLowerCase()}
-            clear
         />
     )
 }
