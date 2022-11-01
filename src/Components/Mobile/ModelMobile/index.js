@@ -369,8 +369,9 @@ function Obj({ auth, item, options = {}, value, onChange, changed }) {
     }
     return (
         <SwipeAction
-            autoClose
-            right={[
+            closeOnAction
+            closeOnTouchOutside
+            rightActions={[
                 {
                     key: 'danger',
                     text: (<Icofont icon="close" />),
@@ -408,8 +409,9 @@ function Calendar({ item, value, onChange }) {
     const classes = useStyles()
     return (
         <SwipeAction
-            autoClose
-            right={[
+            closeOnAction
+            closeOnTouchOutside
+            rightActions={[
                 {
                     key: 'danger',
                     text: (<Icofont icon="close" />),
@@ -437,8 +439,9 @@ function CalendarTime({ item, value, onChange }) {
     const classes = useStyles()
     return (
         <SwipeAction
-            autoClose
-            right={[
+            closeOnAction
+            closeOnTouchOutside
+            rightActions={[
                 {
                     key: 'danger',
                     text: (<Icofont icon="close" />),
@@ -467,8 +470,9 @@ function Time({ item, value, onChange }) {
     const classes = useStyles()
     return (
         <SwipeAction
-            autoClose
-            right={[
+            closeOnAction
+            closeOnTouchOutside
+            rightActions={[
                 {
                     key: 'danger',
                     text: (<Icofont icon="close" />),
@@ -509,8 +513,9 @@ function Date({ item, value, onChange }) {
     const classes = useStyles()
     return (
         <SwipeAction
-            autoClose
-            right={[
+            closeOnAction
+            closeOnTouchOutside
+            rightActions={[
                 {
                     key: 'danger',
                     text: (<Icofont icon="close" />),
@@ -551,8 +556,9 @@ function DateTime({ item, value, onChange }) {
     const classes = useStyles()
     return (
         <SwipeAction
-            autoClose
-            right={[
+            closeOnAction
+            closeOnTouchOutside
+            rightActions={[
                 {
                     key: 'danger',
                     text: (<Icofont icon="close" />),
