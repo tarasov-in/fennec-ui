@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Badge, List, Picker, SwipeAction, PageIndicator, Stepper, PickerView, Popup } from 'antd-mobile';
+import { Form, Button, Badge, List, Picker, SwipeAction, PageIndicator, Stepper, PickerView, Popup, Space } from 'antd-mobile';
 import { unwrap, errorCatch, Request, QueryParam, GETWITH, READWITH, updateInArray, deleteInArray, GetMetaPropertyByPath, QueryFunc, If, QueryDetail } from '../../../Tool'
 import Icofont from 'react-icofont';
 import { createUseStyles } from 'react-jss';
@@ -88,7 +88,7 @@ function SortingField(props) {
     const classes = useStyles()
     const { filters, value, onChange } = props;
     // const [state, setState] = useState({ name: "", order: "ASC" })
-    console.log("SortingField", value);
+    // console.log("SortingField", value);
 
     const s = React.useMemo(() => {
         const so = filters?.filter(f => f.sort);
@@ -119,6 +119,9 @@ function SortingField(props) {
         }
     }, [filters, onSortingChangeString]);
     const [visible, setVisible] = useState(false);
+    const current = React.useMemo(() => {
+        return s?.find(e => e.value === value.name)?.label;
+    }, [value])
     return (<React.Fragment>
         <div>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px", marginTop: "25px", paddingRight: "10px" }}>
@@ -151,12 +154,11 @@ function SortingField(props) {
                         }}
                         cancelText="Отмена"
                         confirmText="Выбрать"
-                        // value={rval}
                         value={[value.name]}
-                        // defaultValue={rval}
                         onConfirm={onOk}
                     />
-                    <List.Item className={classes.Obj} onClick={() => setVisible(true)}>
+                    <List.Item className={classes.Obj} onClick={() => setVisible(true)}
+                        description={current}>
                         Сортировка по полю
                     </List.Item>
                     {/* <Picker
@@ -179,7 +181,7 @@ function SortingField(props) {
 function FilteringField(props) {
     const classes = useStyles()
     const { auth, filters, funcStat, value, onChange } = props;
-    console.log("FilteringField", value);
+    // console.log("FilteringField", value);
     const f = React.useMemo(() => {
         const fl = filters?.filter(i => i.filter);
         return fl?.map((item, idx) => {
@@ -756,6 +758,8 @@ export function CollectionServerMobile(props) {
         </div>
     ), [state.filter])
     const PaginatorChange = React.useCallback((v) => setState({ ...state, current: v }), [state]);
+    const PaginatorRight = React.useCallback(() => setState({ ...state, current: state.current+1 }), [state]);
+    const PaginatorLeft = React.useCallback(() => setState({ ...state, current: state.current-1 }), [state]);
     return (
         <React.Fragment>
             {!noheader && <BlockHeaderMobile
@@ -821,25 +825,42 @@ export function CollectionServerMobile(props) {
                     </List>
                     <div style={{ paddingTop: "15px" }}>
                         {(total > 1) &&
-                            <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <PageIndicator
-                                    total={total}
-                                    current={state.current}
-                                    style={{
-                                        '--dot-size': '10px',
-                                        '--active-dot-size': '30px',
-                                        '--dot-border-radius': '50%',
-                                        '--active-dot-border-radius': '15px',
-                                        '--dot-spacing': '8px',
-                                    }}
+                            <div style={{ display: "flex", justifyContent: "center" }}>
+                                <div>
+                                    <Button size='small' onClick={PaginatorLeft} disabled={(state.current <= 1 )}>
+                                        <Space>
+                                            <Icofont icon="rounded-left" />
+                                        </Space>
+                                    </Button>
+                                </div>
+                                <div style={{minWidth:"75px", fontSize:"14px", display:"flex", flexDirection:"column", alignItems:"center"}}>
+                                    <div>{state.current}/{total}</div>
+                                    <PageIndicator
+                                    total={3}
+                                    current={(state.current <= 1 )?0:(state.current >= total)?2:1}
+                                    // style={{
+                                    //     '--dot-size': '10px',
+                                    //     '--active-dot-size': '30px',
+                                    //     '--dot-border-radius': '50%',
+                                    //     '--active-dot-border-radius': '15px',
+                                    //     '--dot-spacing': '8px',
+                                    // }}
                                 />
-                                <Stepper
+                                </div>
+                                <div>
+                                    <Button size='small' onClick={PaginatorRight} disabled={(state.current >= total )}>
+                                        <Space>
+                                            <Icofont icon="rounded-right" />
+                                        </Space>
+                                    </Button>
+                                    {/* <Stepper
                                     step={1}
                                     defaultValue={1}
                                     min={1}
                                     max={total}
                                     value={state.current}
-                                    onChange={PaginatorChange} />
+                                    onChange={PaginatorChange} /> */}
+                                </div>
                             </div>
                         }
                     </div>

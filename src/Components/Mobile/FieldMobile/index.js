@@ -9,9 +9,10 @@ import { Checkbox, Input, List, TextArea, Slider, Picker } from 'antd-mobile';
 import { createUseStyles } from 'react-jss';
 import { CalendarItem } from '../CalendarItem';
 import { useMetaContext } from '../../Context';
+import { ActionPickerItem } from '../../Action';
 var _ = require('lodash');
 
-const CheckboxItem = Checkbox.CheckboxItem;
+const { RangePicker } = DatePicker;
 
 const isIPhone = new RegExp('\\biPhone\\b|\\biPod\\b', 'i').test(window.navigator.userAgent);
 let moneyKeyboardWrapProps;
@@ -249,57 +250,85 @@ const useStyles = createUseStyles({
     }
 })
 
+function ActionItem({ auth, item, value, onChange, changed }) {
+    const classes = useStyles()
+    return (<React.Fragment>
+        <ActionPickerItem
+            auth={auth}
+            mode="input"
+            item={item}
+            value={value}
+            onChange={onChange}
+        />
+        {/* <Action
+            auth={auth}
+            brief={(!value) ? undefined : (item.display) ? item.display(changed[item.duplex] || value) : undefined}
+            form={item.form || ModelMobile}
+            okText={item.okText || "Выбрать"}
+            dismissText={item.dismissText || "Отмена"}
+
+            // virtualized={true}
+            // search={search}
+            meta={item.meta}
+            steps={item.steps}
+            triggerOptions={{
+                className: classes.Act
+            }}
+            placeholder={item.placeholder || "выберите " + item.label.toLowerCase()}
+            closable={false}
+            object={value}
+            titles={(item.titles) ? item.titles : {
+                header: item.label,
+                subheader: "",
+            }}
+            action={(values, unlock, close) => {
+                if (onChange) {
+                    onChange((item.modify) ? item.modify(values) : values, item, (item.modifyDuplex) ? item.modifyDuplex(values) : undefined);
+                }
+                close();
+            }}
+            swipe={[
+                {
+                    key: 'danger',
+                    text: (<Icofont icon="close" />),
+                    onClick: () => {
+                        if (onChange) {
+                            onChange(undefined, item, undefined);
+                        }
+                    },
+                    color: 'danger',
+                },
+            ]}
+        /> */}
+    </React.Fragment>);
+}
 function RangeDate({ item, value, onChange }) {
-    console.log("RangeDate", { item, value });
+    // console.log("RangeDate", { item, value });
     const classes = useStyles()
-    var a = undefined;
-    if (value && value[0] && value[1]) {
-        a = [];
-        a.push(moment(value[0]))
-        a.push(moment(value[1]))
-    }
-    // console.log("RangeDate = ", value, a);
+    const [val, setVal] = useState();
+    useEffect(() => {
+        setVal(value);
+    }, [value]);
     return (
-        <CalendarItem
-            fields={item.fields}
-            className={classes.Time}
-            name={item.label}
-            // value={(value && value.length) ? value : undefined}
-            value={a}
-            placeholder={item.placeholder || "введите " + item.label.toLowerCase()}
-            onChange={(value) => {
-                onChange(value)
-                // onChange([value[0].format("YYYY-MM-DD"),value[1].format("YYYY-MM-DD")])
-            }}
-        />
+        <div style={{ margin: 0 }}>
+            <p className="sub-title" style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'" }}>{item.label}</p>
+            <RangePicker
+                disabledTime
+                value={val}
+                // placeholder={item.placeholder || "введите " + item.label.toLowerCase()}
+                onCalendarChange={(value) => {
+                    onChange(value)
+                }}
+                onChange={(value) => {
+                    setVal(value)
+                }}
+            />
+        </div>
     )
 }
-function RangeDateTime({ item, value, onChange }) {
-    console.log("RangeDateTime", { item, value });
-    const classes = useStyles()
-    var a = undefined;
-    if (value && value[0] && value[1]) {
-        a = [];
-        a.push(moment(value[0]))
-        a.push(moment(value[1]))
-    }
-    return (
-        <CalendarItem
-            fields={item.fields}
-            pickTime={true}
-            className={classes.Time}
-            name={item.label}
-            // value={(value && value.length) ? value : undefined}
-            value={a}
-            placeholder={item.placeholder || "введите " + item.label.toLowerCase()}
-            onChange={(value) => {
-                onChange(value)
-            }}
-        />
-    )
-}
+
 function RangeFloat({ item, value, onChange }) {
-    console.log("RangeFloat", { item, value });
+    // console.log("RangeFloat", { item, value });
     const classes = useStyles()
     const [val, setVal] = useState();
     useEffect(() => {
@@ -364,7 +393,7 @@ function RangeFloat({ item, value, onChange }) {
     )
 }
 function RangeInteger({ item, value, onChange }) {
-    console.log("RangeInteger", { item, value });
+    // console.log("RangeInteger", { item, value });
     const classes = useStyles()
     const [val, setVal] = useState();
     useEffect(() => {
@@ -388,7 +417,7 @@ function RangeInteger({ item, value, onChange }) {
         <div style={{ margin: 0 }}>
             <p className="sub-title" style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'" }}>{item.label}</p>
             <div style={{ paddingBottom: "10px", display: "flex", justifyContent: "space-between" }}>
-            <div style={{
+                <div style={{
                     flex: "1",
                     border: "1px solid #e5e5e5",
                     borderRadius: "4px",
@@ -429,21 +458,12 @@ function RangeInteger({ item, value, onChange }) {
     )
 }
 function Obj({ auth, item, value, onChange }) {
-    console.log("Obj", { item, value });
+    // console.log("Obj", { item, value });
     const classes = useStyles()
     const [data, setData] = useState([]);
     const [disabled, setDisabled] = useState(true);
     const [available, setAvailable] = useState(false);
     const meta = useMetaContext();
-    // console.log("Obj - o");
-    // useEffect(()=>{
-    //     console.log("Obj - s");
-    //     setAvailable(true);
-    //     return ()=>{
-    //         console.log("Obj - e");
-    //         setAvailable(false);
-    //     }
-    // },[]);
     useEffect(() => {
         // if(available){
         if (item.source) {
@@ -501,74 +521,38 @@ function Obj({ auth, item, value, onChange }) {
             }
         }
     }
-
+    const [visible, setVisible] = useState(false);
+    const current = React.useMemo(() => {
+        return oui?.find(e => e.value === value)?.label;
+    }, [value])
     return (
-        <Picker
-            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
-            value={[value]}
-            onChange={e => {
-                // onChange(e[0], item, itemByProperty(item, e[0]));
-                onChange(e[0]);
-            }}
-            data={oui}
-            cols={1}
-            extra={item.placeholder || "выберите " + item.label.toLowerCase()}
-            onOk={e => {
-                if (onChange) {
-                    // onChange(e[0], item, itemByProperty(item, e[0]));
-                    onChange(e[0]);
-                }
-            }}
-            okText={item.okText || 'Выбрать'}
-            dismissText={item.dismissText || 'Отмена'}>
-            <List.Item className={classes.Obj} /*arrow="horizontal"*/>
+        <div>
+            <Picker
+                visible={visible}
+                onClose={() => {
+                    setVisible(false)
+                }}
+                disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
+                value={[value]}
+                columns={[oui]}
+                onConfirm={e => {
+                    if (onChange) {
+                        onChange(e[0]);
+                    }
+                }}
+                confirmText={item.okText || 'Выбрать'}
+                cancelText={item.dismissText || 'Отмена'}>
+            </Picker>
+            <List.Item className={classes.Obj} onClick={() => setVisible(true)}
+                description={current || item.placeholder || "выберите " + item.label.toLowerCase()}>
                 {item.label}
             </List.Item>
-        </Picker>
-        // <Select showSearch
-        //     value={value}
-        //     onChange={onChange}
-        //     style={{ width: "100%" }}
-        //     allowClear={true}
-        //     disabled={disabled}
-        //     filterOption={(input, element) =>
-        //         element.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-        //     }>
-        //     {elements(data)}
-        // </Select>
+        </div>
     )
 }
-function DateTime({ item, value, onChange }) {
-    console.log("DateTime", { item, value });
-    const classes = useStyles()
-    return (
-        <DatePicker
-            disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
-            mode="time"
-            title="Выберите дату"
-            extra={item.placeholder || "выберите " + item.label.toLowerCase()}
-            locale={{
-                DatePickerLocale: {
-                    year: "",
-                    month: "",
-                    day: "",
-                    hour: "",
-                    minute: "",
-                    am: "",
-                    pm: ""
-                },
-                okText: item.okText || "Выбрать",
-                dismissText: item.dismissText || "Отмена"
-            }}
-            value={value}
-            onChange={onChange}
-        >
-            <List.Item className={classes.Time} /*arrow="horizontal"*/>{item.label}</List.Item>
-        </DatePicker>
-    )
-}
+/** !!! antd */
 function Date({ item, value, onChange }) {
-    console.log("Date", { item, value });
+    // console.log("Date", { item, value });
     const classes = useStyles()
     return (
         <DatePicker
@@ -592,12 +576,13 @@ function Date({ item, value, onChange }) {
             value={value}
             onChange={onChange}
         >
-            <List.Item className={classes.Time} /*arrow="horizontal"*/>{item.label}</List.Item>
+            {/* <List.Item className={classes.Time}>{item.label}</List.Item> */}
         </DatePicker>
     )
 }
-function Time({ item, value, onChange }) {
-    console.log("Time", { item, value });
+/** !!! antd */
+function DateTime({ item, value, onChange }) {
+    // console.log("DateTime", { item, value });
     const classes = useStyles()
     return (
         <DatePicker
@@ -621,12 +606,42 @@ function Time({ item, value, onChange }) {
             value={value}
             onChange={onChange}
         >
-            <List.Item className={classes.Time} /*arrow="horizontal"*/>{item.label}</List.Item>
+            {/* <List.Item className={classes.Time}>{item.label}</List.Item> */}
+        </DatePicker>
+    )
+}
+/** !!! antd */
+function Time({ item, value, onChange }) {
+    // console.log("Time", { item, value });
+    const classes = useStyles()
+    return (
+        <DatePicker
+            disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
+            mode="time"
+            title="Выберите дату"
+            extra={item.placeholder || "выберите " + item.label.toLowerCase()}
+            locale={{
+                DatePickerLocale: {
+                    year: "",
+                    month: "",
+                    day: "",
+                    hour: "",
+                    minute: "",
+                    am: "",
+                    pm: ""
+                },
+                okText: item.okText || "Выбрать",
+                dismissText: item.dismissText || "Отмена"
+            }}
+            value={value}
+            onChange={onChange}
+        >
+            {/* <List.Item className={classes.Time} >{item.label}</List.Item> */}
         </DatePicker>
     )
 }
 function Boolean({ item, value, onChange }) {
-    console.log("Boolean", { item, value });
+    // console.log("Boolean", { item, value });
     const classes = useStyles()
     return (
         <Checkbox
@@ -639,7 +654,7 @@ function Boolean({ item, value, onChange }) {
     )
 }
 function Float({ item, value, onChange }) {
-    console.log("Float", { item, value });
+    // console.log("Float", { item, value });
     const classes = useStyles()
     return (
         <Input
@@ -649,11 +664,11 @@ function Float({ item, value, onChange }) {
             clearable
             onChange={onChange}
             value={value}
-            />
+        />
     )
 }
 function Integer({ item, value, onChange }) {
-    console.log("Integer", { item, value });
+    // console.log("Integer", { item, value });
     const classes = useStyles()
     return (
         <Input
@@ -663,11 +678,11 @@ function Integer({ item, value, onChange }) {
             clearable
             onChange={onChange}
             value={value}
-            />
+        />
     )
 }
 function String({ item, value, onChange }) {
-    console.log("String", { item, value });
+    // console.log("String", { item, value });
     const classes = useStyles()
     return (
         <TextArea
@@ -721,11 +736,10 @@ export function FieldMobile({ auth, item, value, onChange }) {
                 case "float32":
                     return (<RangeFloat auth={auth} item={item} value={value} onChange={onChange}></RangeFloat>)
                 case "date":
-                    return (<RangeDate auth={auth} item={item} value={value} onChange={onChange}></RangeDate>)
                 case "time":
                 case "datetime":
                 case "time.Time":
-                    return (<RangeDateTime auth={auth} item={item} value={value} onChange={onChange}></RangeDateTime>)
+                    return (<RangeDate auth={auth} item={item} value={value} onChange={onChange}></RangeDate>)
                 default:
                     return (<Unknown auth={auth} item={item} value={value} onChange={onChange}></Unknown>)
             }
@@ -759,6 +773,8 @@ export function FieldMobile({ auth, item, value, onChange }) {
                 case "object":
                 case "document":
                     return (<Obj auth={auth} item={item} value={value} onChange={onChange}></Obj>)
+                case "action":
+                    return (<ActionItem auth={auth} item={item} value={value} onChange={onChange}></ActionItem>)
                 default:
                     return (<Unknown auth={auth} item={item} value={value} onChange={onChange}></Unknown>)
             }
