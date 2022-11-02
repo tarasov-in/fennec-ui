@@ -308,11 +308,13 @@ function RangeDate({ item, value, onChange }) {
     const [visible2, setVisible2] = useState(false)
     const [val, setVal] = useState([]);
     useEffect(() => {
-        if (value && value.length === 2) {
+        if (value && value.length === 2 && value[0] && value[1]) {
             setVal([
                 moment(value[0]).toDate(),
                 moment(value[1]).toDate()
             ]);
+        } else {
+            setVal([])
         }
     }, [value]);
     return (
@@ -326,7 +328,9 @@ function RangeDate({ item, value, onChange }) {
                     justifyContent: "space-between"
                 }}>
                 <div>{item.label}</div>
-                <Button fill='none' size='mini' onClick={(v) => {setVal([]); onChange(undefined);}}>
+                <Button fill='none' size='mini' onClick={(v) => {
+                    onChange();
+                    }}>
                     <Icofont icon="close" />
                 </Button>
             </div>
@@ -350,8 +354,8 @@ function RangeDate({ item, value, onChange }) {
                         onClose={() => {
                             setVisible1(false)
                         }}
-                        onConfirm={(v) => onChange([moment(v), moment(val[1])])}
-                        value={val[0]}
+                        onConfirm={(v) => onChange([moment(v), (val[1])?moment(val[1]):moment(v)])}
+                        value={val[0]||null}
                     >
                         {value =>
                             value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || `выберите  ${item.label.toLowerCase()}`}</span>
@@ -377,8 +381,8 @@ function RangeDate({ item, value, onChange }) {
                         onClose={() => {
                             setVisible2(false)
                         }}
-                        onConfirm={(v) => onChange([moment(val[0]), moment(v)])}
-                        value={val[1]}
+                        onConfirm={(v) => onChange([(val[0])?moment(val[0]):moment(v), moment(v)])}
+                        value={val[1]||null}
                     >
                         {value =>
                             value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || `выберите  ${item.label.toLowerCase()}`}</span>
