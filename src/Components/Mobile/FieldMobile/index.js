@@ -393,7 +393,6 @@ function RangeDate({ item, value, onChange }) {
         </div>
     )
 }
-
 function RangeFloat({ item, value, onChange }) {
     // console.log("RangeFloat", { item, value });
     const classes = useStyles()
@@ -417,8 +416,19 @@ function RangeFloat({ item, value, onChange }) {
     };
     return (
         <div style={{ padding: "5px 0px" }}>
-            <div className='bg bg-grey' style={{ textAlign: "left", paddingLeft: "5px", marginBottom: "5px" }}>
-                {item.label}
+            <div className='bg bg-grey' style={{
+                    textAlign: "left",
+                    paddingLeft: "5px",
+                    marginBottom: "5px",
+                    display: "flex",
+                    justifyContent: "space-between"
+                }}>
+                <div>{item.label}</div>
+                <Button fill='none' size='mini' onClick={(v) => {
+                    onChange();
+                    }}>
+                    <Icofont icon="close" />
+                </Button>
             </div><div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
                 <div style={{
                     flex: "1",
@@ -483,8 +493,19 @@ function RangeInteger({ item, value, onChange }) {
     };
     return (
         <div style={{ padding: "5px 0px" }}>
-            <div className='bg bg-grey' style={{ textAlign: "left", paddingLeft: "5px", marginBottom: "5px" }}>
-                {item.label}
+            <div className='bg bg-grey' style={{
+                    textAlign: "left",
+                    paddingLeft: "5px",
+                    marginBottom: "5px",
+                    display: "flex",
+                    justifyContent: "space-between"
+                }}>
+                <div>{item.label}</div>
+                <Button fill='none' size='mini' onClick={(v) => {
+                    onChange();
+                    }}>
+                    <Icofont icon="close" />
+                </Button>
             </div><div style={{ display: "flex", justifyContent: "space-between" }}>
                 <div style={{
                     flex: "1",
@@ -596,8 +617,19 @@ function Obj({ auth, item, value, onChange }) {
     }, [value])
     return (
         <div style={{ padding: "5px 0px" }}>
-            <div className='bg bg-grey' style={{ textAlign: "left", paddingLeft: "5px", marginBottom: "5px" }}>
-                {item.label}
+            <div className='bg bg-grey' style={{
+                    textAlign: "left",
+                    paddingLeft: "5px",
+                    marginBottom: "5px",
+                    display: "flex",
+                    justifyContent: "space-between"
+                }}>
+                <div>{item.label}</div>
+                <Button fill='none' size='mini' onClick={(v) => {
+                    onChange();
+                    }}>
+                    <Icofont icon="close" />
+                </Button>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
                 <div onClick={() => {
@@ -634,10 +666,29 @@ function Date({ item, value, onChange }) {
     // console.log("Date", { item, value });
     const classes = useStyles()
     const [visible, setVisible] = useState(false)
+    const [val, setVal] = useState();
+    useEffect(() => {
+        if (value) {
+            setVal(moment(value).toDate());
+        } else {
+            setVal()
+        }
+    }, [value]);
     return (
         <div style={{ padding: "5px 0px" }}>
-            <div className='bg bg-grey' style={{ textAlign: "left", paddingLeft: "5px", marginBottom: "5px" }}>
-                {item.label}
+            <div className='bg bg-grey' style={{
+                    textAlign: "left",
+                    paddingLeft: "5px",
+                    marginBottom: "5px",
+                    display: "flex",
+                    justifyContent: "space-between"
+                }}>
+                <div>{item.label}</div>
+                <Button fill='none' size='mini' onClick={(v) => {
+                    onChange();
+                    }}>
+                    <Icofont icon="close" />
+                </Button>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
                 <div onClick={() => {
@@ -660,7 +711,7 @@ function Date({ item, value, onChange }) {
                             setVisible(false)
                         }}
                         onConfirm={value => onChange(moment(value))}
-                        value={value}
+                        value={val||null}
                     >
                         {value =>
                             value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || `выберите  ${item.label.toLowerCase()}`}</span>
@@ -671,15 +722,33 @@ function Date({ item, value, onChange }) {
         </div>
     )
 }
-
 function DateTime({ item, value, onChange }) {
     // console.log("DateTime", { item, value });
     const classes = useStyles()
     const [visible, setVisible] = useState(false)
+    const [val, setVal] = useState();
+    useEffect(() => {
+        if (value) {
+            setVal(moment(value).toDate());
+        } else {
+            setVal()
+        }
+    }, [value]);
     return (
         <div style={{ padding: "5px 0px" }}>
-            <div className='bg bg-grey' style={{ textAlign: "left", paddingLeft: "5px", marginBottom: "5px" }}>
-                {item.label}
+            <div className='bg bg-grey' style={{
+                    textAlign: "left",
+                    paddingLeft: "5px",
+                    marginBottom: "5px",
+                    display: "flex",
+                    justifyContent: "space-between"
+                }}>
+                <div>{item.label}</div>
+                <Button fill='none' size='mini' onClick={(v) => {
+                    onChange();
+                    }}>
+                    <Icofont icon="close" />
+                </Button>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
                 <div onClick={() => {
@@ -702,7 +771,7 @@ function DateTime({ item, value, onChange }) {
                             setVisible(false)
                         }}
                         onConfirm={value => onChange(moment(value))}
-                        value={value}
+                        value={val||null}
                     >
                         {value =>
                             value ? moment(value).format('YYYY-MM-DD HH:mm:ss') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || `выберите  ${item.label.toLowerCase()}`}</span>
@@ -713,15 +782,33 @@ function DateTime({ item, value, onChange }) {
         </div>
     )
 }
-
 function Time({ item, value, onChange }) {
     // console.log("Time", { item, value });
     const classes = useStyles()
     const [visible, setVisible] = useState(false)
+    const [val, setVal] = useState();
+    useEffect(() => {
+        if (value) {
+            setVal(moment(value).toDate());
+        } else {
+            setVal()
+        }
+    }, [value]);
     return (
         <div style={{ padding: "5px 0px" }}>
-            <div className='bg bg-grey' style={{ textAlign: "left", paddingLeft: "5px", marginBottom: "5px" }}>
-                {item.label}
+            <div className='bg bg-grey' style={{
+                    textAlign: "left",
+                    paddingLeft: "5px",
+                    marginBottom: "5px",
+                    display: "flex",
+                    justifyContent: "space-between"
+                }}>
+                <div>{item.label}</div>
+                <Button fill='none' size='mini' onClick={(v) => {
+                    onChange();
+                    }}>
+                    <Icofont icon="close" />
+                </Button>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
                 <div onClick={() => {
@@ -744,7 +831,7 @@ function Time({ item, value, onChange }) {
                             setVisible(false)
                         }}
                         onConfirm={value => onChange(moment(value))}
-                        value={value}
+                        value={val||null}
                     >
                         {value =>
                             value ? moment(value).format('HH:mm:ss') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || `выберите  ${item.label.toLowerCase()}`}</span>
@@ -773,8 +860,19 @@ function Float({ item, value, onChange }) {
     const classes = useStyles()
     return (
         <div style={{ padding: "5px 0px" }}>
-            <div className='bg bg-grey' style={{ textAlign: "left", paddingLeft: "5px", marginBottom: "5px" }}>
-                {item.label}
+            <div className='bg bg-grey' style={{
+                    textAlign: "left",
+                    paddingLeft: "5px",
+                    marginBottom: "5px",
+                    display: "flex",
+                    justifyContent: "space-between"
+                }}>
+                <div>{item.label}</div>
+                <Button fill='none' size='mini' onClick={(v) => {
+                    onChange();
+                    }}>
+                    <Icofont icon="close" />
+                </Button>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
                 <div style={{
@@ -785,11 +883,14 @@ function Float({ item, value, onChange }) {
                 }}>
                     <Input
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
-                        type={"money"}
                         placeholder={item.placeholder || "введите " + item.label.toLowerCase()}
-                        clearable
-                        onChange={onChange}
-                        value={value}
+                        // clearable
+                        onChange={v=>{
+                            if(!isNaN(v)){
+                                onChange(v);
+                            }
+                        }}
+                        value={value||""}
                     />
                 </div>
             </div>
@@ -801,8 +902,19 @@ function Integer({ item, value, onChange }) {
     const classes = useStyles()
     return (
         <div style={{ padding: "5px 0px" }}>
-            <div className='bg bg-grey' style={{ textAlign: "left", paddingLeft: "5px", marginBottom: "5px" }}>
-                {item.label}
+            <div className='bg bg-grey' style={{
+                    textAlign: "left",
+                    paddingLeft: "5px",
+                    marginBottom: "5px",
+                    display: "flex",
+                    justifyContent: "space-between"
+                }}>
+                <div>{item.label}</div>
+                <Button fill='none' size='mini' onClick={(v) => {
+                    onChange();
+                    }}>
+                    <Icofont icon="close" />
+                </Button>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
                 <div style={{
@@ -813,11 +925,14 @@ function Integer({ item, value, onChange }) {
                 }}>
                     <Input
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
-                        type={"number"}
                         placeholder={item.placeholder || "введите " + item.label.toLowerCase()}
-                        clearable
-                        onChange={onChange}
-                        value={value}
+                        // clearable
+                        onChange={v=>{
+                            if(!isNaN(v) && _.isInteger(+v)){
+                                onChange(""+(+v));
+                            } 
+                        }}
+                        value={value||""}
                     />
                 </div>
             </div>
@@ -829,8 +944,19 @@ function String({ item, value, onChange }) {
     const classes = useStyles()
     return (
         <div style={{ padding: "5px 0px" }}>
-            <div className='bg bg-grey' style={{ textAlign: "left", paddingLeft: "5px", marginBottom: "5px" }}>
-                {item.label}
+            <div className='bg bg-grey' style={{
+                    textAlign: "left",
+                    paddingLeft: "5px",
+                    marginBottom: "5px",
+                    display: "flex",
+                    justifyContent: "space-between"
+                }}>
+                <div>{item.label}</div>
+                <Button fill='none' size='mini' onClick={(v) => {
+                    onChange();
+                    }}>
+                    <Icofont icon="close" />
+                </Button>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
                 <div style={{
@@ -843,7 +969,7 @@ function String({ item, value, onChange }) {
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
                         autoSize={{ minRows: 2, maxRows: 5 }}
                         onChange={onChange}
-                        value={value}
+                        value={value||""}
                         placeholder={item.placeholder || "введите " + item.label.toLowerCase()}
                     />
                 </div>

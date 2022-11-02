@@ -492,6 +492,16 @@ export function CollectionServerMobile(props) {
                         case "string":
                             flt.push(QueryParam("w-co-" + key, filterByKey))
                             break;
+                        case "time":
+                                flt.push(QueryParam("w-eq-" + key, filterByKey.format("HH:mm:ss")))
+                            break;
+                        case "date":
+                                flt.push(QueryParam("w-eq-" + key, filterByKey.format("YYYY-MM-DD")))
+                            break;
+                        case "datetime":
+                        case "time.Time":
+                                flt.push(QueryParam("w-eq-" + key, filterByKey.format("YYYY-MM-DD HH:mm")))
+                            break;
                         default:
                             flt.push(QueryParam("w-" + key, filterByKey))
                             break;
