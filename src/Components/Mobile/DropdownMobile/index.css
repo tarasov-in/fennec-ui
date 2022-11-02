@@ -33,3 +33,7 @@
 .am-list-item .am-list-line .am-list-content {
     font-size: 14px;
 }
+.dropdown-list .adm-list-item-content-main {
+    padding: 12px 0;
+    font-size: 14px;
+}

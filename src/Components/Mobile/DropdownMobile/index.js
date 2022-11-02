@@ -34,7 +34,7 @@ export function DropdownMobile(props) {
                 readonly={true}
                 form={(props) => {
                     return (
-                        <List renderHeader={() => (titles && titles.block !== undefined) ? titles.block : "Выберите действие"} style={{paddingTop: "5px"}}>
+                        <List className="dropdown-list" renderHeader={() => (titles && titles.block !== undefined) ? titles.block : "Выберите действие"} style={{paddingTop: "5px"}}>
                             {JSXMap(actions, (e, idx) => (<div key={idx}>
                                 <Action
                                     key={e.key || idx}
