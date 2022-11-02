@@ -812,7 +812,7 @@ export function CollectionServerMobile(props) {
                 extra={titleExtra()}
             />}
             {filters.length == 0 && <div>
-                {/* <MaskWithLoading loading={loading} /> */}
+                <MaskWithLoading visible={loading} />
                 <div>
                     {(collection && collection.length > 0) && <div>
                         <List className="my-list">
@@ -865,7 +865,7 @@ export function CollectionServerMobile(props) {
                             />
                         </div>
                     </div>
-                    {/* <MaskWithLoading loading={loading} /> */}
+                    <MaskWithLoading visible={loading} />
                     <List className="my-list">
                         {(collection && collection.length > 0) && collection?.map((item, index) => (
                             <Item key={index} multipleLine align="top" wrap style={{ paddingLeft: "0px" }}>
