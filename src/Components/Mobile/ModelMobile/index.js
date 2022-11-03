@@ -11,7 +11,7 @@ import {
 } from 'antd';
 import Icofont from 'react-icofont';
 import { CalendarItem } from '../CalendarItem';
-import { GET, errorCatch, uncapitalize, GetMeta, GetMetaProperties } from '../../../Tool';
+import { GET, errorCatch, uncapitalize, GetMeta, GetMetaProperties, getDisplay } from '../../../Tool';
 var _ = require('lodash');
 const { Text, Link } = Typography;
 const CheckboxItem = Checkbox.CheckboxItem;
@@ -310,6 +310,7 @@ function Act({ auth, item, value, onChange, changed }) {
 function Obj({ auth, item, options = {}, value, onChange, changed }) {
     const classes = useStyles()
     const [data, setData] = useState([]);
+    const meta = useMetaContext();
     useEffect(() => {
         if (item && item.relation && item.relation.reference && item.relation.reference.url) {
             GET(auth, item.relation.reference.url,
@@ -344,8 +345,13 @@ function Obj({ auth, item, options = {}, value, onChange, changed }) {
         return data.find(e => e.ID === value);
     };
     const label = (item, value) => {
-        if (item && value && item.relation && item.relation.display && _.isFunction(item.relation.display)) {
-            return item.relation.display(value)
+        if (item && value) {
+            if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
+                return item.relation.display(value)
+            } else {
+                let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
+                return getDisplay(value, item?.relation?.display || fieldMeta?.display, fieldMeta, meta)
+            }
         }
         return "";
     };
