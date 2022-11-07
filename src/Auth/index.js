@@ -20,6 +20,7 @@ export class AuthService {
         this.appProfile = process.env.REACT_APP_PROFILE || "dev"
         this.fetch = this.fetch.bind(this)
         this.login = this.login.bind(this)
+        this.redirect = this.redirect.bind(this)
         this.signup = this.signup.bind(this)
         this.getProfile = this.getProfile.bind(this)
         this._checkStatus = this._checkStatus.bind(this)
@@ -103,8 +104,29 @@ export class AuthService {
         this.ws.close(name);   
     }
 
+    redirect(res) {
+        var nurl = new URL(window.location.href);
+        var refUrl = nurl.searchParams.get("service");
+        if (refUrl) {
+            window.location.href = refUrl;
+            return
+        }
+        if (res.user.roleUser && res.user.roleUser.length) {
+            for (var i = 0; i < res.user.roleUser.length; i++) {
+                res.user.roleUser.sort(function (a, b) {
+                    return a.role.priority - b.role.priority;
+                });
+                if (res.user.roleUser[i].roleID === 1 || res.user.roleUser[i].roleID === 2) {
+                    window.location.href = "/"
+                } else {
+                    window.location.href = this.schemhttp + "://" + this.getDomainWithoutSubdomain(window.location.href);
+                    return
+                }
+            }
+        }
+        window.location.href = this.schemhttp + "://" + this.getDomainWithoutSubdomain(window.location.href);
+    }
     login(email, password) {
-        // Get a token from api server using the fetch api
         return this.fetch(`/api/login`, {
             method: 'POST',
             body: JSON.stringify({
@@ -112,10 +134,10 @@ export class AuthService {
                 password
             })
         }).then(res => {
-            if (res && res.user) {               
+            if (res && res.user) {
                 localStorage.setItem('iam', res.user.ID);
+                this.redirect(res);
             }
-            return Promise.resolve(res);
         })
     }
 
@@ -124,14 +146,35 @@ export class AuthService {
         data.regionID = +data.regionID;
         data.cityID = +data.cityID;
         data.tipTelefonaID = +data.tipTelefonaID;
-        // Get a token from api server using the fetch api
         return this.fetch(`/api/signup`, {
             method: 'POST',
             body: JSON.stringify(data)
         }).then(res => {
             if (res && res.user) {
                 localStorage.setItem('iam', res.user.ID);
+                // this.redirect(res);
             }
+            return Promise.resolve(res);
+        })
+    }
+
+    forgotPassword(data) {
+        return this.fetch(`/api/forgot-password`, {
+            method: 'POST',
+            body: JSON.stringify(data)
+        }).then(res => {
+            return Promise.resolve(res);
+        })
+    }
+
+    resetPassword(data) {
+        var nurl = new URL(window.location.href);
+        var token = nurl.searchParams.get("token");
+        
+        return this.fetch(`/api/reset-password?token=`+token, {
+            method: 'POST',
+            body: JSON.stringify(data)
+        }).then(res => {
             return Promise.resolve(res);
         })
     }
