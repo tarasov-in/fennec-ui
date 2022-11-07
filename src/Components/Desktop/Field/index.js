@@ -205,7 +205,6 @@ function RangeInteger({ item, value, onChange }) {
 }
 function Obj({ auth, item, value, onChange, changed }) {
     const [data, setData] = useState([]);
-    const [disabled, setDisabled] = useState(true);
     const meta = useMetaContext();
     var available = true;
     useEffect(() => {
@@ -223,7 +222,6 @@ function Obj({ auth, item, value, onChange, changed }) {
                 ...(filter && _.isArray(filter)) ? filter : []
             ], ({ data }) => {
                 setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
-                setDisabled(false);
             }, (err, type) => errorCatch(err, type, () => { }));
         } else if (item && item.relation && item.relation.reference && item.relation.reference.data) {
             setData(item.relation.reference.data);
@@ -237,7 +235,6 @@ function Obj({ auth, item, value, onChange, changed }) {
                     ...(filter && _.isArray(filter)) ? filter : []
                 ], ({ data }) => {
                     setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
-                    setDisabled(false);
                 }, (err, type) => errorCatch(err, type, () => { }));
             }
         }
@@ -294,7 +291,7 @@ function Obj({ auth, item, value, onChange, changed }) {
             onChange={e=>onChange(e, item, itemByProperty(item, e))}
             style={{ width: "100%" }}
             allowClear={true}
-            disabled={disabled}
+            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
             filterOption={(input, element) =>
                 element.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }>

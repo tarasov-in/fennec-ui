@@ -550,7 +550,6 @@ function Obj({ auth, item, value, onChange, changed }) {
     const classes = useStyles()
     const [data, setData] = useState([]);
     const meta = useMetaContext();
-    const [disabled, setDisabled] = useState(true);
     useEffect(() => {
         if (item.source || (item && item.relation && item.relation.reference && item.relation.reference.url)) {
             let filter = item.queryFilter || item.filter || _.get(item,"relation.reference.queryFilter") || _.get(item,"relation.reference.filter");
@@ -560,7 +559,6 @@ function Obj({ auth, item, value, onChange, changed }) {
                 ...(filter && _.isArray(filter)) ? filter : []
             ], ({ data }) => {
                 setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
-                setDisabled(false);
             }, (err, type) => errorCatch(err, type, () => { }));
         } else if (item && item.relation && item.relation.reference && item.relation.reference.data) {
             setData(item.relation.reference.data);
@@ -574,7 +572,6 @@ function Obj({ auth, item, value, onChange, changed }) {
                     ...(filter && _.isArray(filter)) ? filter : []
                 ], ({ data }) => {
                     setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
-                    setDisabled(false);
                 }, (err, type) => errorCatch(err, type, () => { }));
             }
         }
