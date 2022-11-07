@@ -21,7 +21,7 @@ var _ = require('lodash');
 const { TextArea } = Input;
 const { Option } = Select;
 
-function GroupObj({ auth, item, value, onChange }) {
+function GroupObj({ auth, item, value, onChange, changed }) {
     const [data, setData] = useState([]);
     const [disabled, setDisabled] = useState(true);
     const meta = useMetaContext();
@@ -33,49 +33,82 @@ function GroupObj({ auth, item, value, onChange }) {
         };
     }, []);
     useEffect(() => {
-        if (item.source) {
-            GETWITH(auth, item.source, [
+        available = true;
+        return () => {
+            available = false;
+        };
+    }, []);
+    useEffect(() => {
+        if (item.source || (item && item.relation && item.relation.reference && item.relation.reference.url)) {
+            let filter = item.queryFilter || item.filter || _.get(item,"relation.reference.queryFilter") || _.get(item,"relation.reference.filter");
+            GETWITH(auth, item.source || item.relation.reference.url, [
                 (!item.queryFilter) ? QueryDetail("model") : undefined,
                 (!item.queryFilter) ? QueryOrder("ID", "ASC") : undefined,
                 ...(item.queryFilter && _.isArray(item.queryFilter)) ? item.queryFilter : []
             ], ({ data }) => {
-                if (available == true) {
-                    setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
-                    setDisabled(false);
-                }
+                setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
+                setDisabled(false);
             }, (err, type) => errorCatch(err, type, () => { }));
-        } else {
+        } else if (item && item.relation && item.relation.reference && item.relation.reference.data) {
+            setData(item.relation.reference.data);
+        } else if (item && item.relation && item.relation.reference && item.relation.reference.object) {
             let src = getObjectValue(item, "relation.reference.object");
             if (src) {
+                let filter = item.queryFilter || item.filter || _.get(item,"relation.reference.queryFilter") || _.get(item,"relation.reference.filter");
                 READWITH(auth, src, [
                     (!item.queryFilter) ? QueryDetail("model") : undefined,
                     (!item.queryFilter) ? QueryOrder("ID", "ASC") : undefined,
                     ...(item.queryFilter && _.isArray(item.queryFilter)) ? item.queryFilter : []
                 ], ({ data }) => {
-                    if (available == true) {
-                        setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
-                        setDisabled(false);
-                    }
+                    setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
+                    setDisabled(false);
                 }, (err, type) => errorCatch(err, type, () => { }));
             }
         }
-    }, []);
-
+    }, [auth, item]);
+    const property = (item, value) => {
+        if (item && item.relation && item.relation.reference && item.relation.reference.property && value) {
+            return value[item.relation.reference.property];
+        }
+        if (value) {
+            return value.ID;
+        }
+        return undefined;
+    };
+    const itemByProperty = (item, value) => {
+        if (item.relation.reference.property) {
+            return data.find(e => e[item.relation.reference.property] === value);
+        }
+        return data.find(e => e.ID === value);
+    };
+    const label = (item, value) => {
+        if (item && value) {
+            if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
+                return item.relation.display(value)
+            } else {
+                let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
+                return getDisplay(value, item?.relation?.display || fieldMeta?.display, fieldMeta, meta)
+            }
+        }
+        return "";
+    };
+    const by = (item) => {
+        if (changed && item.dependence && item.dependence.field) {
+            return (changed[item.dependence.by] && item.dependence.eq) ? changed[item.dependence.by][item.dependence.eq] : changed[item.dependence.eq];
+        }
+    };
     const elements = (data) => {
-        if (item.display) {
-            return data?.map(i => (
-                <Option key={i.ID} value={i.ID}>{item.display(i)}</Option>
-            ));
-        } else {
-            let o = getObjectValue(item, "relation.reference.object").toLowerCase();
-            let fieldMeta = meta[o.toLowerCase()] || meta[o];
-            const display = (display) => {
-                if (display.fields) {
-                    return display
+        if (item.dependence) {
+            if (item.dependence.field && by(item)) {
+                if (value[item.dependence.field] === by(item)) {
+                    return data?.map(i => (
+                        <Option key={property(item, value)} value={property(item, value)}>{label(item, value)}</Option>
+                    ));
                 }
             }
+        } else {
             return data?.map(i => (
-                <Option key={i.ID} value={i.ID}>{getDisplay(i, display(item.relation.display) || display(fieldMeta.display), fieldMeta, meta)}</Option>
+                <Option key={property(item, value)} value={property(item, value)}>{label(item, value)}</Option>
             ));
         }
     };
@@ -84,7 +117,7 @@ function GroupObj({ auth, item, value, onChange }) {
             mode="multiple"
             showSearch
             value={value}
-            onChange={onChange}
+            onChange={e=>onChange(e, item, itemByProperty(item, e))}
             style={{ width: "100%" }}
             allowClear={true}
             disabled={disabled}
@@ -170,7 +203,7 @@ function RangeInteger({ item, value, onChange }) {
             onAfterChange={onChange} />
     )
 }
-function Obj({ auth, item, value, onChange }) {
+function Obj({ auth, item, value, onChange, changed }) {
     const [data, setData] = useState([]);
     const [disabled, setDisabled] = useState(true);
     const meta = useMetaContext();
@@ -182,56 +215,83 @@ function Obj({ auth, item, value, onChange }) {
         };
     }, []);
     useEffect(() => {
-        if (item.source) {
-            GETWITH(auth, item.source, [
-                (!item.queryFilter) ? QueryDetail("model") : undefined,
-                (!item.queryFilter) ? QueryOrder("ID", "ASC") : undefined,
-                ...(item.queryFilter && _.isArray(item.queryFilter)) ? item.queryFilter : []
+        if (item.source || (item && item.relation && item.relation.reference && item.relation.reference.url)) {
+            let filter = item.queryFilter || item.filter || _.get(item,"relation.reference.queryFilter") || _.get(item,"relation.reference.filter");
+            GETWITH(auth, item.source || item.relation.reference.url, [
+                (!filter) ? QueryDetail("model") : undefined,
+                (!filter) ? QueryOrder("ID", "ASC") : undefined,
+                ...(filter && _.isArray(filter)) ? filter : []
             ], ({ data }) => {
-                if (available == true) {
-                    setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
-                    setDisabled(false);
-                }
+                setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
+                setDisabled(false);
             }, (err, type) => errorCatch(err, type, () => { }));
-        } else {
+        } else if (item && item.relation && item.relation.reference && item.relation.reference.data) {
+            setData(item.relation.reference.data);
+        } else if (item && item.relation && item.relation.reference && item.relation.reference.object) {
             let src = getObjectValue(item, "relation.reference.object");
             if (src) {
+                let filter = item.queryFilter || item.filter || _.get(item,"relation.reference.queryFilter") || _.get(item,"relation.reference.filter");
                 READWITH(auth, src, [
-                    (!item.queryFilter) ? QueryDetail("model") : undefined,
-                    (!item.queryFilter) ? QueryOrder("ID", "ASC") : undefined,
-                    ...(item.queryFilter && _.isArray(item.queryFilter)) ? item.queryFilter : []
+                    (!filter) ? QueryDetail("model") : undefined,
+                    (!filter) ? QueryOrder("ID", "ASC") : undefined,
+                    ...(filter && _.isArray(filter)) ? filter : []
                 ], ({ data }) => {
-                    if (available == true) {
-                        setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
-                        setDisabled(false);
-                    }
+                    setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
+                    setDisabled(false);
                 }, (err, type) => errorCatch(err, type, () => { }));
             }
         }
-    }, []);
-
+    }, [auth, item]);
+    const property = (item, value) => {
+        if (item && item.relation && item.relation.reference && item.relation.reference.property && value) {
+            return value[item.relation.reference.property];
+        }
+        if (value) {
+            return value.ID;
+        }
+        return undefined;
+    };
+    const itemByProperty = (item, value) => {
+        if (item.relation.reference.property) {
+            return data.find(e => e[item.relation.reference.property] === value);
+        }
+        return data.find(e => e.ID === value);
+    };
+    const label = (item, value) => {
+        if (item && value) {
+            if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
+                return item.relation.display(value)
+            } else {
+                let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
+                return getDisplay(value, item?.relation?.display || fieldMeta?.display, fieldMeta, meta)
+            }
+        }
+        return "";
+    };
+    const by = (item) => {
+        if (changed && item.dependence && item.dependence.field) {
+            return (changed[item.dependence.by] && item.dependence.eq) ? changed[item.dependence.by][item.dependence.eq] : changed[item.dependence.eq];
+        }
+    };
     const elements = (data) => {
-        if (item.display) {
-            return data?.map(i => (
-                <Option key={i.ID} value={i.ID}>{item.display(i)}</Option>
-            ));
-        } else {
-            let o = getObjectValue(item, "relation.reference.object");
-            let fieldMeta = meta[o.toLowerCase()] || meta[o];
-            const display = (display) => {
-                if (display.fields) {
-                    return display
+        if (item.dependence) {
+            if (item.dependence.field && by(item)) {
+                if (value[item.dependence.field] === by(item)) {
+                    return data?.map(i => (
+                        <Option key={property(item, value)} value={property(item, value)}>{label(item, value)}</Option>
+                    ));
                 }
             }
+        } else {
             return data?.map(i => (
-                <Option key={i.ID} value={i.ID}>{getDisplay(i, display(item.relation.display) || display(fieldMeta.display), fieldMeta, meta)}</Option>
+                <Option key={property(item, value)} value={property(item, value)}>{label(item, value)}</Option>
             ));
         }
     };
     return (
         <Select showSearch
             value={value}
-            onChange={onChange}
+            onChange={e=>onChange(e, item, itemByProperty(item, e))}
             style={{ width: "100%" }}
             allowClear={true}
             disabled={disabled}
@@ -341,14 +401,14 @@ function Unknown({ item }) {
 }
 //------------------------------------------------------------------------------------
 function FilterMode(props) {
-    const { auth, item, value, onChange, filter, mode } = props;
+    const { auth, item, value, onChange, changed, mode } = props;
     let type = ((item.view)?item.view.type:undefined) || item.type;
     switch (item.filterType) {
         case "group":
             switch (type) {
                 case "object":
                 case "document":
-                    return (<GroupObj auth={auth} item={item} value={value} onChange={onChange}></GroupObj>)
+                    return (<GroupObj auth={auth} item={item} value={value} onChange={onChange} changed={changed}></GroupObj>)
                 default:
                     return (<Unknown auth={auth} item={item} value={value} onChange={onChange}></Unknown>)
             }
@@ -388,7 +448,7 @@ function FilterMode(props) {
     }
 }
 function ModelMode(props) {
-    const { auth, item, value, onChange, filter, mode } = props;
+    const { auth, item, value, onChange, changed, mode } = props;
     let type = ((item.view)?item.view.type:undefined) || item.type;
     switch (type) {
         case "text":
@@ -420,7 +480,7 @@ function ModelMode(props) {
             return (<DateTime auth={auth} item={item} value={value} onChange={onChange}></DateTime>)
         case "object":
         case "document":
-            return (<Obj auth={auth} item={item} value={value} onChange={onChange}></Obj>)
+            return (<Obj auth={auth} item={item} value={value} onChange={onChange} changed={changed}></Obj>)
         default:
             return (<Unknown auth={auth} item={item} value={value} onChange={onChange}></Unknown>)
     }
@@ -436,7 +496,7 @@ function ModelMode(props) {
 // }
 
 export function Field(props) {
-    const { auth, item, value, onChange, filter, mode } = props;
+    const { auth, item, value, onChange, changed, mode } = props;
     switch (mode) {
         case "model":
             return <ModelMode {...props} />

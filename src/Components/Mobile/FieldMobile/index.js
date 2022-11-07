@@ -248,7 +248,6 @@ const useStyles = createUseStyles({
     }
 })
 
-
 function ActionItem({ auth, item, value, onChange, changed }) {
     const classes = useStyles()
     return (<React.Fragment>
@@ -330,7 +329,7 @@ function RangeDate({ item, value, onChange }) {
                 <div>{item.label}</div>
                 <Button fill='none' size='mini' onClick={(v) => {
                     onChange();
-                    }}>
+                }}>
                     <Icofont icon="close" />
                 </Button>
             </div>
@@ -354,8 +353,8 @@ function RangeDate({ item, value, onChange }) {
                         onClose={() => {
                             setVisible1(false)
                         }}
-                        onConfirm={(v) => onChange([moment(v), (val[1])?moment(val[1]):moment(v)])}
-                        value={val[0]||null}
+                        onConfirm={(v) => onChange([moment(v), (val[1]) ? moment(val[1]) : moment(v)])}
+                        value={val[0] || null}
                     >
                         {value =>
                             value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || `выберите  ${item.label.toLowerCase()}`}</span>
@@ -381,8 +380,8 @@ function RangeDate({ item, value, onChange }) {
                         onClose={() => {
                             setVisible2(false)
                         }}
-                        onConfirm={(v) => onChange([(val[0])?moment(val[0]):moment(v), moment(v)])}
-                        value={val[1]||null}
+                        onConfirm={(v) => onChange([(val[0]) ? moment(val[0]) : moment(v), moment(v)])}
+                        value={val[1] || null}
                     >
                         {value =>
                             value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || `выберите  ${item.label.toLowerCase()}`}</span>
@@ -417,16 +416,16 @@ function RangeFloat({ item, value, onChange }) {
     return (
         <div style={{ padding: "5px 0px" }}>
             <div className='bg bg-grey' style={{
-                    textAlign: "left",
-                    paddingLeft: "5px",
-                    marginBottom: "5px",
-                    display: "flex",
-                    justifyContent: "space-between"
-                }}>
+                textAlign: "left",
+                paddingLeft: "5px",
+                marginBottom: "5px",
+                display: "flex",
+                justifyContent: "space-between"
+            }}>
                 <div>{item.label}</div>
                 <Button fill='none' size='mini' onClick={(v) => {
                     onChange();
-                    }}>
+                }}>
                     <Icofont icon="close" />
                 </Button>
             </div><div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
@@ -494,16 +493,16 @@ function RangeInteger({ item, value, onChange }) {
     return (
         <div style={{ padding: "5px 0px" }}>
             <div className='bg bg-grey' style={{
-                    textAlign: "left",
-                    paddingLeft: "5px",
-                    marginBottom: "5px",
-                    display: "flex",
-                    justifyContent: "space-between"
-                }}>
+                textAlign: "left",
+                paddingLeft: "5px",
+                marginBottom: "5px",
+                display: "flex",
+                justifyContent: "space-between"
+            }}>
                 <div>{item.label}</div>
                 <Button fill='none' size='mini' onClick={(v) => {
                     onChange();
-                    }}>
+                }}>
                     <Icofont icon="close" />
                 </Button>
             </div><div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -547,87 +546,107 @@ function RangeInteger({ item, value, onChange }) {
         </div>
     )
 }
-function Obj({ auth, item, value, onChange }) {
-    // console.log("Obj", { item, value });
+function Obj({ auth, item, value, onChange, changed }) {
     const classes = useStyles()
     const [data, setData] = useState([]);
-    const [disabled, setDisabled] = useState(true);
-    const [available, setAvailable] = useState(false);
     const meta = useMetaContext();
+    const [disabled, setDisabled] = useState(true);
     useEffect(() => {
-        // if(available){
-        if (item.source) {
-            // console.log("Obj - 1");
-            GETWITH(auth, item.source, [
-                (!item.queryFilter) ? QueryDetail("model") : undefined,
-                (!item.queryFilter) ? QueryOrder("ID", "ASC") : undefined,
-                ...(item.queryFilter && _.isArray(item.queryFilter)) ? item.queryFilter : []
+        if (item.source || (item && item.relation && item.relation.reference && item.relation.reference.url)) {
+            let filter = item.queryFilter || item.filter || _.get(item,"relation.reference.queryFilter") || _.get(item,"relation.reference.filter");
+            GETWITH(auth, item.source || item.relation.reference.url, [
+                (!filter) ? QueryDetail("model") : undefined,
+                (!filter) ? QueryOrder("ID", "ASC") : undefined,
+                ...(filter && _.isArray(filter)) ? filter : []
             ], ({ data }) => {
-                // console.log("Obj - 2");
                 setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
-                // console.log("Obj - 3");
                 setDisabled(false);
-                // console.log("Obj - 4");
             }, (err, type) => errorCatch(err, type, () => { }));
-        } else {
+        } else if (item && item.relation && item.relation.reference && item.relation.reference.data) {
+            setData(item.relation.reference.data);
+        } else if (item && item.relation && item.relation.reference && item.relation.reference.object) {
             let src = getObjectValue(item, "relation.reference.object");
             if (src) {
+                let filter = item.queryFilter || item.filter || _.get(item,"relation.reference.queryFilter") || _.get(item,"relation.reference.filter");
                 READWITH(auth, src, [
-                    (!item.queryFilter) ? QueryDetail("model") : undefined,
-                    (!item.queryFilter) ? QueryOrder("ID", "ASC") : undefined,
-                    ...(item.queryFilter && _.isArray(item.queryFilter)) ? item.queryFilter : []
+                    (!filter) ? QueryDetail("model") : undefined,
+                    (!filter) ? QueryOrder("ID", "ASC") : undefined,
+                    ...(filter && _.isArray(filter)) ? filter : []
                 ], ({ data }) => {
                     setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
                     setDisabled(false);
                 }, (err, type) => errorCatch(err, type, () => { }));
             }
         }
-        // }
     }, [auth, item]);
-
-    const oui = [];
-    if (data) {
-        if (item.display) {
-            for (let idx = 0; idx < data.length; idx++) {
-                const i = data[idx];
-                oui.push({
-                    label: item.display(i),
-                    value: i.ID,
-                });
-            }
-        } else {
-            let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
-            const display = (display) => {
-                if (display.fields) {
-                    return display
-                }
-            }
-            for (let idx = 0; idx < data.length; idx++) {
-                const i = data[idx];
-                oui.push({
-                    label: getDisplay(i, display(item.relation.display) || display(fieldMeta.display), fieldMeta, meta),
-                    value: i.ID,
-                });
+    const property = (item, value) => {
+        if (item && item.relation && item.relation.reference && item.relation.reference.property && value) {
+            return value[item.relation.reference.property];
+        }
+        if (value) {
+            return value.ID;
+        }
+        return undefined;
+    };
+    const itemByProperty = (item, value) => {
+        if (item.relation.reference.property) {
+            return data.find(e => e[item.relation.reference.property] === value);
+        }
+        return data.find(e => e.ID === value);
+    };
+    const label = (item, value) => {
+        if (item && value) {
+            if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
+                return item.relation.display(value)
+            } else {
+                let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
+                return getDisplay(value, item?.relation?.display || fieldMeta?.display, fieldMeta, meta)
             }
         }
+        return "";
+    };
+    const by = (item) => {
+        if (changed && item.dependence && item.dependence.field) {
+            return (changed[item.dependence.by] && item.dependence.eq) ? changed[item.dependence.by][item.dependence.eq] : changed[item.dependence.eq];
+        }
+    };
+    const oui = [];
+    if (data) {
+        data.forEach((value) => {
+            if (item.dependence) {
+                if (item.dependence.field && by(item)) {
+                    if (value[item.dependence.field] === by(item)) {
+                        oui.push({
+                            label: label(item, value),
+                            value: property(item, value),
+                        });
+                    }
+                }
+            } else {
+                oui.push({
+                    label: label(item, value),
+                    value: property(item, value),
+                });
+            }
+        });
     }
-    const [visible, setVisible] = useState(false);
+    const [visible, setVisible] = React.useState(false)
     const current = React.useMemo(() => {
-        return oui?.find(e => e.value === value)?.label;
-    }, [value])
+        return oui?.find((e) => e.value == value)?.label
+    }, [value, oui])
     return (
         <div style={{ padding: "5px 0px" }}>
             <div className='bg bg-grey' style={{
-                    textAlign: "left",
-                    paddingLeft: "5px",
-                    marginBottom: "5px",
-                    display: "flex",
-                    justifyContent: "space-between"
-                }}>
+                textAlign: "left",
+                paddingLeft: "5px",
+                marginBottom: "5px",
+                display: "flex",
+                justifyContent: "space-between"
+            }}>
                 <div>{item.label}</div>
                 <Button fill='none' size='mini' onClick={(v) => {
-                    onChange();
-                    }}>
+                    onChange(undefined, item, undefined);
+                }}>
                     <Icofont icon="close" />
                 </Button>
             </div>
@@ -650,7 +669,7 @@ function Obj({ auth, item, value, onChange }) {
                         columns={[oui]}
                         onConfirm={e => {
                             if (onChange) {
-                                onChange(e[0]);
+                                onChange(e[0], item, itemByProperty(item, e[0]));
                             }
                         }}
                         confirmText={item.okText || 'Выбрать'}
@@ -662,6 +681,114 @@ function Obj({ auth, item, value, onChange }) {
         </div>
     )
 }
+// function Obj({ auth, item, value, onChange }) {
+//     const classes = useStyles()
+//     const [data, setData] = useState([]);
+//     const [disabled, setDisabled] = useState(true);
+//     const [available, setAvailable] = useState(false);
+//     const meta = useMetaContext();
+//     useEffect(() => {
+//         if (item.source) {
+//             GETWITH(auth, item.source, [
+//                 (!item.queryFilter) ? QueryDetail("model") : undefined,
+//                 (!item.queryFilter) ? QueryOrder("ID", "ASC") : undefined,
+//                 ...(item.queryFilter && _.isArray(item.queryFilter)) ? item.queryFilter : []
+//             ], ({ data }) => {
+//                 setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
+//                 setDisabled(false);
+//             }, (err, type) => errorCatch(err, type, () => { }));
+//         } else {
+//             let src = getObjectValue(item, "relation.reference.object");
+//             if (src) {
+//                 READWITH(auth, src, [
+//                     (!item.queryFilter) ? QueryDetail("model") : undefined,
+//                     (!item.queryFilter) ? QueryOrder("ID", "ASC") : undefined,
+//                     ...(item.queryFilter && _.isArray(item.queryFilter)) ? item.queryFilter : []
+//                 ], ({ data }) => {
+//                     setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
+//                     setDisabled(false);
+//                 }, (err, type) => errorCatch(err, type, () => { }));
+//             }
+//         }
+//     }, [auth, item]);
+
+//     const oui = [];
+//     if (data) {
+//         if (item.display) {
+//             for (let idx = 0; idx < data.length; idx++) {
+//                 const i = data[idx];
+//                 oui.push({
+//                     label: item.display(i),
+//                     value: i.ID,
+//                 });
+//             }
+//         } else {
+//             let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
+//             const display = (display) => {
+//                 if (display.fields) {
+//                     return display
+//                 }
+//             }
+//             for (let idx = 0; idx < data.length; idx++) {
+//                 const i = data[idx];
+//                 oui.push({
+//                     label: getDisplay(i, display(item.relation.display) || display(fieldMeta.display), fieldMeta, meta),
+//                     value: i.ID,
+//                 });
+//             }
+//         }
+//     }
+//     const [visible, setVisible] = useState(false);
+//     const current = React.useMemo(() => {
+//         return oui?.find(e => e.value === value)?.label;
+//     }, [value])
+//     return (
+//         <div style={{ padding: "5px 0px" }}>
+//             <div className='bg bg-grey' style={{
+//                     textAlign: "left",
+//                     paddingLeft: "5px",
+//                     marginBottom: "5px",
+//                     display: "flex",
+//                     justifyContent: "space-between"
+//                 }}>
+//                 <div>{item.label}</div>
+//                 <Button fill='none' size='mini' onClick={(v) => {
+//                     onChange();
+//                     }}>
+//                     <Icofont icon="close" />
+//                 </Button>
+//             </div>
+//             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
+//                 <div onClick={() => {
+//                     setVisible(true)
+//                 }} style={{
+//                     flex: "1",
+//                     border: "1px solid #e5e5e5",
+//                     borderRadius: "4px",
+//                     padding: "2px 6px"
+//                 }}>
+//                     <Picker
+//                         visible={visible}
+//                         onClose={() => {
+//                             setVisible(false)
+//                         }}
+//                         disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
+//                         value={[value]}
+//                         columns={[oui]}
+//                         onConfirm={e => {
+//                             if (onChange) {
+//                                 onChange(e[0]);
+//                             }
+//                         }}
+//                         confirmText={item.okText || 'Выбрать'}
+//                         cancelText={item.dismissText || 'Отмена'}>
+//                     </Picker>
+//                     {current || <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || `выберите  ${item.label.toLowerCase()}`}</span>}
+//                 </div>
+//             </div>
+//         </div>
+//     )
+// }
 function Date({ item, value, onChange }) {
     // console.log("Date", { item, value });
     const classes = useStyles()
@@ -677,16 +804,16 @@ function Date({ item, value, onChange }) {
     return (
         <div style={{ padding: "5px 0px" }}>
             <div className='bg bg-grey' style={{
-                    textAlign: "left",
-                    paddingLeft: "5px",
-                    marginBottom: "5px",
-                    display: "flex",
-                    justifyContent: "space-between"
-                }}>
+                textAlign: "left",
+                paddingLeft: "5px",
+                marginBottom: "5px",
+                display: "flex",
+                justifyContent: "space-between"
+            }}>
                 <div>{item.label}</div>
                 <Button fill='none' size='mini' onClick={(v) => {
                     onChange();
-                    }}>
+                }}>
                     <Icofont icon="close" />
                 </Button>
             </div>
@@ -711,7 +838,7 @@ function Date({ item, value, onChange }) {
                             setVisible(false)
                         }}
                         onConfirm={value => onChange(moment(value))}
-                        value={val||null}
+                        value={val || null}
                     >
                         {value =>
                             value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || `выберите  ${item.label.toLowerCase()}`}</span>
@@ -737,16 +864,16 @@ function DateTime({ item, value, onChange }) {
     return (
         <div style={{ padding: "5px 0px" }}>
             <div className='bg bg-grey' style={{
-                    textAlign: "left",
-                    paddingLeft: "5px",
-                    marginBottom: "5px",
-                    display: "flex",
-                    justifyContent: "space-between"
-                }}>
+                textAlign: "left",
+                paddingLeft: "5px",
+                marginBottom: "5px",
+                display: "flex",
+                justifyContent: "space-between"
+            }}>
                 <div>{item.label}</div>
                 <Button fill='none' size='mini' onClick={(v) => {
                     onChange();
-                    }}>
+                }}>
                     <Icofont icon="close" />
                 </Button>
             </div>
@@ -771,7 +898,7 @@ function DateTime({ item, value, onChange }) {
                             setVisible(false)
                         }}
                         onConfirm={value => onChange(moment(value))}
-                        value={val||null}
+                        value={val || null}
                     >
                         {value =>
                             value ? moment(value).format('YYYY-MM-DD HH:mm:ss') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || `выберите  ${item.label.toLowerCase()}`}</span>
@@ -797,16 +924,16 @@ function Time({ item, value, onChange }) {
     return (
         <div style={{ padding: "5px 0px" }}>
             <div className='bg bg-grey' style={{
-                    textAlign: "left",
-                    paddingLeft: "5px",
-                    marginBottom: "5px",
-                    display: "flex",
-                    justifyContent: "space-between"
-                }}>
+                textAlign: "left",
+                paddingLeft: "5px",
+                marginBottom: "5px",
+                display: "flex",
+                justifyContent: "space-between"
+            }}>
                 <div>{item.label}</div>
                 <Button fill='none' size='mini' onClick={(v) => {
                     onChange();
-                    }}>
+                }}>
                     <Icofont icon="close" />
                 </Button>
             </div>
@@ -831,7 +958,7 @@ function Time({ item, value, onChange }) {
                             setVisible(false)
                         }}
                         onConfirm={value => onChange(moment(value))}
-                        value={val||null}
+                        value={val || null}
                     >
                         {value =>
                             value ? moment(value).format('HH:mm:ss') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || `выберите  ${item.label.toLowerCase()}`}</span>
@@ -861,16 +988,16 @@ function Float({ item, value, onChange }) {
     return (
         <div style={{ padding: "5px 0px" }}>
             <div className='bg bg-grey' style={{
-                    textAlign: "left",
-                    paddingLeft: "5px",
-                    marginBottom: "5px",
-                    display: "flex",
-                    justifyContent: "space-between"
-                }}>
+                textAlign: "left",
+                paddingLeft: "5px",
+                marginBottom: "5px",
+                display: "flex",
+                justifyContent: "space-between"
+            }}>
                 <div>{item.label}</div>
                 <Button fill='none' size='mini' onClick={(v) => {
                     onChange();
-                    }}>
+                }}>
                     <Icofont icon="close" />
                 </Button>
             </div>
@@ -885,12 +1012,12 @@ function Float({ item, value, onChange }) {
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
                         placeholder={item.placeholder || "введите " + item.label.toLowerCase()}
                         // clearable
-                        onChange={v=>{
-                            if(!isNaN(v)){
+                        onChange={v => {
+                            if (!isNaN(v)) {
                                 onChange(v);
                             }
                         }}
-                        value={value||""}
+                        value={value || ""}
                     />
                 </div>
             </div>
@@ -903,16 +1030,16 @@ function Integer({ item, value, onChange }) {
     return (
         <div style={{ padding: "5px 0px" }}>
             <div className='bg bg-grey' style={{
-                    textAlign: "left",
-                    paddingLeft: "5px",
-                    marginBottom: "5px",
-                    display: "flex",
-                    justifyContent: "space-between"
-                }}>
+                textAlign: "left",
+                paddingLeft: "5px",
+                marginBottom: "5px",
+                display: "flex",
+                justifyContent: "space-between"
+            }}>
                 <div>{item.label}</div>
                 <Button fill='none' size='mini' onClick={(v) => {
                     onChange();
-                    }}>
+                }}>
                     <Icofont icon="close" />
                 </Button>
             </div>
@@ -927,12 +1054,12 @@ function Integer({ item, value, onChange }) {
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
                         placeholder={item.placeholder || "введите " + item.label.toLowerCase()}
                         // clearable
-                        onChange={v=>{
-                            if(!isNaN(v) && _.isInteger(+v)){
-                                onChange(""+(+v));
-                            } 
+                        onChange={v => {
+                            if (!isNaN(v) && _.isInteger(+v)) {
+                                onChange("" + (+v));
+                            }
                         }}
-                        value={value||""}
+                        value={value || ""}
                     />
                 </div>
             </div>
@@ -945,16 +1072,16 @@ function String({ item, value, onChange }) {
     return (
         <div style={{ padding: "5px 0px" }}>
             <div className='bg bg-grey' style={{
-                    textAlign: "left",
-                    paddingLeft: "5px",
-                    marginBottom: "5px",
-                    display: "flex",
-                    justifyContent: "space-between"
-                }}>
+                textAlign: "left",
+                paddingLeft: "5px",
+                marginBottom: "5px",
+                display: "flex",
+                justifyContent: "space-between"
+            }}>
                 <div>{item.label}</div>
                 <Button fill='none' size='mini' onClick={(v) => {
                     onChange();
-                    }}>
+                }}>
                     <Icofont icon="close" />
                 </Button>
             </div>
@@ -969,7 +1096,7 @@ function String({ item, value, onChange }) {
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
                         autoSize={{ minRows: 2, maxRows: 5 }}
                         onChange={onChange}
-                        value={value||""}
+                        value={value || ""}
                         placeholder={item.placeholder || "введите " + item.label.toLowerCase()}
                     />
                 </div>
@@ -993,13 +1120,13 @@ function Unknown({ item }) {
 //     source: "/api/query/name"
 // }
 
-export function FieldMobile({ auth, item, value, onChange }) {
+export function FieldMobile({ auth, item, value, onChange, changed }) {
     switch (item.filterType) {
         case "group":
             switch (item.type) {
                 case "object":
                 case "document":
-                    return (<Obj auth={auth} item={item} value={value} onChange={onChange}></Obj>)
+                    return (<Obj auth={auth} item={item} value={value} onChange={onChange} changed={changed}></Obj>)
                 default:
                     return (<Unknown auth={auth} item={item} value={value} onChange={onChange}></Unknown>)
             }
@@ -1055,7 +1182,7 @@ export function FieldMobile({ auth, item, value, onChange }) {
                     return (<DateTime auth={auth} item={item} value={value} onChange={onChange}></DateTime>)
                 case "object":
                 case "document":
-                    return (<Obj auth={auth} item={item} value={value} onChange={onChange}></Obj>)
+                    return (<Obj auth={auth} item={item} value={value} onChange={onChange} changed={changed}></Obj>)
                 case "action":
                     return (<ActionItem auth={auth} item={item} value={value} onChange={onChange}></ActionItem>)
                 default:
