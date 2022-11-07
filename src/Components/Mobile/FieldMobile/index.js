@@ -20,236 +20,7 @@ if (isIPhone) {
     };
 }
 
-const useStyles = createUseStyles({
-    FormNav: {
-        display: "flex",
-        justifyContent: "flex-end",
-        paddingBottom: "10px",
-    },
-    FormItem: {
-        '&.ant-form-item': {
-            marginBottom: "0px"
-        }
-    },
-    Field: {},
-    Unknown: {},
-    Act: {
-        '&.am-list-item .am-list-line .am-list-brief': {
-            textAlign: "left",
-            paddingTop: "0px",
-            paddingBottom: "14px",
-            fontWeight: "300",
-            fontSize: "16px",
-            marginTop: "0px"
-        },
-        '&.am-list-item .am-list-line .am-list-content': {
-            fontSize: "14px",
-            paddingBottom: "0px",
-        },
-        '&.am-list-item .am-list-line .am-list-arrow': {
-            position: "absolute",
-            right: "0",
-            top: "3px",
-        },
-        '&.am-list-item': {
-            paddingLeft: "0px"
-        },
-        '&.am-list-item .am-list-line': {
-            padding: "0px",
-            display: "block",
-        },
-        '&.am-list-item .am-list-line::after': {
-            backgroundColor: "transparent!important"
-        }
-    },
-    Obj: {
-        '&.am-list-item .am-list-line .am-list-content': {
-            fontSize: "14px",
-            paddingTop: "0px",
-            paddingBottom: "0px",
-        },
-        '&.am-list-item .am-list-line .am-list-arrow': {
-            position: "absolute",
-            right: "0",
-            top: "3px",
-        },
-        '&.am-list-item .am-list-line .am-list-extra': {
-            textAlign: "left",
-            paddingTop: "0px",
-            paddingBottom: "14px",
-            fontWeight: "300"
-        },
-        '&.am-list-item': {
-            paddingLeft: "0px",
-        },
-        '&.am-list-item .am-list-line': {
-            display: "block",
-            paddingRight: "0px"
-        },
-        '&.am-list-item .am-list-line::after': {
-            backgroundColor: "transparent!important"
-        }
-    },
-    Time: {
-        '&.am-list-item': {
-            paddingLeft: "0px"
-        },
-        '& .am-list-line': {
-            display: "block",
-        },
-        '&.am-list-item .am-list-line .am-list-content': {
-            fontSize: "14px",
-            paddingBottom: "0px",
-            paddingTop: "0px",
-        },
-        '&.am-list-item .am-list-line .am-list-arrow': {
-            position: "absolute",
-            right: "0",
-            top: "3px",
-        },
-        '&.am-list-item .am-list-line .am-list-brief': {
-            textAlign: "left",
-            paddingTop: "0px",
-            fontSize: "16px",
-            paddingBottom: "14px",
-            fontWeight: "300",
-            marginTop: "0px"
-        },
-        '&.am-list-item .am-list-line .am-list-extra': {
-            textAlign: "left",
-            paddingTop: "0px",
-            fontSize: "16px",
-            paddingBottom: "14px",
-            fontWeight: "300"
-        },
-        '&.am-list-item .am-list-line::after': {
-            backgroundColor: "transparent!important"
-        },
-        '&.am-list-item': {
-            paddingLeft: "0px"
-        },
-        '&.am-list-item .am-list-line': {
-            paddingRight: "0px"
-        },
-    },
-    Boolean: {
-        '&.am-list-item': {
-            paddingLeft: "0px"
-        },
-        '&.am-list-item .am-list-line::after': {
-            backgroundColor: "transparent!important"
-        }
-    },
-    Float: {
-        '&.am-list-item': {
-            paddingLeft: "0px"
-        },
-    },
-    Integer: {
-        '&.am-list-item': {
-            display: "initial",
-        },
-        '&.am-list-item .am-list-line': {
-            paddingLeft: "0px",
-            display: "block",
-        },
-        '&.am-list-item.am-input-item': {
-            paddingLeft: "0px"
-        },
-        '&.am-list-item .am-input-clear': {
-            position: "absolute",
-            right: "0",
-            top: "0",
-            backgroundSize: "17px auto",
-            width: "17px",
-            height: "17px",
-            marginTop: "0px"
-        },
-        '&.am-list-item .am-input-label': {
-            width: "100%",
-            fontSize: "14px",
-            minHeight: "20px",
-            lineHeight: "20px"
-        },
-        '&.am-list-item .am-input-control': {
-            paddingTop: "0px",
-            paddingBottom: "14px",
-            fontSize: "14px"
-        },
-        '&.am-list-item .am-input-control input': {
-            fontSize: "16px",
-            color: "#888"
-        },
-        '& .am-input-control input': {
-            textAlign: "start",
-        },
-    },
-    String: {
-        '&.am-list-item': {
-            paddingLeft: "0px",
-            display: "block",
-        },
-        '&.am-list-item .am-textarea-clear': {
-            position: "absolute",
-            right: "0",
-            top: "0",
-            backgroundSize: "17px auto",
-            width: "17px",
-            height: "17px",
-            marginTop: "0px"
-        },
-        '&.am-list-item .am-textarea-label': {
-            width: "100%",
-            fontSize: "14px",
-            minHeight: "20px",
-            lineHeight: "20px",
-            marginRight: "0px"
-        },
-        '&.am-list-item .am-textarea-control': {
-            paddingTop: "0px",
-            paddingBottom: "14px",
-        },
-        '&.am-list-item.am-textarea-item': {
-            flexDirection: "column",
-            paddingLeft: "0px",
-            paddingRight: "0px",
-        },
-        '&.am-list-item .am-textarea-control': {
-            width: "100%"
-        },
-        '&.am-list-item .am-textarea-control textarea': {
-            fontSize: "16px",
-            color: "#888"
-        },
-        '& .am-textarea-control textarea': {
-            textAlign: "start",
-        },
-    },
-    Frm: {
-
-    },
-    Search: {
-        '& .am-search': {
-            height: "32px",
-            padding: "0 2px",
-            backgroundColor: "#efeff4",
-        },
-        '& .am-search-cancel.am-search-cancel-show.am-search-cancel-anim': {
-            marginRight: "6px!important",
-        }
-    },
-    RangeFloatInput: {
-        '&.am-list-item.am-input-item': {
-            paddingLeft: "0",
-        },
-        '&.am-list-item.am-input-item .am-list-line .am-input-control input': {
-            textAlign: "center",
-        }
-    }
-})
-
 function ActionItem({ auth, item, value, onChange, changed }) {
-    const classes = useStyles()
     return (<React.Fragment>
         <ActionPickerItem
             auth={auth}
@@ -301,8 +72,6 @@ function ActionItem({ auth, item, value, onChange, changed }) {
     </React.Fragment>);
 }
 function RangeDate({ item, value, onChange }) {
-    // console.log("RangeDate", { item, value });
-    const classes = useStyles()
     const [visible1, setVisible1] = useState(false)
     const [visible2, setVisible2] = useState(false)
     const [val, setVal] = useState([]);
@@ -393,8 +162,6 @@ function RangeDate({ item, value, onChange }) {
     )
 }
 function RangeFloat({ item, value, onChange }) {
-    // console.log("RangeFloat", { item, value });
-    const classes = useStyles()
     const [val, setVal] = useState();
     useEffect(() => {
         setVal(value);
@@ -470,8 +237,6 @@ function RangeFloat({ item, value, onChange }) {
     )
 }
 function RangeInteger({ item, value, onChange }) {
-    // console.log("RangeInteger", { item, value });
-    const classes = useStyles()
     const [val, setVal] = useState();
     useEffect(() => {
         setVal(value);
@@ -547,31 +312,41 @@ function RangeInteger({ item, value, onChange }) {
     )
 }
 function Obj({ auth, item, value, onChange, changed }) {
-    const classes = useStyles()
     const [data, setData] = useState([]);
     const meta = useMetaContext();
+    const dataOrContent = (data) => {
+        return (data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data
+    }
+    const defaultQueryParams = (filter) => {
+        if (!filter) {
+            return [
+                QueryDetail("model"),
+                QueryOrder("ID", "ASC")
+            ]
+        } else if (_.isArray(filter)){
+            return filter
+        }
+        return []
+    }
     useEffect(() => {
-        if (item.source || (item && item.relation && item.relation.reference && item.relation.reference.url)) {
+        if (item.source || item.url || (item && _.get(item,"relation.reference.url"))) {
             let filter = item.queryFilter || item.filter || _.get(item,"relation.reference.queryFilter") || _.get(item,"relation.reference.filter");
-            GETWITH(auth, item.source || item.relation.reference.url, [
-                (!filter) ? QueryDetail("model") : undefined,
-                (!filter) ? QueryOrder("ID", "ASC") : undefined,
-                ...(filter && _.isArray(filter)) ? filter : []
+            let url = item.source || item.relation.reference.url;
+            GETWITH(auth, url, [
+                ...defaultQueryParams(filter)
             ], ({ data }) => {
-                setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
+                setData(dataOrContent(data));
             }, (err, type) => errorCatch(err, type, () => { }));
-        } else if (item && item.relation && item.relation.reference && item.relation.reference.data) {
+        } else if (item && _.get(item,"relation.reference.data")) {
             setData(item.relation.reference.data);
-        } else if (item && item.relation && item.relation.reference && item.relation.reference.object) {
-            let src = getObjectValue(item, "relation.reference.object");
-            if (src) {
+        } else if (item && _.get(item,"relation.reference.object")) {
+            let object = getObjectValue(item, "relation.reference.object");
+            if (object) {
                 let filter = item.queryFilter || item.filter || _.get(item,"relation.reference.queryFilter") || _.get(item,"relation.reference.filter");
-                READWITH(auth, src, [
-                    (!filter) ? QueryDetail("model") : undefined,
-                    (!filter) ? QueryOrder("ID", "ASC") : undefined,
-                    ...(filter && _.isArray(filter)) ? filter : []
+                READWITH(auth, object, [
+                    ...defaultQueryParams(filter)
                 ], ({ data }) => {
-                    setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
+                    setData(dataOrContent(data));
                 }, (err, type) => errorCatch(err, type, () => { }));
             }
         }
@@ -593,7 +368,9 @@ function Obj({ auth, item, value, onChange, changed }) {
     };
     const label = (item, value) => {
         if (item && value) {
-            if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
+            if (item.display && _.isFunction(item.display)) {
+                return item.display(value)
+            } else if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
                 return item.relation.display(value)
             } else {
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
@@ -679,7 +456,6 @@ function Obj({ auth, item, value, onChange, changed }) {
     )
 }
 // function Obj({ auth, item, value, onChange }) {
-//     const classes = useStyles()
 //     const [data, setData] = useState([]);
 //     const [disabled, setDisabled] = useState(true);
 //     const [available, setAvailable] = useState(false);
@@ -787,8 +563,6 @@ function Obj({ auth, item, value, onChange, changed }) {
 //     )
 // }
 function Date({ item, value, onChange }) {
-    // console.log("Date", { item, value });
-    const classes = useStyles()
     const [visible, setVisible] = useState(false)
     const [val, setVal] = useState();
     useEffect(() => {
@@ -847,8 +621,6 @@ function Date({ item, value, onChange }) {
     )
 }
 function DateTime({ item, value, onChange }) {
-    // console.log("DateTime", { item, value });
-    const classes = useStyles()
     const [visible, setVisible] = useState(false)
     const [val, setVal] = useState();
     useEffect(() => {
@@ -907,8 +679,6 @@ function DateTime({ item, value, onChange }) {
     )
 }
 function Time({ item, value, onChange }) {
-    // console.log("Time", { item, value });
-    const classes = useStyles()
     const [visible, setVisible] = useState(false)
     const [val, setVal] = useState();
     useEffect(() => {
@@ -967,8 +737,6 @@ function Time({ item, value, onChange }) {
     )
 }
 function Boolean({ item, value, onChange }) {
-    // console.log("Boolean", { item, value });
-    const classes = useStyles()
     return (
         <Checkbox
             disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
@@ -980,8 +748,6 @@ function Boolean({ item, value, onChange }) {
     )
 }
 function Float({ item, value, onChange }) {
-    // console.log("Float", { item, value });
-    const classes = useStyles()
     return (
         <div style={{ padding: "5px 0px" }}>
             <div className='bg bg-grey' style={{
@@ -1022,8 +788,6 @@ function Float({ item, value, onChange }) {
     )
 }
 function Integer({ item, value, onChange }) {
-    // console.log("Integer", { item, value });
-    const classes = useStyles()
     return (
         <div style={{ padding: "5px 0px" }}>
             <div className='bg bg-grey' style={{
@@ -1064,8 +828,6 @@ function Integer({ item, value, onChange }) {
     )
 }
 function String({ item, value, onChange }) {
-    // console.log("String", { item, value });
-    const classes = useStyles()
     return (
         <div style={{ padding: "5px 0px" }}>
             <div className='bg bg-grey' style={{

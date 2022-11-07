@@ -25,43 +25,40 @@ function GroupObj({ auth, item, value, onChange, changed }) {
     const [data, setData] = useState([]);
     const [disabled, setDisabled] = useState(true);
     const meta = useMetaContext();
-    var available = true;
+
+    const dataOrContent = (data) => {
+        return (data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data
+    }
+    const defaultQueryParams = (filter) => {
+        if (!filter) {
+            return [
+                QueryDetail("model"),
+                QueryOrder("ID", "ASC")
+            ]
+        } else if (_.isArray(filter)) {
+            return filter
+        }
+        return []
+    }
     useEffect(() => {
-        available = true;
-        return () => {
-            available = false;
-        };
-    }, []);
-    useEffect(() => {
-        available = true;
-        return () => {
-            available = false;
-        };
-    }, []);
-    useEffect(() => {
-        if (item.source || (item && item.relation && item.relation.reference && item.relation.reference.url)) {
-            let filter = item.queryFilter || item.filter || _.get(item,"relation.reference.queryFilter") || _.get(item,"relation.reference.filter");
-            GETWITH(auth, item.source || item.relation.reference.url, [
-                (!item.queryFilter) ? QueryDetail("model") : undefined,
-                (!item.queryFilter) ? QueryOrder("ID", "ASC") : undefined,
-                ...(item.queryFilter && _.isArray(item.queryFilter)) ? item.queryFilter : []
+        if (item.source || item.url || (item && _.get(item, "relation.reference.url"))) {
+            let filter = item.queryFilter || item.filter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
+            let url = item.source || item.relation.reference.url;
+            GETWITH(auth, url, [
+                ...defaultQueryParams(filter)
             ], ({ data }) => {
-                setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
-                setDisabled(false);
+                setData(dataOrContent(data));
             }, (err, type) => errorCatch(err, type, () => { }));
-        } else if (item && item.relation && item.relation.reference && item.relation.reference.data) {
+        } else if (item && _.get(item, "relation.reference.data")) {
             setData(item.relation.reference.data);
-        } else if (item && item.relation && item.relation.reference && item.relation.reference.object) {
-            let src = getObjectValue(item, "relation.reference.object");
-            if (src) {
-                let filter = item.queryFilter || item.filter || _.get(item,"relation.reference.queryFilter") || _.get(item,"relation.reference.filter");
-                READWITH(auth, src, [
-                    (!item.queryFilter) ? QueryDetail("model") : undefined,
-                    (!item.queryFilter) ? QueryOrder("ID", "ASC") : undefined,
-                    ...(item.queryFilter && _.isArray(item.queryFilter)) ? item.queryFilter : []
+        } else if (item && _.get(item, "relation.reference.object")) {
+            let object = getObjectValue(item, "relation.reference.object");
+            if (object) {
+                let filter = item.queryFilter || item.filter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
+                READWITH(auth, object, [
+                    ...defaultQueryParams(filter)
                 ], ({ data }) => {
-                    setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
-                    setDisabled(false);
+                    setData(dataOrContent(data));
                 }, (err, type) => errorCatch(err, type, () => { }));
             }
         }
@@ -83,7 +80,9 @@ function GroupObj({ auth, item, value, onChange, changed }) {
     };
     const label = (item, value) => {
         if (item && value) {
-            if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
+            if (item.display && _.isFunction(item.display)) {
+                return item.display(value)
+            } else if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
                 return item.relation.display(value)
             } else {
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
@@ -117,7 +116,7 @@ function GroupObj({ auth, item, value, onChange, changed }) {
             mode="multiple"
             showSearch
             value={value}
-            onChange={e=>onChange(e, item, itemByProperty(item, e))}
+            onChange={e => onChange(e, item, itemByProperty(item, e))}
             style={{ width: "100%" }}
             allowClear={true}
             disabled={disabled}
@@ -206,35 +205,39 @@ function RangeInteger({ item, value, onChange }) {
 function Obj({ auth, item, value, onChange, changed }) {
     const [data, setData] = useState([]);
     const meta = useMetaContext();
-    var available = true;
+    const dataOrContent = (data) => {
+        return (data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data
+    }
+    const defaultQueryParams = (filter) => {
+        if (!filter) {
+            return [
+                QueryDetail("model"),
+                QueryOrder("ID", "ASC")
+            ]
+        } else if (_.isArray(filter)) {
+            return filter
+        }
+        return []
+    }
     useEffect(() => {
-        available = true;
-        return () => {
-            available = false;
-        };
-    }, []);
-    useEffect(() => {
-        if (item.source || (item && item.relation && item.relation.reference && item.relation.reference.url)) {
-            let filter = item.queryFilter || item.filter || _.get(item,"relation.reference.queryFilter") || _.get(item,"relation.reference.filter");
-            GETWITH(auth, item.source || item.relation.reference.url, [
-                (!filter) ? QueryDetail("model") : undefined,
-                (!filter) ? QueryOrder("ID", "ASC") : undefined,
-                ...(filter && _.isArray(filter)) ? filter : []
+        if (item.source || item.url || (item && _.get(item, "relation.reference.url"))) {
+            let filter = item.queryFilter || item.filter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
+            let url = item.source || item.relation.reference.url;
+            GETWITH(auth, url, [
+                ...defaultQueryParams(filter)
             ], ({ data }) => {
-                setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
+                setData(dataOrContent(data));
             }, (err, type) => errorCatch(err, type, () => { }));
-        } else if (item && item.relation && item.relation.reference && item.relation.reference.data) {
+        } else if (item && _.get(item, "relation.reference.data")) {
             setData(item.relation.reference.data);
-        } else if (item && item.relation && item.relation.reference && item.relation.reference.object) {
-            let src = getObjectValue(item, "relation.reference.object");
-            if (src) {
-                let filter = item.queryFilter || item.filter || _.get(item,"relation.reference.queryFilter") || _.get(item,"relation.reference.filter");
-                READWITH(auth, src, [
-                    (!filter) ? QueryDetail("model") : undefined,
-                    (!filter) ? QueryOrder("ID", "ASC") : undefined,
-                    ...(filter && _.isArray(filter)) ? filter : []
+        } else if (item && _.get(item, "relation.reference.object")) {
+            let object = getObjectValue(item, "relation.reference.object");
+            if (object) {
+                let filter = item.queryFilter || item.filter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
+                READWITH(auth, object, [
+                    ...defaultQueryParams(filter)
                 ], ({ data }) => {
-                    setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
+                    setData(dataOrContent(data));
                 }, (err, type) => errorCatch(err, type, () => { }));
             }
         }
@@ -256,7 +259,9 @@ function Obj({ auth, item, value, onChange, changed }) {
     };
     const label = (item, value) => {
         if (item && value) {
-            if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
+            if (item.display && _.isFunction(item.display)) {
+                return item.display(value)
+            } else if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
                 return item.relation.display(value)
             } else {
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
@@ -288,7 +293,7 @@ function Obj({ auth, item, value, onChange, changed }) {
     return (
         <Select showSearch
             value={value}
-            onChange={e=>onChange(e, item, itemByProperty(item, e))}
+            onChange={e => onChange(e, item, itemByProperty(item, e))}
             style={{ width: "100%" }}
             allowClear={true}
             disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
@@ -399,7 +404,7 @@ function Unknown({ item }) {
 //------------------------------------------------------------------------------------
 function FilterMode(props) {
     const { auth, item, value, onChange, changed, mode } = props;
-    let type = ((item.view)?item.view.type:undefined) || item.type;
+    let type = ((item.view) ? item.view.type : undefined) || item.type;
     switch (item.filterType) {
         case "group":
             switch (type) {
@@ -446,7 +451,7 @@ function FilterMode(props) {
 }
 function ModelMode(props) {
     const { auth, item, value, onChange, changed, mode } = props;
-    let type = ((item.view)?item.view.type:undefined) || item.type;
+    let type = ((item.view) ? item.view.type : undefined) || item.type;
     switch (type) {
         case "text":
             return (<MultilineText auth={auth} item={item} value={value} onChange={onChange}></MultilineText>)
