@@ -101,13 +101,13 @@ function GroupObj({ auth, item, value, onChange, changed }) {
             if (item.dependence.field && by(item)) {
                 if (value[item.dependence.field] === by(item)) {
                     return data?.map(i => (
-                        <Option key={property(item, value)} value={property(item, value)}>{label(item, value)}</Option>
+                        <Option key={property(item, i)} value={property(item, i)}>{label(item, i)}</Option>
                     ));
                 }
             }
         } else {
             return data?.map(i => (
-                <Option key={property(item, value)} value={property(item, value)}>{label(item, value)}</Option>
+                <Option key={property(item, i)} value={property(item, i)}>{label(item, i)}</Option>
             ));
         }
     };
@@ -243,7 +243,7 @@ function Obj({ auth, item, value, onChange, changed }) {
         }
     }, [auth, item]);
     const property = (item, value) => {
-        if (item && item.relation && item.relation.reference && item.relation.reference.property && value) {
+        if (item && _.get(item, "relation.reference.property") && value) {
             return value[item.relation.reference.property];
         }
         if (value) {
@@ -252,7 +252,7 @@ function Obj({ auth, item, value, onChange, changed }) {
         return undefined;
     };
     const itemByProperty = (item, value) => {
-        if (item.relation.reference.property) {
+        if (_.get(item, "relation.reference.property")) {
             return data.find(e => e[item.relation.reference.property] === value);
         }
         return data.find(e => e.ID === value);
@@ -280,13 +280,13 @@ function Obj({ auth, item, value, onChange, changed }) {
             if (item.dependence.field && by(item)) {
                 if (value[item.dependence.field] === by(item)) {
                     return data?.map(i => (
-                        <Option key={property(item, value)} value={property(item, value)}>{label(item, value)}</Option>
+                        <Option key={property(item, i)} value={property(item, i)}>{label(item, i)}</Option>
                     ));
                 }
             }
         } else {
             return data?.map(i => (
-                <Option key={property(item, value)} value={property(item, value)}>{label(item, value)}</Option>
+                <Option key={property(item, i)} value={property(item, i)}>{label(item, i)}</Option>
             ));
         }
     };
