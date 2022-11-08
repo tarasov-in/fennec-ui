@@ -10,16 +10,69 @@ import {
     Dropdown,
     Menu,
     TimePicker,
-    Slider
+    Slider,
+    Upload
 } from 'antd';
 import { errorCatch, getDisplay, getObjectValue, GETWITH, QueryDetail, QueryOrder, READWITH } from '../../../Tool';
 import moment from 'moment';
 import Icofont from 'react-icofont';
 import { useMetaContext } from '../../Context';
-var _ = require('lodash');
+import { InboxOutlined } from '@ant-design/icons';
+import 'moment/locale/ru';
 
+var _ = require('lodash');
+const { Dragger } = Upload;
 const { TextArea } = Input;
 const { Option } = Select;
+
+function UploadItem({ auth, item, value, onChange, changed }) {
+
+    const [files, setFiles] = useState([]);
+
+    useEffect(() => {
+        triggerChange(files);
+    }, [files]);
+
+    const triggerChange = (changedValue) => {
+        if (onChange) {
+            onChange([
+                ...changedValue,
+            ]);
+        }
+    };
+
+    const uploadingProps = {
+        maxCount: 1,
+        name: 'file',
+        multiple: false,
+        onRemove: file => {
+            const index = files.indexOf(file);
+            const newFiles = files.slice();
+            newFiles.splice(index, 1);
+            setFiles(newFiles);
+        },
+        beforeUpload: file => {
+            if (props.multiple) {
+                setFiles([...files, file]);
+            } else {
+                setFiles([file]);
+            }
+            return false;
+        },
+        fileList: files,
+    };
+    return (
+        <Dragger {...uploadingProps}>
+            <p className="ant-upload-drag-icon">
+                <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">Нажмите для выбора или перетащите файл <br />в выделенную область</p>
+            <p className="ant-upload-hint">
+                Поддерживается загрузка любых типов файлов
+            </p>
+        </Dragger>
+    );
+}
 
 function GroupObj({ auth, item, value, onChange, changed }) {
     const [data, setData] = useState([]);
@@ -483,6 +536,8 @@ function ModelMode(props) {
         case "object":
         case "document":
             return (<Obj auth={auth} item={item} value={value} onChange={onChange} changed={changed}></Obj>)
+        case "file":
+            return (<UploadItem auth={auth} item={item} value={value} onChange={onChange}></UploadItem>)
         default:
             return (<Unknown auth={auth} item={item} value={value} onChange={onChange}></Unknown>)
     }
