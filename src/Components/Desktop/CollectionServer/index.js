@@ -187,7 +187,15 @@ export function CollectionServer(props) {
             let ctx = contextFilters();
             if (_.isArray(ctx)) {
                 ctx.forEach(item => {
-                    ctxFlt.push(QueryParam("w-" + ((item.method) ? item.method + "-" : "eq-") + item.name, item.value))
+                    if (item) {
+                        if (_.isObject(item)) {
+                            ctxFlt.push(QueryParam("w-" + ((item.method) ? item.method + "-" : "eq-") + item.name, item.value))
+                        } else if (_.isFunction(item)) {
+                            ctxFlt.push(item())
+                        } else if (_.isString(item)) {
+                            ctxFlt.push(item)
+                        }
+                    }
                 });
             }
         }
@@ -426,7 +434,6 @@ export function CollectionServer(props) {
                         let ctxFlt = {};
                         if (contextFilters) {
                             let ctx = contextFilters();
-                            console.log(ctx);
                             if (_.isArray(ctx)) {
                                 ctx.forEach(item => {
                                     if (item.action) {

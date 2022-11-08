@@ -107,6 +107,22 @@ export const QueryFunc = (func, name) => {
 export const QueryParam = (name, value) => {
     return `${name}=${value}`;
 };
+export const ObjectToQueryParam = (object, method) => {
+    let f = [];
+    let array = Object.entries(object);
+    for (let i = 0; i < array.length; i++) {
+        const element = array[i];
+        if (element) {
+            f.push(QueryParam(`w-${element[0]}`,element[1]));
+            // f.push({
+            //     method: method || "eq",
+            //     name: element[0],
+            //     value: element[1]
+            // })
+        }
+    }
+    return f
+}
 export const QueryOrder = (name, value) => {
     return `s-${name}=${value}`;
 };

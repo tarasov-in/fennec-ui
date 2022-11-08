@@ -330,7 +330,8 @@ export function CollectionServerMobile(props) {
         render,
         titleFunc,
         extraFunc,
-        noheader
+        noheader,
+        contextFilters
     } = props;
 
     const meta = useMetaContext();
@@ -424,6 +425,24 @@ export function CollectionServerMobile(props) {
         // IN = "in"      // in
         // NIN = "nin"     // not-in
 
+        let ctxFlt = [];
+        if (contextFilters) {
+            let ctx = contextFilters();
+            if (_.isArray(ctx)) {
+                ctx.forEach(item => {
+                    if (item) {
+                        if (_.isObject(item)) {
+                            ctxFlt.push(QueryParam("w-" + ((item.method) ? item.method + "-" : "eq-") + item.name, item.value))
+                        } else if (_.isFunction(item)) {
+                            ctxFlt.push(item())
+                        } else if (_.isString(item)) {
+                            ctxFlt.push(item)
+                        }
+                    }
+                });
+            }
+        }
+
         let flt = [];
         Object.keys(state.filter).forEach(key => {
             var item = filters.find(e => e.name == key);
@@ -493,14 +512,14 @@ export function CollectionServerMobile(props) {
                             flt.push(QueryParam("w-co-" + key, filterByKey))
                             break;
                         case "time":
-                                flt.push(QueryParam("w-eq-" + key, filterByKey.format("HH:mm:ss")))
+                            flt.push(QueryParam("w-eq-" + key, filterByKey.format("HH:mm:ss")))
                             break;
                         case "date":
-                                flt.push(QueryParam("w-eq-" + key, filterByKey.format("YYYY-MM-DD")))
+                            flt.push(QueryParam("w-eq-" + key, filterByKey.format("YYYY-MM-DD")))
                             break;
                         case "datetime":
                         case "time.Time":
-                                flt.push(QueryParam("w-eq-" + key, filterByKey.format("YYYY-MM-DD HH:mm")))
+                            flt.push(QueryParam("w-eq-" + key, filterByKey.format("YYYY-MM-DD HH:mm")))
                             break;
                         default:
                             flt.push(QueryParam("w-" + key, filterByKey))
@@ -651,6 +670,72 @@ export function CollectionServerMobile(props) {
         })
     };
     const RenderOnModelActions = React.useCallback((item, index) => {
+        let defaultAction = (!name) ? [] : [
+            {
+                key: "change",
+                title: "Изменить",
+                action: {
+                    method: "POST",
+                    path: "/api/query-update/" + name.toLowerCase(),
+                    mutation: "update",
+                    onValues: (values) => {
+                        let ctxFlt = {};
+                        if (contextFilters) {
+                            let ctx = contextFilters();
+                            if (_.isArray(ctx)) {
+                                ctx.forEach(item => {
+                                    if (item.action) {
+                                        ctxFlt[item.name.toLowerCase() + ((item.name && item.name.endsWith("ID")) ? "" : "ID")] = item.value;
+                                    }
+                                });
+                            }
+                        }
+                        return { ...values, ...ctxFlt, ID: item.ID }
+                    },
+                    onClose: ({ close }) => close()
+                },
+                contextFilters: contextFilters,
+                form: Model,
+                modal: {
+                    width: "700px"
+                },
+                options: {
+                    initialValues: {
+                        ...item
+                    },
+                },
+                meta: mobject,
+                object: item,
+            },
+            {
+                key: "delete",
+                title: "Удалить",
+                action: (values, unlock, close, { collection, setCollection }) => {
+                    GET(auth, "/api/query-delete/" + name.toLowerCase() + '/' + item.ID,
+                        () => setCollection(deleteInArray(collection, item)), errorCatch
+                    );
+                    // POST(auth, "/api/query-delete/" + name.toLowerCase(), { ...item },
+                    //     () => setCollection(deleteInArray(collection, item)), errorCatch
+                    // );
+                },
+            }
+        ];
+        if (defaultModelActions) return (<DropdownAction
+            items={
+                defaultAction?.map((e, idx) => ({
+                    key: e.key || idx,
+                    auth: auth,
+                    mode: "MenuItem",
+                    object: item,
+                    collection: collection,
+                    setCollection: setCollection,
+                    ...e
+                    // ...{
+                    //     ...e,
+                    //     action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
+                    // }
+                }))
+            } />)
         if (!modelActions) return <React.Fragment></React.Fragment>;
         let values = unwrap(modelActions(item, index));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
@@ -667,9 +752,54 @@ export function CollectionServerMobile(props) {
                     // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
                 }}
             />)}
-        </DropdownMobile>;
+        </DropdownMobile>
     }, [auth, modelActions]);
     const RenderOnCollectionActions = React.useCallback(() => {
+        let defaultAction = (!name) ? [] : [
+            {
+                key: "create",
+                title: "Создать",
+                action: {
+                    method: "POST",
+                    path: "/api/query-create/" + name.toLowerCase(),
+                    mutation: "update",
+                    onValues: (values) => {
+                        let ctxFlt = {};
+                        if (contextFilters) {
+                            let ctx = contextFilters();
+                            if (_.isArray(ctx)) {
+                                ctx.forEach(item => {
+                                    if (item.action) {
+                                        ctxFlt[item.name.toLowerCase() + ((item.name && item.name.endsWith("ID")) ? "" : "ID")] = item.value;
+                                    }
+                                });
+                            }
+                        }
+                        return { ...values, ...ctxFlt }
+                    },
+                    onClose: ({ close }) => close(),
+                },
+                contextFilters: contextFilters,
+                form: Model,
+                options: {
+                    initialValues: {},
+                },
+                meta: mobject,
+            }
+        ];
+        if (defaultCollectionActions) return <div>
+            {defaultAction?.map((e, idx) => <Action
+                key={e.key || idx}
+                auth={auth}
+                mode={"button"}
+                {...{
+                    collection: collection,
+                    setCollection: setCollection,
+                    ...e,
+                    // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
+                }}
+            />)}
+        </div>;
         if (!collectionActions) return <React.Fragment></React.Fragment>;
         let values = unwrap(collectionActions());
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
@@ -687,6 +817,7 @@ export function CollectionServerMobile(props) {
             />)}
         </div>;
     }, [auth, collectionActions]);
+
     const hasSelected = selectedRowKeys.length > 0;
     const selectionConfig = (selectionType) => {
         if (!selection) return {};
