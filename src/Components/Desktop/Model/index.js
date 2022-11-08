@@ -115,6 +115,9 @@ function Frm(props) {
                 <Form form={form}
                     onFinish={submit}
                     {...options}
+                    initialValues={{
+                        ...object
+                    }}
                     labelAlign={"left"}
                     layout={"vertical"}>
                     {propertiesFiltered?.filter(e => (excludeFields[e.name.toLowerCase()]) ? false : true)?.map((item) => {

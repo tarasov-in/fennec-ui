@@ -113,7 +113,8 @@ export const ObjectToQueryParam = (object, method) => {
     for (let i = 0; i < array.length; i++) {
         const element = array[i];
         if (element) {
-            f.push(QueryParam(`w-${element[0]}`,element[1]));
+            let keyName = (element[0].endsWith('ID') === true) ? element[0].slice(0, -2) + ".ID" : element[0];
+            f.push(QueryParam(`w-${keyName}`,element[1]));
             // f.push({
             //     method: method || "eq",
             //     name: element[0],

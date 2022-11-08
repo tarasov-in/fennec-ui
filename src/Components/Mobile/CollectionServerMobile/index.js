@@ -12,6 +12,7 @@ import { DropdownMobile } from '../DropdownMobile'
 import "./index.css"
 import 'moment/locale/ru';
 import uuid from 'react-uuid';
+import { ModelMobile } from '../ModelMobile';
 
 var _ = require('lodash');
 const Item = List.Item;
@@ -324,7 +325,9 @@ export function CollectionServerMobile(props) {
         extra,
         size,
         modelActions,
+        defaultModelActions,
         collectionActions,
+        defaultCollectionActions,
         selection, // undefined, "radio" или "checkbox"
         mode, // table, list
         render,
@@ -575,11 +578,11 @@ export function CollectionServerMobile(props) {
                 unlock();
             }, (err, type) => errorCatch(err, type, unlock));
         }
-    }, [state.current, count, state.filter, state.sorting, funcStat, filters]);
+    }, [state.current, count, state.filter, state.sorting, funcStat, filters, contextFilters]);
 
     useEffect(() => {
         request();
-    }, [name, state.filter, filters, state.sorting, state.current, setCollection]);
+    }, [name, state.filter, filters, state.sorting, state.current, setCollection, contextFilters]);
 
     // Table Items Selection
     const [selectionType, setSelectionType] = useState(selection || 'checkbox'); // radio
@@ -695,7 +698,7 @@ export function CollectionServerMobile(props) {
                     onClose: ({ close }) => close()
                 },
                 contextFilters: contextFilters,
-                form: Model,
+                form: ModelMobile,
                 modal: {
                     width: "700px"
                 },
@@ -780,7 +783,7 @@ export function CollectionServerMobile(props) {
                     onClose: ({ close }) => close(),
                 },
                 contextFilters: contextFilters,
-                form: Model,
+                form: ModelMobile,
                 options: {
                     initialValues: {},
                 },
