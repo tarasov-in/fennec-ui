@@ -741,9 +741,15 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
     const [visible, setVisible] = useState(false);
     const [searchText, setSearchText] = useState("");
     const [changed, setChanged] = useState({ ...object });
+    // useEffect(() => {
+    //     form.resetFields();
+    // }, [object]);
     useEffect(() => {
         form.resetFields();
-    }, [object]);
+        if (object) {
+            form.setFieldsValue(object);
+        }
+    }, [object])
     var properties = GetMetaProperties(meta);
     if (!properties) return <React.Fragment></React.Fragment>;
     const propertiesFiltered = properties?.filter(e => e.name.toUpperCase() !== "ID")?.filter(e => (!e.relation || (e.relation && e.relation.type !== "one-many")));

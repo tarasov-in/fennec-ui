@@ -56,9 +56,15 @@ function Frm(props) {
     const [visible, setVisible] = useState(false);
     const [excludeFields, setExcludeFields] = useState({});
     const [fieldsFilters, setFieldsFilters] = useState({});
+    // useEffect(() => {
+    //     form.resetFields();
+    // }, []);
     useEffect(() => {
         form.resetFields();
-    }, []);
+        if (object) {
+            form.setFieldsValue(object);
+        }
+    }, [object])
     useEffect(() => {
         let fldFlt = {};
         let ctxFlt = {};
