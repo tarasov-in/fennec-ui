@@ -137,6 +137,8 @@ export class AuthService {
             if (res && res.user) {
                 localStorage.setItem('iam', res.user.ID);
                 this.redirect(res);
+            } else {
+                return Promise.resolve(res);
             }
         })
     }
