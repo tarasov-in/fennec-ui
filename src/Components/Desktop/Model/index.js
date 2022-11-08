@@ -120,10 +120,10 @@ function Frm(props) {
             <div style={{ display: (!visible) ? "block" : "none" }}>
                 <Form form={form}
                     onFinish={submit}
-                    {...options}
                     initialValues={{
                         ...object
                     }}
+                    {...options}
                     labelAlign={"left"}
                     layout={"vertical"}>
                     {propertiesFiltered?.filter(e => (excludeFields[e.name.toLowerCase()]) ? false : true)?.map((item) => {

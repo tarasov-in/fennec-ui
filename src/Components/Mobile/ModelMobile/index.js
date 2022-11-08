@@ -869,12 +869,11 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
                     onFinish={(values) => {
                         submit(splitedObject(values));
                     }}
-                    {...options}
-                    // labelalign={"left"}
                     layout={"vertical"}
                     initialValues={{
                         ...mergedObject(propertiesVirtualized, object)
                     }}
+                    {...options}
                     style={{ height: fixedHeight(), width: "100%" }}
                 >
                     {virtualized && <AutoSizer>
