@@ -134,8 +134,6 @@ export function CollectionServer(props) {
         }
     }, [name, meta]);
 
-    // console.log(mobject);
-
     const setCollectionItem = React.useCallback((item) => {
         setCollection(updateInArray(collection, item));
     }, [collection]);
@@ -364,7 +362,6 @@ export function CollectionServer(props) {
         }
     };
     //---------------------------
-
     const columns = () => {
         var c = [];
 
@@ -404,22 +401,6 @@ export function CollectionServer(props) {
             });
         }
         return c;
-    };
-    const intermediate = (values, unlock, close, item, index) => {
-        return Request(values, item, {
-            auth,
-            collection,
-            setCollection: setCollection,
-            onData: onData || ((values) => values.data),
-
-            index,
-            unlock,
-            close,
-            onValues,
-            onClose,
-            onError,
-            onDispatch
-        })
     };
     const RenderOnModelActions = React.useCallback((item, index) => {
         let defaultAction = (!name) ? [] : [
@@ -466,9 +447,6 @@ export function CollectionServer(props) {
                     GET(auth, "/api/query-delete/" + name.toLowerCase() + '/' + item.ID,
                         () => setCollection(deleteInArray(collection, item)), errorCatch
                     );
-                    // POST(auth, "/api/query-delete/" + name.toLowerCase(), { ...item },
-                    //     () => setCollection(deleteInArray(collection, item)), errorCatch
-                    // );
                 },
             }
         ];
@@ -482,10 +460,6 @@ export function CollectionServer(props) {
                     collection: collection,
                     setCollection: setCollection,
                     ...e
-                    // ...{
-                    //     ...e,
-                    //     action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
-                    // }
                 }))
             } />)
         if (!modelActions) return <React.Fragment></React.Fragment>;
@@ -499,10 +473,6 @@ export function CollectionServer(props) {
             collection: collection,
             setCollection: setCollection,
             ...e
-            // ...{
-            //     ...e,
-            //     action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
-            // }
         }))} />
     }, [auth, modelActions]);
     const RenderOnCollectionActions = React.useCallback(() => {
@@ -547,13 +517,6 @@ export function CollectionServer(props) {
                 collection={collection}
                 setCollection={setCollection}
                 {...e}
-
-                // {...{
-                //     collection: collection,
-                //     setCollection: setCollection,
-                //     ...e,
-                //     // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
-                // }}
             />)}
         </div>;
         if (!collectionActions) return <React.Fragment></React.Fragment>;
@@ -568,13 +531,6 @@ export function CollectionServer(props) {
                 collection={collection}
                 setCollection={setCollection}
                 {...e}
-
-                // {...{
-                //     collection: collection,
-                //     setCollection: setCollection,
-                //     ...e,
-                //     // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
-                // }}
             />)}
         </div>;
     }, [auth, collectionActions]);
