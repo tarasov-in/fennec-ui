@@ -52,11 +52,11 @@ function UploadItem({ auth, item, value, onChange, changed }) {
             setFiles(newFiles);
         },
         beforeUpload: file => {
-            if (props.multiple) {
-                setFiles([...files, file]);
-            } else {
+            // if (props.multiple) {
+            //     setFiles([...files, file]);
+            // } else {
                 setFiles([file]);
-            }
+            // }
             return false;
         },
         fileList: files,
