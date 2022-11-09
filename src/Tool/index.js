@@ -433,10 +433,14 @@ export const makeFormData = (values) => {
             const value = values[key];
             if (_.isArray(value)) {
                 value.forEach(item => {
-                    formData.append(key, item);
+                    if(item){
+                        formData.append(key, item);
+                    }
                 });
             } else {
-                formData.append(key, value);
+                if(value){
+                    formData.append(key, value);
+                }
             }
         }
     }

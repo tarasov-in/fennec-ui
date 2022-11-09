@@ -325,7 +325,6 @@ export function Action(props) {
                 collection: props.collection || [],
                 setCollection: props.setCollection || (() => { }),
                 onData: (values, context) => values.data,
-
                 unlock,
                 close,
             }

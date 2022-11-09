@@ -421,7 +421,7 @@ export function CollectionServer(props) {
             onDispatch
         })
     };
-    const RenderOnModelActions = (item, index) => {
+    const RenderOnModelActions = React.useCallback((item, index) => {
         let defaultAction = (!name) ? [] : [
             {
                 key: "change",
@@ -504,8 +504,8 @@ export function CollectionServer(props) {
             //     action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
             // }
         }))} />
-    };
-    const RenderOnCollectionActions = () => {
+    }, [auth, modelActions]);
+    const RenderOnCollectionActions = React.useCallback(() => {
         let defaultAction = (!name) ? [] : [
             {
                 key: "create",
@@ -543,12 +543,17 @@ export function CollectionServer(props) {
                 key={e.key || idx}
                 auth={auth}
                 mode={"button"}
-                {...{
-                    collection: collection,
-                    setCollection: setCollection,
-                    ...e,
-                    // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
-                }}
+
+                collection={collection}
+                setCollection={setCollection}
+                {...e}
+
+                // {...{
+                //     collection: collection,
+                //     setCollection: setCollection,
+                //     ...e,
+                //     // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
+                // }}
             />)}
         </div>;
         if (!collectionActions) return <React.Fragment></React.Fragment>;
@@ -559,15 +564,20 @@ export function CollectionServer(props) {
                 key={e.key || idx}
                 auth={auth}
                 mode={"button"}
-                {...{
-                    collection: collection,
-                    setCollection: setCollection,
-                    ...e,
-                    // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
-                }}
+
+                collection={collection}
+                setCollection={setCollection}
+                {...e}
+
+                // {...{
+                //     collection: collection,
+                //     setCollection: setCollection,
+                //     ...e,
+                //     // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
+                // }}
             />)}
         </div>;
-    };
+    }, [auth, collectionActions]);
     const selectionConfig = (selectionType) => {
         if (!selection) return {};
         return {
