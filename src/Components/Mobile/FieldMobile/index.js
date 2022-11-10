@@ -329,9 +329,9 @@ function Obj({ auth, item, value, onChange, changed }) {
         return []
     }
     useEffect(() => {
-        if (item.source || item.url || (item && _.get(item,"relation.reference.url"))) {
-            let filter = item.queryFilter || item.filter || _.get(item,"relation.reference.queryFilter") || _.get(item,"relation.reference.filter");
-            let url = item.source || item.relation.reference.url;
+        if (item.source || item.url || (item && _.get(item, "relation.reference.url")) || (item && _.get(item, "relation.reference.source"))) {
+            let filter = item.queryFilter || item.filter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
+            let url = item.source || item.relation.reference.url || item.relation.reference.source;
             GETWITH(auth, url, [
                 ...defaultQueryParams(filter)
             ], ({ data }) => {

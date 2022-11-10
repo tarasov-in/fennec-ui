@@ -474,7 +474,7 @@ export function CollectionServer(props) {
             setCollection: setCollection,
             ...e
         }))} />
-    }, [auth, modelActions]);
+    }, [auth, collection, modelActions]);
     const RenderOnCollectionActions = React.useCallback(() => {
         let defaultAction = (!name) ? [] : [
             {
@@ -533,7 +533,7 @@ export function CollectionServer(props) {
                 {...e}
             />)}
         </div>;
-    }, [auth, collectionActions]);
+    }, [auth, collection, collectionActions]);
     const selectionConfig = (selectionType) => {
         if (!selection) return {};
         return {
