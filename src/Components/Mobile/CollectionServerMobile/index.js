@@ -756,7 +756,7 @@ export function CollectionServerMobile(props) {
                 }}
             />)}
         </DropdownMobile>
-    }, [auth, modelActions]);
+    }, [auth, collection, modelActions]);
     const RenderOnCollectionActions = React.useCallback(() => {
         let defaultAction = (!name) ? [] : [
             {
@@ -819,7 +819,7 @@ export function CollectionServerMobile(props) {
                 }}
             />)}
         </div>;
-    }, [auth, collectionActions]);
+    }, [auth, collection, collectionActions]);
 
     const hasSelected = selectedRowKeys.length > 0;
     const selectionConfig = (selectionType) => {

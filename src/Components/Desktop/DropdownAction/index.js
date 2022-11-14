@@ -34,7 +34,7 @@ export function DropdownAction(props) {
         <div onClick={(e) => {
             e.stopPropagation();
         }}>
-            {JSXMap(actions?.filter(e=>(!!e.action||!!e.document)), (e, idx) => (<div key={idx}>
+            {JSXMap(actions?.filter(e => (!!e.action || !!e.document)), (e, idx) => (<div key={idx}>
                 <Action
                     key={e.key || idx}
                     auth={auth}
@@ -47,10 +47,17 @@ export function DropdownAction(props) {
                 <Menu
                     {...menuOptions}
                     selectable={false}
-                    items={(actions && actions.length) ? actions?.map((e, idx) => ({
-                        key: e.uuid,
-                        label: e.title || ((e.modal) ? e.modal.title : "")
-                    })) : []}
+                    items={(actions && actions.length) ? actions?.map((e, idx) => {
+                        if (e.type === 'divider') {
+                            return e
+                        } else {
+                            return {
+                                key: e.uuid,
+                                label: e.title || ((e.modal) ? e.modal.title : ""),
+                                danger: e.danger || false
+                            }
+                        }
+                    }) : []}
                     onClick={(e) => {
                         // e.stopPropagation();
                         if (e.key) {

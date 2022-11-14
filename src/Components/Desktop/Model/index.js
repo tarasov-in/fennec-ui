@@ -129,6 +129,8 @@ function Frm(props) {
                     {propertiesFiltered?.filter(e => (excludeFields[e.name.toLowerCase()]) ? false : true)?.map((item) => {
                         return (
                             <Form.Item className={classes.FormItem}
+                                preserve={(item.hidden) ? "true" : "false"}
+                                hidden={item.hidden}
                                 key={item.name}
                                 name={(item.type !== "object" && item.type !== "document") ? uncapitalize(item.name) : uncapitalize(item.name) + "ID"}
                                 label={(item.type !== "bool" && item.type !== "boolean") ? item.label : undefined}
