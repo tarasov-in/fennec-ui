@@ -126,9 +126,13 @@ function Frm(props) {
                     {...options}
                     labelAlign={"left"}
                     layout={"vertical"}>
-                    {propertiesFiltered?.filter(e => (excludeFields[e.name.toLowerCase()]) ? false : true)?.map((item) => {
-                        return (
-                            <Form.Item className={classes.FormItem}
+                    {propertiesFiltered?.filter(e => ((!e.name) && (e.name && excludeFields[e.name.toLowerCase()])) ? false : true)?.map((item) => {
+                        if (!e.name && e.type === "func" && e.func) {
+                            return <div>
+                                {e.func(auth, item)}
+                            </div>
+                        }
+                        return (<Form.Item className={classes.FormItem}
                                 preserve={(item.hidden) ? "true" : "false"}
                                 hidden={item.hidden}
                                 key={item.name}
@@ -144,8 +148,7 @@ function Frm(props) {
                                     filter={fieldsFilters[item.name.toLowerCase()]}
                                     item={{ ...item, filterType: undefined, func: (funcStat && funcStat[item.name.toLowerCase()]) ? funcStat[item.name.toLowerCase()] : {} }}
                                 />
-                            </Form.Item>
-                        );
+                            </Form.Item>);
                     })}
                 </Form>
             </div>

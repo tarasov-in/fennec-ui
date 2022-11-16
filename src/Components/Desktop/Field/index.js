@@ -462,7 +462,7 @@ function FilterMode(props) {
         case "group":
             switch (type) {
                 case "func":
-                    return (props.func)?func(auth, item, value, onChange):undefined;
+                    return (props.func)?props.func(auth, item, value, onChange):undefined;
                 case "object":
                 case "document":
                     return (<GroupObj auth={auth} item={item} value={value} onChange={onChange} changed={changed}></GroupObj>)
@@ -472,7 +472,7 @@ function FilterMode(props) {
         case "range":
             switch (type) {
                 case "func":
-                    return (props.func)?func(auth, item, value, onChange):undefined;
+                    return (props.func)?props.func(auth, item, value, onChange):undefined;
                 case "int":
                 case "uint":
                 case "integer":
@@ -499,7 +499,7 @@ function FilterMode(props) {
         default:
             switch (type) {
                 case "func":
-                    return (props.func)?func(auth, item, value, onChange):undefined;
+                    return (props.func)?props.func(auth, item, value, onChange):undefined;
                 case "text":
                     return (<String auth={auth} item={item} value={value} onChange={onChange}></String>)
                 default:
@@ -513,7 +513,7 @@ function ModelMode(props) {
     let type = ((item.view) ? item.view.type : undefined) || item.type;
     switch (type) {
         case "func":
-            return (props.func)?func(auth, item, value, onChange):undefined;
+            return (props.func)?props.func(auth, item, value, onChange):undefined;
         case "text":
             return (<MultilineText auth={auth} item={item} value={value} onChange={onChange}></MultilineText>)
         case "string":

@@ -818,6 +818,11 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
     };
     const propertiesVirtualized = propertiesFiltered?.filter(e => !!e)?.filter(searchFilteredProperties);
     const virtualizedItem = (item, idx) => {
+        if (!e.name && e.type === "func" && e.func) {
+            return <div>
+                {e.func(auth, item)}
+            </div>
+        }
         if (item && !item.view || (item && item.view && item.view.unvisible === false)) {
             return (
                 <Form.Item
