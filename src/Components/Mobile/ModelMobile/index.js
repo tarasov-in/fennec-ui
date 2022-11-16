@@ -752,7 +752,7 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
     }, [object])
     var properties = GetMetaProperties(meta);
     if (!properties) return <React.Fragment></React.Fragment>;
-    const propertiesFiltered = properties?.filter(e => e.name.toUpperCase() !== "ID")?.filter(e => (!e.relation || (e.relation && e.relation.type !== "one-many")));
+    const propertiesFiltered = properties?.filter(e => (!e.name || (e.name && e.name.toUpperCase() !== "ID")))?.filter(e => (!e.relation || (e.relation && e.relation.type !== "one-many")));
     const propertiesOneMany = properties?.filter(e => e.relation && e.relation.type === "one-many");
     const propertiesDocuments = properties?.filter(e => e.type === "document");
 
@@ -819,7 +819,7 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
     const propertiesVirtualized = propertiesFiltered?.filter(e => !!e)?.filter(searchFilteredProperties);
     const virtualizedItem = (item, idx) => {
         if (!item.name && item.type === "func" && item.func) {
-            return <div>
+            return <div key={"func_"+idx}>
                 {item.func(auth, item)}
             </div>
         }

@@ -96,7 +96,7 @@ function Frm(props) {
 
     var properties = GetMetaProperties(meta);
     if (!properties) return <React.Fragment></React.Fragment>;
-    const propertiesFiltered = properties?.filter(e => e.name.toUpperCase() !== "ID")?.filter(e => (!e.relation || (e.relation && e.relation.type !== "one-many")));
+    const propertiesFiltered = properties?.filter(e => (!e.name || (e.name && e.name.toUpperCase() !== "ID")))?.filter(e => (!e.relation || (e.relation && e.relation.type !== "one-many")));
     const propertiesOneMany = properties?.filter(e => e.relation && e.relation.type === "one-many");
 
     return (
@@ -126,9 +126,9 @@ function Frm(props) {
                     {...options}
                     labelAlign={"left"}
                     layout={"vertical"}>
-                    {propertiesFiltered?.filter(e => ((!e.name) && (e.name && excludeFields[e.name.toLowerCase()])) ? false : true)?.map((item) => {
+                    {propertiesFiltered?.filter(e => (e.name && excludeFields[e.name.toLowerCase()]) ? false : true)?.map((item, idx) => {
                         if (!item.name && item.type === "func" && item.func) {
-                            return <div>
+                            return <div key={"func_"+idx}>
                                 {item.func(auth, item)}
                             </div>
                         }
