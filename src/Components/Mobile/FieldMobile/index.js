@@ -883,6 +883,8 @@ export function FieldMobile({ auth, item, value, onChange, changed }) {
     switch (item.filterType) {
         case "group":
             switch (item.type) {
+                case "func":
+                    return (props.func)?func(auth, item, value, onChange):undefined;
                 case "object":
                 case "document":
                     return (<Obj auth={auth} item={item} value={value} onChange={onChange} changed={changed}></Obj>)
@@ -891,6 +893,8 @@ export function FieldMobile({ auth, item, value, onChange, changed }) {
             }
         case "range":
             switch (item.type) {
+                case "func":
+                    return (props.func)?func(auth, item, value, onChange):undefined;
                 case "int":
                 case "uint":
                 case "integer":
@@ -914,6 +918,8 @@ export function FieldMobile({ auth, item, value, onChange, changed }) {
             }
         default:
             switch (item.type) {
+                case "func":
+                    return (props.func)?func(auth, item, value, onChange):undefined;
                 case "string":
                     return (<String auth={auth} item={item} value={value} onChange={onChange}></String>)
                 case "int":
