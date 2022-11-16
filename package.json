@@ -79,5 +79,8 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "dependencies": {
+    "less": "^4.1.3"
+  }
 }

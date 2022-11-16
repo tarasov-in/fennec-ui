@@ -19,6 +19,7 @@ import Icofont from 'react-icofont';
 import { useMetaContext } from '../../Context';
 import { InboxOutlined } from '@ant-design/icons';
 import 'moment/locale/ru';
+import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 
 var _ = require('lodash');
 const { Dragger } = Upload;
@@ -441,6 +442,13 @@ function String({ value, onChange }) {
         <Input allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }} />
     )
 }
+function Password({ value, onChange }) {
+    return (
+        <Input.Password allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
+            iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+        />
+    )
+}
 function MultilineText({ value, onChange }) {
     return (
         <TextArea rows={6} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }} />
@@ -462,7 +470,7 @@ function FilterMode(props) {
         case "group":
             switch (type) {
                 case "func":
-                    return (props.func)?props.func(auth, item, value, onChange):undefined;
+                    return (props.func) ? props.func(auth, item, value, onChange) : undefined;
                 case "object":
                 case "document":
                     return (<GroupObj auth={auth} item={item} value={value} onChange={onChange} changed={changed}></GroupObj>)
@@ -472,7 +480,7 @@ function FilterMode(props) {
         case "range":
             switch (type) {
                 case "func":
-                    return (props.func)?props.func(auth, item, value, onChange):undefined;
+                    return (props.func) ? props.func(auth, item, value, onChange) : undefined;
                 case "int":
                 case "uint":
                 case "integer":
@@ -499,7 +507,7 @@ function FilterMode(props) {
         default:
             switch (type) {
                 case "func":
-                    return (props.func)?props.func(auth, item, value, onChange):undefined;
+                    return (props.func) ? props.func(auth, item, value, onChange) : undefined;
                 case "text":
                     return (<String auth={auth} item={item} value={value} onChange={onChange}></String>)
                 default:
@@ -513,11 +521,13 @@ function ModelMode(props) {
     let type = ((item.view) ? item.view.type : undefined) || item.type;
     switch (type) {
         case "func":
-            return (props.func)?props.func(auth, item, value, onChange):undefined;
+            return (props.func) ? props.func(auth, item, value, onChange) : undefined;
         case "text":
             return (<MultilineText auth={auth} item={item} value={value} onChange={onChange}></MultilineText>)
         case "string":
             return (<String auth={auth} item={item} value={value} onChange={onChange}></String>)
+        case "password":
+            return (<Password auth={auth} item={item} value={value} onChange={onChange}></Password>)
         case "int":
         case "uint":
         case "integer":

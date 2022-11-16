@@ -127,9 +127,9 @@ function Frm(props) {
                     labelAlign={"left"}
                     layout={"vertical"}>
                     {propertiesFiltered?.filter(e => ((!e.name) && (e.name && excludeFields[e.name.toLowerCase()])) ? false : true)?.map((item) => {
-                        if (!e.name && e.type === "func" && e.func) {
+                        if (!item.name && item.type === "func" && item.func) {
                             return <div>
-                                {e.func(auth, item)}
+                                {item.func(auth, item)}
                             </div>
                         }
                         return (<Form.Item className={classes.FormItem}

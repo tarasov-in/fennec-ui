@@ -8,6 +8,9 @@ import { CalendarItem } from '../CalendarItem';
 import { useMetaContext } from '../../Context';
 import { ActionPickerItem } from '../../Action';
 import Icofont from 'react-icofont';
+import styles from './index.less'
+import { EyeInvisibleOutline, EyeOutline } from 'antd-mobile-icons'
+
 var _ = require('lodash');
 
 const { RangePicker } = DatePicker;
@@ -323,7 +326,7 @@ function Obj({ auth, item, value, onChange, changed }) {
                 QueryDetail("model"),
                 QueryOrder("ID", "ASC")
             ]
-        } else if (_.isArray(filter)){
+        } else if (_.isArray(filter)) {
             return filter
         }
         return []
@@ -337,12 +340,12 @@ function Obj({ auth, item, value, onChange, changed }) {
             ], ({ data }) => {
                 setData(dataOrContent(data));
             }, (err, type) => errorCatch(err, type, () => { }));
-        } else if (item && _.get(item,"relation.reference.data")) {
+        } else if (item && _.get(item, "relation.reference.data")) {
             setData(item.relation.reference.data);
-        } else if (item && _.get(item,"relation.reference.object")) {
+        } else if (item && _.get(item, "relation.reference.object")) {
             let object = getObjectValue(item, "relation.reference.object");
             if (object) {
-                let filter = item.queryFilter || item.filter || _.get(item,"relation.reference.queryFilter") || _.get(item,"relation.reference.filter");
+                let filter = item.queryFilter || item.filter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
                 READWITH(auth, object, [
                     ...defaultQueryParams(filter)
                 ], ({ data }) => {
@@ -863,6 +866,52 @@ function String({ item, value, onChange }) {
         </div>
     )
 }
+function Password({ item, value, onChange }) {
+    const [visible, setVisible] = useState(false)
+    return (
+        <div style={{ padding: "5px 0px" }}>
+            <div className='bg bg-grey' style={{
+                textAlign: "left",
+                paddingLeft: "5px",
+                marginBottom: "5px",
+                display: "flex",
+                justifyContent: "space-between"
+            }}>
+                <div>{item.label}</div>
+                <Button fill='none' size='mini' onClick={(v) => {
+                    onChange();
+                }}>
+                    <Icofont icon="close" />
+                </Button>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
+                <div style={{
+                    flex: "1",
+                    border: "1px solid #e5e5e5",
+                    borderRadius: "4px",
+                    padding: "2px 6px"
+                }}>
+                    <div className={styles.password}>
+                        <Input
+                            value={value}
+                            onChange={onChange}
+                            className={styles.input}
+                            placeholder={item.placeholder || "введите " + item.label.toLowerCase()}
+                            type={visible ? 'text' : 'password'}
+                        />
+                        <div className={styles.eye}>
+                            {!visible ? (
+                                <EyeInvisibleOutline onClick={() => setVisible(true)} />
+                            ) : (
+                                <EyeOutline onClick={() => setVisible(false)} />
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
 function Unknown({ item }) {
     return (
         <div key={item.name}>
@@ -884,7 +933,7 @@ export function FieldMobile({ auth, item, value, onChange, changed }) {
         case "group":
             switch (item.type) {
                 case "func":
-                    return (props.func)?props.func(auth, item, value, onChange):undefined;
+                    return (props.func) ? props.func(auth, item, value, onChange) : undefined;
                 case "object":
                 case "document":
                     return (<Obj auth={auth} item={item} value={value} onChange={onChange} changed={changed}></Obj>)
@@ -894,7 +943,7 @@ export function FieldMobile({ auth, item, value, onChange, changed }) {
         case "range":
             switch (item.type) {
                 case "func":
-                    return (props.func)?props.func(auth, item, value, onChange):undefined;
+                    return (props.func) ? props.func(auth, item, value, onChange) : undefined;
                 case "int":
                 case "uint":
                 case "integer":
@@ -919,9 +968,11 @@ export function FieldMobile({ auth, item, value, onChange, changed }) {
         default:
             switch (item.type) {
                 case "func":
-                    return (props.func)?props.func(auth, item, value, onChange):undefined;
+                    return (props.func) ? props.func(auth, item, value, onChange) : undefined;
                 case "string":
                     return (<String auth={auth} item={item} value={value} onChange={onChange}></String>)
+                case "password":
+                    return (<Password auth={auth} item={item} value={value} onChange={onChange}></Password>)
                 case "int":
                 case "uint":
                 case "integer":
