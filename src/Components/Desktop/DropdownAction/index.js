@@ -43,7 +43,7 @@ export function DropdownAction(props) {
                     {...e}
                 />
             </div>))}
-            <Dropdown trigger={['click']} {...props} overlay={
+            <Dropdown placement="bottomRight" trigger={['click']} {...props} overlay={
                 <Menu
                     {...menuOptions}
                     selectable={false}

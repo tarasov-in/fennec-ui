@@ -405,7 +405,7 @@ export function CollectionServerMobile(props) {
     // }, [current, state.filter, state.sorting]);
 
     const request = React.useCallback(() => {
-        if (!filters || !filters.length) return;
+        // if (!filters || !filters.length) return;
 
         // NNU = "nnu"     // not-null
         // NU = "nu"      // null
@@ -448,7 +448,7 @@ export function CollectionServerMobile(props) {
 
         let flt = [];
         Object.keys(state.filter).forEach(key => {
-            var item = filters.find(e => e.name == key);
+            var item = filters?.find(e => e.name == key);
             let filterByKey = state.filter[key];
             switch (item.filterType) {
                 case "group":
@@ -533,7 +533,7 @@ export function CollectionServerMobile(props) {
         });
 
         let func = [];
-        filters.forEach(item => {
+        filters?.forEach(item => {
             if (item.func && _.isArray(item.func)) {
                 item.func.forEach(fu => {
                     func.push(QueryFunc(fu, item.name))
@@ -871,6 +871,7 @@ export function CollectionServerMobile(props) {
     const _render = React.useCallback((item, index) => {
         if (render) {
             return render(item, index, {
+                collection,
                 setCollection,
                 setCollectionItem,
                 removeCollectionItem,
@@ -955,7 +956,7 @@ export function CollectionServerMobile(props) {
                 title={titleView()}
                 extra={titleExtra()}
             />}
-            {filters.length == 0 && <div>
+            {(!filters?.length) && <div>
                 <MaskWithLoading visible={loading} />
                 <div>
                     {(collection && collection.length > 0) && <div>
@@ -979,7 +980,7 @@ export function CollectionServerMobile(props) {
                 </div>
             </div>}
 
-            {filters.length > 0 &&
+            {(!!filters?.length) &&
                 <div className="filtered" style={{ position: "relative", height: "100%" }}>
                     <div style={{
                         height: "43px",

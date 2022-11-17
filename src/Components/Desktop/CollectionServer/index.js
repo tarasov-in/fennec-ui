@@ -104,6 +104,7 @@ export function CollectionServer(props) {
     const [current, setCurrent] = useState(1);
     const [count, setCount] = useState(20);
     const [total, setTotal] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
 
     const lock = () => {
         setLoading(true);
@@ -157,7 +158,7 @@ export function CollectionServer(props) {
     }, [current, state]);
 
     const request = React.useMemo(() => (filter) => {
-        if (!filters || !filters.length) return;
+        // if (!filters || !filters.length) return;
 
         // NNU = "nnu"     // not-null
         // NU = "nu"      // null
@@ -200,7 +201,7 @@ export function CollectionServer(props) {
 
         let flt = [];
         Object.keys(filter).forEach(key => {
-            var item = filters.find(e => e.name == key);
+            var item = filters?.find(e => e.name == key);
             let filterByKey = filter[key];
             switch (item.filterType) {
                 case "group":
@@ -275,7 +276,7 @@ export function CollectionServer(props) {
         });
 
         let func = [];
-        filters.forEach(item => {
+        filters?.forEach(item => {
             if (item.func && _.isArray(item.func)) {
                 item.func.forEach(fu => {
                     func.push(QueryFunc(fu, item.name))
@@ -296,6 +297,7 @@ export function CollectionServer(props) {
                 if (!funcStat) {
                     setFuncStat(data.stat);
                 }
+                setTotalPages(data.totalPages);
                 setCount(data.size);
                 setTotal(data.totalElements);
                 setCollection((data && data.content) ? data.content : []);
@@ -314,6 +316,7 @@ export function CollectionServer(props) {
                 if (!funcStat) {
                     setFuncStat(data.stat);
                 }
+                setTotalPages(data.totalPages);
                 setCount(data.size);
                 setTotal(data.totalElements);
                 setCollection((data && data.content) ? data.content : []);
@@ -581,11 +584,11 @@ export function CollectionServer(props) {
         return v !== undefined
     };
     const filters_ui = React.useMemo(() => (filters) => {
-        const fl = filters.filter(i => i.filter);
+        const fl = filters?.filter(i => i.filter);
         const f = fl?.map((item) => {
             return (
                 <div key={((mobject) ? mobject.name : "") + item.name} style={{ marginBottom: "10px" }}>
-                    {item.filter && (item.type !== "bool" || item.type !== "boolean") && <Text>{item.label}</Text>}
+                    {item.filter && (item.type !== "bool" && item.type !== "boolean") && <Text>{item.label}</Text>}
                     {<Field
                         mode="filter"
                         key={((mobject) ? mobject.name : "") + item.name}
@@ -615,7 +618,7 @@ export function CollectionServer(props) {
         );
     }, [funcStat, state, mobject]);
     const sorting_ui = React.useMemo(() => (filters) => {
-        const so = filters.filter(f => f.sort);
+        const so = filters?.filter(f => f.sort);
         const s = so?.map((item, idx) => {
             return (
                 <Option key={idx} value={item.name}>{item.label}</Option>
@@ -634,7 +637,7 @@ export function CollectionServer(props) {
                             <Select
                                 allowClear={true}
                                 value={sorting.name}
-                                onChange={(value) => onSortingChangeString(value, filters.find(i => i.name === value))}
+                                onChange={(value) => onSortingChangeString(value, filters?.find(i => i.name === value))}
                                 optionFilterProp="children"
                                 filterOption={(input, option) =>
                                     option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -680,6 +683,7 @@ export function CollectionServer(props) {
             const _render = (item, index) => {
                 if (render) {
                     return render(item, index, {
+                        collection,
                         setCollection,
                         setCollectionItem,
                         removeCollectionItem,
@@ -744,12 +748,12 @@ export function CollectionServer(props) {
     return (
         <React.Fragment>
             <div className="filtered">
-                <Card size="small" bordered={(size !== "small")} className={(size === "small") ? classes.cardSmallHeader : ""}>
-                    <div className="filtered-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                {/* <Card size="small" bordered={(size !== "small")} className={(size === "small") ? classes.cardSmallHeader : ""}> */}
+                    <div className="filtered-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom:"10px" }}>
                         <div style={{ flex: "auto", paddingRight: "15px" }}>
                             {RenderOnCollectionActions()}
                         </div>
-                        <div justify="end">
+                        {(filters && filters.length > 0 && collection && collection.length > 0) && <div justify="end">
                             <Tooltip title="Фильтр и сортировка">
                                 <CheckableTag
                                     style={{ cursor: "pointer" }}
@@ -759,9 +763,9 @@ export function CollectionServer(props) {
                                     <FilterOutlined />
                                 </CheckableTag>
                             </Tooltip>
-                        </div>
+                        </div>}
                     </div>
-                </Card>
+                {/* </Card> */}
                 <Layout style={{ backgroundColor: "transparent" }} className="filtered-body">
                     <div style={{ width: "100%", marginBottom: (size === "small") ? "0px" : "5px" }}>
                         <Card size="small" bordered={(size !== "small")} className={(size === "small") ? classes.cardSmall : ""} style={{ width: "100%" }}>
@@ -771,7 +775,7 @@ export function CollectionServer(props) {
                             </div>
                         </Card>
                     </div>
-                    {filtered && <Sider width={240} theme={"light"} style={{ margin: "0 1px 5px 5px" }} className="filtered-sider">
+                    {((filters && filters.length > 0 && collection && collection.length > 0) && filtered) && <Sider width={240} theme={"light"} style={{ margin: "0 1px 5px 5px" }} className="filtered-sider">
                         {JSX(() => {
                             const fl = filters?.filter(i => i.filter);
                             if (filtered && fl.length > 0) {
@@ -790,7 +794,7 @@ export function CollectionServer(props) {
                         {filters_ui(filters)}
                     </Sider>}
                 </Layout>
-                {(!!count && !!total) && <Card size="small" bordered={(size !== "small")} className={(size === "small") ? classes.cardSmall : ""} style={{ display: "flex", justifyContent: "flex-end", paddingTop: "10px", paddingBottom: "10px" }}>
+                {(!!count && !!total && totalPages && totalPages > 1) && <Card size="small" bordered={(size !== "small")} className={(size === "small") ? classes.cardSmall : ""} style={{ display: "flex", justifyContent: "flex-end", paddingTop: "10px", paddingBottom: "10px" }}>
                     <Pagination className="filtered-pagination" size="small"
                         current={current}
                         onChange={setCurrent}
