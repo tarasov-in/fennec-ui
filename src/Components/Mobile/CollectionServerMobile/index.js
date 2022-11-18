@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Badge, List, Picker, SwipeAction, PageIndicator, Stepper, PickerView, Popup, Space, Empty as EmptyMobile, Mask, DotLoading } from 'antd-mobile';
-import { unwrap, errorCatch, Request, QueryParam, GETWITH, READWITH, updateInArray, deleteInArray, GetMetaPropertyByPath, QueryFunc, If, QueryDetail, unsubscribe } from '../../../Tool'
+import { unwrap, errorCatch, Request, QueryParam, GETWITH, READWITH, updateInArray, deleteInArray, GetMetaPropertyByPath, QueryFunc, If, QueryDetail, subscribe as _subscribe, unsubscribe } from '../../../Tool'
 import Icofont from 'react-icofont';
 import { createUseStyles } from 'react-jss';
 import { Action, ActionPickerItem } from '../../Action';
@@ -616,7 +616,7 @@ export function CollectionServerMobile(props) {
 
     useEffect(() => {
         if (subscribe && subscribe.name && subscribe.func) {
-            let token = subscribe(subscribe.name, function (msg, data) {
+            let token = _subscribe(subscribe.name, function (msg, data) {
                 if(subscribe.filter && msg.startsWith(subscribe.filter)){
                     return
                 }

@@ -3,7 +3,7 @@ import { Layout, Card, Button, Tooltip, Pagination, Empty, Divider, Typography, 
 import 'moment/locale/ru';
 import { Action } from '../../Action'
 import { DropdownAction } from '../DropdownAction'
-import { unwrap, GET, errorCatch, Request, QueryParam, GETWITH, If, READWITH, QueryFunc, JSX, GetMetaPropertyByPath, updateInArray, deleteInArray, QueryDetail, unsubscribe } from '../../../Tool'
+import { unwrap, GET, errorCatch, Request, QueryParam, GETWITH, If, READWITH, QueryFunc, JSX, GetMetaPropertyByPath, updateInArray, deleteInArray, QueryDetail, subscribe as _subscribe, unsubscribe } from '../../../Tool'
 import { createUseStyles } from 'react-jss';
 import "./index.css"
 import { FilterOutlined, SortAscendingOutlined, SortDescendingOutlined } from '@ant-design/icons';
@@ -368,10 +368,8 @@ export function CollectionServer(props) {
 
     useEffect(() => {
         if (subscribe && subscribe.name && subscribe.func) {
-            let token = subscribe(subscribe.name, function (msg, data) {
-                console.log(msg, subscribe);
+            let token = _subscribe(subscribe.name, function (msg, data) {
                 if(subscribe.filter && msg.startsWith(subscribe.filter)){
-                    console.log("!!!", msg, subscribe);
                     return
                 }
                 
