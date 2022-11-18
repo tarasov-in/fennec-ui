@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Badge, List, Picker, SwipeAction, PageIndicator, Stepper, PickerView, Popup, Space, Empty as EmptyMobile, Mask, DotLoading } from 'antd-mobile';
-import { unwrap, errorCatch, Request, QueryParam, GETWITH, READWITH, updateInArray, deleteInArray, GetMetaPropertyByPath, QueryFunc, If, QueryDetail } from '../../../Tool'
+import { unwrap, errorCatch, Request, QueryParam, GETWITH, READWITH, updateInArray, deleteInArray, GetMetaPropertyByPath, QueryFunc, If, QueryDetail, unsubscribe } from '../../../Tool'
 import Icofont from 'react-icofont';
 import { createUseStyles } from 'react-jss';
 import { Action, ActionPickerItem } from '../../Action';
@@ -334,7 +334,8 @@ export function CollectionServerMobile(props) {
         titleFunc,
         extraFunc,
         noheader,
-        contextFilters
+        contextFilters,
+        subscribe
     } = props;
 
     const meta = useMetaContext();
@@ -359,6 +360,7 @@ export function CollectionServerMobile(props) {
     const unlock = () => {
         setLoading(false);
     };
+
     useEffect(() => {
         if (name && meta) {
             let mo = meta[name] || meta[name.toLowerCase()];
@@ -592,6 +594,25 @@ export function CollectionServerMobile(props) {
         setSelectionType(selection);
     }, [selection]);
 
+    useEffect(() => {
+        if (subscribe && subscribe.name && subscribe.func) {
+            let token = subscribe(subscribe.name, function (msg, data) {
+                subscribe.func(data, {
+                    msg,
+                    collection,
+                    setCollection,
+                    setCollectionItem,
+                    removeCollectionItem,
+                    request: ()=>request(state.filter),
+                    state,
+                });
+            });
+            return () => {
+                unsubscribe(token);
+            };
+        }
+    }, [subscribe, collection, setCollection, setCollectionItem, removeCollectionItem, request, state]);
+    
     // Events
     const {
         // Collection Only Events

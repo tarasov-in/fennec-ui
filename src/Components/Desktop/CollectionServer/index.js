@@ -3,7 +3,7 @@ import { Layout, Card, Button, Tooltip, Pagination, Empty, Divider, Typography, 
 import 'moment/locale/ru';
 import { Action } from '../../Action'
 import { DropdownAction } from '../DropdownAction'
-import { unwrap, GET, errorCatch, Request, QueryParam, GETWITH, If, READWITH, QueryFunc, JSX, GetMetaPropertyByPath, updateInArray, deleteInArray, QueryDetail } from '../../../Tool'
+import { unwrap, GET, errorCatch, Request, QueryParam, GETWITH, If, READWITH, QueryFunc, JSX, GetMetaPropertyByPath, updateInArray, deleteInArray, QueryDetail, unsubscribe } from '../../../Tool'
 import { createUseStyles } from 'react-jss';
 import "./index.css"
 import { FilterOutlined, SortAscendingOutlined, SortDescendingOutlined } from '@ant-design/icons';
@@ -89,7 +89,8 @@ export function CollectionServer(props) {
         mode, // table, list
         render,
         titleFunc,
-        contextFilters
+        contextFilters,
+        subscribe
     } = props;
 
     const meta = useMetaContext();
@@ -112,6 +113,7 @@ export function CollectionServer(props) {
     const unlock = () => {
         setLoading(false);
     };
+
     useEffect(() => {
         if (name && meta) {
             let mo = meta[name] || meta[name.toLowerCase()];
@@ -341,6 +343,26 @@ export function CollectionServer(props) {
         setSelectionType(selection);
     }, [selection]);
 
+
+    useEffect(() => {
+        if (subscribe && subscribe.name && subscribe.func) {
+            let token = subscribe(subscribe.name, function (msg, data) {
+                subscribe.func(data, {
+                    msg,
+                    collection,
+                    setCollection,
+                    setCollectionItem,
+                    removeCollectionItem,
+                    request: ()=>request(state.filter),
+                    state,
+                });
+            });
+            return () => {
+                unsubscribe(token);
+            };
+        }
+    }, [subscribe, collection, setCollection, setCollectionItem, removeCollectionItem, request, state]);
+    
     // Events
     const {
         // Collection Only Events
