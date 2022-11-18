@@ -10,7 +10,7 @@ import uuid from 'react-uuid';
 var _ = require('lodash');
 
 export function DropdownMobile(props) {
-    const { auth, buttonStyle, icon, titles, items } = props;
+    const { auth, buttonStyle, icon, titles, items, trigger } = props;
     const [actions, setActions] = useState([]);
     useEffect(() => {
         let i = unwrap(items);
@@ -52,11 +52,11 @@ export function DropdownMobile(props) {
                         </List>
                     )
                 }}
-                trigger={(click) => (
+                trigger={trigger || ((click) => (
                     <Button className="dropdown" size={"small"} style={{ padding: "0 2px", ...buttonStyle }} type="default" onClick={click}>
                         {(icon) ? icon : <MenuOutlined />}
                     </Button>
-                )}
+                ))}
             />
         </React.Fragment>
     );

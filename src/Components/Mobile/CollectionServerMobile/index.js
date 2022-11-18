@@ -400,7 +400,7 @@ export function CollectionServerMobile(props) {
     }, [name, meta]);
     const setCollection = React.useCallback((array) => {
         _setCollection(array);
-        if(onCollectionChange){
+        if (onCollectionChange) {
             onCollectionChange(array);
         }
     }, [collection]);
@@ -617,7 +617,7 @@ export function CollectionServerMobile(props) {
     useEffect(() => {
         if (subscribe && subscribe.name && subscribe.func) {
             let token = _subscribe(subscribe.name, function (msg, data) {
-                if(subscribe.filter && msg.startsWith(subscribe.filter)){
+                if (subscribe.filter && msg.startsWith(subscribe.filter)) {
                     return
                 }
                 return subscribe.func(data, {
@@ -626,7 +626,7 @@ export function CollectionServerMobile(props) {
                     setCollection,
                     setCollectionItem,
                     removeCollectionItem,
-                    request: ()=>request(state.filter),
+                    request: () => request(state.filter),
                     state,
                 });
             });
@@ -643,63 +643,7 @@ export function CollectionServerMobile(props) {
         }
     };
     //---------------------------
-
-    const columns = React.useCallback(() => {
-        var c = [];
-        let tmp = (props.columns) ? props.columns({
-            auth,
-            collection,
-            setCollection: setCollection,
-            request: (values, itemAction) => Request(values, itemAction, {
-                auth,
-                collection,
-                setCollection: setCollection,
-                onData: onData || ((values, context) => values.data),
-
-                // index,
-                lock,
-                unlock,
-                // close,
-                onValues,
-                onClose,
-                onError,
-                onDispatch
-            })
-        }) : [];
-        for (let i = 0; i < tmp.length; i++) {
-            const cx = tmp[i];
-            c.push(cx);
-        }
-        if (modelActions) {
-            c.push({
-                className: classes.whiteCell,
-                title: '',
-                dataIndex: '',
-                key: 'x',
-                fixed: 'right',
-                width: 45,
-                render: (text, record, index) => RenderOnModelActions(record, index)
-            });
-        }
-        return c;
-    }, [modelActions, lock, auth, unlock]);
-    const intermediate = (values, unlock, close, item, index) => {
-        return Request(values, item, {
-            auth,
-            collection,
-            setCollection: setCollection,
-            onData: onData || ((values, context) => values.data),
-
-            index,
-            unlock,
-            close,
-            onValues,
-            onClose,
-            onError,
-            onDispatch
-        })
-    };
-    const RenderOnModelActions = React.useCallback((item, index) => {
+    const RenderOnModelActions = React.useCallback((item, index, trigger) => {
         let defaultAction = (!name) ? [] : [
             {
                 key: "change",
@@ -760,29 +704,20 @@ export function CollectionServerMobile(props) {
                     collection: collection,
                     setCollection: setCollection,
                     ...e
-                    // ...{
-                    //     ...e,
-                    //     action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
-                    // }
                 }))
             } />)
-        if (!modelActions) return <React.Fragment></React.Fragment>;
+        if (!modelActions) return <React.Fragment>{trigger && trigger()}</React.Fragment>;
         let values = unwrap(modelActions(item, index));
-        if (!values || !values.length) return <React.Fragment></React.Fragment>;
-        return <DropdownMobile>
-            {values?.map((e, idx) => <ActionPickerItem
-                key={idx}
-                auth={auth}
-                mode={"MenuItem"}
-                object={item}
-                {...{
-                    collection: collection,
-                    setCollection: setCollection,
-                    ...e,
-                    // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
-                }}
-            />)}
-        </DropdownMobile>
+        if (!values || !values.length) return <React.Fragment>{trigger && trigger()}</React.Fragment>;
+        return <DropdownMobile
+            auth={auth}
+            titles={{header: "Выберите действие"}}
+            items={values}
+            trigger={(click) => (
+                <div onClick={click} style={{ fontSize: "13px" }}>
+                    {trigger && trigger()}
+                </div>
+            )} />
     }, [auth, collection, modelActions]);
     const RenderOnCollectionActions = React.useCallback(() => {
         let defaultAction = (!name) ? [] : [
@@ -847,7 +782,6 @@ export function CollectionServerMobile(props) {
             />)}
         </div>;
     }, [auth, collection, collectionActions]);
-
     const hasSelected = selectedRowKeys.length > 0;
     const selectionConfig = (selectionType) => {
         if (!selection) return {};
@@ -907,15 +841,15 @@ export function CollectionServerMobile(props) {
         }
         return "" + item
     }, [render, setCollection, setCollectionItem, removeCollectionItem, request]);
-    const actions = (item, index) => {
-        let values = unwrap(modelActions(item, index));
-        if (modelActions && values && values.length) {
-            return {
-                actions: [RenderOnModelActions(item, index)]
-            };
-        }
-        return {};
-    };
+    // const actions = (item, index) => {
+    //     let values = unwrap(modelActions(item, index));
+    //     if (modelActions && values && values.length) {
+    //         return {
+    //             actions: [RenderOnModelActions(item, index)]
+    //         };
+    //     }
+    //     return {};
+    // };
     const titleView = React.useCallback(() => {
         if (title || titleFunc) {
             if (titleFunc) {
@@ -988,9 +922,9 @@ export function CollectionServerMobile(props) {
                 <div>
                     {(collection && collection.length > 0) && <div>
                         <List className="my-list">
-                            {(collection && collection.length > 0) && collection?.map((item, index) => (
+                            {collection?.map((item, index) => (
                                 <Item key={index} multipleLine align="top" wrap style={{ paddingLeft: "0px" }}>
-                                    {_render(item, index)}
+                                    {RenderOnModelActions(item, index, () => _render(item, index))}
                                 </Item>
                             ))}
                         </List>
@@ -1041,7 +975,7 @@ export function CollectionServerMobile(props) {
                     <List className="my-list">
                         {(collection && collection.length > 0) && collection?.map((item, index) => (
                             <Item key={index} multipleLine align="top" wrap style={{ paddingLeft: "0px" }}>
-                                {_render(item, index)}
+                                {RenderOnModelActions(item, index, () => _render(item, index))}
                             </Item>
                         ))}
                         {(!collection || collection.length == 0) && <div style={{
@@ -1069,13 +1003,6 @@ export function CollectionServerMobile(props) {
                                     <PageIndicator
                                         total={3}
                                         current={(state.current <= 1) ? 0 : (state.current >= total) ? 2 : 1}
-                                    // style={{
-                                    //     '--dot-size': '10px',
-                                    //     '--active-dot-size': '30px',
-                                    //     '--dot-border-radius': '50%',
-                                    //     '--active-dot-border-radius': '15px',
-                                    //     '--dot-spacing': '8px',
-                                    // }}
                                     />
                                 </div>
                                 <div>
@@ -1084,13 +1011,6 @@ export function CollectionServerMobile(props) {
                                             <Icofont icon="rounded-right" />
                                         </Space>
                                     </Button>
-                                    {/* <Stepper
-                                    step={1}
-                                    defaultValue={1}
-                                    min={1}
-                                    max={total}
-                                    value={state.current}
-                                    onChange={PaginatorChange} /> */}
                                 </div>
                             </div>
                         }
