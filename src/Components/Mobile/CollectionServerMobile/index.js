@@ -604,7 +604,7 @@ export function CollectionServerMobile(props) {
 
     useEffect(() => {
         request();
-    }, [name, state.filter, filters, state.sorting, state.current, setCollection, contextFilters]);
+    }, [name, state.filter, filters, state.sorting, state.current, _setCollection, contextFilters]);
 
     // Table Items Selection
     const [selectionType, setSelectionType] = useState(selection || 'checkbox'); // radio
@@ -634,7 +634,7 @@ export function CollectionServerMobile(props) {
                 unsubscribe(token);
             };
         }
-    }, [subscribe, collection, setCollection, setCollectionItem, removeCollectionItem, request, state]);
+    }, [subscribe, collection, _setCollection, setCollectionItem, removeCollectionItem, request, state]);
 
     // ---- AntFrom Item Api ----
     const triggerChange = (value) => {

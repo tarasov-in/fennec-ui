@@ -387,7 +387,7 @@ export function CollectionServer(props) {
                 unsubscribe(token);
             };
         }
-    }, [subscribe, collection, setCollection, setCollectionItem, removeCollectionItem, request, state]);
+    }, [subscribe, collection, _setCollection, setCollectionItem, removeCollectionItem, request, state]);
 
     // ---- AntFrom Item Api ----
     const triggerChange = (value) => {
