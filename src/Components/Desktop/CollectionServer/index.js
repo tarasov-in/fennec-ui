@@ -90,12 +90,28 @@ export function CollectionServer(props) {
         render,
         titleFunc,
         contextFilters,
-        subscribe
+        subscribe,
+
+        onCollectionChange,
+        // Collection Only Events
+        onChange,   // |
+        value,      // | AntFrom Item Api
+        getSelectedOnly,
+
+        // Collection and Model Events
+        onValues, // (values, context) => { }, // если без return то просто как событие, если внутри return то замена данных
+        onData,   // (values, context) => { }, // если без return то просто как событие, если внутри return то замена данных
+        onClose,   // ({unlock, close}, context) => { },
+        onError,  // (err, type, {unlock, close}) => {},
+        onDispatch, // (values, context) => {}, // если не возвращает значения то посленеё будет вызван внутренний setCollection, 
+        // если вернет функцию в качестве значения то эта функция будет вызвана вместо setCollection 
+        // и в неё будет передано значение нового состояния
+
     } = props;
 
     const meta = useMetaContext();
     const [loading, setLoading] = useState(false);
-    const [collection, setCollection] = useState([]);
+    const [collection, _setCollection] = useState([]);
     const [funcStat, setFuncStat] = useState();
     const [state, setState] = useState({ filter: {}, newFilter: [], filterChanged: false })
     const [filtered, setFiltered] = useState(false);
@@ -137,6 +153,12 @@ export function CollectionServer(props) {
         }
     }, [name, meta]);
 
+    const setCollection = React.useCallback((array) => {
+        _setCollection(array);
+        if(onCollectionChange){
+            onCollectionChange(array);
+        }
+    }, [collection]);
     const setCollectionItem = React.useCallback((item) => {
         setCollection(updateInArray(collection, item));
     }, [collection]);
@@ -347,7 +369,13 @@ export function CollectionServer(props) {
     useEffect(() => {
         if (subscribe && subscribe.name && subscribe.func) {
             let token = subscribe(subscribe.name, function (msg, data) {
-                subscribe.func(data, {
+                console.log(msg, subscribe);
+                if(subscribe.filter && msg.startsWith(subscribe.filter)){
+                    console.log("!!!", msg, subscribe);
+                    return
+                }
+                
+                return subscribe.func(data, {
                     msg,
                     collection,
                     setCollection,
@@ -362,23 +390,6 @@ export function CollectionServer(props) {
             };
         }
     }, [subscribe, collection, setCollection, setCollectionItem, removeCollectionItem, request, state]);
-    
-    // Events
-    const {
-        // Collection Only Events
-        onChange,   // |
-        value,      // | AntFrom Item Api
-        getSelectedOnly,
-
-        // Collection and Model Events
-        onValues, // (values, context) => { }, // если без return то просто как событие, если внутри return то замена данных
-        onData,   // (values, context) => { }, // если без return то просто как событие, если внутри return то замена данных
-        onClose,   // ({unlock, close}, context) => { },
-        onError,  // (err, type, {unlock, close}) => {},
-        onDispatch, // (values, context) => {}, // если не возвращает значения то посленеё будет вызван внутренний setCollection, 
-        // если вернет функцию в качестве значения то эта функция будет вызвана вместо setCollection 
-        // и в неё будет передано значение нового состояния
-    } = props;
 
     // ---- AntFrom Item Api ----
     const triggerChange = (value) => {
