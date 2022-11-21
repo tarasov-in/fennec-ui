@@ -326,6 +326,7 @@ export function CollectionServerMobile(props) {
         size,
         modelActions,
         defaultModelActions,
+        modelActionsTitle,
         collectionActions,
         defaultCollectionActions,
         selection, // undefined, "radio" или "checkbox"
@@ -643,7 +644,7 @@ export function CollectionServerMobile(props) {
         }
     };
     //---------------------------
-    const RenderOnModelActions = React.useCallback((item, index, trigger) => {
+    const RenderOnModelActions = React.useCallback((item, index, trigger, titles) => {
         let defaultAction = (!name) ? [] : [
             {
                 key: "change",
@@ -711,7 +712,7 @@ export function CollectionServerMobile(props) {
         if (!values || !values.length) return <React.Fragment>{trigger && trigger()}</React.Fragment>;
         return <DropdownMobile
             auth={auth}
-            titles={{header: "Выберите действие"}}
+            titles={titles || { header: "Выберите действие" }}
             items={values}
             trigger={(click) => (
                 <div onClick={click} style={{ fontSize: "13px" }}>
@@ -757,12 +758,9 @@ export function CollectionServerMobile(props) {
                 key={e.key || idx}
                 auth={auth}
                 mode={"button"}
-                {...{
-                    collection: collection,
-                    setCollection: setCollection,
-                    ...e,
-                    // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
-                }}
+                collection={collection}
+                setCollection={setCollection}
+                {...e}
             />)}
         </div>;
         if (!collectionActions) return <React.Fragment></React.Fragment>;
@@ -773,12 +771,9 @@ export function CollectionServerMobile(props) {
                 key={idx}
                 auth={auth}
                 mode={"button"}
-                {...{
-                    collection: collection,
-                    setCollection: setCollection,
-                    ...e,
-                    // action: (values, unlock, close) => intermediate(values, unlock, close, e, idx),
-                }}
+                collection={collection}
+                setCollection={setCollection}
+                {...e}
             />)}
         </div>;
     }, [auth, collection, collectionActions]);
@@ -924,7 +919,7 @@ export function CollectionServerMobile(props) {
                         <List className="my-list">
                             {collection?.map((item, index) => (
                                 <Item key={index} multipleLine align="top" wrap style={{ paddingLeft: "0px" }}>
-                                    {RenderOnModelActions(item, index, () => _render(item, index))}
+                                    {RenderOnModelActions(item, index, () => _render(item, index),(modelActionsTitle)?modelActionsTitle(item):undefined)}
                                 </Item>
                             ))}
                         </List>
@@ -975,7 +970,7 @@ export function CollectionServerMobile(props) {
                     <List className="my-list">
                         {(collection && collection.length > 0) && collection?.map((item, index) => (
                             <Item key={index} multipleLine align="top" wrap style={{ paddingLeft: "0px" }}>
-                                {RenderOnModelActions(item, index, () => _render(item, index))}
+                                {RenderOnModelActions(item, index, () => _render(item, index),(modelActionsTitle)?modelActionsTitle(item):undefined)}
                             </Item>
                         ))}
                         {(!collection || collection.length == 0) && <div style={{
