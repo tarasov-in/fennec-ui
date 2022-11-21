@@ -572,7 +572,8 @@ export function CollectionServerMobile(props) {
                 QueryParam(`count`, count),
                 If(state.sorting.name, QueryParam(`s-${state.sorting.name}`, state.sorting.order)),
                 ...flt,
-                ...func
+                ...func,
+                ...ctxFlt
             ], ({ data }) => {
                 if (!funcStat) {
                     setFuncStat(data.stat);
@@ -590,7 +591,8 @@ export function CollectionServerMobile(props) {
                 QueryParam(`count`, count),
                 If(state.sorting.name, QueryParam(`s-${state.sorting.name}`, state.sorting.order)),
                 ...flt,
-                ...funcunlock
+                ...func,
+                ...ctxFlt
             ], ({ data }) => {
                 if (!funcStat) {
                     setFuncStat(data.stat);
