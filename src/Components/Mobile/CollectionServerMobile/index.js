@@ -323,14 +323,14 @@ export function CollectionServerMobile(props) {
         source,
         title,
         extra,
-        size,
+
         modelActions,
         defaultModelActions,
         modelActionsTitle,
         collectionActions,
         defaultCollectionActions,
         selection, // undefined, "radio" или "checkbox"
-        mode, // table, list
+
         render,
         titleFunc,
         extraFunc,
