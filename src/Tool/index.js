@@ -336,8 +336,10 @@ export const messageError = (err) => {
 export const arrayUnpack = (values, field, target) => {
     var f = values[field];
     delete values[field];
-    for (let i = 0; i < target.length; i++) {
-        values[target[i]] = f[i];
+    if(target && values){
+        for (let i = 0; i < target.length; i++) {
+            values[target[i]] = f[i];
+        }
     }
     return values;
 }
@@ -452,7 +454,7 @@ export const unpackFormFields = (form, values) => {
     var fields = form.getFieldsValue();
     for (var name in fields) {
         if (name.startsWith("@")) {
-            var flds = form.getFieldInstance(name).props.fields;
+            var flds = form?.getFieldInstance(name)?.props?.fields;
             values = arrayUnpack(values, name, flds);
         }
     }
