@@ -295,7 +295,6 @@ export function Action(props) {
         }
     }, [steps, excludeKeyPressed, hideMenu, props.collection])
     const action = React.useCallback((_values) => {
-        // console.log("action",_values);
 
         let values = eventExecution(modify, _values, {});
 
