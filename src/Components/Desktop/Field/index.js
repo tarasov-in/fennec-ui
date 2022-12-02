@@ -249,11 +249,11 @@ function FloatSlider({ item, value, onChange }) {
     const xmax = item.max || item.func.max || 100000;
     return (
         <Slider
-            min={(xmin - (xmin % xstep))}
-            max={(xmax + (xstep - xmax % xstep))}
+            min={xmin}
+            max={xmax}
             step={xstep}
-            value={val}
-            onChange={setVal}
+            value={(item.realtime)?value:val}
+            onChange={(item.realtime)?onChange:setVal}
             onAfterChange={onChange} />
     )
 }
@@ -289,11 +289,11 @@ function IntegerSlider({ item, value, onChange }) {
 
     return (
         <Slider
-            min={(xmin - (xmin % xstep))}
-            max={(xmax + (xstep - xmax % xstep))}
+            min={xmin}
+            max={xmax}
             step={xstep}
-            value={val}
-            onChange={setVal}
+            value={(item.realtime)?value:val}
+            onChange={(item.realtime)?onChange:setVal}
             onAfterChange={onChange} />
     )
 }

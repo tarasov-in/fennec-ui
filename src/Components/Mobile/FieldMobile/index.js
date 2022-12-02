@@ -270,8 +270,8 @@ function FloatSlider({ item, value, onChange }) {
                     min={xmin}
                     max={xmax}
                     step={xstep}
-                    value={val}
-                    onChange={setVal}
+                    value={(item.realtime)?value:val}
+                    onChange={(item.realtime)?onChange:setVal}
                     onAfterChange={onChange}
                 />
             </div>
@@ -383,8 +383,8 @@ function IntegerSlider({ item, value, onChange }) {
                 min={xmin}
                 max={xmax}
                 step={xstep}
-                value={val}
-                onChange={setVal}
+                value={(item.realtime)?value:val}
+                onChange={(item.realtime)?onChange:setVal}
                 onAfterChange={onChange}
             />
         </div>
