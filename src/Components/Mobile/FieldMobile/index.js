@@ -239,6 +239,46 @@ function RangeFloat({ item, value, onChange }) {
         </div>
     )
 }
+function FloatSlider({ item, value, onChange }) {
+    const [val, setVal] = useState();
+    useEffect(() => {
+        setVal(value);
+    }, [value]);
+    const xstep = item.step || 1;
+    const xmin = item.min || item.func.min || 0;
+    const xmax = item.max || item.func.max || 100000;
+    
+    return (
+        <div style={{ padding: "5px 0px" }}>
+            <div className='bg bg-grey' style={{
+                textAlign: "left",
+                paddingLeft: "5px",
+                marginBottom: "5px",
+                display: "flex",
+                justifyContent: "space-between"
+            }}>
+                <div>{item.label}</div>
+                <Button fill='none' size='mini' onClick={(v) => {
+                    onChange();
+                }}>
+                    <Icofont icon="close" />
+                </Button>
+            </div>
+            <div>
+                <Slider
+                    range
+                    min={xmin}
+                    max={xmax}
+                    step={xstep}
+                    value={val}
+                    onChange={setVal}
+                    onAfterChange={onChange}
+                />
+            </div>
+        </div>
+    )
+}
+
 function RangeInteger({ item, value, onChange }) {
     const [val, setVal] = useState();
     useEffect(() => {
@@ -308,6 +348,42 @@ function RangeInteger({ item, value, onChange }) {
                 step={xstep}
                 // included={true}
                 value={val || def}
+                onChange={setVal}
+                onAfterChange={onChange}
+            />
+        </div>
+    )
+}
+function IntegerSlider({ item, value, onChange }) {
+    const [val, setVal] = useState();
+    useEffect(() => {
+        setVal(value);
+    }, [value]);
+    const xstep = item.step || 1;
+    const xmin = item.min || item.func.min || 0;
+    const xmax = item.max || item.func.max || 100000;
+
+    return (
+        <div style={{ padding: "5px 0px" }}>
+            <div className='bg bg-grey' style={{
+                textAlign: "left",
+                paddingLeft: "5px",
+                marginBottom: "5px",
+                display: "flex",
+                justifyContent: "space-between"
+            }}>
+                <div>{item.label}</div>
+                <Button fill='none' size='mini' onClick={(v) => {
+                    onChange();
+                }}>
+                    <Icofont icon="close" />
+                </Button>
+            </div>
+            <Slider
+                min={xmin}
+                max={xmax}
+                step={xstep}
+                value={val}
                 onChange={setVal}
                 onAfterChange={onChange}
             />
@@ -458,113 +534,7 @@ function Obj({ auth, item, value, onChange, changed }) {
         </div>
     )
 }
-// function Obj({ auth, item, value, onChange }) {
-//     const [data, setData] = useState([]);
-//     const [disabled, setDisabled] = useState(true);
-//     const [available, setAvailable] = useState(false);
-//     const meta = useMetaContext();
-//     useEffect(() => {
-//         if (item.source) {
-//             GETWITH(auth, item.source, [
-//                 (!item.queryFilter) ? QueryDetail("model") : undefined,
-//                 (!item.queryFilter) ? QueryOrder("ID", "ASC") : undefined,
-//                 ...(item.queryFilter && _.isArray(item.queryFilter)) ? item.queryFilter : []
-//             ], ({ data }) => {
-//                 setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
-//                 setDisabled(false);
-//             }, (err, type) => errorCatch(err, type, () => { }));
-//         } else {
-//             let src = getObjectValue(item, "relation.reference.object");
-//             if (src) {
-//                 READWITH(auth, src, [
-//                     (!item.queryFilter) ? QueryDetail("model") : undefined,
-//                     (!item.queryFilter) ? QueryOrder("ID", "ASC") : undefined,
-//                     ...(item.queryFilter && _.isArray(item.queryFilter)) ? item.queryFilter : []
-//                 ], ({ data }) => {
-//                     setData((data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data);
-//                     setDisabled(false);
-//                 }, (err, type) => errorCatch(err, type, () => { }));
-//             }
-//         }
-//     }, [auth, item]);
 
-//     const oui = [];
-//     if (data) {
-//         if (item.display) {
-//             for (let idx = 0; idx < data.length; idx++) {
-//                 const i = data[idx];
-//                 oui.push({
-//                     label: item.display(i),
-//                     value: i.ID,
-//                 });
-//             }
-//         } else {
-//             let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
-//             const display = (display) => {
-//                 if (display.fields) {
-//                     return display
-//                 }
-//             }
-//             for (let idx = 0; idx < data.length; idx++) {
-//                 const i = data[idx];
-//                 oui.push({
-//                     label: getDisplay(i, display(item.relation.display) || display(fieldMeta.display), fieldMeta, meta),
-//                     value: i.ID,
-//                 });
-//             }
-//         }
-//     }
-//     const [visible, setVisible] = useState(false);
-//     const current = React.useMemo(() => {
-//         return oui?.find(e => e.value === value)?.label;
-//     }, [value])
-//     return (
-//         <div style={{ padding: "5px 0px" }}>
-//             <div className='bg bg-grey' style={{
-//                     textAlign: "left",
-//                     paddingLeft: "5px",
-//                     marginBottom: "5px",
-//                     display: "flex",
-//                     justifyContent: "space-between"
-//                 }}>
-//                 <div>{item.label}</div>
-//                 <Button fill='none' size='mini' onClick={(v) => {
-//                     onChange();
-//                     }}>
-//                     <Icofont icon="close" />
-//                 </Button>
-//             </div>
-//             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
-//                 <div onClick={() => {
-//                     setVisible(true)
-//                 }} style={{
-//                     flex: "1",
-//                     border: "1px solid #e5e5e5",
-//                     borderRadius: "4px",
-//                     padding: "2px 6px"
-//                 }}>
-//                     <Picker
-//                         visible={visible}
-//                         onClose={() => {
-//                             setVisible(false)
-//                         }}
-//                         disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
-//                         value={[value]}
-//                         columns={[oui]}
-//                         onConfirm={e => {
-//                             if (onChange) {
-//                                 onChange(e[0]);
-//                             }
-//                         }}
-//                         confirmText={item.okText || 'Выбрать'}
-//                         cancelText={item.dismissText || 'Отмена'}>
-//                     </Picker>
-//                     {current || <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || `выберите  ${item.label.toLowerCase()}`}</span>}
-//                 </div>
-//             </div>
-//         </div>
-//     )
-// }
 function Date({ item, value, onChange }) {
     const [visible, setVisible] = useState(false)
     const [val, setVal] = useState();
@@ -962,6 +932,26 @@ export function FieldMobile({ auth, item, value, onChange, changed }) {
                 case "datetime":
                 case "time.Time":
                     return (<RangeDate auth={auth} item={item} value={value} onChange={onChange}></RangeDate>)
+                default:
+                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange}></Unknown>)
+            }
+        case "slider":
+            switch (item.type) {
+                case "func":
+                    return (props.func) ? props.func(auth, item, value, onChange) : undefined;
+                case "int":
+                case "uint":
+                case "integer":
+                case "int64":
+                case "int32":
+                case "uint64":
+                case "uint32":
+                    return (<IntegerSlider auth={auth} item={item} value={value} onChange={onChange}></IntegerSlider>)
+                case "double":
+                case "float":
+                case "float64":
+                case "float32":
+                    return (<FloatSlider auth={auth} item={item} value={value} onChange={onChange}></FloatSlider>)
                 default:
                     return (<Unknown auth={auth} item={item} value={value} onChange={onChange}></Unknown>)
             }
