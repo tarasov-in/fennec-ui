@@ -171,6 +171,7 @@ function GroupObj({ auth, item, value, onChange, changed }) {
     };
     return (
         <Select
+            size={(item.size) ? item.size : "middle"}
             mode="multiple"
             showSearch
             value={value}
@@ -252,8 +253,8 @@ function FloatSlider({ item, value, onChange }) {
             min={xmin}
             max={xmax}
             step={xstep}
-            value={(item.realtime)?value:val}
-            onChange={(item.realtime)?onChange:setVal}
+            value={(item.realtime) ? value : val}
+            onChange={(item.realtime) ? onChange : setVal}
             onAfterChange={onChange} />
     )
 }
@@ -292,8 +293,8 @@ function IntegerSlider({ item, value, onChange }) {
             min={xmin}
             max={xmax}
             step={xstep}
-            value={(item.realtime)?value:val}
-            onChange={(item.realtime)?onChange:setVal}
+            value={(item.realtime) ? value : val}
+            onChange={(item.realtime) ? onChange : setVal}
             onAfterChange={onChange} />
     )
 }
@@ -387,6 +388,7 @@ function Obj({ auth, item, value, onChange, changed }) {
     };
     return (
         <Select showSearch
+            size={(item.size) ? item.size : "middle"}
             value={value}
             onChange={e => onChange(e, item, itemByProperty(item, e))}
             style={{ width: "100%" }}
@@ -681,7 +683,7 @@ function Unknown({ item }) {
 //             }
 
 //     }
-    
+
 // }
 //------------------------------------------------------------------------------------
 
