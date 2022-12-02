@@ -244,10 +244,10 @@ function FloatSlider({ item, value, onChange }) {
     useEffect(() => {
         setVal(value);
     }, [value]);
-    const xstep = item.step || 1;
-    const xmin = item.min || item.func.min || 0;
-    const xmax = item.max || item.func.max || 100000;
-    
+    const xstep = item?.step || 1;
+    const xmin = item?.min || item?.func?.min || 0;
+    const xmax = item?.max || item?.func?.max || 100000;
+
     return (
         <div style={{ padding: "5px 0px" }}>
             <div className='bg bg-grey' style={{
@@ -258,20 +258,23 @@ function FloatSlider({ item, value, onChange }) {
                 justifyContent: "space-between"
             }}>
                 <div>{item.label}</div>
-                <Button fill='none' size='mini' onClick={(v) => {
-                    onChange();
-                }}>
+                <Button
+                    disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
+                    fill='none' size='mini' onClick={(v) => {
+                        onChange();
+                    }}>
                     <Icofont icon="close" />
                 </Button>
             </div>
             <div>
                 <Slider
+                    disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
                     range
                     min={xmin}
                     max={xmax}
                     step={xstep}
-                    value={(item.realtime)?value:val}
-                    onChange={(item.realtime)?onChange:setVal}
+                    value={(item.realtime) ? value : val}
+                    onChange={(item.realtime) ? onChange : setVal}
                     onAfterChange={onChange}
                 />
             </div>
@@ -359,9 +362,9 @@ function IntegerSlider({ item, value, onChange }) {
     useEffect(() => {
         setVal(value);
     }, [value]);
-    const xstep = item.step || 1;
-    const xmin = item.min || item.func.min || 0;
-    const xmax = item.max || item.func.max || 100000;
+    const xstep = item?.step || 1;
+    const xmin = item?.min || item?.func?.min || 0;
+    const xmax = item?.max || item?.func?.max || 100000;
 
     return (
         <div style={{ padding: "5px 0px" }}>
@@ -373,18 +376,21 @@ function IntegerSlider({ item, value, onChange }) {
                 justifyContent: "space-between"
             }}>
                 <div>{item.label}</div>
-                <Button fill='none' size='mini' onClick={(v) => {
-                    onChange();
-                }}>
+                <Button
+                    disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
+                    fill='none' size='mini' onClick={(v) => {
+                        onChange();
+                    }}>
                     <Icofont icon="close" />
                 </Button>
             </div>
             <Slider
+                disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
                 min={xmin}
                 max={xmax}
                 step={xstep}
-                value={(item.realtime)?value:val}
-                onChange={(item.realtime)?onChange:setVal}
+                value={(item.realtime) ? value : val}
+                onChange={(item.realtime) ? onChange : setVal}
                 onAfterChange={onChange}
             />
         </div>

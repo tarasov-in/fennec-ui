@@ -245,11 +245,12 @@ function FloatSlider({ item, value, onChange }) {
     useEffect(() => {
         setVal(value);
     }, [value]);
-    const xstep = item.step || 1;
-    const xmin = item.min || item.func.min || 0;
-    const xmax = item.max || item.func.max || 100000;
+    const xstep = item?.step || 1;
+    const xmin = item?.min || item?.func?.min || 0;
+    const xmax = item?.max || item?.func?.max || 100000;
     return (
         <Slider
+            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
             min={xmin}
             max={xmax}
             step={xstep}
@@ -284,12 +285,13 @@ function IntegerSlider({ item, value, onChange }) {
     useEffect(() => {
         setVal(value);
     }, [value]);
-    const xstep = item.step || 1;
-    const xmin = item.min || item.func.min || 0;
-    const xmax = item.max || item.func.max || 100000;
+    const xstep = item?.step || 1;
+    const xmin = item?.min || item?.func?.min || 0;
+    const xmax = item?.max || item?.func?.max || 100000;
 
     return (
         <Slider
+            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
             min={xmin}
             max={xmax}
             step={xstep}
