@@ -810,9 +810,9 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
         return o;
     };
     const onFieldChange = (value, item, obj) => {
-        if (item.duplex && (item.type === "object" || item.type === "action")) {
+        if (item && item.duplex && (item.type === "object" || item.type === "action")) {
             setChanged({ ...changed, ...splitedValue(item.name, value), ...splitedValue(item.duplex, obj) });
-        } else {
+        } else if(item) {
             setChanged({ ...changed, ...splitedValue(item.name, value) });
         }
     };
@@ -880,6 +880,10 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
                     }}
                     {...options}
                     style={{ height: fixedHeight(), width: "100%" }}
+                    // onValuesChange={(changedValues, allValues)=>{
+                        
+                    // }}
+                    // onFieldsChange={(changedFields, allFields)=>{}}
                 >
                     {virtualized && <AutoSizer>
                         {({ height, width }) => {
