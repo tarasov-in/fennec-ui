@@ -722,10 +722,10 @@ export function Action(props) {
                         <Popup
                             visible={opened || (fire && visible)}
                             showCloseButton
-                            bodyStyle={{ height: '100vh' }}
+                            bodyStyle={{ height: "100%" }}
                             onClose={closePopup}
                         >
-                            <div style={{ height: '100vh', display: "flex", flexDirection: "column" }}>
+                            <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
                                 <div style={{ flex: "0", padding: "0 10px" }}>
                                     {(titles && titles.header) ?
                                         <div style={{ display: "flex", justifyContent: "center", padding: "10px 30px 10px 15px", fontSize: "16px" }}>
