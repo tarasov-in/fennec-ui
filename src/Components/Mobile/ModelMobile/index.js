@@ -739,7 +739,7 @@ const useStyles = createUseStyles({
 function Frm({ auth, form, meta, options, submit, object, virtualized, search }) {
     const classes = useStyles()
     const [visible, setVisible] = useState(false);
-    const [searchText, setSearchText] = useState("");
+    // const [searchText, setSearchText] = useState("");
     const [changed, setChanged] = useState({ ...object });
     // useEffect(() => {
     //     form.resetFields();
@@ -760,12 +760,12 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
     // console.log(propertiesOneMany);
     // console.log(propertiesDocuments);
 
-    const searchFilteredProperties = (e) => {
-        if (searchText) {
-            return e.label.includes(searchText) || changed[e.name] !== undefined;
-        }
-        return true;
-    };
+    // const searchFilteredProperties = (e) => {
+    //     if (searchText) {
+    //         return e.label.includes(searchText) || changed[e.name] !== undefined;
+    //     }
+    //     return true;
+    // };
     const splitedValue = (name, value) => {
         let words = name.split(",");
         let o = {};
@@ -816,7 +816,7 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
             setChanged({ ...changed, ...splitedValue(item.name, value) });
         }
     };
-    const propertiesVirtualized = propertiesFiltered?.filter(e => !!e)?.filter(searchFilteredProperties);
+    const propertiesVirtualized = propertiesFiltered?.filter(e => !!e);//?.filter(searchFilteredProperties);
     const virtualizedItem = (item, idx) => {
         if (!item.name && item.type === "func" && item.func) {
             return <div key={"func_"+idx}>
@@ -850,13 +850,13 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
             </div>
         );
     }
-    const fixedHeight = () => {
-        return (!search) ? "calc(100vh - 152px)" : "calc(100vh - 210px)"
-    };
+    // const fixedHeight = () => {
+    //     return (!search) ? "calc(100vh - 152px)" : "calc(100vh - 210px)"
+    // };
     return (
         <div>
             {!visible && <div>
-                {search &&
+                {/* {search &&
                     <div style={{ paddingBottom: "15px" }} className={classes.Search}>
                         <SearchBar
                             value={searchText}
@@ -868,7 +868,7 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
                             onChange={value => setSearchText(value)}
                         />
                     </div>
-                }
+                } */}
                 <Form
                     form={form}
                     onFinish={(values) => {
@@ -879,7 +879,7 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
                         ...mergedObject(propertiesVirtualized, object)
                     }}
                     {...options}
-                    style={{ height: fixedHeight(), width: "100%" }}
+                    style={{ height: "100%", /*fixedHeight(),*/ width: "100%" }}
                     // onValuesChange={(changedValues, allValues)=>{
                         
                     // }}
