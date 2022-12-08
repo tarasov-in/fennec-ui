@@ -1,64 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { createUseStyles } from 'react-jss'
 import 'moment/locale/ru';
 import {
     Form,
     Tooltip,
-    Tabs,
     Tag
 } from 'antd';
 import Icofont from 'react-icofont';
-import { GetMeta, GetMetaProperties, getObjectDisplay, getObjectValue, uncapitalize } from '../../../Tool';
+import { GetMeta, GetMetaProperties, getObjectDisplay, uncapitalize } from '../../../Tool';
 import { Field } from '../Field';
-
-// Circular dependency: 
-// src/Components/Desktop/Model/index.js -> 
-// src/Components/Desktop/CollectionServer/index.js -> 
-// src/Components/Desktop/Model/index.js
-
-// import { CollectionServer } from '../CollectionServer';
 import { useMetaContext } from '../../Context';
 var _ = require('lodash');
-
-const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
 
-const useStyles = createUseStyles({
-    FormNav: {
-        display: "flex",
-        justifyContent: "space-between",
-        paddingBottom: "10px",
-    },
-    FormItem: {
-    },
-    Field: {},
-    Unknown: {},
-    Obj: {},
-    Time: {},
-    Boolean: {},
-    Float: {},
-    Integer: {},
-    String: {},
-    Frm: {},
-})
-
-function isRequired(item) {
-    if (item && item.validators) {
-        return item.validators.required;
-    }
-
-    return false;
-}
-
 function Frm(props) {
-    const classes = useStyles()
+
     const { auth, form, meta, options, object, submit, funcStat, contextFilters } = props;
     const [visible, setVisible] = useState(false);
     const [excludeFields, setExcludeFields] = useState({});
     const [fieldsFilters, setFieldsFilters] = useState({});
-    // useEffect(() => {
-    //     form.resetFields();
-    // }, []);
+
     useEffect(() => {
         form.resetFields();
         if (object) {
@@ -99,10 +59,68 @@ function Frm(props) {
     const propertiesFiltered = properties?.filter(e => (!e.name || (e.name && e.name.toUpperCase() !== "ID")))?.filter(e => (!e.relation || (e.relation && e.relation.type !== "one-many")));
     const propertiesOneMany = properties?.filter(e => e.relation && e.relation.type === "one-many");
 
+    function isRequired(item) {
+        if (item && item.validators) {
+            return item.validators.required || item.required;
+        }
+        return false;
+    }
+    const validator = (func, message) => ({
+        validator: (_, value) => {
+            if (func(value)) {
+                return Promise.resolve();
+            }
+            return Promise.reject(new Error(message))
+        }
+    });
+    const formItemRules = (item) => {
+        let res = [];
+        if (item && item.validators) {
+            if (_.isArray(item.validators)) {
+                if (isRequired(item) === true) {
+                    res.push(
+                        { required: true, message: 'Укажите ' + item.label.toLowerCase() + '!' }
+                    );
+                }
+                for (let i = 0; i < item.validators.length; i++) {
+                    const _validator = item.validators[i];
+                    if (_validator.func) {
+                        res.push(
+                            validator(_validator.func, _validator.message),
+                        );
+                    } else {
+                        res.push(_validator);
+                    }
+                }
+            } else if (_.isObject(item.validators)) {
+                res.push(
+                    { required: isRequired(item), message: 'Укажите ' + item.label.toLowerCase() + '!' }
+                );
+            }
+        }
+        return res;
+    };
+    // item: {
+    //     validators: {
+    //         required: false
+    //     }
+    // }
+    // item: {
+    //     validators: [
+    //         { required: true, message: 'Пожалуйста, выберите значение!' },
+    //         { type: "array", required: true, message: 'Пожалуйста, выберите значение!' },
+    //         { func: (value)=>{ return true }, message: 'Пожалуйста, выберите значение!' },
+    //     ]
+    // }
+
     return (
         <div>
             {(object && propertiesOneMany && propertiesOneMany.length > 0) &&
-                <div className={classes.FormNav}>
+                <div style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    paddingBottom: "10px",
+                }}>
                     <div>
                         {(meta.name && visible == true) && getObjectDisplay(object, meta.name, gmeta)}
                     </div>
@@ -128,27 +146,26 @@ function Frm(props) {
                     layout={"vertical"}>
                     {propertiesFiltered?.filter(e => (e.name && excludeFields[e.name.toLowerCase()]) ? false : true)?.map((item, idx) => {
                         if (!item.name && item.type === "func" && item.func) {
-                            return <div key={"func_"+idx}>
+                            return <div key={"func_" + idx}>
                                 {item.func(auth, item)}
                             </div>
                         }
-                        return (<Form.Item className={classes.FormItem}
-                                preserve={(item.hidden) ? "true" : "false"}
-                                hidden={item.hidden}
+                        return (<Form.Item
+                            preserve={(item.hidden) ? "true" : "false"}
+                            hidden={item.hidden}
+                            key={item.name}
+                            name={(item.type !== "object" && item.type !== "document") ? uncapitalize(item.name) : uncapitalize(item.name) + "ID"}
+                            label={(item.type !== "bool" && item.type !== "boolean") ? item.label : undefined}
+                            rules={formItemRules(item)}
+                        >
+                            <Field
+                                mode="model"
                                 key={item.name}
-                                name={(item.type !== "object" && item.type !== "document") ? uncapitalize(item.name) : uncapitalize(item.name) + "ID"}
-                                label={(item.type !== "bool" && item.type !== "boolean") ? item.label : undefined}
-                                rules={[{ required: isRequired(item), message: 'Укажите ' + item.label.toLowerCase() + '!' }]}
-                            >
-                                <Field
-                                    mode="model"
-                                    className={classes.Field}
-                                    key={item.name}
-                                    auth={auth}
-                                    filter={fieldsFilters[item.name.toLowerCase()]}
-                                    item={{ ...item, filterType: undefined, func: (funcStat && funcStat[item.name.toLowerCase()]) ? funcStat[item.name.toLowerCase()] : {} }}
-                                />
-                            </Form.Item>);
+                                auth={auth}
+                                filter={fieldsFilters[item.name.toLowerCase()]}
+                                item={{ ...item, filterType: undefined, func: (funcStat && funcStat[item.name.toLowerCase()]) ? funcStat[item.name.toLowerCase()] : {} }}
+                            />
+                        </Form.Item>);
                     })}
                 </Form>
             </div>
@@ -201,13 +218,12 @@ function Frm(props) {
 }
 
 export function Model(props) {
-    const classes = useStyles()
     const { auth, meta, options, object, form, submit, funcStat, contextFilters } = props;
     var xmeta = GetMeta(meta);
     if (!xmeta) return <React.Fragment></React.Fragment>;
     return (
         <React.Fragment>
-            {<Frm className={classes.Frm} auth={auth} form={form} contextFilters={contextFilters} submit={submit} meta={meta} options={options} object={object} funcStat={funcStat}></Frm>}
+            {<Frm auth={auth} form={form} contextFilters={contextFilters} submit={submit} meta={meta} options={options} object={object} funcStat={funcStat}></Frm>}
         </React.Fragment>
     )
 };
