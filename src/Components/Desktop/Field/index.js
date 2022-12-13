@@ -81,7 +81,6 @@ function UploadItem({ auth, item, value, onChange, changed }) {
 
 function GroupObj({ auth, item, value, onChange, changed }) {
     const [data, setData] = useState([]);
-    const [disabled, setDisabled] = useState(true);
     const meta = useMetaContext();
 
     const dataOrContent = (data) => {
@@ -122,7 +121,7 @@ function GroupObj({ auth, item, value, onChange, changed }) {
         }
     }, [auth, item]);
     const property = (item, value) => {
-        if (item && item.relation && item.relation.reference && item.relation.reference.property && value) {
+        if (item && _.get(item, "relation.reference.property") && value) {
             return value[item.relation.reference.property];
         }
         if (value) {
@@ -131,7 +130,7 @@ function GroupObj({ auth, item, value, onChange, changed }) {
         return undefined;
     };
     const itemByProperty = (item, value) => {
-        if (item.relation.reference.property) {
+        if (_.get(item, "relation.reference.property")) {
             return data.find(e => e[item.relation.reference.property] === value);
         }
         return data.find(e => e.ID === value);
@@ -178,7 +177,7 @@ function GroupObj({ auth, item, value, onChange, changed }) {
             onChange={e => onChange(e, item, itemByProperty(item, e))}
             style={{ width: "100%" }}
             allowClear={true}
-            disabled={disabled}
+            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
             filterOption={(input, element) =>
                 element.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }>
@@ -303,6 +302,7 @@ function IntegerSlider({ item, value, onChange }) {
 function Obj({ auth, item, value, onChange, changed }) {
     const [data, setData] = useState([]);
     const meta = useMetaContext();
+
     const dataOrContent = (data) => {
         return (data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data
     }
