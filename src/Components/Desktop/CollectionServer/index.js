@@ -155,7 +155,7 @@ export function CollectionServer(props) {
 
     const setCollection = React.useCallback((array) => {
         _setCollection(array);
-        if(onCollectionChange){
+        if (onCollectionChange) {
             onCollectionChange(array);
         }
     }, [collection]);
@@ -369,17 +369,17 @@ export function CollectionServer(props) {
     useEffect(() => {
         if (subscribe && subscribe.name && subscribe.func) {
             let token = _subscribe(subscribe.name, function (msg, data) {
-                if(subscribe.filter && msg.startsWith(subscribe.filter)){
+                if (subscribe.filter && msg.startsWith(subscribe.filter)) {
                     return
                 }
-                
+
                 return subscribe.func(data, {
                     msg,
                     collection,
                     setCollection,
                     setCollectionItem,
                     removeCollectionItem,
-                    request: ()=>request(state.filter),
+                    request: () => request(state.filter),
                     state,
                 });
             });
@@ -779,24 +779,22 @@ export function CollectionServer(props) {
     return (
         <React.Fragment>
             <div className="filtered">
-                {/* <Card size="small" bordered={(size !== "small")} className={(size === "small") ? classes.cardSmallHeader : ""}> */}
-                    <div className="filtered-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom:"10px" }}>
-                        <div style={{ flex: "auto", paddingRight: "15px" }}>
-                            {RenderOnCollectionActions()}
-                        </div>
-                        {(filters && filters.length > 0 && collection && collection.length > 0) && <div justify="end">
-                            <Tooltip title="Фильтр и сортировка">
-                                <CheckableTag
-                                    style={{ cursor: "pointer" }}
-                                    checked={filtered}
-                                    onChange={checked => setFiltered(checked)}
-                                >
-                                    <FilterOutlined />
-                                </CheckableTag>
-                            </Tooltip>
-                        </div>}
+                <div className="filtered-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: "10px" }}>
+                    <div style={{ flex: "auto", paddingRight: "15px" }}>
+                        {RenderOnCollectionActions()}
                     </div>
-                {/* </Card> */}
+                    {(filters && filters.length > 0 /*&& collection && collection.length > 0*/) && <div justify="end">
+                        <Tooltip title="Фильтр и сортировка">
+                            <CheckableTag
+                                style={{ cursor: "pointer" }}
+                                checked={filtered}
+                                onChange={checked => setFiltered(checked)}
+                            >
+                                <FilterOutlined />
+                            </CheckableTag>
+                        </Tooltip>
+                    </div>}
+                </div>
                 <Layout style={{ backgroundColor: "transparent" }} className="filtered-body">
                     <div style={{ width: "100%", marginBottom: (size === "small") ? "0px" : "5px" }}>
                         <Card size="small" bordered={(size !== "small")} className={(size === "small") ? classes.cardSmall : ""} style={{ width: "100%" }}>
@@ -806,7 +804,8 @@ export function CollectionServer(props) {
                             </div>
                         </Card>
                     </div>
-                    {((filters && filters.length > 0 && collection && collection.length > 0) && filtered) && <Sider width={240} theme={"light"} style={{ margin: "0 1px 5px 5px" }} className="filtered-sider">
+                    {((filters && filters.length > 0 /*&& collection && collection.length > 0*/) && filtered) && 
+                    <Sider width={240} theme={"light"} style={{ margin: "0 1px 5px 5px" }} className="filtered-sider">
                         {JSX(() => {
                             const fl = filters?.filter(i => i.filter);
                             if (filtered && fl.length > 0) {
