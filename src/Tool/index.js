@@ -633,8 +633,8 @@ export function JSXIndex(array, index, render) {
 //-------------------------------------------------------------------
 export function GetMetaPropertyByPath(meta, obj, path) {
     let properties = GetMetaProperties(obj);
-    let array = path.split(".");
-    if (array.length > 1) {
+    let array = path?.split(".");
+    if (array && array.length > 1) {
         for (let i = 0; i < array.length; i++) {
             const element = array[i];
             let property = properties.find(e => e.name.toLowerCase() == element.toLowerCase())

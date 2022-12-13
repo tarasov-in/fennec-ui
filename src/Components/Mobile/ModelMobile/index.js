@@ -301,9 +301,9 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
     // }
 
     const splitedValue = (name, value) => {
-        let words = name.split(",");
+        let words = name?.split(",");
         let o = {};
-        if (words.length > 1) {
+        if (words && words.length > 1) {
             for (let i = 0; i < words.length; i++) {
                 const element = words[i];
                 o[element] = (_.isArray(value)) ? value[i] : value;
@@ -324,8 +324,8 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
         return o;
     };
     const mergedValue = (name, object) => {
-        let words = name.split(",");
-        if (words.length > 1) {
+        let words = name?.split(",");
+        if (words && words.length > 1) {
             let arr = [];
             for (let i = 0; i < words.length; i++) {
                 const element = words[i];
