@@ -23,7 +23,7 @@ if (isIPhone) {
     };
 }
 
-function ActionItem({ auth, item, value, onChange, changed }) {
+function ActionItem({ auth, item, value, onChange, onAfterChange, changed }) {
     return (<React.Fragment>
         <ActionPickerItem
             auth={auth}
@@ -74,7 +74,7 @@ function ActionItem({ auth, item, value, onChange, changed }) {
         /> */}
     </React.Fragment>);
 }
-function RangeDate({ item, value, onChange }) {
+function RangeDate({ item, value, onChange, onAfterChange }) {
     const [visible1, setVisible1] = useState(false)
     const [visible2, setVisible2] = useState(false)
     const [val, setVal] = useState([]);
@@ -164,7 +164,7 @@ function RangeDate({ item, value, onChange }) {
         </div>
     )
 }
-function RangeFloat({ item, value, onChange }) {
+function RangeFloat({ item, value, onChange, onAfterChange }) {
     const [val, setVal] = useState();
     useEffect(() => {
         setVal(value);
@@ -239,7 +239,7 @@ function RangeFloat({ item, value, onChange }) {
         </div>
     )
 }
-function FloatSlider({ item, value, onChange }) {
+function FloatSlider({ item, value, onChange, onAfterChange }) {
     const [val, setVal] = useState();
     useEffect(() => {
         setVal(value);
@@ -275,14 +275,14 @@ function FloatSlider({ item, value, onChange }) {
                     step={xstep}
                     value={(item.realtime) ? value : val}
                     onChange={(item.realtime) ? onChange : setVal}
-                    onAfterChange={onChange}
+                    onAfterChange={(item.realtime) ? onAfterChange : onChange}
                 />
             </div>
         </div>
     )
 }
 
-function RangeInteger({ item, value, onChange }) {
+function RangeInteger({ item, value, onChange, onAfterChange }) {
     const [val, setVal] = useState();
     useEffect(() => {
         setVal(value);
@@ -357,7 +357,7 @@ function RangeInteger({ item, value, onChange }) {
         </div>
     )
 }
-function IntegerSlider({ item, value, onChange }) {
+function IntegerSlider({ item, value, onChange, onAfterChange }) {
     const [val, setVal] = useState();
     useEffect(() => {
         setVal(value);
@@ -391,12 +391,12 @@ function IntegerSlider({ item, value, onChange }) {
                 step={xstep}
                 value={(item.realtime) ? value : val}
                 onChange={(item.realtime) ? onChange : setVal}
-                onAfterChange={onChange}
+                onAfterChange={(item.realtime) ? onAfterChange : onChange}
             />
         </div>
     )
 }
-function Obj({ auth, item, value, onChange, changed }) {
+function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
     const [data, setData] = useState([]);
     const meta = useMetaContext();
     const dataOrContent = (data) => {
@@ -541,7 +541,7 @@ function Obj({ auth, item, value, onChange, changed }) {
     )
 }
 
-function Date({ item, value, onChange }) {
+function Date({ item, value, onChange, onAfterChange }) {
     const [visible, setVisible] = useState(false)
     const [val, setVal] = useState();
     useEffect(() => {
@@ -599,7 +599,7 @@ function Date({ item, value, onChange }) {
         </div>
     )
 }
-function DateTime({ item, value, onChange }) {
+function DateTime({ item, value, onChange, onAfterChange }) {
     const [visible, setVisible] = useState(false)
     const [val, setVal] = useState();
     useEffect(() => {
@@ -657,7 +657,7 @@ function DateTime({ item, value, onChange }) {
         </div>
     )
 }
-function Time({ item, value, onChange }) {
+function Time({ item, value, onChange, onAfterChange }) {
     const [visible, setVisible] = useState(false)
     const [val, setVal] = useState();
     useEffect(() => {
@@ -715,7 +715,7 @@ function Time({ item, value, onChange }) {
         </div>
     )
 }
-function Boolean({ item, value, onChange }) {
+function Boolean({ item, value, onChange, onAfterChange }) {
     return (
         <Checkbox
             disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
@@ -726,7 +726,7 @@ function Boolean({ item, value, onChange }) {
         </Checkbox>
     )
 }
-function Float({ item, value, onChange }) {
+function Float({ item, value, onChange, onAfterChange }) {
     return (
         <div style={{ padding: "5px 0px" }}>
             <div className='bg bg-grey' style={{
@@ -766,7 +766,7 @@ function Float({ item, value, onChange }) {
         </div>
     )
 }
-function Integer({ item, value, onChange }) {
+function Integer({ item, value, onChange, onAfterChange }) {
     return (
         <div style={{ padding: "5px 0px" }}>
             <div className='bg bg-grey' style={{
@@ -806,7 +806,7 @@ function Integer({ item, value, onChange }) {
         </div>
     )
 }
-function String({ item, value, onChange }) {
+function String({ item, value, onChange, onAfterChange }) {
     return (
         <div style={{ padding: "5px 0px" }}>
             <div className='bg bg-grey' style={{
@@ -842,7 +842,7 @@ function String({ item, value, onChange }) {
         </div>
     )
 }
-function Password({ item, value, onChange }) {
+function Password({ item, value, onChange, onAfterChange }) {
     const [visible, setVisible] = useState(false)
     return (
         <div style={{ padding: "5px 0px" }}>
@@ -904,22 +904,22 @@ function Unknown({ item }) {
 //     source: "/api/query/name"
 // }
 
-export function FieldMobile({ auth, item, value, onChange, changed }) {
+export function FieldMobile({ auth, item, value, onChange, onAfterChange, changed }) {
     switch (item.filterType) {
         case "group":
             switch (item.type) {
                 case "func":
-                    return (props.func) ? props.func(auth, item, value, onChange) : undefined;
+                    return (props.func) ? props.func(auth, item, value, onChange, onAfterChange) : undefined;
                 case "object":
                 case "document":
-                    return (<Obj auth={auth} item={item} value={value} onChange={onChange} changed={changed}></Obj>)
+                    return (<Obj auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} changed={changed}></Obj>)
                 default:
-                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange}></Unknown>)
+                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Unknown>)
             }
         case "range":
             switch (item.type) {
                 case "func":
-                    return (props.func) ? props.func(auth, item, value, onChange) : undefined;
+                    return (props.func) ? props.func(auth, item, value, onChange, onAfterChange) : undefined;
                 case "int":
                 case "uint":
                 case "integer":
@@ -927,24 +927,24 @@ export function FieldMobile({ auth, item, value, onChange, changed }) {
                 case "int32":
                 case "uint64":
                 case "uint32":
-                    return (<RangeInteger auth={auth} item={item} value={value} onChange={onChange}></RangeInteger>)
+                    return (<RangeInteger auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></RangeInteger>)
                 case "double":
                 case "float":
                 case "float64":
                 case "float32":
-                    return (<RangeFloat auth={auth} item={item} value={value} onChange={onChange}></RangeFloat>)
+                    return (<RangeFloat auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></RangeFloat>)
                 case "date":
                 case "time":
                 case "datetime":
                 case "time.Time":
-                    return (<RangeDate auth={auth} item={item} value={value} onChange={onChange}></RangeDate>)
+                    return (<RangeDate auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></RangeDate>)
                 default:
-                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange}></Unknown>)
+                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Unknown>)
             }
         case "slider":
             switch (item.type) {
                 case "func":
-                    return (props.func) ? props.func(auth, item, value, onChange) : undefined;
+                    return (props.func) ? props.func(auth, item, value, onChange, onAfterChange) : undefined;
                 case "int":
                 case "uint":
                 case "integer":
@@ -952,23 +952,23 @@ export function FieldMobile({ auth, item, value, onChange, changed }) {
                 case "int32":
                 case "uint64":
                 case "uint32":
-                    return (<IntegerSlider auth={auth} item={item} value={value} onChange={onChange}></IntegerSlider>)
+                    return (<IntegerSlider auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></IntegerSlider>)
                 case "double":
                 case "float":
                 case "float64":
                 case "float32":
-                    return (<FloatSlider auth={auth} item={item} value={value} onChange={onChange}></FloatSlider>)
+                    return (<FloatSlider auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></FloatSlider>)
                 default:
-                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange}></Unknown>)
+                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Unknown>)
             }
         default:
             switch (item.type) {
                 case "func":
-                    return (props.func) ? props.func(auth, item, value, onChange) : undefined;
+                    return (props.func) ? props.func(auth, item, value, onChange, onAfterChange) : undefined;
                 case "string":
-                    return (<String auth={auth} item={item} value={value} onChange={onChange}></String>)
+                    return (<String auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></String>)
                 case "password":
-                    return (<Password auth={auth} item={item} value={value} onChange={onChange}></Password>)
+                    return (<Password auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Password>)
                 case "int":
                 case "uint":
                 case "integer":
@@ -976,29 +976,29 @@ export function FieldMobile({ auth, item, value, onChange, changed }) {
                 case "int32":
                 case "uint64":
                 case "uint32":
-                    return (<Integer auth={auth} item={item} value={value} onChange={onChange}></Integer>)
+                    return (<Integer auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Integer>)
                 case "double":
                 case "float":
                 case "float64":
                 case "float32":
-                    return (<Float auth={auth} item={item} value={value} onChange={onChange}></Float>)
+                    return (<Float auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Float>)
                 case "boolean":
                 case "bool":
-                    return (<Boolean auth={auth} item={item} value={value} onChange={onChange}></Boolean>)
+                    return (<Boolean auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Boolean>)
                 case "time":
-                    return (<Time auth={auth} item={item} value={value} onChange={onChange}></Time>)
+                    return (<Time auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Time>)
                 case "date":
-                    return (<Date auth={auth} item={item} value={value} onChange={onChange}></Date>)
+                    return (<Date auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Date>)
                 case "datetime":
                 case "time.Time":
-                    return (<DateTime auth={auth} item={item} value={value} onChange={onChange}></DateTime>)
+                    return (<DateTime auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></DateTime>)
                 case "object":
                 case "document":
-                    return (<Obj auth={auth} item={item} value={value} onChange={onChange} changed={changed}></Obj>)
+                    return (<Obj auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} changed={changed}></Obj>)
                 case "action":
-                    return (<ActionItem auth={auth} item={item} value={value} onChange={onChange}></ActionItem>)
+                    return (<ActionItem auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></ActionItem>)
                 default:
-                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange}></Unknown>)
+                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Unknown>)
             }
     }
 }

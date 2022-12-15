@@ -100,7 +100,7 @@ function UploadItem({ auth, item, value, onChange, changed }) {
     );
 }
 
-function GroupObj({ auth, item, value, onChange, changed }) {
+function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
     const [data, setData] = useState([]);
     const meta = useMetaContext();
 
@@ -206,7 +206,7 @@ function GroupObj({ auth, item, value, onChange, changed }) {
         </Select>
     )
 }
-function RangeTime({ value, onChange }) {
+function RangeTime({ value, onChange, onAfterChange }) {
     var a = undefined;
     if (value && value[0] && value[1]) {
         a = [];
@@ -217,7 +217,7 @@ function RangeTime({ value, onChange }) {
         <TimePicker.RangePicker value={a} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }} />
     )
 }
-function RangeDate({ value, onChange }) {
+function RangeDate({ value, onChange, onAfterChange }) {
     var a = undefined;
     if (value && value[0] && value[1]) {
         a = [];
@@ -228,7 +228,7 @@ function RangeDate({ value, onChange }) {
         <DatePicker.RangePicker value={a} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }} />
     )
 }
-function RangeDateTime({ value, onChange }) {
+function RangeDateTime({ value, onChange, onAfterChange }) {
     var a = undefined;
     if (value && value[0] && value[1]) {
         a = [];
@@ -239,7 +239,7 @@ function RangeDateTime({ value, onChange }) {
         <DatePicker.RangePicker showTime={{ format: 'HH:mm' }} value={a} onChange={onChange} format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }} />
     )
 }
-function RangeFloat({ item, value, onChange }) {
+function RangeFloat({ item, value, onChange, onAfterChange }) {
     const [val, setVal] = useState();
     useEffect(() => {
         setVal(value);
@@ -257,10 +257,10 @@ function RangeFloat({ item, value, onChange }) {
             included={true}
             value={val || def}
             onChange={setVal}
-            onAfterChange={onChange} />
+            onAfterChange={(item.realtime) ? onAfterChange : onChange} />
     )
 }
-function FloatSlider({ item, value, onChange }) {
+function FloatSlider({ item, value, onChange, onAfterChange }) {
     const [val, setVal] = useState();
     useEffect(() => {
         setVal(value);
@@ -276,10 +276,10 @@ function FloatSlider({ item, value, onChange }) {
             step={xstep}
             value={(item.realtime) ? value : val}
             onChange={(item.realtime) ? onChange : setVal}
-            onAfterChange={onChange} />
+            onAfterChange={(item.realtime) ? onAfterChange : onChange} />
     )
 }
-function RangeInteger({ item, value, onChange }) {
+function RangeInteger({ item, value, onChange, onAfterChange }) {
     const [val, setVal] = useState();
     useEffect(() => {
         setVal(value);
@@ -297,10 +297,10 @@ function RangeInteger({ item, value, onChange }) {
             value={val}
             included={true}
             onChange={setVal}
-            onAfterChange={onChange} />
+            onAfterChange={(item.realtime) ? onAfterChange : onChange} />
     )
 }
-function IntegerSlider({ item, value, onChange }) {
+function IntegerSlider({ item, value, onChange, onAfterChange }) {
     const [val, setVal] = useState();
     useEffect(() => {
         setVal(value);
@@ -317,10 +317,10 @@ function IntegerSlider({ item, value, onChange }) {
             step={xstep}
             value={(item.realtime) ? value : val}
             onChange={(item.realtime) ? onChange : setVal}
-            onAfterChange={onChange} />
+            onAfterChange={(item.realtime) ? onAfterChange : onChange} />
     )
 }
-function Obj({ auth, item, value, onChange, changed }) {
+function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
     const [data, setData] = useState([]);
     const meta = useMetaContext();
 
@@ -424,22 +424,22 @@ function Obj({ auth, item, value, onChange, changed }) {
         </Select>
     )
 }
-function DateTime({ value, onChange }) {
+function DateTime({ value, onChange, onAfterChange }) {
     return (
         <DatePicker value={(value) ? moment(value) : undefined} onChange={onChange} showTime format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }} />
     )
 }
-function Date({ value, onChange }) {
+function Date({ value, onChange, onAfterChange }) {
     return (
         <DatePicker value={(value) ? moment(value) : undefined} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }} />
     )
 }
-function Time({ value, onChange }) {
+function Time({ value, onChange, onAfterChange }) {
     return (
         <DatePicker value={(value) ? moment(value) : undefined} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }} />
     )
 }
-function Boolean({ item, value, onChange }) {
+function Boolean({ item, value, onChange, onAfterChange }) {
     const change = (e) => {
         onChange(e.target.checked);
     }
@@ -449,7 +449,7 @@ function Boolean({ item, value, onChange }) {
         </Checkbox>
     )
 }
-function Float({ value, onChange }) {
+function Float({ value, onChange, onAfterChange }) {
     return (
         <InputNumber value={value} onChange={onChange} style={{ width: "100%" }} />
     )
@@ -498,24 +498,24 @@ function Float({ value, onChange }) {
         </Tooltip> */}
     </Input.Group>);
 }
-function Integer({ value, onChange }) {
+function Integer({ value, onChange, onAfterChange }) {
     return (
         <InputNumber value={value} onChange={onChange} style={{ width: "100%" }} />
     )
 }
-function String({ value, onChange }) {
+function String({ value, onChange, onAfterChange }) {
     return (
         <Input allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }} />
     )
 }
-function Password({ value, onChange }) {
+function Password({ value, onChange, onAfterChange }) {
     return (
         <Input.Password allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
             iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
         />
     )
 }
-function MultilineText({ value, onChange }) {
+function MultilineText({ value, onChange, onAfterChange }) {
     return (
         <TextArea rows={6} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }} />
     )
@@ -538,7 +538,7 @@ function Unknown({ item }) {
 // }
 
 export function Field(props) {
-    const { auth, item, value, onChange, changed, mode } = props;
+    const { auth, item, value, onChange, onAfterChange, changed, mode } = props;
     let type = ((item.view) ? item.view.type : undefined) || item.type;
     switch (item.filterType) {
         case "group":
@@ -547,14 +547,14 @@ export function Field(props) {
                     return (props.func) ? props.func(auth, item, value, onChange) : undefined;
                 case "object":
                 case "document":
-                    return (<GroupObj auth={auth} item={item} value={value} onChange={onChange} changed={changed}></GroupObj>)
+                    return (<GroupObj auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} changed={changed}></GroupObj>)
                 default:
-                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange}></Unknown>)
+                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Unknown>)
             }
         case "range":
             switch (type) {
                 case "func":
-                    return (props.func) ? props.func(auth, item, value, onChange) : undefined;
+                    return (props.func) ? props.func(auth, item, value, onChange, onAfterChange) : undefined;
                 case "int":
                 case "uint":
                 case "integer":
@@ -562,26 +562,26 @@ export function Field(props) {
                 case "int32":
                 case "uint64":
                 case "uint32":
-                    return (<RangeInteger auth={auth} item={item} value={value} onChange={onChange}></RangeInteger>)
+                    return (<RangeInteger auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></RangeInteger>)
                 case "double":
                 case "float":
                 case "float64":
                 case "float32":
-                    return (<RangeFloat auth={auth} item={item} value={value} onChange={onChange}></RangeFloat>)
+                    return (<RangeFloat auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></RangeFloat>)
                 case "time":
-                    return (<RangeTime auth={auth} item={item} value={value} onChange={onChange}></RangeTime>)
+                    return (<RangeTime auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></RangeTime>)
                 case "date":
-                    return (<RangeDate auth={auth} item={item} value={value} onChange={onChange}></RangeDate>)
+                    return (<RangeDate auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></RangeDate>)
                 case "datetime":
                 case "time.Time":
-                    return (<RangeDateTime auth={auth} item={item} value={value} onChange={onChange}></RangeDateTime>)
+                    return (<RangeDateTime auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></RangeDateTime>)
                 default:
-                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange}></Unknown>)
+                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Unknown>)
             }
         case "slider":
             switch (type) {
                 case "func":
-                    return (props.func) ? props.func(auth, item, value, onChange) : undefined;
+                    return (props.func) ? props.func(auth, item, value, onChange, onAfterChange) : undefined;
                 case "int":
                 case "uint":
                 case "integer":
@@ -589,25 +589,25 @@ export function Field(props) {
                 case "int32":
                 case "uint64":
                 case "uint32":
-                    return (<IntegerSlider auth={auth} item={item} value={value} onChange={onChange}></IntegerSlider>)
+                    return (<IntegerSlider auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></IntegerSlider>)
                 case "double":
                 case "float":
                 case "float64":
                 case "float32":
-                    return (<FloatSlider auth={auth} item={item} value={value} onChange={onChange}></FloatSlider>)
+                    return (<FloatSlider auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></FloatSlider>)
                 default:
-                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange}></Unknown>)
+                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Unknown>)
             }
         default:
             switch (type) {
                 case "func":
-                    return (props.func) ? props.func(auth, item, value, onChange) : undefined;
+                    return (props.func) ? props.func(auth, item, value, onChange, onAfterChange) : undefined;
                 case "text":
-                    return (<MultilineText auth={auth} item={item} value={value} onChange={onChange}></MultilineText>)
+                    return (<MultilineText auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></MultilineText>)
                 case "string":
-                    return (<String auth={auth} item={item} value={value} onChange={onChange}></String>)
+                    return (<String auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></String>)
                 case "password":
-                    return (<Password auth={auth} item={item} value={value} onChange={onChange}></Password>)
+                    return (<Password auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Password>)
                 case "int":
                 case "uint":
                 case "integer":
@@ -615,29 +615,29 @@ export function Field(props) {
                 case "int32":
                 case "uint64":
                 case "uint32":
-                    return (<Integer auth={auth} item={item} value={value} onChange={onChange}></Integer>)
+                    return (<Integer auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Integer>)
                 case "double":
                 case "float":
                 case "float64":
                 case "float32":
-                    return (<Float auth={auth} item={item} value={value} onChange={onChange}></Float>)
+                    return (<Float auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Float>)
                 case "boolean":
                 case "bool":
-                    return (<Boolean auth={auth} item={item} value={value} onChange={onChange}></Boolean>)
+                    return (<Boolean auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Boolean>)
                 case "time":
-                    return (<Time auth={auth} item={item} value={value} onChange={onChange}></Time>)
+                    return (<Time auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Time>)
                 case "date":
-                    return (<Date auth={auth} item={item} value={value} onChange={onChange}></Date>)
+                    return (<Date auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Date>)
                 case "datetime":
                 case "time.Time":
-                    return (<DateTime auth={auth} item={item} value={value} onChange={onChange}></DateTime>)
+                    return (<DateTime auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></DateTime>)
                 case "object":
                 case "document":
-                    return (<Obj auth={auth} item={item} value={value} onChange={onChange} changed={changed}></Obj>)
+                    return (<Obj auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} changed={changed}></Obj>)
                 case "file":
-                    return (<UploadItem auth={auth} item={item} value={value} onChange={onChange}></UploadItem>)
+                    return (<UploadItem auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></UploadItem>)
                 default:
-                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange}></Unknown>)
+                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Unknown>)
             }
 
     }
