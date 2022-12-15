@@ -13,7 +13,7 @@ import {
     Slider,
     Upload
 } from 'antd';
-import { errorCatch, getDisplay, getObjectValue, GETWITH, QueryDetail, QueryOrder, READWITH } from '../../../Tool';
+import { errorCatch, getDisplay, getObjectValue, GETWITH, QueryDetail, QueryOrder, READWITH, useHover } from '../../../Tool';
 import moment from 'moment';
 import Icofont from 'react-icofont';
 import { useMetaContext } from '../../Context';
@@ -27,13 +27,11 @@ const { TextArea } = Input;
 const { Option } = Select;
 
 function UploadItem({ auth, item, value, onChange, changed }) {
-
+    const [hoverRef, isHovered] = useHover();
     const [files, setFiles] = useState([]);
-
     useEffect(() => {
         triggerChange(files);
     }, [files]);
-
     const triggerChange = (changedValue) => {
         if (onChange) {
             onChange([
@@ -41,7 +39,6 @@ function UploadItem({ auth, item, value, onChange, changed }) {
             ]);
         }
     };
-
     const uploadingProps = {
         maxCount: 1,
         name: 'file',
@@ -64,18 +61,42 @@ function UploadItem({ auth, item, value, onChange, changed }) {
         },
         fileList: files,
     };
+    const content = (item) => (
+        <div style={{ padding: "15px" }}>
+            <p className="ant-upload-drag-icon" style={{ marginBottom: "12px" }}>
+                <InboxOutlined />
+            </p>
+            <p className="ant-upload-text" style={{ fontSize: "14px" }}>Нажмите для выбора или перетащите файл <br />в выделенную область</p>
+            <p className="ant-upload-hint" style={{ fontSize: "13px" }}>
+                {(item.accept) ? "Поддерживается загрузка файлов " + item.accept : "Поддерживается загрузка любых типов файлов"}
+            </p>
+        </div>
+    );
     return (
         <Dragger {...uploadingProps}>
-            <div style={{ padding: "15px" }}>
-                <p className="ant-upload-drag-icon" style={{ marginBottom: "12px" }}>
-                    <InboxOutlined />
-                </p>
-                <p className="ant-upload-text" style={{ fontSize: "14px" }}>Нажмите для выбора или перетащите файл <br />в выделенную область</p>
-                <p className="ant-upload-hint" style={{ fontSize: "13px" }}>
-                    {(item.accept) ? "Поддерживается загрузка файлов " + item.accept : "Поддерживается загрузка любых типов файлов"}
-                </p>
-            </div>
-        </Dragger>
+            {(item.trigger) && <div ref={hoverRef}>
+                {item.trigger()}
+                <div
+                    style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: "rgb(240 248 255 / 82%)",
+                        display: (isHovered || !value) ? "flex" : "none",
+                        justifyContent: "center",
+                        alignContent: "center",
+                        alignItems: "center",
+                    }}
+                >
+                    <div style={{ padding: "15px", borderRadius: "4px", backgroundColor: "rgb(255 255 255 / 67%)" }}>
+                        {content(item)}
+                    </div>
+                </div>
+            </div>}
+            {!item.trigger && content(item)}
+        </Dragger >
     );
 }
 
@@ -507,187 +528,6 @@ function Unknown({ item }) {
         </div>
     )
 }
-//------------------------------------------------------------------------------------
-// function FilterMode(props) {
-//     const { auth, item, value, onChange, changed, mode } = props;
-//     let type = ((item.view) ? item.view.type : undefined) || item.type;
-//     switch (item.filterType) {
-//         case "group":
-//             switch (type) {
-//                 case "func":
-//                     return (props.func) ? props.func(auth, item, value, onChange) : undefined;
-//                 case "object":
-//                 case "document":
-//                     return (<GroupObj auth={auth} item={item} value={value} onChange={onChange} changed={changed}></GroupObj>)
-//                 default:
-//                     return (<Unknown auth={auth} item={item} value={value} onChange={onChange}></Unknown>)
-//             }
-//         case "range":
-//             switch (type) {
-//                 case "func":
-//                     return (props.func) ? props.func(auth, item, value, onChange) : undefined;
-//                 case "int":
-//                 case "uint":
-//                 case "integer":
-//                 case "int64":
-//                 case "int32":
-//                 case "uint64":
-//                 case "uint32":
-//                     return (<RangeInteger auth={auth} item={item} value={value} onChange={onChange}></RangeInteger>)
-//                 case "double":
-//                 case "float":
-//                 case "float64":
-//                 case "float32":
-//                     return (<RangeFloat auth={auth} item={item} value={value} onChange={onChange}></RangeFloat>)
-//                 case "time":
-//                     return (<RangeTime auth={auth} item={item} value={value} onChange={onChange}></RangeTime>)
-//                 case "date":
-//                     return (<RangeDate auth={auth} item={item} value={value} onChange={onChange}></RangeDate>)
-//                 case "datetime":
-//                 case "time.Time":
-//                     return (<RangeDateTime auth={auth} item={item} value={value} onChange={onChange}></RangeDateTime>)
-//                 default:
-//                     return (<Unknown auth={auth} item={item} value={value} onChange={onChange}></Unknown>)
-//             }
-//         case "slider":
-//             switch (type) {
-//                 case "func":
-//                     return (props.func) ? props.func(auth, item, value, onChange) : undefined;
-//                 case "int":
-//                 case "uint":
-//                 case "integer":
-//                 case "int64":
-//                 case "int32":
-//                 case "uint64":
-//                 case "uint32":
-//                     return (<IntegerSlider auth={auth} item={item} value={value} onChange={onChange}></IntegerSlider>)
-//                 case "double":
-//                 case "float":
-//                 case "float64":
-//                 case "float32":
-//                     return (<FloatSlider auth={auth} item={item} value={value} onChange={onChange}></FloatSlider>)
-//                 default:
-//                     return (<Unknown auth={auth} item={item} value={value} onChange={onChange}></Unknown>)
-//             }
-//         default:
-//             switch (type) {
-//                 case "func":
-//                     return (props.func) ? props.func(auth, item, value, onChange) : undefined;
-//                 case "text":
-//                     return (<String auth={auth} item={item} value={value} onChange={onChange}></String>)
-//                 default:
-//                     return <ModelMode {...props} />
-//             }
-
-//     }
-// }
-// function ModelMode(props) {
-//     const { auth, item, value, onChange, changed, mode } = props;
-//     let type = ((item.view) ? item.view.type : undefined) || item.type;
-//     switch (item.filterType) {
-//         case "group":
-//             switch (type) {
-//                 case "func":
-//                     return (props.func) ? props.func(auth, item, value, onChange) : undefined;
-//                 case "object":
-//                 case "document":
-//                     return (<GroupObj auth={auth} item={item} value={value} onChange={onChange} changed={changed}></GroupObj>)
-//                 default:
-//                     return (<Unknown auth={auth} item={item} value={value} onChange={onChange}></Unknown>)
-//             }
-//         case "range":
-//             switch (type) {
-//                 case "func":
-//                     return (props.func) ? props.func(auth, item, value, onChange) : undefined;
-//                 case "int":
-//                 case "uint":
-//                 case "integer":
-//                 case "int64":
-//                 case "int32":
-//                 case "uint64":
-//                 case "uint32":
-//                     return (<RangeInteger auth={auth} item={item} value={value} onChange={onChange}></RangeInteger>)
-//                 case "double":
-//                 case "float":
-//                 case "float64":
-//                 case "float32":
-//                     return (<RangeFloat auth={auth} item={item} value={value} onChange={onChange}></RangeFloat>)
-//                 case "time":
-//                     return (<RangeTime auth={auth} item={item} value={value} onChange={onChange}></RangeTime>)
-//                 case "date":
-//                     return (<RangeDate auth={auth} item={item} value={value} onChange={onChange}></RangeDate>)
-//                 case "datetime":
-//                 case "time.Time":
-//                     return (<RangeDateTime auth={auth} item={item} value={value} onChange={onChange}></RangeDateTime>)
-//                 default:
-//                     return (<Unknown auth={auth} item={item} value={value} onChange={onChange}></Unknown>)
-//             }
-//         case "slider":
-//             switch (type) {
-//                 case "func":
-//                     return (props.func) ? props.func(auth, item, value, onChange) : undefined;
-//                 case "int":
-//                 case "uint":
-//                 case "integer":
-//                 case "int64":
-//                 case "int32":
-//                 case "uint64":
-//                 case "uint32":
-//                     return (<IntegerSlider auth={auth} item={item} value={value} onChange={onChange}></IntegerSlider>)
-//                 case "double":
-//                 case "float":
-//                 case "float64":
-//                 case "float32":
-//                     return (<FloatSlider auth={auth} item={item} value={value} onChange={onChange}></FloatSlider>)
-//                 default:
-//                     return (<Unknown auth={auth} item={item} value={value} onChange={onChange}></Unknown>)
-//             }
-//         default:
-//             switch (type) {
-//                 case "func":
-//                     return (props.func) ? props.func(auth, item, value, onChange) : undefined;
-//                 case "text":
-//                     return (<MultilineText auth={auth} item={item} value={value} onChange={onChange}></MultilineText>)
-//                 case "string":
-//                     return (<String auth={auth} item={item} value={value} onChange={onChange}></String>)
-//                 case "password":
-//                     return (<Password auth={auth} item={item} value={value} onChange={onChange}></Password>)
-//                 case "int":
-//                 case "uint":
-//                 case "integer":
-//                 case "int64":
-//                 case "int32":
-//                 case "uint64":
-//                 case "uint32":
-//                     return (<Integer auth={auth} item={item} value={value} onChange={onChange}></Integer>)
-//                 case "double":
-//                 case "float":
-//                 case "float64":
-//                 case "float32":
-//                     return (<Float auth={auth} item={item} value={value} onChange={onChange}></Float>)
-//                 case "boolean":
-//                 case "bool":
-//                     return (<Boolean auth={auth} item={item} value={value} onChange={onChange}></Boolean>)
-//                 case "time":
-//                     return (<Time auth={auth} item={item} value={value} onChange={onChange}></Time>)
-//                 case "date":
-//                     return (<Date auth={auth} item={item} value={value} onChange={onChange}></Date>)
-//                 case "datetime":
-//                 case "time.Time":
-//                     return (<DateTime auth={auth} item={item} value={value} onChange={onChange}></DateTime>)
-//                 case "object":
-//                 case "document":
-//                     return (<Obj auth={auth} item={item} value={value} onChange={onChange} changed={changed}></Obj>)
-//                 case "file":
-//                     return (<UploadItem auth={auth} item={item} value={value} onChange={onChange}></UploadItem>)
-//                 default:
-//                     return (<Unknown auth={auth} item={item} value={value} onChange={onChange}></Unknown>)
-//             }
-
-//     }
-
-// }
-//------------------------------------------------------------------------------------
 
 // item: {
 //     label: 'Сумма',
@@ -699,14 +539,6 @@ function Unknown({ item }) {
 
 export function Field(props) {
     const { auth, item, value, onChange, changed, mode } = props;
-    // switch (mode) {
-    //     case "model":
-    //         return <ModelMode {...props} />
-    //     case "filter":
-    //         return <FilterMode {...props} />
-    //     default:
-    //         return (<Unknown {...props}></Unknown>)
-    // }
     let type = ((item.view) ? item.view.type : undefined) || item.type;
     switch (item.filterType) {
         case "group":

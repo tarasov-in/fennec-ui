@@ -1,7 +1,7 @@
 import { message } from "antd";
 import moment from "moment";
 import numeral from 'numeral';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PubSub from 'pubsub-js'
 import uuid from 'react-uuid';
 var _ = require('lodash');
@@ -114,7 +114,7 @@ export const ObjectToQueryParam = (object, method) => {
         const element = array[i];
         if (element) {
             let keyName = (element[0].endsWith('ID') === true) ? element[0].slice(0, -2) + ".ID" : element[0];
-            f.push(QueryParam(`w-${keyName}`,element[1]));
+            f.push(QueryParam(`w-${keyName}`, element[1]));
             // f.push({
             //     method: method || "eq",
             //     name: element[0],
@@ -336,7 +336,7 @@ export const messageError = (err) => {
 export const arrayUnpack = (values, field, target) => {
     var f = values[field];
     delete values[field];
-    if(target && values){
+    if (target && values) {
         for (let i = 0; i < target.length; i++) {
             values[target[i]] = f[i];
         }
@@ -435,12 +435,12 @@ export const makeFormData = (values) => {
             const value = values[key];
             if (_.isArray(value)) {
                 value.forEach(item => {
-                    if(item){
+                    if (item) {
                         formData.append(key, item);
                     }
                 });
             } else {
-                if(value){
+                if (value) {
                     formData.append(key, value);
                 }
             }
@@ -1035,3 +1035,32 @@ export function MetaColumns(properties, meta, onColumnClick) {
         })
     }
 };
+
+// Hook
+
+// function App() {
+//     const [hoverRef, isHovered] = useHover();
+//     return <div ref={hoverRef}>{isHovered ? "😁" : "☹️"}</div>;
+//   }
+  
+export function useHover() {
+    const [value, setValue] = useState(false);
+    const ref = useRef(null);
+    const handleMouseOver = () => setValue(true);
+    const handleMouseOut = () => setValue(false);
+    useEffect(
+        () => {
+            const node = ref.current;
+            if (node) {
+                node.addEventListener("mouseover", handleMouseOver);
+                node.addEventListener("mouseout", handleMouseOut);
+                return () => {
+                    node.removeEventListener("mouseover", handleMouseOver);
+                    node.removeEventListener("mouseout", handleMouseOut);
+                };
+            }
+        },
+        [ref.current] // Recall only if ref changes
+    );
+    return [ref, value];
+}
