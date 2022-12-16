@@ -206,7 +206,7 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
         </Select>
     )
 }
-function RangeTime({ value, onChange, onAfterChange }) {
+function RangeTime({ item, value, onChange, onAfterChange }) {
     var a = undefined;
     if (value && value[0] && value[1]) {
         a = [];
@@ -217,7 +217,7 @@ function RangeTime({ value, onChange, onAfterChange }) {
         <TimePicker.RangePicker value={a} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }} />
     )
 }
-function RangeDate({ value, onChange, onAfterChange }) {
+function RangeDate({ item, value, onChange, onAfterChange }) {
     var a = undefined;
     if (value && value[0] && value[1]) {
         a = [];
@@ -228,7 +228,7 @@ function RangeDate({ value, onChange, onAfterChange }) {
         <DatePicker.RangePicker value={a} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }} />
     )
 }
-function RangeDateTime({ value, onChange, onAfterChange }) {
+function RangeDateTime({ item, value, onChange, onAfterChange }) {
     var a = undefined;
     if (value && value[0] && value[1]) {
         a = [];
@@ -424,17 +424,17 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
         </Select>
     )
 }
-function DateTime({ value, onChange, onAfterChange }) {
+function DateTime({ item, value, onChange, onAfterChange }) {
     return (
         <DatePicker value={(value) ? moment(value) : undefined} onChange={onChange} showTime format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }} />
     )
 }
-function Date({ value, onChange, onAfterChange }) {
+function Date({ item, value, onChange, onAfterChange }) {
     return (
         <DatePicker value={(value) ? moment(value) : undefined} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }} />
     )
 }
-function Time({ value, onChange, onAfterChange }) {
+function Time({ item, value, onChange, onAfterChange }) {
     return (
         <DatePicker value={(value) ? moment(value) : undefined} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }} />
     )
@@ -449,7 +449,7 @@ function Boolean({ item, value, onChange, onAfterChange }) {
         </Checkbox>
     )
 }
-function Float({ value, onChange, onAfterChange }) {
+function Float({ item, value, onChange, onAfterChange }) {
     return (
         <InputNumber value={value} onChange={onChange} style={{ width: "100%" }} />
     )
@@ -498,24 +498,24 @@ function Float({ value, onChange, onAfterChange }) {
         </Tooltip> */}
     </Input.Group>);
 }
-function Integer({ value, onChange, onAfterChange }) {
+function Integer({ item, value, onChange, onAfterChange }) {
     return (
         <InputNumber value={value} onChange={onChange} style={{ width: "100%" }} />
     )
 }
-function String({ value, onChange, onAfterChange }) {
+function String({ item, value, onChange, onAfterChange }) {
     return (
-        <Input allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }} />
+        <Input size={(item.size) ? item.size : "middle"} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }} />
     )
 }
-function Password({ value, onChange, onAfterChange }) {
+function Password({ item, value, onChange, onAfterChange }) {
     return (
         <Input.Password allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
             iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
         />
     )
 }
-function MultilineText({ value, onChange, onAfterChange }) {
+function MultilineText({ item, value, onChange, onAfterChange }) {
     return (
         <TextArea rows={6} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }} />
     )
