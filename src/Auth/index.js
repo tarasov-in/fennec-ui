@@ -251,59 +251,6 @@ export class AuthService {
     }
 
     fetchRfToken = configureRefreshFetch(this)
-    // fetchRfToken = configureRefreshFetch({
-    //     fetch: (url, options) => {
-    //         return fetch(url, options).then(response => {
-    //             let xAuthError = response.headers.get('x-authenticate-error')
-    //             if (response.status == 401) {
-    //                 let err = new Error(xAuthError);
-    //                 err.status = 401;
-    //                 throw err;
-    //             }
-    //             return response;
-    //         })
-    //     },
-    //     shouldRefreshToken: error => {
-    //         return error.status === 401
-    //             && error.message !== 'NeedLogin'
-    //     },
-    //     refreshToken: () => {
-    //         return fetch(`/api/refresh-token`, {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Accept': 'application/json',
-    //                 'Content-Type': 'application/json'
-    //             },
-    //             body: JSON.stringify({
-    //                 refreshToken: Cookies.get("refreshToken")
-    //             })
-    //         }).then(response => {
-    //             let xAuthError = response.headers.get('x-authenticate-error')
-    //             console.log('xAuthError', xAuthError)
-    //             if (response.status == 401 && xAuthError == 'NeedLogin') {
-    //                 console.log("login")
-    //                 Cookies.remove("token")
-    //                 Cookies.remove("refreshToken")
-    //                 window.location.href = this.authschemhttp + "://auth." + this.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
-    //                 return
-    //             }
-
-    //             return response.json();
-    //         }).then(res => {
-    //             if (res && res.user) {
-    //                 localStorage.setItem('iam', res.user.ID);
-    //             }
-    //             return res
-    //         }).catch(error => {
-    //             // If we failed by any reason in refreshing, just clear the token,
-    //             // it's not that big of a deal
-    //             Cookies.remove("token")
-    //             Cookies.remove("refreshToken")
-    //             // throw error
-    //             window.location.href = this.authschemhttp + "://auth." + this.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
-    //         })
-    //     }
-    // })
 
     fetchFile(url, options) {
         const headers = {
@@ -482,7 +429,6 @@ function configureRefreshFetch(auth) {
 
         return fetch(url, options).then(response => {
             let xAuthError = response.headers.get('x-authenticate-error')
-            console.log('xAuthError', xAuthError)
             if (response.status == 401 && xAuthError != 'NeedLogin') {
                 if (refreshingTokenPromise === null) {
                     refreshingTokenPromise = new Promise((resolve, reject) => {
@@ -497,9 +443,7 @@ function configureRefreshFetch(auth) {
                             })
                         }).then(response => {
                             let xAuthError = response.headers.get('x-authenticate-error')
-                            console.log('xAuthError1', xAuthError)
                             if (response.status == 401 && xAuthError == 'NeedLogin') {
-                                console.log("login")
                                 Cookies.remove("token")
                                 Cookies.remove("refreshToken")
                                 window.location.href = auth.authschemhttp + "://auth." + auth.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
@@ -513,6 +457,10 @@ function configureRefreshFetch(auth) {
                             reject(error)
                         })
                     })
+                } else if (response.status == 401 && xAuthError == 'NeedLogin'){
+                    Cookies.remove("token")
+                    Cookies.remove("refreshToken")
+                    window.location.href = auth.authschemhttp + "://auth." + auth.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
                 }
 
                 return refreshingTokenPromise.catch(() => {
