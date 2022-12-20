@@ -5,20 +5,22 @@ import WSocket from '../IO/WSocket';
 import moment from 'moment-timezone';
 import 'moment/locale/ru';
 import { message } from 'antd';
+import Cookies from 'js-cookie'
 
 export class AuthService {
     constructor(domain) {
-        this.ws=new WSocket({ auth: this });
-        var port = (process.env.REACT_APP_PORT)?":"+process.env.REACT_APP_PORT:"";
-        var portws = (process.env.REACT_APP_PORTWS)?":"+process.env.REACT_APP_PORTWS:"";
-        this.Hostname = window.location.hostname+port || "localhost:3000"
-        this.Hostnamews = window.location.hostname+portws || "localhost:8480"
+        this.ws = new WSocket({ auth: this });
+        var port = (process.env.REACT_APP_PORT) ? ":" + process.env.REACT_APP_PORT : "";
+        var portws = (process.env.REACT_APP_PORTWS) ? ":" + process.env.REACT_APP_PORTWS : "";
+        this.Hostname = window.location.hostname + port || "localhost:3000"
+        this.Hostnamews = window.location.hostname + portws || "localhost:8480"
         this.schemws = process.env.REACT_APP_SCHEMWS || "ws"
         this.schemhttp = process.env.REACT_APP_SCHEMHTTP || "http"
         this.authschemhttp = process.env.REACT_APP_AUTHSCHEMHTTP || this.schemhttp
-        this.domain = domain || this.schemhttp+'://'+this.Hostname
+        this.domain = domain || this.schemhttp + '://' + this.Hostname
         this.appProfile = process.env.REACT_APP_PROFILE || "dev"
         this.fetch = this.fetch.bind(this)
+        this.fetchRfToken = this.fetchRfToken.bind(this)
         this.login = this.login.bind(this)
         this.redirect = this.redirect.bind(this)
         this.signup = this.signup.bind(this)
@@ -31,22 +33,22 @@ export class AuthService {
         this.performance = new Map()
 
     }
-    
+
     getDomainWithoutSubdomain(url) {
         const urlParts = new URL(url).hostname.split('.')
-      
+
         return urlParts
-          .slice(0)
-          .slice(-(urlParts.length === 4 ? 3 : 2))
-          .join('.')
+            .slice(0)
+            .slice(-(urlParts.length === 4 ? 3 : 2))
+            .join('.')
     }
     getCookies() {
         var result = {}
         var cookies = document.cookie.split("; ");
-        for( var i = 0; i < cookies.length; i++ ) { 
+        for (var i = 0; i < cookies.length; i++) {
             var spl = cookies[i].split("=");
             result[spl[0]] = spl[1];
-        }   
+        }
         return result;
     }
     getCookie(name) {
@@ -77,31 +79,31 @@ export class AuthService {
         };
         return endCallback
     }
-    setHandle(options){
+    setHandle(options) {
         this.ShowMessage = options.ShowMessage
     }
     openSocket(path, name, onmessage, onopen, onclose, onerror) {
-        if(this.ws.state.ws[name]) {
-			this.ws.close(name, false);
-		}
-		this.ws.open(this.schemws+"://"+this.Hostnamews+path, name, 
-        //onmessage
-        function (e) {
-			try {
-                var message = JSON.parse(e.data);
-                onmessage(message.type, message.payload)
-			} catch (ex) { }
-		},
-        //onopen
-        onopen,
-        //onclose
-        onclose,
-        //onerror
-        onerror
+        if (this.ws.state.ws[name]) {
+            this.ws.close(name, false);
+        }
+        this.ws.open(this.schemws + "://" + this.Hostnamews + path, name,
+            //onmessage
+            function (e) {
+                try {
+                    var message = JSON.parse(e.data);
+                    onmessage(message.type, message.payload)
+                } catch (ex) { }
+            },
+            //onopen
+            onopen,
+            //onclose
+            onclose,
+            //onerror
+            onerror
         );
     }
     closeSocket(name) {
-        this.ws.close(name);   
+        this.ws.close(name);
     }
 
     redirect(res) {
@@ -172,8 +174,8 @@ export class AuthService {
     resetPassword(data) {
         var nurl = new URL(window.location.href);
         var token = nurl.searchParams.get("token");
-        
-        return this.fetch(`/api/reset-password?token=`+token, {
+
+        return this.fetch(`/api/reset-password?token=` + token, {
             method: 'POST',
             body: JSON.stringify(data)
         }).then(res => {
@@ -184,7 +186,8 @@ export class AuthService {
     loggedIn() {
         // Checks if there is a saved token and it's still valid
         const token = this.getToken() // GEtting token from localstorage
-        return !!token && !this.isTokenExpired(token) // handwaiving here
+        const refreshToken = this.getCookie("refreshToken") // GEtting token from localstorage
+        return ((!!token && !this.isTokenExpired(token)) || (!!refreshToken && !this.isTokenExpired(refreshToken))) // handwaiving here
     }
 
     isTokenExpired(token) {
@@ -216,7 +219,9 @@ export class AuthService {
         // Clear user token and profile data from localStorage
         // localStorage.removeItem('id_token');
 
-        window.location.href = this.authschemhttp+"://auth."+this.getDomainWithoutSubdomain(window.location.href)+"/logout?service="+window.location.href;
+        Cookies.remove("token")
+        Cookies.remove("refreshToken")
+        window.location.href = this.authschemhttp + "://auth." + this.getDomainWithoutSubdomain(window.location.href) + "/logout?service=" + window.location.href;
         // this.fetch(`/api/logout`).then(res => {
         //     if (res) {               
         //         if(cb) {
@@ -228,7 +233,9 @@ export class AuthService {
     logoutall(cb) {
         // Clear user token and profile data from localStorage
         // localStorage.removeItem('id_token');
-        window.location.href = this.authschemhttp+"://auth."+this.getDomainWithoutSubdomain(window.location.href)+"/logoutall?service="+window.location.href;
+        Cookies.remove("token")
+        Cookies.remove("refreshToken")
+        window.location.href = this.authschemhttp + "://auth." + this.getDomainWithoutSubdomain(window.location.href) + "/logoutall?service=" + window.location.href;
         // this.fetch(`/api/logout`).then(res => {
         //     if (res) {               
         //         if(cb) {
@@ -243,6 +250,61 @@ export class AuthService {
         return decode(this.getToken());
     }
 
+    fetchRfToken = configureRefreshFetch(this)
+    // fetchRfToken = configureRefreshFetch({
+    //     fetch: (url, options) => {
+    //         return fetch(url, options).then(response => {
+    //             let xAuthError = response.headers.get('x-authenticate-error')
+    //             if (response.status == 401) {
+    //                 let err = new Error(xAuthError);
+    //                 err.status = 401;
+    //                 throw err;
+    //             }
+    //             return response;
+    //         })
+    //     },
+    //     shouldRefreshToken: error => {
+    //         return error.status === 401
+    //             && error.message !== 'NeedLogin'
+    //     },
+    //     refreshToken: () => {
+    //         return fetch(`/api/refresh-token`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Accept': 'application/json',
+    //                 'Content-Type': 'application/json'
+    //             },
+    //             body: JSON.stringify({
+    //                 refreshToken: Cookies.get("refreshToken")
+    //             })
+    //         }).then(response => {
+    //             let xAuthError = response.headers.get('x-authenticate-error')
+    //             console.log('xAuthError', xAuthError)
+    //             if (response.status == 401 && xAuthError == 'NeedLogin') {
+    //                 console.log("login")
+    //                 Cookies.remove("token")
+    //                 Cookies.remove("refreshToken")
+    //                 window.location.href = this.authschemhttp + "://auth." + this.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
+    //                 return
+    //             }
+
+    //             return response.json();
+    //         }).then(res => {
+    //             if (res && res.user) {
+    //                 localStorage.setItem('iam', res.user.ID);
+    //             }
+    //             return res
+    //         }).catch(error => {
+    //             // If we failed by any reason in refreshing, just clear the token,
+    //             // it's not that big of a deal
+    //             Cookies.remove("token")
+    //             Cookies.remove("refreshToken")
+    //             // throw error
+    //             window.location.href = this.authschemhttp + "://auth." + this.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
+    //         })
+    //     }
+    // })
+
     fetchFile(url, options) {
         const headers = {
             // 'X-Requested-With': 'XMLHttpRequest'
@@ -253,39 +315,39 @@ export class AuthService {
             headers['Authorization'] = 'Bearer ' + this.getToken()
         }
         var end = this.PerformanceStart(url);
-        return fetch(this.domain+url, {
+        return this.fetchRfToken(this.domain + url, {
             headers,
             ...options
         })
-        .then(this._checkStatus)
-        .then((res) => {
-            if (end) {
-                end();
-            }
-            if(res.headers.get("Content-Type")=="application/json") {
-                res.json().then((jData)=>{
-                    if (jData && !jData.status) {
-                        message.error(jData.message)
-                        return;
-                    }
-                })
-            } else {
-                res.blob().then(blob => {
-                    let url = window.URL.createObjectURL(blob);
-                    let a = document.createElement('a');
-                    a.href = url;
-                    //replace(/^\"+|\"+$/g, '') - trim('"')
-                    let fname = res.headers.get("x-filename")||"";
-                    a.download = decodeURI(fname.replace(/^\"+|\"+$/g, ''));
-                    a.click();
-                });
-            }
-        })
+            .then(this._checkStatus)
+            .then((res) => {
+                if (end) {
+                    end();
+                }
+                if (res.headers.get("Content-Type") == "application/json") {
+                    res.json().then((jData) => {
+                        if (jData && !jData.status) {
+                            message.error(jData.message)
+                            return;
+                        }
+                    })
+                } else {
+                    res.blob().then(blob => {
+                        let url = window.URL.createObjectURL(blob);
+                        let a = document.createElement('a');
+                        a.href = url;
+                        //replace(/^\"+|\"+$/g, '') - trim('"')
+                        let fname = res.headers.get("x-filename") || "";
+                        a.download = decodeURI(fname.replace(/^\"+|\"+$/g, ''));
+                        a.click();
+                    });
+                }
+            })
     }
     fetchForData(url, options) {
         // performs api calls sending the required authentication headers
         const headers = {
-           
+
         }
 
         // Setting Authorization header
@@ -294,25 +356,25 @@ export class AuthService {
             headers['Authorization'] = 'Bearer ' + this.getToken()
         }
         var end = this.PerformanceStart(url);
-        return fetch(this.domain+url, {
+        return this.fetchRfToken(this.domain + url, {
             headers,
             ...options
         })
-        .then(this._checkStatus)
-        .then(response => {
-            if (end) {
-                end();
-            }
-            return response.json();
-        })
-        .then(res => {
-            if (res && !res.status) {
-                if(this.ShowMessage) {
-                    this.ShowMessage(res.message, "danger")
+            .then(this._checkStatus)
+            .then(response => {
+                if (end) {
+                    end();
                 }
-            }
-            return Promise.resolve(res);
-        })
+                return response.json();
+            })
+            .then(res => {
+                if (res && !res.status) {
+                    if (this.ShowMessage) {
+                        this.ShowMessage(res.message, "danger")
+                    }
+                }
+                return Promise.resolve(res);
+            })
     }
     fetch(url, options) {
         // performs api calls sending the required authentication headers
@@ -327,34 +389,35 @@ export class AuthService {
             headers['Authorization'] = 'Bearer ' + this.getToken()
         }
         var end = this.PerformanceStart(url);
-        return fetch(this.domain+url, {
+        return this.fetchRfToken(this.domain + url, {
             headers,
             ...options
         })
-        .then(this._checkStatus)
-        .then(response => {
-            if (end) {
-                end();
-            }
-            return response.json();
-        })
-        .then(res => {
-            if (res && !res.status) {
-                if(this.ShowMessage) {
-                    this.ShowMessage(res.message, "danger")
+            .then(this._checkStatus)
+            .then(response => {
+                if (end) {
+                    end();
                 }
-            }
-            return Promise.resolve(res);
-        })
+                return response.json();
+            })
+            .then(res => {
+                if (res && !res.status) {
+                    if (this.ShowMessage) {
+                        this.ShowMessage(res.message, "danger")
+                    }
+                }
+                return Promise.resolve(res);
+            })
     }
 
     _checkStatus(response) {
         // raises an error in case response status is not a success
         if (response.status >= 200 && response.status < 300) { // Success status lies between 200 to 300
             return response
-        } else if (response.status == 401) {
-            console.error(response.status, "Не авторизован", response.url);
-            window.location.href = this.authschemhttp+"://auth."+this.getDomainWithoutSubdomain(window.location.href)+"/login?service="+window.location.href;
+        } else if (response.status == 401 && response.headers.get('x-authenticate-error') == 'NeedLogin') {
+            Cookies.remove("token")
+            Cookies.remove("refreshToken")
+            window.location.href = this.authschemhttp + "://auth." + this.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
             return response;
         } else if (response.status == 403) {
             console.error(response.status, "Доступ запрещен", response.url);
@@ -396,8 +459,68 @@ export function RequireAuth({ children }) {
         // trying to go to when they were redirected. This allows us to send them
         // along to that page after they login, which is a nicer user experience
         // than dropping them off on the home page.
-        window.location.href = auth.authschemhttp+"://auth."+auth.getDomainWithoutSubdomain(window.location.href)+"/login?service="+window.location.href;
-    } 
+        window.location.href = auth.authschemhttp + "://auth." + auth.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
+    }
     return <NavigationContext.Provider value={navigate}>{children}</NavigationContext.Provider>;
 }
 //-------------------------------------------------------------------------------------
+
+function configureRefreshFetch(auth) {
+
+    let refreshingTokenPromise = null
+
+    return (url, options) => {
+        if (refreshingTokenPromise !== null) {
+            return (
+                refreshingTokenPromise
+                    .then(() => fetch(url, options))
+                    // Even if the refreshing fails, do the fetch so we reject with
+                    // error of that request
+                    .catch(() => fetch(url, options))
+            )
+        }
+
+        return fetch(url, options).then(response => {
+            let xAuthError = response.headers.get('x-authenticate-error')
+            console.log('xAuthError', xAuthError)
+            if (response.status == 401 && xAuthError != 'NeedLogin') {
+                if (refreshingTokenPromise === null) {
+                    refreshingTokenPromise = new Promise((resolve, reject) => {
+                        fetch(`/api/refresh-token`, {
+                            method: 'POST',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                refreshToken: Cookies.get("refreshToken")
+                            })
+                        }).then(response => {
+                            let xAuthError = response.headers.get('x-authenticate-error')
+                            console.log('xAuthError1', xAuthError)
+                            if (response.status == 401 && xAuthError == 'NeedLogin') {
+                                console.log("login")
+                                Cookies.remove("token")
+                                Cookies.remove("refreshToken")
+                                window.location.href = auth.authschemhttp + "://auth." + auth.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
+                                return
+                            }
+
+                            refreshingTokenPromise = null
+                            resolve()
+                        }).catch(error => {
+                            refreshingTokenPromise = null
+                            reject(error)
+                        })
+                    })
+                }
+
+                return refreshingTokenPromise.catch(() => {
+                    throw error
+                }).then(() => fetch(url, options))
+            }
+
+            return response;
+        })
+    }
+}
