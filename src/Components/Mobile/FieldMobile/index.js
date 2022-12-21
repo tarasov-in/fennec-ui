@@ -902,6 +902,9 @@ function String({ item, value, onChange, onAfterChange }) {
                     padding: "2px 6px"
                 }}>
                     <TextArea
+                        style={{
+                            "--font-size": "13px"
+                        }}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
                         autoSize={{ minRows: 2, maxRows: 5 }}
                         onChange={onChange}
