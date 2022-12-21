@@ -457,15 +457,17 @@ function configureRefreshFetch(auth) {
                             reject(error)
                         })
                     })
-                } else if (response.status == 401 && xAuthError == 'NeedLogin'){
-                    Cookies.remove("token")
-                    Cookies.remove("refreshToken")
-                    window.location.href = auth.authschemhttp + "://auth." + auth.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
                 }
 
                 return refreshingTokenPromise.catch(() => {
                     throw error
                 }).then(() => fetch(url, options))
+
+            } else if (response.status == 401 && xAuthError == 'NeedLogin'){
+                Cookies.remove("token")
+                Cookies.remove("refreshToken")
+                window.location.href = auth.authschemhttp + "://auth." + auth.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
+                return
             }
 
             return response;
