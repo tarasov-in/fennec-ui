@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import 'moment/locale/ru';
 import { errorCatch, getDisplay, getObjectValue, GETWITH, QueryDetail, QueryOrder, READWITH } from '../../../Tool';
 import moment from 'moment';
-import { Checkbox, Input, List, TextArea, Slider, Picker, DatePicker, Button } from 'antd-mobile';
+import { Checkbox, Input, List, TextArea, Slider, Picker, DatePicker, Button, ImageUploader } from 'antd-mobile';
 import { createUseStyles } from 'react-jss';
 import { CalendarItem } from '../CalendarItem';
 import { useMetaContext } from '../../Context';
@@ -10,6 +10,7 @@ import { ActionPickerItem } from '../../Action';
 import Icofont from 'react-icofont';
 import styles from './index.less'
 import { EyeInvisibleOutline, EyeOutline } from 'antd-mobile-icons'
+import { InboxOutlined } from '@ant-design/icons';
 
 var _ = require('lodash');
 
@@ -23,6 +24,74 @@ if (isIPhone) {
     };
 }
 
+function UploadItem({ auth, item, value, onChange, changed }) {
+    const [files, setFiles] = useState([]);
+    const [urls, setUrls] = useState([]);
+    useEffect(() => {
+        triggerChange(files);
+    }, [files]);
+    const triggerChange = (changedValue) => {
+        if (onChange) {
+            onChange([
+                ...changedValue,
+            ]);
+        }
+    };
+    const uploadingProps = {
+        maxCount: 1,
+        name: 'file',
+        multiple: false,
+        accept: item.accept,
+        onDelete: file => {
+            setUrls([]);
+            setFiles([]);
+        },
+        beforeUpload: file => {
+            setFiles([file]);
+            return file;
+        },
+    };
+    const content = (item) => (
+        <div style={{ padding: "0 15px" }}>
+            <p className="ant-upload-text" style={{ fontSize: "14px", marginBottom: "3px" }}>Нажмите для выбора файла</p>
+            <p className="ant-upload-hint" style={{ fontSize: "13px", marginBottom: "0px" }}>
+                {(item.accept) ? "Поддерживается загрузка файлов " + item.accept : "Поддерживается загрузка любых типов файлов"}
+            </p>
+        </div>
+    );
+    const upload = (file) => {
+        return {
+            url: URL.createObjectURL(file),
+        }
+    }
+    return (
+        <div className='bg bg-grey' style={{
+            backgroundColor: "rgb(235 235 235 / 20%)",
+            padding: "5px 0px",
+            display: "flex",
+            justifyContent: "space-between"
+        }}>
+            <div style={{ flex: "0" }}>
+                <ImageUploader
+                    style={{
+                        borderRadius: "4px",
+                        border: "1px solid #cfcfcf"
+                    }}
+                    value={urls}
+                    onChange={(f) => {
+                        setUrls(f);
+                    }}
+                    upload={upload}
+                    {...uploadingProps}
+                    showUpload={urls.length < uploadingProps.maxCount}
+                />
+            </div>
+            <div style={{ flex: "1" }}>
+                {content(item)}
+            </div>
+        </div>
+    );
+}
 function ActionItem({ auth, item, value, onChange, onAfterChange, changed }) {
     return (<React.Fragment>
         <ActionPickerItem
@@ -46,7 +115,7 @@ function ActionItem({ auth, item, value, onChange, onAfterChange, changed }) {
             triggerOptions={{
                 className: classes.Act
             }}
-            placeholder={item.placeholder || "выберите " + item.label.toLowerCase()}
+            placeholder={item.placeholder || ("введите " + ((item.label)?item.label.toLowerCase():"значение"))}
             closable={false}
             object={value}
             titles={(item.titles) ? item.titles : {
@@ -90,7 +159,7 @@ function RangeDate({ item, value, onChange, onAfterChange }) {
     }, [value]);
     return (
         <div style={{ padding: "5px 0px" }}>
-            <div className='bg bg-grey'
+            {(item && item.header !== false) && <div className='bg bg-grey'
                 style={{
                     textAlign: "left",
                     paddingLeft: "5px",
@@ -104,7 +173,7 @@ function RangeDate({ item, value, onChange, onAfterChange }) {
                 }}>
                     <Icofont icon="close" />
                 </Button>
-            </div>
+            </div>}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
                 <div onClick={() => {
                     setVisible1(true)
@@ -129,7 +198,7 @@ function RangeDate({ item, value, onChange, onAfterChange }) {
                         value={val[0] || null}
                     >
                         {value =>
-                            value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || `выберите  ${item.label.toLowerCase()}`}</span>
+                            value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item.label) ? item.label.toLowerCase() : "значение"}`)}</span>
                         }
                     </DatePicker>
                 </div>
@@ -156,7 +225,7 @@ function RangeDate({ item, value, onChange, onAfterChange }) {
                         value={val[1] || null}
                     >
                         {value =>
-                            value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || `выберите  ${item.label.toLowerCase()}`}</span>
+                            value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item.label) ? item.label.toLowerCase() : "значение"}`)}</span>
                         }
                     </DatePicker>
                 </div>
@@ -185,7 +254,7 @@ function RangeFloat({ item, value, onChange, onAfterChange }) {
     };
     return (
         <div style={{ padding: "5px 0px" }}>
-            <div className='bg bg-grey' style={{
+            {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
                 marginBottom: "5px",
@@ -198,7 +267,8 @@ function RangeFloat({ item, value, onChange, onAfterChange }) {
                 }}>
                     <Icofont icon="close" />
                 </Button>
-            </div><div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
+            </div>}
+            <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
                 <div style={{
                     flex: "1",
                     border: "1px solid #e5e5e5",
@@ -250,7 +320,7 @@ function FloatSlider({ item, value, onChange, onAfterChange }) {
 
     return (
         <div style={{ padding: "5px 0px" }}>
-            <div className='bg bg-grey' style={{
+            {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
                 marginBottom: "5px",
@@ -265,7 +335,7 @@ function FloatSlider({ item, value, onChange, onAfterChange }) {
                     }}>
                     <Icofont icon="close" />
                 </Button>
-            </div>
+            </div>}
             <div>
                 <Slider
                     disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
@@ -303,7 +373,7 @@ function RangeInteger({ item, value, onChange, onAfterChange }) {
     };
     return (
         <div style={{ padding: "5px 0px" }}>
-            <div className='bg bg-grey' style={{
+            {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
                 marginBottom: "5px",
@@ -316,7 +386,8 @@ function RangeInteger({ item, value, onChange, onAfterChange }) {
                 }}>
                     <Icofont icon="close" />
                 </Button>
-            </div><div style={{ display: "flex", justifyContent: "space-between" }}>
+            </div>}
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <div style={{
                     flex: "1",
                     border: "1px solid #e5e5e5",
@@ -368,7 +439,7 @@ function IntegerSlider({ item, value, onChange, onAfterChange }) {
 
     return (
         <div style={{ padding: "5px 0px" }}>
-            <div className='bg bg-grey' style={{
+            {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
                 marginBottom: "5px",
@@ -383,7 +454,7 @@ function IntegerSlider({ item, value, onChange, onAfterChange }) {
                     }}>
                     <Icofont icon="close" />
                 </Button>
-            </div>
+            </div>}
             <Slider
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
                 min={xmin}
@@ -495,7 +566,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
     }, [value, oui])
     return (
         <div style={{ padding: "5px 0px" }}>
-            <div className='bg bg-grey' style={{
+            {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
                 marginBottom: "5px",
@@ -508,7 +579,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
                 }}>
                     <Icofont icon="close" />
                 </Button>
-            </div>
+            </div>}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
                 <div onClick={() => {
                     setVisible(true)
@@ -534,7 +605,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
                         confirmText={item.okText || 'Выбрать'}
                         cancelText={item.dismissText || 'Отмена'}>
                     </Picker>
-                    {current || <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || `выберите  ${item.label.toLowerCase()}`}</span>}
+                    {current || <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item.label) ? item.label.toLowerCase() : "значение"}`)}</span>}
                 </div>
             </div>
         </div>
@@ -553,7 +624,7 @@ function Date({ item, value, onChange, onAfterChange }) {
     }, [value]);
     return (
         <div style={{ padding: "5px 0px" }}>
-            <div className='bg bg-grey' style={{
+            {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
                 marginBottom: "5px",
@@ -566,7 +637,7 @@ function Date({ item, value, onChange, onAfterChange }) {
                 }}>
                     <Icofont icon="close" />
                 </Button>
-            </div>
+            </div>}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
                 <div onClick={() => {
                     setVisible(true)
@@ -591,7 +662,7 @@ function Date({ item, value, onChange, onAfterChange }) {
                         value={val || null}
                     >
                         {value =>
-                            value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || `выберите  ${item.label.toLowerCase()}`}</span>
+                            value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item.label) ? item.label.toLowerCase() : "значение"}`)}</span>
                         }
                     </DatePicker>
                 </div>
@@ -611,7 +682,7 @@ function DateTime({ item, value, onChange, onAfterChange }) {
     }, [value]);
     return (
         <div style={{ padding: "5px 0px" }}>
-            <div className='bg bg-grey' style={{
+            {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
                 marginBottom: "5px",
@@ -624,7 +695,7 @@ function DateTime({ item, value, onChange, onAfterChange }) {
                 }}>
                     <Icofont icon="close" />
                 </Button>
-            </div>
+            </div>}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
                 <div onClick={() => {
                     setVisible(true)
@@ -649,7 +720,7 @@ function DateTime({ item, value, onChange, onAfterChange }) {
                         value={val || null}
                     >
                         {value =>
-                            value ? moment(value).format('YYYY-MM-DD HH:mm:ss') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || `выберите  ${item.label.toLowerCase()}`}</span>
+                            value ? moment(value).format('YYYY-MM-DD HH:mm:ss') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item.label) ? item.label.toLowerCase() : "значение"}`)}</span>
                         }
                     </DatePicker>
                 </div>
@@ -669,7 +740,7 @@ function Time({ item, value, onChange, onAfterChange }) {
     }, [value]);
     return (
         <div style={{ padding: "5px 0px" }}>
-            <div className='bg bg-grey' style={{
+            {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
                 marginBottom: "5px",
@@ -682,7 +753,7 @@ function Time({ item, value, onChange, onAfterChange }) {
                 }}>
                     <Icofont icon="close" />
                 </Button>
-            </div>
+            </div>}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
                 <div onClick={() => {
                     setVisible(true)
@@ -707,7 +778,7 @@ function Time({ item, value, onChange, onAfterChange }) {
                         value={val || null}
                     >
                         {value =>
-                            value ? moment(value).format('HH:mm:ss') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || `выберите  ${item.label.toLowerCase()}`}</span>
+                            value ? moment(value).format('HH:mm:ss') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item.label) ? item.label.toLowerCase() : "значение"}`)}</span>
                         }
                     </DatePicker>
                 </div>
@@ -729,7 +800,7 @@ function Boolean({ item, value, onChange, onAfterChange }) {
 function Float({ item, value, onChange, onAfterChange }) {
     return (
         <div style={{ padding: "5px 0px" }}>
-            <div className='bg bg-grey' style={{
+            {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
                 marginBottom: "5px",
@@ -742,7 +813,7 @@ function Float({ item, value, onChange, onAfterChange }) {
                 }}>
                     <Icofont icon="close" />
                 </Button>
-            </div>
+            </div>}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
                 <div style={{
                     flex: "1",
@@ -752,7 +823,7 @@ function Float({ item, value, onChange, onAfterChange }) {
                 }}>
                     <Input
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
-                        placeholder={item.placeholder || "введите " + item.label.toLowerCase()}
+                        placeholder={item.placeholder || ("введите " + ((item.label) ? item.label.toLowerCase() : "значение"))}
                         // clearable
                         onChange={v => {
                             if (!isNaN(v)) {
@@ -769,7 +840,7 @@ function Float({ item, value, onChange, onAfterChange }) {
 function Integer({ item, value, onChange, onAfterChange }) {
     return (
         <div style={{ padding: "5px 0px" }}>
-            <div className='bg bg-grey' style={{
+            {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
                 marginBottom: "5px",
@@ -782,7 +853,7 @@ function Integer({ item, value, onChange, onAfterChange }) {
                 }}>
                     <Icofont icon="close" />
                 </Button>
-            </div>
+            </div>}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
                 <div style={{
                     flex: "1",
@@ -792,7 +863,7 @@ function Integer({ item, value, onChange, onAfterChange }) {
                 }}>
                     <Input
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
-                        placeholder={item.placeholder || "введите " + item.label.toLowerCase()}
+                        placeholder={item.placeholder || ("введите " + ((item.label) ? item.label.toLowerCase() : "значение"))}
                         // clearable
                         onChange={v => {
                             if (!isNaN(v) && _.isInteger(+v)) {
@@ -809,7 +880,7 @@ function Integer({ item, value, onChange, onAfterChange }) {
 function String({ item, value, onChange, onAfterChange }) {
     return (
         <div style={{ padding: "5px 0px" }}>
-            <div className='bg bg-grey' style={{
+            {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
                 marginBottom: "5px",
@@ -822,7 +893,7 @@ function String({ item, value, onChange, onAfterChange }) {
                 }}>
                     <Icofont icon="close" />
                 </Button>
-            </div>
+            </div>}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
                 <div style={{
                     flex: "1",
@@ -835,7 +906,7 @@ function String({ item, value, onChange, onAfterChange }) {
                         autoSize={{ minRows: 2, maxRows: 5 }}
                         onChange={onChange}
                         value={value || ""}
-                        placeholder={item.placeholder || "введите " + item.label.toLowerCase()}
+                        placeholder={item.placeholder || ("введите " + ((item.label) ? item.label.toLowerCase() : "значение"))}
                     />
                 </div>
             </div>
@@ -846,7 +917,7 @@ function Password({ item, value, onChange, onAfterChange }) {
     const [visible, setVisible] = useState(false)
     return (
         <div style={{ padding: "5px 0px" }}>
-            <div className='bg bg-grey' style={{
+            {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
                 marginBottom: "5px",
@@ -859,7 +930,7 @@ function Password({ item, value, onChange, onAfterChange }) {
                 }}>
                     <Icofont icon="close" />
                 </Button>
-            </div>
+            </div>}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
                 <div style={{
                     flex: "1",
@@ -872,7 +943,7 @@ function Password({ item, value, onChange, onAfterChange }) {
                             value={value}
                             onChange={onChange}
                             className={styles.input}
-                            placeholder={item.placeholder || "введите " + item.label.toLowerCase()}
+                            placeholder={item.placeholder || ("введите " + ((item.label) ? item.label.toLowerCase() : "значение"))}
                             type={visible ? 'text' : 'password'}
                         />
                         <div className={styles.eye}>
@@ -997,6 +1068,8 @@ export function FieldMobile({ auth, item, value, onChange, onAfterChange, change
                     return (<Obj auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} changed={changed}></Obj>)
                 case "action":
                     return (<ActionItem auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></ActionItem>)
+                case "file":
+                    return (<UploadItem auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></UploadItem>)
                 default:
                     return (<Unknown auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Unknown>)
             }
