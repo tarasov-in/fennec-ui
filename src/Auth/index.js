@@ -420,10 +420,20 @@ function configureRefreshFetch(auth) {
         if (refreshingTokenPromise !== null) {
             return (
                 refreshingTokenPromise
-                    .then(() => fetch(url, options))
+                    .then(() => {
+                        if (options && options.headers && options.headers['Authorization']) {
+                            options.headers['Authorization'] = 'Bearer ' + auth.getToken()
+                        }
+                        return fetch(url, options)
+                    })
                     // Even if the refreshing fails, do the fetch so we reject with
                     // error of that request
-                    .catch(() => fetch(url, options))
+                    .catch(() => {
+                        if (options && options.headers && options.headers['Authorization']) {
+                            options.headers['Authorization'] = 'Bearer ' + auth.getToken()
+                        }
+                        return fetch(url, options)
+                    })
             )
         }
 
@@ -436,7 +446,8 @@ function configureRefreshFetch(auth) {
                             method: 'POST',
                             headers: {
                                 'Accept': 'application/json',
-                                'Content-Type': 'application/json'
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer ' + auth.getToken()
                             },
                             body: JSON.stringify({
                                 refreshToken: Cookies.get("refreshToken")
@@ -461,7 +472,12 @@ function configureRefreshFetch(auth) {
 
                 return refreshingTokenPromise.catch(() => {
                     throw error
-                }).then(() => fetch(url, options))
+                }).then(() => {
+                    if (options && options.headers && options.headers['Authorization']) {
+                        options.headers['Authorization'] = 'Bearer ' + auth.getToken()
+                    }
+                    return fetch(url, options)
+                })
 
             } else if (response.status == 401 && xAuthError == 'NeedLogin'){
                 Cookies.remove("token")
