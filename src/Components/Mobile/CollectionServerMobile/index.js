@@ -939,7 +939,7 @@ export function CollectionServerMobile(props) {
             </div>}
 
             {(!!filters?.length) &&
-                <div className="filtered" style={{ position: "relative", height: "100%" }}>
+                <div className="filtered" style={{ position: "relative", height: "100%", paddingTop: "5px" }}>
                     <div style={{
                         height: "43px",
                         display: "flex",
@@ -985,7 +985,7 @@ export function CollectionServerMobile(props) {
                             <div>Нет данных</div>
                         </div>}
                     </List>
-                    <div style={{ paddingTop: "15px" }}>
+                    <div style={{ padding: "15px 0px" }}>
                         {(total > 1) &&
                             <div style={{ display: "flex", justifyContent: "center" }}>
                                 <div>

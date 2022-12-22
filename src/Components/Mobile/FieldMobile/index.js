@@ -75,7 +75,8 @@ function UploadItem({ auth, item, value, onChange, changed }) {
                 <ImageUploader
                     style={{
                         borderRadius: "4px",
-                        border: "1px solid #cfcfcf"
+                        border: "1px solid #cfcfcf",
+                        '--cell-size': '65px'
                     }}
                     value={urls}
                     onChange={(f) => {
@@ -86,9 +87,9 @@ function UploadItem({ auth, item, value, onChange, changed }) {
                     showUpload={urls.length < uploadingProps.maxCount}
                 />
             </div>
-            <div style={{ flex: "1" }}>
+            {/* <div style={{ flex: "1" }}>
                 {content(item)}
-            </div>
+            </div> */}
         </div>
     );
 }
@@ -903,7 +904,7 @@ function String({ item, value, onChange, onAfterChange }) {
                 }}>
                     <TextArea
                         style={{
-                            "--font-size": "13px"
+                            "--font-size": "14px"
                         }}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
                         autoSize={{ minRows: 2, maxRows: 5 }}
