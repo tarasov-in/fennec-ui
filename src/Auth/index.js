@@ -414,6 +414,12 @@ export function RequireAuth({ children }) {
 
 function configureRefreshFetch(auth) {
 
+    //Если refreshingTokenPromise != null, то начат процес обновления пары токенов.
+    //Если в результате запроса приходит ответ со статусом 401 и заголовком x-authenticate-error != 'NeedLogin', 
+    //в refreshingTokenPromise присваивается Promise в котором начинается процедура обновления пары токенов (/api/refresh-token).
+    //Если refreshingTokenPromise != null, то все новые поступающие запросы 
+    //ожидают завершения промиса и выполняются с новым токеном, если обновление пары прошло успешно, 
+    //иначе пользователь отправляется на аутентификацию
     let refreshingTokenPromise = null
 
     return (url, options) => {
@@ -426,8 +432,6 @@ function configureRefreshFetch(auth) {
                         }
                         return fetch(url, options)
                     })
-                    // Even if the refreshing fails, do the fetch so we reject with
-                    // error of that request
                     .catch(() => {
                         if (options && options.headers && options.headers['Authorization']) {
                             options.headers['Authorization'] = 'Bearer ' + auth.getToken()
