@@ -85,7 +85,10 @@ function UploadItem({ auth, item, value, onChange, changed }) {
                     upload={upload}
                     {...uploadingProps}
                     showUpload={urls.length < uploadingProps.maxCount}
-                />
+                >
+                    {(item.trigger && _.isFunction(item.trigger)) && item.trigger(item)}
+                    {(item.trigger && !_.isFunction(item.trigger)) && content(item)}
+                </ImageUploader>
             </div>
             {/* <div style={{ flex: "1" }}>
                 {content(item)}
