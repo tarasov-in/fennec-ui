@@ -23,7 +23,8 @@ class WSocket extends React.Component {
             return;
         }
 
-        var ws = new WebSocket(url, [(auth.getToken()) || null]);
+        // var ws = new WebSocket(url, [(auth.getToken()) || null]);
+        var ws = new WebSocket(url);
         ws.onmessage = onmessage_callback;
 
         ws.onerror = onerror_callback;
