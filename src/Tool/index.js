@@ -65,7 +65,7 @@ export const IfElse = (equations, truthful, untruthful) => {
 export const And = (args) => {
     var acc = true;
     let unwraped = unwrap(args);
-    console.log(args, unwraped);
+    // console.log(args, unwraped);
     for (let i = 0; i < unwraped.length; i++) {
         const element = unwraped[i];
         acc = acc && element;
