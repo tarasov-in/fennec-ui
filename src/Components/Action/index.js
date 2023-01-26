@@ -295,7 +295,7 @@ export function Action(props) {
         }
     }, [steps, excludeKeyPressed, hideMenu, props.collection])
     const action = React.useCallback((_values) => {
-console.log("isFormData",isFormData);
+
         let values = eventExecution(modify, _values, {});
 
         values = IfElse(form, unpackFormFields(form, values), values);
