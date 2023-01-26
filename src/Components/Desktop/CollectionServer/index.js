@@ -207,7 +207,7 @@ export function CollectionServer(props) {
 
         let ctxFlt = [];
         if (contextFilters) {
-            let ctx = contextFilters();
+            let ctx = clean(contextFilters());
             if (_.isArray(ctx)) {
                 ctx.forEach(item => {
                     if (item) {
@@ -448,7 +448,7 @@ export function CollectionServer(props) {
                     onValues: (values) => {
                         let ctxFlt = {};
                         if (contextFilters) {
-                            let ctx = contextFilters();
+                            let ctx = clean(contextFilters());
                             if (_.isArray(ctx)) {
                                 ctx.forEach(item => {
                                     if (item.action) {
@@ -521,7 +521,7 @@ export function CollectionServer(props) {
                     onValues: (values) => {
                         let ctxFlt = {};
                         if (contextFilters) {
-                            let ctx = contextFilters();
+                            let ctx = clean(contextFilters());
                             if (_.isArray(ctx)) {
                                 ctx.forEach(item => {
                                     if (item.action) {
