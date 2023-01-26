@@ -43,6 +43,12 @@ export const unwrap = (value, element) => {
     if (_.isFunction(value) == true) {
         return unwrap(value());
     } else if (_.isArray(value)) {
+        return value
+    }
+    return (!element) ? [value] : value;
+};
+export const clean = (value, element) => {
+    if (_.isArray(value)) {
         return value?.filter(e=> e !== null && e !== undefined)
     }
     return (!element) ? [value]?.filter(e=> e !== null && e !== undefined) : value;
@@ -59,6 +65,7 @@ export const IfElse = (equations, truthful, untruthful) => {
 export const And = (args) => {
     var acc = true;
     let unwraped = unwrap(args);
+    console.log(args, unwraped);
     for (let i = 0; i < unwraped.length; i++) {
         const element = unwraped[i];
         acc = acc && element;

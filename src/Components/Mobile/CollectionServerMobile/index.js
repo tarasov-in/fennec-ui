@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Badge, List, Picker, SwipeAction, PageIndicator, Stepper, PickerView, Popup, Space, Empty as EmptyMobile, Mask, DotLoading } from 'antd-mobile';
-import { unwrap, errorCatch, Request, QueryParam, GETWITH, READWITH, updateInArray, deleteInArray, GetMetaPropertyByPath, QueryFunc, If, QueryDetail, subscribe as _subscribe, unsubscribe } from '../../../Tool'
+import { unwrap, errorCatch, Request, QueryParam, GETWITH, READWITH, updateInArray, deleteInArray, GetMetaPropertyByPath, QueryFunc, If, QueryDetail, subscribe as _subscribe, unsubscribe, clean } from '../../../Tool'
 import Icofont from 'react-icofont';
 import { createUseStyles } from 'react-jss';
 import { Action, ActionPickerItem } from '../../Action';
@@ -710,7 +710,7 @@ export function CollectionServerMobile(props) {
                 }))
             } />)
         if (!modelActions) return <React.Fragment>{trigger && trigger()}</React.Fragment>;
-        let values = unwrap(modelActions(item, index));
+        let values = clean(unwrap(modelActions(item, index)));
         if (!values || !values.length) return <React.Fragment>{trigger && trigger()}</React.Fragment>;
         return <DropdownMobile
             auth={auth}
@@ -766,7 +766,7 @@ export function CollectionServerMobile(props) {
             />)}
         </div>;
         if (!collectionActions) return <React.Fragment></React.Fragment>;
-        let values = unwrap(collectionActions());
+        let values = clean(unwrap(collectionActions()));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <div>
             {values?.map((e, idx) => <Action

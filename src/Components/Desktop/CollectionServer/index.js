@@ -3,7 +3,7 @@ import { Layout, Card, Button, Tooltip, Pagination, Empty, Divider, Typography, 
 import 'moment/locale/ru';
 import { Action } from '../../Action'
 import { DropdownAction } from '../DropdownAction'
-import { unwrap, GET, errorCatch, Request, QueryParam, GETWITH, If, READWITH, QueryFunc, JSX, GetMetaPropertyByPath, updateInArray, deleteInArray, QueryDetail, subscribe as _subscribe, unsubscribe } from '../../../Tool'
+import { unwrap, GET, errorCatch, Request, QueryParam, GETWITH, If, READWITH, QueryFunc, JSX, GetMetaPropertyByPath, updateInArray, deleteInArray, QueryDetail, subscribe as _subscribe, unsubscribe, clean } from '../../../Tool'
 import { createUseStyles } from 'react-jss';
 import "./index.css"
 import { FilterOutlined, SortAscendingOutlined, SortDescendingOutlined } from '@ant-design/icons';
@@ -497,7 +497,7 @@ export function CollectionServer(props) {
                 }))
             } />)
         if (!modelActions) return <React.Fragment></React.Fragment>;
-        let values = unwrap(modelActions(item, index));
+        let values = clean(unwrap(modelActions(item, index)));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <DropdownAction items={values?.map((e, idx) => ({
             key: e.key || idx,
@@ -554,7 +554,7 @@ export function CollectionServer(props) {
             />)}
         </div>;
         if (!collectionActions) return <React.Fragment></React.Fragment>;
-        let values = unwrap(collectionActions());
+        let values = clean(unwrap(collectionActions()));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <div>
             {values?.map((e, idx) => <Action
