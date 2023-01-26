@@ -603,11 +603,11 @@ export function CollectionServerMobile(props) {
                 unlock();
             }, (err, type) => errorCatch(err, type, unlock));
         }
-    }, [state.current, count, state.filter, state.sorting, funcStat, filters, contextFilters]);
+    }, [source, state.current, count, state.filter, state.sorting, funcStat, filters, contextFilters]);
 
     useEffect(() => {
         request();
-    }, [name, state.filter, filters, state.sorting, state.current, _setCollection, contextFilters]);
+    }, [source, name, state.filter, filters, state.sorting, state.current, _setCollection, contextFilters]);
 
     // Table Items Selection
     const [selectionType, setSelectionType] = useState(selection || 'checkbox'); // radio

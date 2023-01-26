@@ -347,7 +347,7 @@ export function CollectionServer(props) {
                 unlock();
             }, (err, type) => errorCatch(err, type, unlock));
         }
-    }, [current, count, sorting, funcStat, filters, contextFilters]);
+    }, [source, current, count, sorting, funcStat, filters, contextFilters]);
 
     const update = React.useCallback(() => {
         request(state.filter);
@@ -355,7 +355,7 @@ export function CollectionServer(props) {
 
     useEffect(() => {
         request(state.filter);
-    }, [name, state.filter, filters, sorting, current, contextFilters]);
+    }, [source, name, state.filter, filters, sorting, current, contextFilters]);
 
     // Table Items Selection
     const [selectionType, setSelectionType] = useState(selection || 'checkbox'); // radio
