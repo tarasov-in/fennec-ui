@@ -43,9 +43,9 @@ export const unwrap = (value, element) => {
     if (_.isFunction(value) == true) {
         return unwrap(value());
     } else if (_.isArray(value)) {
-        return value?.filter(Boolean)
+        return value?.filter(e=> e !== null && e !== undefined)
     }
-    return (!element) ? [value]?.filter(Boolean) : value;
+    return (!element) ? [value]?.filter(e=> e !== null && e !== undefined) : value;
 };
 //--------------------------------------------------------------
 // Если все переданные аргументы не false/undefined/null/0

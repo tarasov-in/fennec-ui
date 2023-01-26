@@ -838,15 +838,6 @@ export function CollectionServerMobile(props) {
         }
         return "" + item
     }, [render, setCollection, setCollectionItem, removeCollectionItem, request]);
-    // const actions = (item, index) => {
-    //     let values = unwrap(modelActions(item, index));
-    //     if (modelActions && values && values.length) {
-    //         return {
-    //             actions: [RenderOnModelActions(item, index)]
-    //         };
-    //     }
-    //     return {};
-    // };
     const titleView = React.useCallback(() => {
         if (title || titleFunc) {
             if (titleFunc) {
