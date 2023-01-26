@@ -53,7 +53,7 @@ export function DropdownMobile(props) {
                     )
                 }}
                 trigger={trigger || ((click) => (
-                    <Button className="dropdown" size={"small"} style={{ padding: "0 2px", ...buttonStyle }} type="default" onClick={click}>
+                    <Button className="dropdown" size={"small"} style={{ padding: "2px 6px", ...buttonStyle }} type="default" onClick={click}>
                         {(icon) ? icon : <MenuOutlined />}
                     </Button>
                 ))}

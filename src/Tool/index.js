@@ -43,9 +43,9 @@ export const unwrap = (value, element) => {
     if (_.isFunction(value) == true) {
         return unwrap(value());
     } else if (_.isArray(value)) {
-        return value
+        return value?.filter(Boolean)
     }
-    return (!element) ? [value] : value;
+    return (!element) ? [value]?.filter(Boolean) : value;
 };
 //--------------------------------------------------------------
 // Если все переданные аргументы не false/undefined/null/0
@@ -503,6 +503,7 @@ export const Request = (values, item, props) => {
         onError,
         onDispatch,
     } = props;
+
     if (item.action) {
         let properties = {
             item,
@@ -517,6 +518,7 @@ export const Request = (values, item, props) => {
             // то она (_dispatch) будет вызванаивнеё передан объект сбольшимчислом параметров
             let v = eventExecution(onValues, values, properties);
             let _dispatch = item.action(v, unlock, close, properties);
+            // console.log(_dispatch, item, item.action, v);
             if (_.isFunction(_dispatch)) {
                 _dispatch(properties);
             }
