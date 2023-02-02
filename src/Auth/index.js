@@ -79,9 +79,9 @@ export class AuthService {
         };
         return endCallback
     }
-    setHandle(options) {
-        this.ShowMessage = options.ShowMessage
-    }
+    // setHandle(options) {
+    //     this.ShowMessage = options.ShowMessage
+    // }
     openSocket(path, name, onmessage, onopen, onclose, onerror) {
         if (this.ws.state.ws[name]) {
             this.ws.close(name, false);
@@ -315,11 +315,11 @@ export class AuthService {
                 return response.json();
             })
             .then(res => {
-                if (res && !res.status) {
-                    if (this.ShowMessage) {
-                        this.ShowMessage(res.message, "danger")
-                    }
-                }
+                // if (res && !res.status) {
+                //     if (this.ShowMessage) {
+                //         this.ShowMessage(res.message, "danger")
+                //     }
+                // }
                 return Promise.resolve(res);
             })
     }
@@ -348,11 +348,11 @@ export class AuthService {
                 return response.json();
             })
             .then(res => {
-                if (res && !res.status) {
-                    if (this.ShowMessage) {
-                        this.ShowMessage(res.message, "danger")
-                    }
-                }
+                // if (res && !res.status) {
+                //     if (this.ShowMessage) {
+                //         this.ShowMessage(res.message, "danger")
+                //     }
+                // }
                 return Promise.resolve(res);
             })
     }

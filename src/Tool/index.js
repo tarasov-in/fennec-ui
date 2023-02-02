@@ -49,9 +49,9 @@ export const unwrap = (value, element) => {
 };
 export const clean = (value, element) => {
     if (_.isArray(value)) {
-        return value?.filter(e=> e !== null && e !== undefined)
+        return value?.filter(e => e !== null && e !== undefined)
     }
-    return (!element) ? [value]?.filter(e=> e !== null && e !== undefined) : value;
+    return (!element) ? [value]?.filter(e => e !== null && e !== undefined) : value;
 };
 //--------------------------------------------------------------
 // Если все переданные аргументы не false/undefined/null/0
@@ -215,6 +215,17 @@ export const GET = (auth, url, callback, error) => {
         }
     });
 };
+export const GETP = (auth, url) => {
+    return new Promise((resolve, reject) => {
+        auth.fetch(url).then(res => {
+            if (res && res.status === true) {
+                resolve(res);
+            } else if (res && res.status === false) {
+                throw new FennecError(res.message, err.exception);
+            }
+        }).catch(reject);
+    });
+};
 //--------------------------------------------------------------
 export const equals = (obj1, obj2) => {
     if (obj1 === obj2)
@@ -295,6 +306,13 @@ export const filterByItem = (item, element) => {
     return false;
 }
 //--------------------------------------------------------------
+export function FennecError(message = "", name = "") {
+    this.name = `FennecError${(name)?": "+name:""}`;
+    this.message = message;
+}
+FennecError.prototype = Error.prototype;
+// throw new FennecError(res.message, err.exception);
+
 export const errorCatch = (err, type, callback) => {
     if (err) {
         if (type === "fail") {
@@ -1051,7 +1069,7 @@ export function MetaColumns(properties, meta, onColumnClick) {
 //     const [hoverRef, isHovered] = useHover();
 //     return <div ref={hoverRef}>{isHovered ? "😁" : "☹️"}</div>;
 //   }
-  
+
 export function useHover() {
     const [value, setValue] = useState(false);
     const ref = useRef(null);
