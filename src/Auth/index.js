@@ -252,6 +252,31 @@ export class AuthService {
 
     fetchRfToken = configureRefreshFetch(this)
 
+    fetchRaw(url, options) {
+        // performs api calls sending the required authentication headers
+        const headers = {
+           
+        }
+
+        // Setting Authorization header
+        // Authorization: Bearer xxxxxxx.xxxxxxxx.xxxxxx
+        if (this.loggedIn()) {
+            headers['Authorization'] = 'Bearer ' + this.getToken()
+        }
+        var end = this.PerformanceStart(url);
+        return this.fetchRfToken(this.domain + url, {
+            headers,
+            ...options
+        })
+        .then(this._checkStatus)
+        .then(response => {
+            if (end) {
+                end();
+            }
+            return response;
+        })
+    }
+
     fetchFile(url, options) {
         const headers = {
             // 'X-Requested-With': 'XMLHttpRequest'
