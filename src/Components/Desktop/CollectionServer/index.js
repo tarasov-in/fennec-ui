@@ -556,8 +556,7 @@ export function CollectionServer(props) {
         if (!collectionActions) return <React.Fragment></React.Fragment>;
         let values = clean(unwrap(collectionActions()));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
-        return <div>
-            {values?.map((e, idx) => <Action
+        return values?.map((e, idx) => <Action
                 key={e.key || idx}
                 auth={auth}
                 mode={"button"}
@@ -565,8 +564,7 @@ export function CollectionServer(props) {
                 collection={collection}
                 setCollection={setCollection}
                 {...e}
-            />)}
-        </div>;
+            />);
     }, [auth, collection, collectionActions]);
     const selectionConfig = (selectionType) => {
         if (!selection) return {};
@@ -780,7 +778,7 @@ export function CollectionServer(props) {
         <React.Fragment>
             <div className="filtered">
                 <div className="filtered-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: "10px" }}>
-                    <div style={{ flex: "auto", paddingRight: "15px", display:"flex" }}>
+                    <div style={{ flex: "auto", paddingRight: "15px", display:"flex", gap:"5px" }}>
                         {RenderOnCollectionActions()}
                     </div>
                     {(filters && filters.length > 0 /*&& collection && collection.length > 0*/) && <div justify="end">
