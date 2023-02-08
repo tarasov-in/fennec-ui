@@ -3,7 +3,7 @@ import { Layout, Card, Button, Tooltip, Pagination, Empty, Divider, Typography, 
 import 'moment/locale/ru';
 import { Action } from '../../Action'
 import { DropdownAction } from '../DropdownAction'
-import { unwrap, GET, errorCatch, Request, QueryParam, GETWITH, If, READWITH, QueryFunc, JSX, GetMetaPropertyByPath, updateInArray, deleteInArray, QueryDetail, subscribe as _subscribe, unsubscribe, clean } from '../../../Tool'
+import { unwrap, GET, errorCatch, Request, QueryParam, GETWITH, If, READWITH, QueryFunc, JSX, GetMetaPropertyByPath, updateInArray, deleteInArray, QueryDetail, subscribe as _subscribe, unsubscribe, clean, JSXMap } from '../../../Tool'
 import { createUseStyles } from 'react-jss';
 import "./index.css"
 import { FilterOutlined, SortAscendingOutlined, SortDescendingOutlined } from '@ant-design/icons';
@@ -72,6 +72,87 @@ const useStyles = createUseStyles({
         }
     }
 })
+
+function SortingUI(props) {
+    const { filters, value, onChange } = props;
+    return (
+        <React.Fragment>
+            <Divider type="horizontal"
+                orientation="left"
+                style={{ margin: "12px 0", fontSize: "13px", fontWeight: "600", padding: "0px 15px 0px 5px" }} >
+                Сортировка
+            </Divider>
+            <div style={{ margin: "10px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <Select
+                        allowClear={true}
+                        value={value.name}
+                        onChange={(v) => onChange({ name: v, order: value.order })}
+                        optionFilterProp="children"
+                        filterOption={(input, option) =>
+                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                        style={{ width: "100%", maxWidth: "183px", marginRight: "5px" }}
+                    >
+                        {JSXMap(filters?.filter(f => f.sort), (item, idx) => (
+                            <Option key={idx} value={item.name}>{item.label}</Option>
+                        ))}
+                    </Select>
+                    <div>
+                        {value.order === "ASC" && <Tooltip title="Восходящий">
+                            <Button icon={<SortAscendingOutlined />} onClick={() => onChange({ name: value.name, order: (value.order === "ASC") ? "DESC" : "ASC" })} />
+                        </Tooltip>}
+                        {value.order === "DESC" && <Tooltip title="Нисходящий">
+                            <Button icon={<SortDescendingOutlined />} onClick={() => onChange({ name: value.name, order: (value.order === "ASC") ? "DESC" : "ASC" })} />
+                        </Tooltip>}
+                    </div>
+                </div>
+            </div>
+        </React.Fragment>
+    );
+}
+function FiltersUI(props) {
+    const { auth, filters, funcs, value, onChange } = props;
+
+    const onFilterChange = React.useMemo(() => (v, item) => {
+        if (!v || (_.isArray(v) && v.length == 0)) {
+            let f = { ...value };
+            delete f[item.name]
+            onChange(f);
+            return
+        } else {
+            let newFiltr = { ...value, [item.name]: v };
+            onChange(newFiltr);
+        }
+    }, [value]);
+
+    return (
+        <React.Fragment>
+            <Divider type="horizontal"
+                orientation="left"
+                style={{ margin: "12px 0", fontSize: "13px", fontWeight: "600", padding: "0px 15px 0px 5px" }} >
+                Фильтры
+            </Divider>
+            <div style={{ margin: "10px" }}>
+                <div>
+                    {JSXMap(filters?.filter(i => i.filter), (item, idx) => (
+                        <div key={item.name} style={{ marginBottom: "10px" }}>
+                            {item.filter && (item.type !== "bool" && item.type !== "boolean") && <Text>{item.label}</Text>}
+                            <Field
+                                mode="filter"
+                                key={item.name}
+                                auth={auth}
+                                item={{ ...item, func: (funcs && funcs[item.name.toLowerCase()]) ? funcs[item.name.toLowerCase()] : {} }}
+                                value={value[item.name]}
+                                onChange={(value) => onFilterChange(value, item)}
+                            />
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </React.Fragment>
+    )
+}
 
 export function CollectionServer(props) {
     const classes = useStyles()
@@ -153,8 +234,38 @@ export function CollectionServer(props) {
         }
     }, [name, meta]);
 
+    const setDefaultFilters = React.useCallback((filters) => {
+        if (filters && filters.length) {
+            let filtr = { ...state.filter };
+            for (let d = 0; d < filters.length; d++) {
+                const element = filters[d];
+                if (element.filtered) {
+                    filtr = { ...state.filter, [element.name]: element.filtered };
+                }
+            }
+            setState({ ...state, filterChanged: false, newFilter: filtr, filter: filtr });
+
+            let sorted = { name: "", order: "ASC" }
+            for (let s = 0; s < filters.length; s++) {
+                const element = filters[s];
+                if (element.sorted) {
+                    sorted.name = element.name;
+                    sorted.order = element.sorted;
+                    break;
+                }
+            }
+            setSorting(sorted);
+
+            setCurrent(1);
+        }
+    }, [state])
+    useEffect(() => {
+        setDefaultFilters(filters)
+    }, [filters])
+
     const setCollection = React.useCallback((array) => {
         _setCollection(array);
+        console.log(array);
         if (onCollectionChange) {
             onCollectionChange(array);
         }
@@ -174,11 +285,7 @@ export function CollectionServer(props) {
 
     const applyFilter = React.useMemo(() => () => {
         setState({ ...state, filterChanged: false, filter: state.newFilter });
-        if (current == 1) {
-            request(state.newFilter);
-        } else {
-            setCurrent(1);
-        }
+        setCurrent(1);
     }, [current, state]);
 
     const request = React.useMemo(() => (filter) => {
@@ -226,6 +333,7 @@ export function CollectionServer(props) {
         let flt = [];
         Object.keys(filter).forEach(key => {
             var item = filters?.find(e => e.name == key);
+
             let filterByKey = filter[key];
             switch (item.filterType) {
                 case "group":
@@ -354,8 +462,9 @@ export function CollectionServer(props) {
     }, [request, state.filter]);
 
     useEffect(() => {
+        console.log("request", state.filter, sorting);
         request(state.filter);
-    }, [source, name, state.filter, filters, sorting, current, contextFilters]);
+    }, [source, name, state.filter, /*filters,*/ sorting, current, contextFilters]);
 
     // Table Items Selection
     const [selectionType, setSelectionType] = useState(selection || 'checkbox'); // radio
@@ -557,14 +666,14 @@ export function CollectionServer(props) {
         let values = clean(unwrap(collectionActions()));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return values?.map((e, idx) => <Action
-                key={e.key || idx}
-                auth={auth}
-                mode={"button"}
+            key={e.key || idx}
+            auth={auth}
+            mode={"button"}
 
-                collection={collection}
-                setCollection={setCollection}
-                {...e}
-            />);
+            collection={collection}
+            setCollection={setCollection}
+            {...e}
+        />);
     }, [auth, collection, collectionActions]);
     const selectionConfig = (selectionType) => {
         if (!selection) return {};
@@ -612,101 +721,11 @@ export function CollectionServer(props) {
         let v = selectedRows.find(e => e.ID === item.ID);
         return v !== undefined
     };
-    const filters_ui = React.useMemo(() => (filters) => {
-        const fl = filters?.filter(i => i.filter);
-        const f = fl?.map((item) => {
-            return (
-                <div key={((mobject) ? mobject.name : "") + item.name} style={{ marginBottom: "10px" }}>
-                    {item.filter && (item.type !== "bool" && item.type !== "boolean") && <Text>{item.label}</Text>}
-                    {<Field
-                        mode="filter"
-                        key={((mobject) ? mobject.name : "") + item.name}
-                        auth={auth}
-                        item={{ ...item, func: (funcStat && funcStat[item.name.toLowerCase()]) ? funcStat[item.name.toLowerCase()] : {} }}
-                        value={state.newFilter[item.name]}
-                        onChange={(value) => onFilterChange(value, item)}
-                    />}
-                </div>
-            );
-        });
-        return (
-            <React.Fragment>
-                {(fl.length > 0) && <React.Fragment>
-                    <Divider type="horizontal"
-                        orientation="left"
-                        style={{ margin: "12px 0", fontSize: "13px", fontWeight: "600", padding: "0px 15px 0px 5px" }} >
-                        Фильтры
-                    </Divider>
-                    <div style={{ margin: "10px" }}>
-                        <div>
-                            {f}
-                        </div>
-                    </div>
-                </React.Fragment>}
-            </React.Fragment>
-        );
-    }, [funcStat, state, mobject]);
-    const sorting_ui = React.useMemo(() => (filters) => {
-        const so = filters?.filter(f => f.sort);
-        const s = so?.map((item, idx) => {
-            return (
-                <Option key={idx} value={item.name}>{item.label}</Option>
-            );
-        });
-        return (
-            <React.Fragment>
-                {(so.length > 0) && <div>
-                    <Divider type="horizontal"
-                        orientation="left"
-                        style={{ margin: "12px 0", fontSize: "13px", fontWeight: "600", padding: "0px 15px 0px 5px" }} >
-                        Сортировка
-                    </Divider>
-                    <div style={{ margin: "10px" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <Select
-                                allowClear={true}
-                                value={sorting.name}
-                                onChange={(value) => onSortingChangeString(value, filters?.find(i => i.name === value))}
-                                optionFilterProp="children"
-                                filterOption={(input, option) =>
-                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                }
-                                style={{ width: "100%", maxWidth: "183px", marginRight: "5px" }}
-                            >{s}</Select>
-                            <div>
-                                {sorting.order === "ASC" && <Tooltip title="Восходящий">
-                                    <Button icon={<SortAscendingOutlined />} onClick={sortingOrder} />
-                                </Tooltip>}
-                                {sorting.order === "DESC" && <Tooltip title="Нисходящий">
-                                    <Button icon={<SortDescendingOutlined />} onClick={sortingOrder} />
-                                </Tooltip>}
-                            </div>
-                        </div>
-                    </div>
-                </div>}
-            </React.Fragment>
-        );
-    }, [sorting]);
-    const sortingOrder = () => {
-        if (sorting.order === "ASC") {
-            setSorting({ name: sorting.name, order: "DESC" });
-        } else {
-            setSorting({ name: sorting.name, order: "ASC" });
-        }
-    }
-    const onFilterChange = React.useMemo(() => (value, item) => {
-        if (!value || (_.isArray(value) && value.length == 0)) {
-            let f = { ...state.newFilter };
-            delete f[item.name]
-            setState({ ...state, filterChanged: !_.isEqual(state.filter, f), newFilter: f });
-            return
-        }
-        let newFiltr = { ...state.newFilter, [item.name]: value };
-        setState({ ...state, filterChanged: !_.isEqual(state.filter, newFiltr), newFilter: newFiltr });
+
+    const onFilterChange = React.useMemo(() => (value) => {
+        setState({ ...state, filterChanged: !_.isEqual(state.filter, value), newFilter: value });
     }, [state]);
-    const onSortingChangeString = (value, item) => {
-        setSorting({ name: value, order: sorting.order, f: (item && item.value) ? item.value : () => "" })
-    };
+
     const view = (items) => {
         if (mode === "list") {
             const _render = (item, index) => {
@@ -778,7 +797,7 @@ export function CollectionServer(props) {
         <React.Fragment>
             <div className="filtered">
                 <div className="filtered-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: "10px" }}>
-                    <div style={{ flex: "auto", paddingRight: "15px", display:"flex", gap:"5px" }}>
+                    <div style={{ flex: "auto", paddingRight: "15px", display: "flex", gap: "5px" }}>
                         {RenderOnCollectionActions()}
                     </div>
                     {(filters && filters.length > 0 /*&& collection && collection.length > 0*/) && <div justify="end">
@@ -802,25 +821,25 @@ export function CollectionServer(props) {
                             </div>
                         </Card>
                     </div>
-                    {((filters && filters.length > 0 /*&& collection && collection.length > 0*/) && filtered) && 
-                    <Sider width={240} theme={"light"} style={{ margin: "0 1px 5px 5px" }} className="filtered-sider">
-                        {JSX(() => {
-                            const fl = filters?.filter(i => i.filter);
-                            if (filtered && fl.length > 0) {
-                                return (<React.Fragment>
-                                    <div style={{ margin: "10px" }}>
-                                        <Button style={{ width: "100%" }} disabled={!state.filterChanged} type="primary" onClick={applyFilter}>Применить</Button>
-                                    </div>
-                                    <div style={{ margin: "10px" }}>
-                                        <Button style={{ width: "100%" }} disabled={_.isEmpty(state.filter)} onClick={clearFilter}>Очистить</Button>
-                                    </div>
-                                </React.Fragment>)
-                            }
-                            return (<React.Fragment></React.Fragment>)
-                        })}
-                        {sorting_ui(filters)}
-                        {filters_ui(filters)}
-                    </Sider>}
+                    {((filters && filters.length > 0 /*&& collection && collection.length > 0*/) && filtered) &&
+                        <Sider width={240} theme={"light"} style={{ margin: "0 1px 5px 5px" }} className="filtered-sider">
+                            {JSX(() => {
+                                const fl = filters?.filter(i => i.filter);
+                                if (filtered && fl.length > 0) {
+                                    return (<React.Fragment>
+                                        <div style={{ margin: "10px" }}>
+                                            <Button style={{ width: "100%" }} disabled={!state.filterChanged} type="primary" onClick={applyFilter}>Применить</Button>
+                                        </div>
+                                        <div style={{ margin: "10px" }}>
+                                            <Button style={{ width: "100%" }} disabled={_.isEmpty(state.filter)} onClick={clearFilter}>Очистить</Button>
+                                        </div>
+                                    </React.Fragment>)
+                                }
+                                return (<React.Fragment></React.Fragment>)
+                            })}
+                            <SortingUI value={sorting} onChange={setSorting} filters={filters} />
+                            <FiltersUI auth={auth} value={state.newFilter} onChange={onFilterChange} filters={filters} funcs={funcStat} />
+                        </Sider>}
                 </Layout>
                 {(!!count && !!total && totalPages && totalPages > 1) && <Card size="small" bordered={(size !== "small")} className={(size === "small") ? classes.cardSmall : ""} style={{ display: "flex", justifyContent: "flex-end", paddingTop: "10px", paddingBottom: "10px" }}>
                     <Pagination className="filtered-pagination" size="small"

@@ -140,7 +140,17 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
                 }, (err, type) => errorCatch(err, type, () => { }));
             }
         }
-    }, [auth, item]);
+    }, [
+        auth,
+        item?.source,
+        item?.url,
+        item?.queryFilter,
+        item?.filter,
+        item?.relation?.reference?.url,
+        item?.relation?.reference?.source,
+        item?.relation?.reference?.queryFilter,
+        item?.relation?.reference?.filter
+    ]);
     const property = (item, value) => {
         if (item && _.get(item, "relation.reference.property") && value) {
             return value[item.relation.reference.property];
@@ -360,7 +370,17 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
                 }, (err, type) => errorCatch(err, type, () => { }));
             }
         }
-    }, [auth, item]);
+    }, [
+        auth,
+        item?.source,
+        item?.url,
+        item?.queryFilter,
+        item?.filter,
+        item?.relation?.reference?.url,
+        item?.relation?.reference?.source,
+        item?.relation?.reference?.queryFilter,
+        item?.relation?.reference?.filter
+    ]);
     const property = (item, value) => {
         if (item && _.get(item, "relation.reference.property") && value) {
             return value[item.relation.reference.property];
