@@ -215,6 +215,55 @@ export const GET = (auth, url, callback, error) => {
         }
     });
 };
+//--------------------------------------------------------------
+export const CREATEP = (auth, name, object) => {
+    return POSTP(auth, '/api/query-create/' + name.toLowerCase(), object);
+};
+export const READP = (auth, name) => {
+    return GETP(auth, '/api/query/' + name.toLowerCase());
+};
+export const READWITHP = (auth, name, queryParams) => {
+    let ext = QueryParams(queryParams);
+    return GETP(auth, '/api/query/' + name.toLowerCase() + ((ext) ? "?" + ext : ""));
+};
+export const UPDATEP = (auth, name, object) => {
+    return POSTP(auth, '/api/query-update/' + name.toLowerCase(), object);
+};
+export const DELETEP = (auth, name, id) => {
+    return GETP(auth, '/api/query-delete/' + name.toLowerCase() + '/' + id);
+};
+export const POSTP = (auth, url, object) => {
+    return new Promise((resolve, reject) => {
+        auth.fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(object)
+        }).then(res => {
+            if (res && res.status === true) {
+                resolve(res);
+            } else if (res && res.status === false) {
+                throw new FennecError(res.message, err.exception);
+            }
+        }).catch(reject);
+    });
+};
+export const POSTFormDataP = (auth, url, formData) => {
+    return new Promise((resolve, reject) => {
+        auth.fetchForData(url, {
+            method: 'POST',
+            body: formData
+        }).then(res => {
+            if (res && res.status === true) {
+                resolve(res);
+            } else if (res && res.status === false) {
+                throw new FennecError(res.message, err.exception);
+            }
+        }).catch(reject);
+    });
+};
+export const GETWITHP = (auth, url, queryParams) => {
+    let ext = QueryParams(queryParams);
+    return GET(auth, url + ((ext) ? "?" + ext : ""));
+};
 export const GETP = (auth, url) => {
     return new Promise((resolve, reject) => {
         auth.fetch(url).then(res => {
@@ -307,7 +356,7 @@ export const filterByItem = (item, element) => {
 }
 //--------------------------------------------------------------
 export function FennecError(message = "", name = "") {
-    this.name = `FennecError${(name)?": "+name:""}`;
+    this.name = `FennecError${(name) ? ": " + name : ""}`;
     this.message = message;
 }
 FennecError.prototype = Error.prototype;
