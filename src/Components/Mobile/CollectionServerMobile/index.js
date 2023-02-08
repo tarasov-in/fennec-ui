@@ -620,7 +620,7 @@ export function CollectionServerMobile(props) {
                 setTotal(data.totalPages /*totalElements*/);
                 setCollection((data && data.content) ? data.content : []);
                 unlock();
-            }, (err, type) => errorCatch(err, type, unlock));
+            }, (err) => errorCatch(err, unlock));
         } else {
             lock();
             READWITH(auth, name, [
@@ -639,7 +639,7 @@ export function CollectionServerMobile(props) {
                 setTotal(data.totalPages /*totalElements*/);
                 setCollection((data && data.content) ? data.content : []);
                 unlock();
-            }, (err, type) => errorCatch(err, type, unlock));
+            }, (err) => errorCatch(err, unlock));
         }
     }, [source, state.current, count, state.filter, state.sorting, funcStat, filters, contextFilters]);
 

@@ -164,15 +164,9 @@ export const POST = (auth, url, object, callback, error) => {
                 callback(res);
             }
         } else if (res && res.status === false) {
-            if (error) {
-                error(res, "fail");
-            }
+            throw new FennecError(res.message/*, err.exception*/);
         }
-    }).catch(function (err) {
-        if (error) {
-            error(err, "error");
-        }
-    });
+    }).catch(error || errorCatch);
 };
 export const POSTFormData = (auth, url, formData, callback, error) => {
     auth.fetchForData(url, {
@@ -184,15 +178,9 @@ export const POSTFormData = (auth, url, formData, callback, error) => {
                 callback(res);
             }
         } else if (res && res.status === false) {
-            if (error) {
-                error(res, "fail");
-            }
+            throw new FennecError(res.message/*, err.exception*/);
         }
-    }).catch(function (err) {
-        if (error) {
-            error(err, "error");
-        }
-    });
+    }).catch(error || errorCatch);
 };
 export const GETWITH = (auth, url, queryParams, callback, error) => {
     let ext = QueryParams(queryParams);
@@ -205,15 +193,9 @@ export const GET = (auth, url, callback, error) => {
                 callback(res);
             }
         } else if (res && res.status === false) {
-            if (error) {
-                error(res, "fail");
-            }
+            throw new FennecError(res.message/*, err.exception*/);
         }
-    }).catch(function (err) {
-        if (error) {
-            error(err, "error");
-        }
-    });
+    }).catch(error || errorCatch);
 };
 //--------------------------------------------------------------
 export const CREATEP = (auth, name, object) => {
@@ -356,27 +338,19 @@ export const filterByItem = (item, element) => {
 }
 //--------------------------------------------------------------
 export function FennecError(message = "", name = "") {
-    this.name = `FennecError${(name) ? ": " + name : ""}`;
+    this.name = `Error${(name) ? ": " + name : ""}`;
     this.message = message;
 }
 FennecError.prototype = Error.prototype;
 // throw new FennecError(res.message, err.exception);
 
-export const errorCatch = (err, type, callback) => {
+export const errorCatch = (err, callback) => {
     if (err) {
-        if (type === "fail") {
-            message.error(err.message);
-            if (err.exception) {
-                console.error(err.exception)
-            }
-        }
-        if (type === "error") {
-            message.error("" + err);
-        }
+        message.error("" + err);
         if (callback) callback();
     }
 };
-export const errorAlert = (err, type, callback) => {
+export const errorAlert = (err, callback) => {
     const messageError = (err) => {
         const alertInstance = alert('Ошибка', err, [
             { text: 'OK', onPress: () => alertInstance.close() },
@@ -386,15 +360,7 @@ export const errorAlert = (err, type, callback) => {
         }, 5000);
     };
     if (err) {
-        if (type === "fail") {
-            messageError(err.message);
-            if (err.exception) {
-                console.error(err.exception)
-            }
-        }
-        if (type === "error") {
-            messageError("" + err);
-        }
+        messageError("" + err);
         if (callback) callback();
     }
 };
@@ -605,7 +571,7 @@ export const Request = (values, item, props) => {
             //     onValues: (values, context) => {},
             //     onData: (values, context) => {},
             //     onClose: ({unlock, close}, context) => {},
-            //     onError: (err, type, {unlock, close}) => {},
+            //     onError: (err, {unlock, close}) => {},
             //     onDispatch: (values, context) => {}, - может так же возвращать функцию, которая будет выполнена сразу после выполнения onDispatch с теми же параметрами, 
             //                                                           если не вернет функцию то будет выполнен метод setCollection (должен быть передан как props) в которо будет передана коллекция
             //                                                           полученная методом мутации заданной полем в объекте action (если мутация не задана то используется updateInArray)
@@ -648,7 +614,7 @@ export const Request = (values, item, props) => {
                     }
                     eventExecution(config.onClose || onClose, { unlock, close }, properties);
                 },
-                (err, type) => (errFunc) ? errFunc(err, type, { unlock, close }) : errorCatch(err, type, unlock)
+                (err) => (errFunc) ? errFunc(err, { unlock, close }) : errorCatch(err, unlock)
             );
         }
     } else {

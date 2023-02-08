@@ -496,7 +496,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
                 ...defaultQueryParams(filter)
             ], ({ data }) => {
                 setData(dataOrContent(data));
-            }, (err, type) => errorCatch(err, type, () => { }));
+            }, (err) => errorCatch(err, () => { }));
         } else if (item && _.get(item, "relation.reference.data")) {
             setData(item.relation.reference.data);
         } else if (item && _.get(item, "relation.reference.object")) {
@@ -507,7 +507,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
                     ...defaultQueryParams(filter)
                 ], ({ data }) => {
                     setData(dataOrContent(data));
-                }, (err, type) => errorCatch(err, type, () => { }));
+                }, (err) => errorCatch(err, () => { }));
             }
         }
     }, [

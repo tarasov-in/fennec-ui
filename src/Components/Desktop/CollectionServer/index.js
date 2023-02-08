@@ -497,7 +497,7 @@ export function CollectionServer(props) {
                 setTotal(data.totalElements);
                 setCollection((data && data.content) ? data.content : []);
                 unlock();
-            }, (err, type) => errorCatch(err, type, unlock));
+            }, (err) => errorCatch(err, unlock));
         } else {
             READWITH(auth, name, [
                 QueryDetail("model"),
@@ -516,7 +516,7 @@ export function CollectionServer(props) {
                 setTotal(data.totalElements);
                 setCollection((data && data.content) ? data.content : []);
                 unlock();
-            }, (err, type) => errorCatch(err, type, unlock));
+            }, (err) => errorCatch(err, unlock));
         }
     }, [source, current, count, sorting, funcStat, filters, contextFilters]);
 
