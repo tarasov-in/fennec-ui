@@ -190,15 +190,49 @@ export function CollectionServer(props) {
 
     } = props;
 
+    const defFilters = (filters) => {
+        var f = filters;//(props.filters) ? props.filters() : [];
+        if (f && f.length) {
+            let filtr = {};
+            for (let d = 0; d < f.length; d++) {
+                const element = f[d];
+                if (element.filtered) {
+                    filtr = { ...filtr, [element.name]: element.filtered };
+                }
+            }
+            return filtr;
+        }
+        return {};
+    }
+    const defSorting = (filters) => {
+        let sorted = { name: "", order: "ASC" }
+        var f = filters;//(props.filters) ? props.filters() : [];
+        if (f && f.length) {
+            for (let s = 0; s < f.length; s++) {
+                const element = f[s];
+                if (element.sorted) {
+                    sorted.name = element.name;
+                    sorted.order = element.sorted;
+                    break;
+                }
+            }
+        }
+        return sorted;
+    }
+
     const meta = useMetaContext();
     const [loading, setLoading] = useState(false);
     const [collection, _setCollection] = useState([]);
     const [funcStat, setFuncStat] = useState();
-    const [state, setState] = useState({ filter: {}, newFilter: [], filterChanged: false })
+    const [state, setState] = useState({ 
+        filter: defFilters((props.filters)?props.filters():[]), 
+        newFilter: defFilters((props.filters)?props.filters():[]), 
+        filterChanged: false 
+    })
     const [filtered, setFiltered] = useState(false);
-    const [filters, setFilters] = useState([]);
+    const [filters, setFilters] = useState();
     const [mobject, setMObject] = useState();
-    const [sorting, setSorting] = useState({ name: "", order: "ASC" });
+    const [sorting, setSorting] = useState(defSorting((props.filters)?props.filters():[]));
     const [current, setCurrent] = useState(1);
     const [count, setCount] = useState(20);
     const [total, setTotal] = useState(1);
@@ -234,38 +268,24 @@ export function CollectionServer(props) {
         }
     }, [name, meta]);
 
-    const setDefaultFilters = React.useCallback((filters) => {
-        if (filters && filters.length) {
-            let filtr = { ...state.filter };
-            for (let d = 0; d < filters.length; d++) {
-                const element = filters[d];
-                if (element.filtered) {
-                    filtr = { ...state.filter, [element.name]: element.filtered };
-                }
-            }
-            setState({ ...state, filterChanged: false, newFilter: filtr, filter: filtr });
+    // const setDefaultFilters = React.useCallback((filters) => {
+    //     if (filters && filters.length) {
+    //         let filtr = defFilters(filters)//{ ...state.filter };
+    //         setState({ ...state, filterChanged: false, newFilter: filtr, filter: filtr });
 
-            let sorted = { name: "", order: "ASC" }
-            for (let s = 0; s < filters.length; s++) {
-                const element = filters[s];
-                if (element.sorted) {
-                    sorted.name = element.name;
-                    sorted.order = element.sorted;
-                    break;
-                }
-            }
-            setSorting(sorted);
+    //         let sorted = defSorting(filters)//{ name: "", order: "ASC" }
+    //         setSorting(sorted);
 
-            setCurrent(1);
-        }
-    }, [state])
-    useEffect(() => {
-        setDefaultFilters(filters)
-    }, [filters])
+    //         setCurrent(1);
+    //     }
+    // }, [state])
+    // useEffect(() => {
+    //     setDefaultFilters(filters)
+    // }, [filters])
 
     const setCollection = React.useCallback((array) => {
         _setCollection(array);
-        console.log(array);
+        // console.log(array);
         if (onCollectionChange) {
             onCollectionChange(array);
         }
@@ -287,6 +307,43 @@ export function CollectionServer(props) {
         setState({ ...state, filterChanged: false, filter: state.newFilter });
         setCurrent(1);
     }, [current, state]);
+
+    // const FunctionQueue = React.useMemo(() => {
+    //     var queue = [];
+    //     var add = function(fnc){
+    //         queue.push(fnc);
+    //     };
+    //     var next = function(){
+    //         var fnc = queue.shift();
+    //         fnc();
+    //     };
+    //     return {
+    //         add:add,
+    //         next:next
+    //     };
+    // }, []);
+    // var fnc1 = function(){
+    //     window.setTimeout(function(){
+    //         alert("1 done");
+    //         FunctionQueue.next();
+    //     }, 1000);
+    // };
+    // var fnc2 = function(){
+    //     window.setTimeout(function(){
+    //         alert("2 done");
+    //         FunctionQueue.next();
+    //     }, 5000);
+    // };
+    // var fnc3 = function(){
+    //     window.setTimeout(function(){
+    //         alert("3 done");
+    //         FunctionQueue.next();
+    //     }, 2000);
+    // };
+    // FunctionQueue.add(fnc1);
+    // FunctionQueue.add(fnc2);
+    // FunctionQueue.add(fnc3);
+    // FunctionQueue.next();
 
     const request = React.useMemo(() => (filter) => {
         // if (!filters || !filters.length) return;
@@ -311,6 +368,12 @@ export function CollectionServer(props) {
         // NCO = "nco"     // not-contains
         // IN = "in"      // in
         // NIN = "nin"     // not-in
+
+        if(!meta || !filters){
+            return
+        }
+
+        // console.log("request", meta, filter, sorting);
 
         let ctxFlt = [];
         if (contextFilters) {
@@ -462,9 +525,9 @@ export function CollectionServer(props) {
     }, [request, state.filter]);
 
     useEffect(() => {
-        console.log("request", state.filter, sorting);
+        // console.log("request", state.filter, sorting);
         request(state.filter);
-    }, [source, name, state.filter, /*filters,*/ sorting, current, contextFilters]);
+    }, [source, name, state.filter, filters, sorting, current, contextFilters]);
 
     // Table Items Selection
     const [selectionType, setSelectionType] = useState(selection || 'checkbox'); // radio

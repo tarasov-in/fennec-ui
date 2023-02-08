@@ -356,17 +356,51 @@ export function CollectionServerMobile(props) {
 
     const meta = useMetaContext();
 
+    const defFilters = (filters) => {
+        var f = filters;//(props.filters) ? props.filters() : [];
+        if (f && f.length) {
+            let filtr = {};
+            for (let d = 0; d < f.length; d++) {
+                const element = f[d];
+                if (element.filtered) {
+                    filtr = { ...filtr, [element.name]: element.filtered };
+                }
+            }
+            return filtr;
+        }
+        return {};
+    }
+    const defSorting = (filters) => {
+        let sorted = { name: "", order: "ASC" }
+        var f = filters;//(props.filters) ? props.filters() : [];
+        if (f && f.length) {
+            for (let s = 0; s < f.length; s++) {
+                const element = f[s];
+                if (element.sorted) {
+                    sorted.name = element.name;
+                    sorted.order = element.sorted;
+                    break;
+                }
+            }
+        }
+        return sorted;
+    }
+
     // const [opened, setOpened] = useState(false);
     const [loading, setLoading] = useState(false);
     const [collection, _setCollection] = useState([]);
     const [funcStat, setFuncStat] = useState();
-    const [state, setState] = useState({ current: 1, sorting: { name: "", order: "ASC" }, filter: {} })
+    const [state, setState] = useState({
+        current: 1,
+        sorting: defSorting((props.filters) ? props.filters() : []),
+        filter: defFilters((props.filters) ? props.filters() : [])
+    })
     const [filtered, setFiltered] = useState(false);
-    const [filters, setFilters] = useState([]);
+    const [filters, setFilters] = useState();
     const [mobject, setMObject] = useState();
     // const [sorting, setSorting] = useState({ name: "", order: "ASC" });
     // const [current, setCurrent] = useState(1);
-    const [count, setCount] = useState(15);
+    const [count, setCount] = useState(20);
     const [total, setTotal] = useState(1);
 
     // console.log(loading);
@@ -429,6 +463,10 @@ export function CollectionServerMobile(props) {
 
     const request = React.useCallback(() => {
         // if (!filters || !filters.length) return;
+
+        if (!meta || !filters) {
+            return
+        }
 
         // NNU = "nnu"     // not-null
         // NU = "nu"      // null
@@ -912,7 +950,7 @@ export function CollectionServerMobile(props) {
                         <List className="my-list">
                             {collection?.map((item, index) => (
                                 <Item key={index} multipleLine align="top" wrap style={{ paddingLeft: "0px" }}>
-                                    {RenderOnModelActions(item, index, () => _render(item, index),(modelActionsTitle)?modelActionsTitle(item):undefined)}
+                                    {RenderOnModelActions(item, index, () => _render(item, index), (modelActionsTitle) ? modelActionsTitle(item) : undefined)}
                                 </Item>
                             ))}
                         </List>
@@ -963,7 +1001,7 @@ export function CollectionServerMobile(props) {
                     <List className="my-list">
                         {(collection && collection.length > 0) && collection?.map((item, index) => (
                             <Item key={index} multipleLine align="top" wrap style={{ paddingLeft: "0px" }}>
-                                {RenderOnModelActions(item, index, () => _render(item, index),(modelActionsTitle)?modelActionsTitle(item):undefined)}
+                                {RenderOnModelActions(item, index, () => _render(item, index), (modelActionsTitle) ? modelActionsTitle(item) : undefined)}
                             </Item>
                         ))}
                         {(!collection || collection.length == 0) && <div style={{
