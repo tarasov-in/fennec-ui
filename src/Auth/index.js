@@ -421,7 +421,7 @@ export function useNavigation() {
     let navigation = useContext(NavigationContext);
     return navigation;
 }
-export function RequireAuth({ children }) {
+export function RequireAuth({ children, inline }) {
     let auth = useAuth();
     // let location = useLocation();
     let navigate = useNavigate();
@@ -431,6 +431,9 @@ export function RequireAuth({ children }) {
         // trying to go to when they were redirected. This allows us to send them
         // along to that page after they login, which is a nicer user experience
         // than dropping them off on the home page.
+        if(inline) {
+            return inline;
+        }
         window.location.href = auth.authschemhttp + "://auth." + auth.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
     }
     return <NavigationContext.Provider value={navigate}>{children}</NavigationContext.Provider>;
