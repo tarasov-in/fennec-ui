@@ -73,7 +73,7 @@ const useStyles = createUseStyles({
     }
 })
 
-function SortingUI(props) {
+export function SortingFieldsUI(props) {
     const { filters, value, onChange } = props;
     return (
         <React.Fragment>
@@ -111,7 +111,7 @@ function SortingUI(props) {
         </React.Fragment>
     );
 }
-function FiltersUI(props) {
+export function FiltersFieldsUI(props) {
     const { auth, filters, funcs, value, onChange } = props;
 
     const onFilterChange = React.useMemo(() => (v, item) => {
@@ -900,8 +900,8 @@ export function CollectionServer(props) {
                                 }
                                 return (<React.Fragment></React.Fragment>)
                             })}
-                            <SortingUI value={sorting} onChange={setSorting} filters={filters} />
-                            <FiltersUI auth={auth} value={state.newFilter} onChange={onFilterChange} filters={filters} funcs={funcStat} />
+                            <SortingFieldsUI value={sorting} onChange={setSorting} filters={filters} />
+                            <FiltersFieldsUI auth={auth} value={state.newFilter} onChange={onFilterChange} filters={filters} funcs={funcStat} />
                         </Sider>}
                 </Layout>
                 {(!!count && !!total && totalPages && totalPages > 1) && <Card size="small" bordered={(size !== "small")} className={(size === "small") ? classes.cardSmall : ""} style={{ display: "flex", justifyContent: "flex-end", paddingTop: "10px", paddingBottom: "10px" }}>

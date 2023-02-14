@@ -123,6 +123,8 @@ import {
 } from './Components/Desktop/Model'
 
 import {
+  SortingFieldsUI,
+  FiltersFieldsUI,
   CollectionServer
 } from './Components/Desktop/CollectionServer'
 
@@ -135,6 +137,9 @@ import {
 } from './Components/Mobile/ModelMobile'
 
 import {
+  SortingFieldsUIMobile,
+  FiltersFieldsUIMobile,
+  FilteringUIMobile,
   CollectionServerMobile
 } from './Components/Mobile/CollectionServerMobile'
 
@@ -257,10 +262,15 @@ export {
   Field,
   FieldMobile,
   Model,
+  SortingFieldsUI,
+  FiltersFieldsUI,
   CollectionServer,
   DropdownAction,
   DropdownMobile,
   ModelMobile,
+  SortingFieldsUIMobile,
+  FiltersFieldsUIMobile,
+  FilteringUIMobile,
   CollectionServerMobile,
   BlockHeaderMobile,
   CalendarItem

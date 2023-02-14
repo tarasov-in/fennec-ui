@@ -110,7 +110,7 @@ const MaskWithLoading = ({ visible, setVisible }) => {
     )
 }
 
-function SortingField(props) {
+export function SortingFieldsUIMobile(props) {
     const classes = useStyles()
     const { filters, value, onChange } = props;
     // const [state, setState] = useState({ name: "", order: "ASC" })
@@ -208,29 +208,14 @@ function SortingField(props) {
         </div>
     </React.Fragment>)
 }
-function FilteringField(props) {
+export function FiltersFieldsUIMobile(props) {
     const classes = useStyles()
     const { auth, filters, funcStat, value, onChange } = props;
-    // console.log("FilteringField", value);
     const f = React.useMemo(() => {
         const fl = filters?.filter(i => i.filter);
         return fl?.map((item, idx) => {
             return (
                 <div key={idx} style={{ marginBottom: "10px" }}>
-                    {/* <SwipeAction
-                        closeOnAction
-                        closeOnTouchOutside
-                        rightActions={[
-                            {
-                                key: "close",
-                                text: (<Icofont icon="close" />),
-                                color: 'danger',
-                                onClick: () => {
-                                    onFilterChange(undefined, item)
-                                },
-                            },
-                        ]}
-                    > */}
                     <FieldMobile
                         key={idx}
                         auth={auth}
@@ -238,12 +223,10 @@ function FilteringField(props) {
                         value={value[item.name]}
                         onChange={(value) => onFilterChange(value, item)}
                     />
-                    {/* </SwipeAction> */}
                 </div>
             );
         });
     }, [value, filters]);
-
     const onFilterChange = React.useMemo(() => (v, item) => {
         if (!v || (_.isArray(v) && v.length == 0)) {
             let f = { ...value };
@@ -259,7 +242,6 @@ function FilteringField(props) {
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px", paddingRight: "10px" }}>
                 <div style={{
                     fontFamily: "-apple-system, BlinkMacSystemFont, Roboto, 'Open Sans', 'Helvetica Neue', 'Noto Sans Armenian', 'Noto Sans Bengali', 'Noto Sans Cherokee', 'Noto Sans Devanagari', 'Noto Sans Ethiopic', 'Noto Sans Georgian', 'Noto Sans Hebrew', 'Noto Sans Kannada', 'Noto Sans Khmer', 'Noto Sans Lao', 'Noto Sans Osmanya', 'Noto Sans Tamil', 'Noto Sans Telugu', 'Noto Sans Thai', sans-serif",
-                    // fontSize: "13px",
                     fontWeight: "600",
                     color: "rgba(0, 0, 0, 0.85)",
                     padding: "0px 21px 0px 11px"
@@ -273,14 +255,12 @@ function FilteringField(props) {
                     {f}
                 </List>
             </div>
-
         </React.Fragment>
     </React.Fragment>)
 }
-function SortingFiltering(props) {
+export function FilteringUIMobile(props) {
     const classes = useStyles()
     const { auth, form, object, filters, funcStat } = props;
-    // const [state, setState] = useState({ sorting: { name: "", order: "ASC" }, filter: {} })
     useEffect(() => {
         form.resetFields();
         if (object) {
@@ -298,18 +278,12 @@ function SortingFiltering(props) {
                     '--border-inner': "none",
                     '--border-top': "none"
                 }}
-            // footer={
-            //     <Button block color='primary' onClick={onSubmit} size='large'>
-            //         提交
-            //     </Button>
-            // }
             >
-                {/* <Form.Header>水平布局表单</Form.Header> */}
                 <Form.Item name="sorting">
-                    <SortingField auth={auth} filters={filters} />
+                    <SortingFieldsUIMobile auth={auth} filters={filters} />
                 </Form.Item>
                 <Form.Item name="filter">
-                    <FilteringField auth={auth} filters={filters} funcStat={funcStat} />
+                    <FiltersFieldsUIMobile auth={auth} filters={filters} funcStat={funcStat} />
                 </Form.Item>
             </Form>
         </div>)
@@ -990,7 +964,7 @@ export function CollectionServerMobile(props) {
                                 dismissText={"Очистить"}
                                 footer={footer}
                                 mode={"func"}
-                                form={SortingFiltering}
+                                form={FilteringUIMobile}
                                 filters={filters}
                                 funcStat={funcStat}
                                 trigger={trigger}
