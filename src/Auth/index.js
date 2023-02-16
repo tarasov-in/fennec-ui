@@ -249,15 +249,15 @@ export class AuthService {
 
     loginLink(location) {
         let l = location || window.location.href;
-        return auth.authschemhttp + "://auth." + auth.getDomainWithoutSubdomain(l) + "/login?service=" + l;
+        return this.authschemhttp + "://auth." + this.getDomainWithoutSubdomain(l) + "/login?service=" + l;
     }
     logoutLink(location) {
         let l = location || window.location.href;
-        return auth.authschemhttp + "://auth." + auth.getDomainWithoutSubdomain(l) + "/logout?service=" + l;
+        return this.authschemhttp + "://auth." + this.getDomainWithoutSubdomain(l) + "/logout?service=" + l;
     }
     logoutAllLink(location) {
         let l = location || window.location.href;
-        return auth.authschemhttp + "://auth." + auth.getDomainWithoutSubdomain(l) + "/logoutall?service=" + l;
+        return this.authschemhttp + "://auth." + this.getDomainWithoutSubdomain(l) + "/logoutall?service=" + l;
     }
 
     getProfile() {
