@@ -22,6 +22,9 @@ export class AuthService {
         this.fetch = this.fetch.bind(this)
         this.fetchRfToken = this.fetchRfToken.bind(this)
         this.login = this.login.bind(this)
+        this.loginLink = this.loginLink.bind(this)
+        this.logoutLink = this.logoutLink.bind(this)
+        this.logoutAllLink = this.logoutAllLink.bind(this)
         this.redirect = this.redirect.bind(this)
         this.signup = this.signup.bind(this)
         this.getProfile = this.getProfile.bind(this)
@@ -31,7 +34,6 @@ export class AuthService {
         this.getCookies = this.getCookies.bind(this)
         this.getCookie = this.getCookie.bind(this)
         this.performance = new Map()
-
     }
 
     getDomainWithoutSubdomain(url) {
@@ -245,6 +247,19 @@ export class AuthService {
         // })
     }
 
+    loginLink(location) {
+        let l = location || window.location.href;
+        return auth.authschemhttp + "://auth." + auth.getDomainWithoutSubdomain(l) + "/login?service=" + l;
+    }
+    logoutLink(location) {
+        let l = location || window.location.href;
+        return auth.authschemhttp + "://auth." + auth.getDomainWithoutSubdomain(l) + "/logout?service=" + l;
+    }
+    logoutAllLink(location) {
+        let l = location || window.location.href;
+        return auth.authschemhttp + "://auth." + auth.getDomainWithoutSubdomain(l) + "/logoutall?service=" + l;
+    }
+
     getProfile() {
         // Using jwt-decode npm package to decode the token
         return decode(this.getToken());
@@ -255,7 +270,7 @@ export class AuthService {
     fetchRaw(url, options) {
         // performs api calls sending the required authentication headers
         const headers = {
-           
+
         }
 
         // Setting Authorization header
@@ -268,13 +283,13 @@ export class AuthService {
             headers,
             ...options
         })
-        .then(this._checkStatus)
-        .then(response => {
-            if (end) {
-                end();
-            }
-            return response;
-        })
+            .then(this._checkStatus)
+            .then(response => {
+                if (end) {
+                    end();
+                }
+                return response;
+            })
     }
 
     fetchFile(url, options) {
@@ -431,7 +446,7 @@ export function RequireAuth({ children, inline }) {
         // trying to go to when they were redirected. This allows us to send them
         // along to that page after they login, which is a nicer user experience
         // than dropping them off on the home page.
-        if(inline) {
+        if (inline) {
             return inline;
         }
         window.location.href = auth.authschemhttp + "://auth." + auth.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
@@ -511,7 +526,7 @@ function configureRefreshFetch(auth) {
                     return fetch(url, options)
                 })
 
-            } else if (response.status == 401 && xAuthError == 'NeedLogin'){
+            } else if (response.status == 401 && xAuthError == 'NeedLogin') {
                 Cookies.remove("token")
                 Cookies.remove("refreshToken")
                 window.location.href = auth.authschemhttp + "://auth." + auth.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
