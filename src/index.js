@@ -98,6 +98,10 @@ import {
 } from './UserConfig'
 
 import {
+  TranslateProvider
+} from './Translate'
+
+import {
   ActionPickerItem,
   FooterButton,
   Action
@@ -247,6 +251,7 @@ export {
   AuthService,
   AuthProvider,
   UserConfigProvider,
+  TranslateProvider,
   useAuth,
   useNavigation,
   RequireAuth,
