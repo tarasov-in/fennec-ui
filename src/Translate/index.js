@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import 'moment/locale/ru';
 import { useAuth } from '../Auth';
 import { errorCatch, QueryDetail, READWITH } from '../Tool';
-import { TranslateContext } from '../Components/Context';
+import { TranslateContext, useUserConfigContext } from '../Components/Context';
 
 //-------------------------------------------------------------------------------------
 export const t = (value, translate, config) => {
