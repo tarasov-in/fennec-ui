@@ -94,6 +94,10 @@ import {
 } from './Auth'
 
 import {
+  UserConfigProvider
+} from './UserConfig'
+
+import {
   ActionPickerItem,
   FooterButton,
   Action
@@ -242,6 +246,7 @@ export {
 export {
   AuthService,
   AuthProvider,
+  UserConfigProvider,
   useAuth,
   useNavigation,
   RequireAuth,
