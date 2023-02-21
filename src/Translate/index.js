@@ -40,7 +40,7 @@ export function TranslateProvider({ children }) {
 	// console.log(t("да"));
 
     useEffect(() => {
-        if(!auth.loggedIn()) return;
+        // if(!auth.loggedIn()) return;
         READWITH(auth, 'Translate', [
 			QueryDetail("model")
 		], ({ data }) => {
