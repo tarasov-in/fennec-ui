@@ -45,8 +45,14 @@ export class AuthService {
             .slice(-(urlParts.length === 4 ? 3 : 2))
             .join('.')
     }
+    utf8_to_b64(str) {
+        return window.btoa(unescape(encodeURIComponent(str)));
+    }
+    b64_to_utf8(str) {
+        return decodeURIComponent(escape(window.atob(str)));
+    }
     getCity(){
-        let c = Cookies.get("city");
+        let c = b64_to_utf8(Cookies.get("city"));
         let [ID, name, region] = c.split('@');
         let IDi = parseInt(ID, 10);
         if(ID && name && region){
