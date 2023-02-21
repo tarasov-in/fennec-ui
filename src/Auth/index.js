@@ -58,7 +58,7 @@ export class AuthService {
         if (c) {
             try {
                 let ce = this.b64_to_utf8(c)
-                let [ID, name, region] = c.split('@');
+                let [ID, name, region] = ce.split('@');
                 let IDi = parseInt(ID, 10);
                 if (ID && name && region) {
                     return {
