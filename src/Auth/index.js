@@ -33,6 +33,7 @@ export class AuthService {
         this.getPerformance = this.getPerformance.bind(this)
         this.getCookies = this.getCookies.bind(this)
         this.getCookie = this.getCookie.bind(this)
+        this.getCity = this.getCity.bind(this)
         this.performance = new Map()
     }
 
@@ -43,6 +44,19 @@ export class AuthService {
             .slice(0)
             .slice(-(urlParts.length === 4 ? 3 : 2))
             .join('.')
+    }
+    getCity(){
+        let c = Cookies.get("city");
+        let [ID, name, region] = c.split('@');
+        let IDi = parseInt(ID, 10);
+        if(ID && name && region){
+            return { 
+                ID: (!isNaN(IDi))?IDi:undefined, 
+                name, 
+                region 
+            }
+        }
+        return
     }
     getCookies() {
         var result = {}
