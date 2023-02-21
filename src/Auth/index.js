@@ -34,6 +34,8 @@ export class AuthService {
         this.getCookies = this.getCookies.bind(this)
         this.getCookie = this.getCookie.bind(this)
         this.getCity = this.getCity.bind(this)
+        this.utf8_to_b64 = this.utf8_to_b64.bind(this)
+        this.b64_to_utf8 = this.b64_to_utf8.bind(this)
         this.performance = new Map()
     }
 
