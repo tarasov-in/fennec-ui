@@ -48,10 +48,10 @@ export class AuthService {
             .join('.')
     }
     utf8_to_b64(str) {
-        return window.btoa(unescape(encodeURIComponent(str)));
+        return btoa(unescape(encodeURIComponent(str)));
     }
     b64_to_utf8(str) {
-        return decodeURIComponent(escape(window.atob(str)));
+        return decodeURIComponent(escape(atob(str)));
     }
     getCity(){
         let c = this.b64_to_utf8(Cookies.get("city"));
