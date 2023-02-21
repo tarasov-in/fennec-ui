@@ -53,15 +53,22 @@ export class AuthService {
     b64_to_utf8(str) {
         return decodeURIComponent(escape(atob(str)));
     }
-    getCity(){
-        let c = this.b64_to_utf8(Cookies.get("city"));
-        let [ID, name, region] = c.split('@');
-        let IDi = parseInt(ID, 10);
-        if(ID && name && region){
-            return { 
-                ID: (!isNaN(IDi))?IDi:undefined, 
-                name, 
-                region 
+    getCity() {
+        let c = Cookies.get("city");
+        if (c) {
+            try {
+                let ce = this.b64_to_utf8(c)
+                let [ID, name, region] = c.split('@');
+                let IDi = parseInt(ID, 10);
+                if (ID && name && region) {
+                    return {
+                        ID: (!isNaN(IDi)) ? IDi : undefined,
+                        name,
+                        region
+                    }
+                }
+            } catch (error) {
+
             }
         }
         return
