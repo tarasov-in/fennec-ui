@@ -908,9 +908,9 @@ export function CollectionServerMobile(props) {
             {_.isEmpty(state.filter) && <Icofont icon="filter" />}
         </div>
     ), [state.filter])
-    const PaginatorChange = React.useCallback((v) => setState({ ...state, current: v }), [state]);
-    const PaginatorRight = React.useCallback(() => setState({ ...state, current: state.current + 1 }), [state]);
-    const PaginatorLeft = React.useCallback(() => setState({ ...state, current: state.current - 1 }), [state]);
+    const PaginatorChange = React.useCallback((v) => setState(o=>({ ...o, current: v })), [state]);
+    const PaginatorRight = React.useCallback(() => setState(o=>({ ...o, current: state.current + 1 })), [state]);
+    const PaginatorLeft = React.useCallback(() => setState(o=>({ ...o, current: state.current - 1 })), [state]);
     return (
         <React.Fragment>
             {!noheader && <BlockHeaderMobile

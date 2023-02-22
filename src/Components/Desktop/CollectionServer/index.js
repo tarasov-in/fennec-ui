@@ -373,7 +373,7 @@ export function CollectionServer(props) {
             return
         }
 
-        // console.log("request", meta, filter, sorting);
+        // console.log("request!", filter, sorting);
 
         let ctxFlt = [];
         if (contextFilters) {
@@ -786,7 +786,7 @@ export function CollectionServer(props) {
     };
 
     const onFilterChange = React.useMemo(() => (value) => {
-        setState({ ...state, filterChanged: !_.isEqual(state.filter, value), newFilter: value });
+        setState(o=>({ ...o, filterChanged: !_.isEqual(o.filter, value), newFilter: value }));
     }, [state]);
 
     const view = (items) => {
