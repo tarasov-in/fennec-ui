@@ -59,13 +59,15 @@ export class AuthService {
         if (c) {
             try {
                 let ce = this.b64_to_utf8(c)
-                let [ID, name, region] = ce.split('@');
+                let [ID, name, region, latitude, longitude] = ce.split('@');
                 let IDi = parseInt(ID, 10);
                 if (ID && name && region) {
                     return {
                         ID: (!isNaN(IDi)) ? IDi : undefined,
                         name,
-                        region
+                        region,
+                        latitude, 
+                        longitude,
                     }
                 }
             } catch (error) {
