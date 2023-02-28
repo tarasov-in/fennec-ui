@@ -493,8 +493,8 @@ function configureRefreshFetch(auth) {
     //ожидают завершения промиса и выполняются с новым токеном, если обновление пары прошло успешно, 
     //иначе пользователь отправляется на аутентификацию
     let refreshingTokenPromise = null
-
-    return (url, options) => {
+    window.__fetch = fetch
+    window.fetch = (url, options) => {
         if (refreshingTokenPromise !== null) {
             return (
                 refreshingTokenPromise
@@ -502,23 +502,23 @@ function configureRefreshFetch(auth) {
                         if (options && options.headers && options.headers['Authorization']) {
                             options.headers['Authorization'] = 'Bearer ' + auth.getToken()
                         }
-                        return fetch(url, options)
+                        return __fetch(url, options)
                     })
                     .catch(() => {
                         if (options && options.headers && options.headers['Authorization']) {
                             options.headers['Authorization'] = 'Bearer ' + auth.getToken()
                         }
-                        return fetch(url, options)
+                        return __fetch(url, options)
                     })
             )
         }
 
-        return fetch(url, options).then(response => {
+        return __fetch(url, options).then(response => {
             let xAuthError = response.headers.get('x-authenticate-error')
             if (response.status == 401 && xAuthError != 'NeedLogin') {
                 if (refreshingTokenPromise === null) {
                     refreshingTokenPromise = new Promise((resolve, reject) => {
-                        fetch(`/api/refresh-token`, {
+                        __fetch(`/api/refresh-token`, {
                             method: 'POST',
                             headers: {
                                 'Accept': 'application/json',
@@ -552,7 +552,7 @@ function configureRefreshFetch(auth) {
                     if (options && options.headers && options.headers['Authorization']) {
                         options.headers['Authorization'] = 'Bearer ' + auth.getToken()
                     }
-                    return fetch(url, options)
+                    return __fetch(url, options)
                 })
 
             } else if (response.status == 401 && xAuthError == 'NeedLogin') {
@@ -565,4 +565,6 @@ function configureRefreshFetch(auth) {
             return response;
         })
     }
+
+    return window.fetch
 }
