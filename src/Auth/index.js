@@ -22,6 +22,7 @@ export class AuthService {
         this.fetch = this.fetch.bind(this)
         this.fetchRfToken = this.fetchRfToken.bind(this)
         this.login = this.login.bind(this)
+        this.refresh = this.refresh.bind(this)
         this.loginLink = this.loginLink.bind(this)
         this.logoutLink = this.logoutLink.bind(this)
         this.logoutAllLink = this.logoutAllLink.bind(this)
@@ -276,6 +277,10 @@ export class AuthService {
         // })
     }
 
+    refresh(location){
+        let l = location || window.location.href;
+        window.location.href = l;
+    }
     loginLink(location) {
         let l = location || window.location.href;
         return this.authschemhttp + "://auth." + this.getDomainWithoutSubdomain(l) + "/login?service=" + l;
