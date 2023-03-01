@@ -9,7 +9,20 @@ import { UserConfigContext } from '../Components/Context';
 export function UserConfigProvider({ children }) {
     const auth = useAuth();
     const [userConfig, _setUserConfig] = useState({});
+    const [ready, setReady] = useState(false));
 
+    const deleteUserConfig = (name) => {
+        if(!auth.loggedIn()) return;
+        GET(auth, `/api/userconfig/delete/key/${name}`, 
+        ({ data }) => {
+            let i = { ...userConfig };
+            delete i[name]
+            _setUserConfig(i);
+            if (onChange) {
+                onChange(i);
+            }
+        }, errorCatch);
+    };
     const setUserConfig = (name, value, onChange) => {
         if(!auth.loggedIn()) return;
         POST(auth, "/api/setuserconfig", {
@@ -44,9 +57,12 @@ export function UserConfigProvider({ children }) {
                 }));
                 _setUserConfig(obj);
             }
+            setReady(true);
         }, errorCatch)
     }, [])
 
-    return <UserConfigContext.Provider value={[userConfig, setUserConfig]}>{children}</UserConfigContext.Provider>;
+    return <UserConfigContext.Provider value={[userConfig, setUserConfig]}>
+        {(ready) && children}
+        </UserConfigContext.Provider>;
 }
 //-------------------------------------------------------------------------------------
