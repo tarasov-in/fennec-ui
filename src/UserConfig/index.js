@@ -9,7 +9,7 @@ import { UserConfigContext } from '../Components/Context';
 export function UserConfigProvider({ children }) {
     const auth = useAuth();
     const [userConfig, _setUserConfig] = useState({});
-    const [ready, setReady] = useState(false));
+    const [ready, setReady] = useState(false);
 
     const deleteUserConfig = (name) => {
         if(!auth.loggedIn()) return;
