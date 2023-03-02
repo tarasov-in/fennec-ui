@@ -62,7 +62,7 @@ export function UserConfigProvider({ children }) {
     }, [])
 
     return <UserConfigContext.Provider value={[userConfig, setUserConfig]}>
-        {(ready) && children}
+        {(ready || !auth.loggedIn()) && children}
         </UserConfigContext.Provider>;
 }
 //-------------------------------------------------------------------------------------
