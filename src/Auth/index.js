@@ -253,8 +253,6 @@ export class AuthService {
         // Clear user token and profile data from localStorage
         // localStorage.removeItem('id_token');
 
-        Cookies.remove("token")
-        Cookies.remove("refreshToken")
         window.location.href = this.authschemhttp + "://auth." + this.getDomainWithoutSubdomain(window.location.href) + "/logout?service=" + window.location.href;
         // this.fetch(`/api/logout`).then(res => {
         //     if (res) {               
@@ -267,8 +265,7 @@ export class AuthService {
     logoutall(cb) {
         // Clear user token and profile data from localStorage
         // localStorage.removeItem('id_token');
-        Cookies.remove("token")
-        Cookies.remove("refreshToken")
+
         window.location.href = this.authschemhttp + "://auth." + this.getDomainWithoutSubdomain(window.location.href) + "/logoutall?service=" + window.location.href;
         // this.fetch(`/api/logout`).then(res => {
         //     if (res) {               
@@ -438,8 +435,6 @@ export class AuthService {
         if (response.status >= 200 && response.status < 300) { // Success status lies between 200 to 300
             return response
         } else if (response.status == 401 && response.headers.get('x-authenticate-error') == 'NeedLogin') {
-            Cookies.remove("token")
-            Cookies.remove("refreshToken")
             window.location.href = this.authschemhttp + "://auth." + this.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
             return response;
         } else if (response.status == 403) {
@@ -538,8 +533,6 @@ function configureRefreshFetch(auth) {
                         }).then(response => {
                             let xAuthError = response.headers.get('x-authenticate-error')
                             if (response.status == 401 && xAuthError == 'NeedLogin') {
-                                Cookies.remove("token")
-                                Cookies.remove("refreshToken")
                                 window.location.href = auth.authschemhttp + "://auth." + auth.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
                                 return
                             }
@@ -563,8 +556,6 @@ function configureRefreshFetch(auth) {
                 })
 
             } else if (response.status == 401 && xAuthError == 'NeedLogin') {
-                Cookies.remove("token")
-                Cookies.remove("refreshToken")
                 window.location.href = auth.authschemhttp + "://auth." + auth.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
                 return
             }
