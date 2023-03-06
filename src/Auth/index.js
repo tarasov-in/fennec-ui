@@ -495,8 +495,7 @@ function configureRefreshFetch(auth) {
     //ожидают завершения промиса и выполняются с новым токеном, если обновление пары прошло успешно, 
     //иначе пользователь отправляется на аутентификацию
     let refreshingTokenPromise = null
-    window.__fetch = fetch
-    window.fetch = (url, options) => {
+    let customFetch = (url, options) => {
         if (refreshingTokenPromise !== null) {
             return (
                 refreshingTokenPromise
@@ -562,6 +561,13 @@ function configureRefreshFetch(auth) {
 
             return response;
         })
+    }
+
+    //Избегаем множественного переопределения fetch, 
+    //которое в последующем приводит к бесконечному вызову самой себя
+    if(window.fetch.toString() != customFetch.toString()) {
+        window.__fetch = fetch;
+        window.fetch = customFetch;
     }
 
     return window.fetch
