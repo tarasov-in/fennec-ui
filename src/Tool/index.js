@@ -433,7 +433,7 @@ export function FilterToQueryParameters(filters, filter, sorting, page, count) {
         count: count,
     }
 
-    return { ...flt, ...func, ...srt, ...pc }
+    return { ...flt, /*...func,*/ ...srt, ...pc }
 }
 export function QueryParametersToFilters(urlRequestParameters, filters) {
     let flt = [...filters]
