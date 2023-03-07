@@ -102,6 +102,11 @@ import {
 } from './Translate'
 
 import {
+  MetaProvider
+} from './Meta'
+
+
+import {
   ActionPickerItem,
   FooterButton,
   Action
@@ -252,6 +257,7 @@ export {
   AuthProvider,
   UserConfigProvider,
   TranslateProvider,
+  MetaProvider,
   useAuth,
   useNavigation,
   RequireAuth,
