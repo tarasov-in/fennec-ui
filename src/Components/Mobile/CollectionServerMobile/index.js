@@ -368,7 +368,7 @@ export function CollectionServerMobile(props) {
     const [collection, _setCollection] = useState([]);
     const [funcStat, setFuncStat] = useState();
     const [state, setState] = useState({
-        current: 1,
+        current: (props.page)?props.page():1,
         sorting: defSorting((props.filters) ? fltrs : []),
         filter: defFilters((props.filters) ? fltrs : [])
     })
@@ -377,7 +377,7 @@ export function CollectionServerMobile(props) {
     const [mobject, setMObject] = useState();
     // const [sorting, setSorting] = useState({ name: "", order: "ASC" });
     // const [current, setCurrent] = useState(1);
-    const [count, setCount] = useState(20);
+    const [count, setCount] = useState((props.count)?props.count():20);
     const [total, setTotal] = useState(1);
 
     useEffect(() => {

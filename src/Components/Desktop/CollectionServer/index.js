@@ -235,8 +235,8 @@ export function CollectionServer(props) {
     const [filters, setFilters] = useState();
     const [mobject, setMObject] = useState();
     const [sorting, setSorting] = useState(defSorting((props.filters) ? fltrs : []));
-    const [current, setCurrent] = useState(1);
-    const [count, setCount] = useState(20);
+    const [current, setCurrent] = useState((props.page)?props.page():1);
+    const [count, setCount] = useState((props.count)?props.count():20);
     const [total, setTotal] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
