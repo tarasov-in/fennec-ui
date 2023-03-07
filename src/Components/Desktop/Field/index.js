@@ -473,50 +473,6 @@ function Float({ item, value, onChange, onAfterChange }) {
     return (
         <InputNumber value={value} onChange={onChange} style={{ width: "100%" }} />
     )
-    return (<Input.Group compact>
-        <Input
-            // style={{ width: 'calc(100% - 31px)' }}
-            style={{ width: "100%" }}
-            value={value} onChange={onChange}
-            //   addonBefore={<EyeTwoTone />}
-            //   addonAfter={<EyeTwoTone />}
-            //   prefix={<EyeTwoTone />}
-            //   suffix={<EyeTwoTone />}
-            suffix={<Dropdown overlay={<Menu>
-                <Menu.Item>
-                    <div style={{ color: "rgba(0, 0, 0, 0.25)" }}>
-                        <Icofont icon="rounded-double-right" />
-                        <span style={{ fontSize: "13px", paddingLeft: "5px" }}>Больше</span>
-                    </div>
-                </Menu.Item>
-                <Menu.Item>
-                    <div style={{ color: "rgba(0, 0, 0, 0.25)" }}>
-                        <Icofont icon="rounded-double-left" />
-                        <span style={{ fontSize: "13px", paddingLeft: "5px" }}>Меньше</span>
-                    </div>
-                </Menu.Item>
-            </Menu>} placement="bottomRight">
-                <Icofont icon="rounded-double-right" style={{ color: "rgba(0, 0, 0, 0.25)" }} />
-            </Dropdown>}
-        />
-        {/* <Tooltip title="copy git url">
-            <Button style={{ color: "rgba(0, 0, 0, 0.25)" }} icon={<CopyOutlined />} />
-            <Dropdown overlay={<Menu>
-                <Menu.Item>
-                    <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
-                        1st menu item
-                    </a>
-                </Menu.Item>
-                <Menu.Item>
-                    <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
-                        2nd menu item
-                    </a>
-                </Menu.Item>
-            </Menu>} placement="bottomRight">
-                <Button style={{ color: "rgba(0, 0, 0, 0.25)" }} icon={<CopyOutlined />} />
-            </Dropdown>
-        </Tooltip> */}
-    </Input.Group>);
 }
 function Integer({ item, value, onChange, onAfterChange }) {
     return (
