@@ -192,7 +192,7 @@ export function CollectionServer(props) {
     } = props;
 
     const defFilters = (filters) => {
-        var f = filters;//(props.filters) ? props.filters() : [];
+        var f = filters;
         if (f && f.length) {
             let filtr = {};
             for (let d = 0; d < f.length; d++) {
@@ -207,7 +207,7 @@ export function CollectionServer(props) {
     }
     const defSorting = (filters) => {
         let sorted = { name: "", order: "ASC" }
-        var f = filters;//(props.filters) ? props.filters() : [];
+        var f = filters;
         if (f && f.length) {
             for (let s = 0; s < f.length; s++) {
                 const element = f[s];
@@ -221,19 +221,20 @@ export function CollectionServer(props) {
         return sorted;
     }
 
+    const fltrs = props.filters();
     const meta = useMetaContext();
     const [loading, setLoading] = useState(false);
     const [collection, _setCollection] = useState([]);
     const [funcStat, setFuncStat] = useState();
     const [state, setState] = useState({
-        filter: defFilters((props.filters) ? props.filters() : []),
-        newFilter: defFilters((props.filters) ? props.filters() : []),
+        filter: defFilters((props.filters) ? fltrs : []),
+        newFilter: defFilters((props.filters) ? fltrs : []),
         filterChanged: false
     })
     const [filtered, setFiltered] = useState(false);
     const [filters, setFilters] = useState();
     const [mobject, setMObject] = useState();
-    const [sorting, setSorting] = useState(defSorting((props.filters) ? props.filters() : []));
+    const [sorting, setSorting] = useState(defSorting((props.filters) ? fltrs : []));
     const [current, setCurrent] = useState(1);
     const [count, setCount] = useState(20);
     const [total, setTotal] = useState(1);
@@ -263,7 +264,7 @@ export function CollectionServer(props) {
             if (mo) {
                 setMObject(mo);
                 if (props.filters) {
-                    let f = props.filters()?.map(pf => {
+                    let f = fltrs?.map(pf => {
                         let field = GetMetaPropertyByPath(meta, mo, pf.name);
                         return {
                             ...field,
@@ -275,7 +276,7 @@ export function CollectionServer(props) {
                 }
             }
         } else {
-            var f = (props.filters) ? props.filters() : [];
+            var f = (props.filters) ? fltrs : [];
             setFilters(f);
         }
     }, [name, meta]);

@@ -326,6 +326,8 @@ export function CollectionServerMobile(props) {
         onDispatch, // (values, context) => {}, // если не возвращает значения то посленеё будет вызван внутренний setCollection, 
         // если вернет функцию в качестве значения то эта функция будет вызвана вместо setCollection 
         // и в неё будет передано значение нового состояния
+
+        onChangeRequestParameters,
     } = props;
 
     const meta = useMetaContext();
@@ -376,6 +378,18 @@ export function CollectionServerMobile(props) {
     // const [current, setCurrent] = useState(1);
     const [count, setCount] = useState(20);
     const [total, setTotal] = useState(1);
+
+    useEffect(() => {
+        if (onChangeRequestParameters) {
+            onChangeRequestParameters({
+                filter: state.filter,
+                sorting: state.sorting,
+                page: state.current,
+                count
+            })
+        }
+    }, [state.filter, state.sorting, state.current, count])
+
 
     // console.log(loading);
     const lock = () => {
