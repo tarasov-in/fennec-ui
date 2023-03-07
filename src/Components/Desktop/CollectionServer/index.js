@@ -188,6 +188,7 @@ export function CollectionServer(props) {
         // если вернет функцию в качестве значения то эта функция будет вызвана вместо setCollection 
         // и в неё будет передано значение нового состояния
 
+        onChangeRequestParameters,
     } = props;
 
     const defFilters = (filters) => {
@@ -224,19 +225,30 @@ export function CollectionServer(props) {
     const [loading, setLoading] = useState(false);
     const [collection, _setCollection] = useState([]);
     const [funcStat, setFuncStat] = useState();
-    const [state, setState] = useState({ 
-        filter: defFilters((props.filters)?props.filters():[]), 
-        newFilter: defFilters((props.filters)?props.filters():[]), 
-        filterChanged: false 
+    const [state, setState] = useState({
+        filter: defFilters((props.filters) ? props.filters() : []),
+        newFilter: defFilters((props.filters) ? props.filters() : []),
+        filterChanged: false
     })
     const [filtered, setFiltered] = useState(false);
     const [filters, setFilters] = useState();
     const [mobject, setMObject] = useState();
-    const [sorting, setSorting] = useState(defSorting((props.filters)?props.filters():[]));
+    const [sorting, setSorting] = useState(defSorting((props.filters) ? props.filters() : []));
     const [current, setCurrent] = useState(1);
     const [count, setCount] = useState(20);
     const [total, setTotal] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+
+    useEffect(() => {
+        if (onChangeRequestParameters) {
+            onChangeRequestParameters({
+                filter: state.filter,
+                sorting: sorting,
+                page: current,
+                count
+            })
+        }
+    }, [state.filter, sorting, current, count])
 
     const lock = () => {
         setLoading(true);
@@ -369,7 +381,7 @@ export function CollectionServer(props) {
         // IN = "in"      // in
         // NIN = "nin"     // not-in
 
-        if(!meta || !filters){
+        if (!meta || !filters) {
             return
         }
 
@@ -786,7 +798,7 @@ export function CollectionServer(props) {
     };
 
     const onFilterChange = React.useMemo(() => (value) => {
-        setState(o=>({ ...o, filterChanged: !_.isEqual(o.filter, value), newFilter: value }));
+        setState(o => ({ ...o, filterChanged: !_.isEqual(o.filter, value), newFilter: value }));
     }, [state]);
 
     const view = (items) => {
