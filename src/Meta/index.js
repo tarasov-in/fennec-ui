@@ -25,6 +25,7 @@ export function MetaProvider({ children }) {
                 const element = arr[i];
                 o[element.name.toLowerCase()] = element;
             }
+            console.log(data, o);
             setMeta(o)
             setReady(true);
         });
