@@ -11,15 +11,26 @@ export function MetaProvider({ children }) {
     const [meta, setMeta] = useState();
 
     useEffect(() => {
-        if (!auth.loggedIn()) return;
+        // if (!auth.loggedIn()) return;
         GET(auth, '/api/meta', ({ data }) => {
-            setMeta(data)
+            var arr = Object.values(data).map((item) => {
+                if (!item.uuid) {
+                    return { ...item, uuid: fuuid() }
+                }
+                return item;
+            });
+            var o = {}
+            for (let i = 0; i < arr.length; i++) {
+                const element = arr[i];
+                o[element.name.toLowerCase()] = element;
+            }
+            setMeta(o)
             setReady(true);
         });
-    },[])
+    }, [])
 
     return (<MetaContext.Provider value={meta}>
-            {(ready || !auth.loggedIn()) && children}
-        </MetaContext.Provider>);
+        {(ready || !auth.loggedIn()) && children}
+    </MetaContext.Provider>);
 }
 //-------------------------------------------------------------------------------------
