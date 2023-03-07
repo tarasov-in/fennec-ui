@@ -336,6 +336,203 @@ export const filterByItem = (item, element) => {
     }
     return false;
 }
+export function FilterToQueryParameters(filters, filter, sorting, page, count) {
+    let flt = {};
+    Object.keys(filter).forEach(key => {
+        var item = filters?.find(e => e.name == key);
+
+        let filterByKey = filter[key];
+        switch (item.filterType) {
+            case "group":
+                switch (item.type) {
+                    case "object":
+                    case "document":
+                        flt["w-in-" + key] = filterByKey
+                        break;
+                    default:
+                        flt["w-in-" + key] = filterByKey
+                        break;
+                }
+                break;
+            case "range":
+                switch (item.type) {
+                    case "int":
+                    case "uint":
+                    case "integer":
+                    case "int64":
+                    case "int32":
+                    case "uint64":
+                    case "uint32":
+                        if (_.isArray(filterByKey) && filterByKey.length >= 2) {
+                            flt["w-lge-" + key] = filterByKey[0]
+                            flt["w-lwe-" + key] = filterByKey[1]
+                        }
+                        break;
+                    case "double":
+                    case "float":
+                    case "float64":
+                    case "float32":
+                        if (_.isArray(filterByKey) && filterByKey.length >= 2) {
+                            flt["w-lge-" + key] = filterByKey[0]
+                            flt["w-lwe-" + key] = filterByKey[1]
+                        }
+                        break;
+                    case "time":
+                        if (_.isArray(filterByKey) && filterByKey.length >= 2) {
+                            flt["w-lge-" + key] = filterByKey[0].format("HH:mm:ss")
+                            flt["w-lwe-" + key] = filterByKey[1].format("HH:mm:ss")
+                        }
+                        break;
+                    case "date":
+                        if (_.isArray(filterByKey) && filterByKey.length >= 2) {
+                            flt["w-lge-" + key] = filterByKey[0].format("YYYY-MM-DD")
+                            flt["w-lwe-" + key] = filterByKey[1].format("YYYY-MM-DD")
+                        }
+                        break;
+                    case "datetime":
+                    case "time.Time":
+                        if (_.isArray(filterByKey) && filterByKey.length >= 2) {
+                            flt["w-lge-" + key] = filterByKey[0].format("YYYY-MM-DD HH:mm")
+                            flt["w-lwe-" + key] = filterByKey[1].format("YYYY-MM-DD HH:mm")
+                        }
+                        break;
+                    default:
+                        flt["w-" + key] = filterByKey
+                        break;
+                }
+                break;
+            default:
+                switch (item.type) {
+                    case "string":
+                        flt["w-co-" + key] = filterByKey
+                        break;
+                    default:
+                        flt["w-" + key] = filterByKey
+                        break;
+                }
+                break;
+        }
+    });
+
+    // let func = [];
+    // filters?.forEach(item => {
+    //     if (item.func && _.isArray(item.func)) {
+    //         item.func.forEach(fu => {
+    //             func[fu] = item.name
+    //         });
+    //     }
+    // });
+
+    let srt = {}
+    if (sorting?.name) {
+        srt[`s-${sorting.name}`] = sorting.order
+    }
+
+    let pc = {
+        page: page,
+        count: count,
+    }
+
+    return { ...flt, ...func, ...srt, ...pc }
+}
+export function QueryParametersToFilters(urlRequestParameters, filters) {
+    let flt = [...filters]
+
+    for (let i = 0; i < flt.length; i++) {
+        const item = flt[i];
+
+        function set(item, flt, i, s) {
+            let v = urlRequestParameters.get(`${s}${item.name}`)
+            if (v) {
+                flt[i].filtered = v;
+            }
+        }
+        function seta(item, flt, i, s1,s2) {
+            let v1 = urlRequestParameters.get(`${s1}${item.name}`)
+            let v2 = urlRequestParameters.get(`${s2}${item.name}`)
+            if (v1 && v2) {
+                flt[i].filtered = [v1,v2];
+            }
+        }
+        function setm(item, flt, i, s1,s2,format) {
+            let v1 = urlRequestParameters.get(`${s1}${item.name}`)
+            let v2 = urlRequestParameters.get(`${s2}${item.name}`)
+            if (v1 && v2) {
+                flt[i].filtered = [moment(v1),moment(v2)];
+            }
+        }
+        switch (item.filterType) {
+            case "group":
+                switch (item.type) {
+                    case "object":
+                    case "document":
+                        set(item, flt, i, "w-in-");
+                        break;
+                    default:
+                        set(item, flt, i, "w-in-");
+                        break;
+                }
+                break;
+            case "range":
+                switch (item.type) {
+                    case "int":
+                    case "uint":
+                    case "integer":
+                    case "int64":
+                    case "int32":
+                    case "uint64":
+                    case "uint32":
+                            seta(item, flt, i, "w-lge-","w-lwe-");
+                        break;
+                    case "double":
+                    case "float":
+                    case "float64":
+                    case "float32":
+                            seta(item, flt, i, "w-lge-","w-lwe-");
+                        break;
+                    case "time":
+                        setm(item, flt, i, "w-lge-","w-lwe-","HH:mm:ss");
+                        break;
+                    case "date":
+                        setm(item, flt, i, "w-lge-","w-lwe-","YYYY-MM-DD");
+                        break;
+                    case "datetime":
+                    case "time.Time":
+                        setm(item, flt, i, "w-lge-","w-lwe-","YYYY-MM-DD HH:mm");
+                        break;
+                    default:
+                        set(item, flt, i, "w-");
+                        break;
+                }
+                break;
+            default:
+                switch (item.type) {
+                    case "string":
+                        set(item, flt, i, "w-co-");
+                        break;
+                    default:
+                        set(item, flt, i, "w-");
+                        break;
+                }
+                break;
+        }
+    }
+
+    for (let i = 0; i < flt.length; i++) {
+        const item = flt[i];
+        let v = urlRequestParameters.get(`s-${item.name}`)
+        if (v) {
+            flt[i].sorted = v;
+        }
+    }
+
+    // for (let i = 0; i < flt.length; i++) {
+    //     const item = flt[i];
+    //     let v = urlRequestParameters.get(`f-max-${item.name}`)
+    //     flt[i].func = ["max"]
+    // }
+    return flt
+}
 //--------------------------------------------------------------
 export function FennecError(message = "", name = "") {
     this.name = `Error${(name) ? ": " + name : ""}`;

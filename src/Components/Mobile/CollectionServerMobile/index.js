@@ -331,9 +331,10 @@ export function CollectionServerMobile(props) {
     } = props;
 
     const meta = useMetaContext();
+    const fltrs = props.filters();
 
     const defFilters = (filters) => {
-        var f = filters;//(props.filters) ? props.filters() : [];
+        var f = filters;
         if (f && f.length) {
             let filtr = {};
             for (let d = 0; d < f.length; d++) {
@@ -348,7 +349,7 @@ export function CollectionServerMobile(props) {
     }
     const defSorting = (filters) => {
         let sorted = { name: "", order: "ASC" }
-        var f = filters;//(props.filters) ? props.filters() : [];
+        var f = filters;
         if (f && f.length) {
             for (let s = 0; s < f.length; s++) {
                 const element = f[s];
@@ -368,8 +369,8 @@ export function CollectionServerMobile(props) {
     const [funcStat, setFuncStat] = useState();
     const [state, setState] = useState({
         current: 1,
-        sorting: defSorting((props.filters) ? props.filters() : []),
-        filter: defFilters((props.filters) ? props.filters() : [])
+        sorting: defSorting((props.filters) ? fltrs : []),
+        filter: defFilters((props.filters) ? fltrs : [])
     })
     const [filtered, setFiltered] = useState(false);
     const [filters, setFilters] = useState();
@@ -405,7 +406,7 @@ export function CollectionServerMobile(props) {
             if (mo) {
                 setMObject(mo);
                 if (props.filters) {
-                    let f = props.filters()?.map(pf => {
+                    let f = fltrs?.map(pf => {
                         let field = GetMetaPropertyByPath(meta, mo, pf.name);
                         return {
                             ...field,
@@ -417,7 +418,7 @@ export function CollectionServerMobile(props) {
                 }
             }
         } else {
-            var f = (props.filters) ? props.filters() : [];
+            var f = (props.filters) ? fltrs : [];
             setFilters(f);
         }
     }, [name, meta]);
