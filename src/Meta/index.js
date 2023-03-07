@@ -13,21 +13,22 @@ export function MetaProvider({ children }) {
 
     useEffect(() => {
         // if (!auth.loggedIn()) return;
-        GET(auth, '/api/meta', ({ data }) => {
-            var arr = Object.values(data).map((item) => {
-                if (!item.uuid) {
-                    return { ...item, uuid: fuuid() }
+        auth.fetch('/api/meta').then(res => {
+            if (res && res.data) {
+                var arr = Object.values(res.data).map((item) => {
+                    if (!item.uuid) {
+                        return { ...item, uuid: fuuid() }
+                    }
+                    return item;
+                });
+                var o = {}
+                for (let i = 0; i < arr.length; i++) {
+                    const element = arr[i];
+                    o[element.name.toLowerCase()] = element;
                 }
-                return item;
-            });
-            var o = {}
-            for (let i = 0; i < arr.length; i++) {
-                const element = arr[i];
-                o[element.name.toLowerCase()] = element;
+                setMeta(o)
+                setReady(true);
             }
-            console.log(data, o);
-            setMeta(o)
-            setReady(true);
         });
     }, [])
 
