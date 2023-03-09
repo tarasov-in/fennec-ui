@@ -221,7 +221,7 @@ export function CollectionServer(props) {
         return sorted;
     }
 
-    const fltrs = props.filters();
+    const fltrs = (props.filters)?props.filters():[];
     const meta = useMetaContext();
     const [loading, setLoading] = useState(false);
     const [collection, _setCollection] = useState([]);
@@ -235,7 +235,7 @@ export function CollectionServer(props) {
     const [filters, setFilters] = useState();
     const [mobject, setMObject] = useState();
     const [sorting, setSorting] = useState(defSorting((props.filters) ? fltrs : []));
-    const [current, setCurrent] = useState((props.page)?props.page():1);
+    const [current, _setCurrent] = useState((props.page)?props.page():1);
     const [count, setCount] = useState((props.count)?props.count():20);
     const [total, setTotal] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -251,6 +251,10 @@ export function CollectionServer(props) {
         }
     }, [state.filter, sorting, current, count])
 
+    const setCurrent = (value) => {
+        _setCurrent(value);
+        window.scrollTo(0,0);
+    }
     const lock = () => {
         setLoading(true);
     };

@@ -1,6 +1,6 @@
 {
   "name": "fennec-ui",
-  "version": "1.1.133",
+  "version": "1.1.134",
   "description": "UI package for Fennec Toolkit",
   "author": "tarasovin",
   "license": "MIT",
@@ -30,7 +30,7 @@
     "react": "^18.2.0",
     "pubsub-js": "^1.9.4",
     "antd": "^4.23.3",
-    "antd-mobile": "v5.24.2",
+    "antd-mobile": "v5.28.1",
     "moment": "^2.29.3",
     "moment-timezone": "^0.5.34",
     "numeral": "^2.0.6",

@@ -331,7 +331,7 @@ export function CollectionServerMobile(props) {
     } = props;
 
     const meta = useMetaContext();
-    const fltrs = props.filters();
+    const fltrs = (props.filters)?props.filters():[];
 
     const defFilters = (filters) => {
         var f = filters;
@@ -368,7 +368,7 @@ export function CollectionServerMobile(props) {
     const [collection, _setCollection] = useState([]);
     const [funcStat, setFuncStat] = useState();
     const [state, setState] = useState({
-        current: (props.page)?props.page():1,
+        current: (props.page) ? props.page() : 1,
         sorting: defSorting((props.filters) ? fltrs : []),
         filter: defFilters((props.filters) ? fltrs : [])
     })
@@ -377,7 +377,7 @@ export function CollectionServerMobile(props) {
     const [mobject, setMObject] = useState();
     // const [sorting, setSorting] = useState({ name: "", order: "ASC" });
     // const [current, setCurrent] = useState(1);
-    const [count, setCount] = useState((props.count)?props.count():20);
+    const [count, setCount] = useState((props.count) ? props.count() : 20);
     const [total, setTotal] = useState(1);
 
     useEffect(() => {
@@ -923,9 +923,9 @@ export function CollectionServerMobile(props) {
             {_.isEmpty(state.filter) && <Icofont icon="filter" />}
         </div>
     ), [state.filter])
-    const PaginatorChange = React.useCallback((v) => setState(o=>({ ...o, current: v })), [state]);
-    const PaginatorRight = React.useCallback(() => setState(o=>({ ...o, current: state.current + 1 })), [state]);
-    const PaginatorLeft = React.useCallback(() => setState(o=>({ ...o, current: state.current - 1 })), [state]);
+    const PaginatorChange = React.useCallback((v) => { setState(o => ({ ...o, current: v })); window.scrollTo(0, 0); }, [state]);
+    const PaginatorRight = React.useCallback(() => { setState(o => ({ ...o, current: state.current + 1 })); window.scrollTo(0, 0); }, [state]);
+    const PaginatorLeft = React.useCallback(() => { setState(o => ({ ...o, current: state.current - 1 })); window.scrollTo(0, 0); }, [state]);
     return (
         <React.Fragment>
             {!noheader && <BlockHeaderMobile
