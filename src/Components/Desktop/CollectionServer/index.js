@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Card, Button, Tooltip, Pagination, Empty, Divider, Typography, Tag, Select, List, Table } from 'antd';
+import { Layout, Card, Button, Tooltip, Pagination, Empty, Divider, Typography, Tag, Select, List, Table, Spin } from 'antd';
 import 'moment/locale/ru';
 import { Action } from '../../Action'
 import { DropdownAction } from '../DropdownAction'
@@ -828,8 +828,10 @@ export function CollectionServer(props) {
                 }
                 return {};
             };
-            return (
+            return (<div>
+                {/* <SpinLoading visible={loading} /> */}
                 <List
+                    loading={loading}
                     locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Нет данных" /> }}
                     itemLayout="horizontal"
                     dataSource={items}
@@ -838,6 +840,7 @@ export function CollectionServer(props) {
                             {_render(item, index)}
                         </List.Item>
                     ))} />
+            </div>
             );
         }
         return (
