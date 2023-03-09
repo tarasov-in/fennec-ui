@@ -497,6 +497,7 @@ export function CollectionServer(props) {
         });
 
         if (source) {
+            lock();
             GETWITH(auth, source, [
                 QueryDetail("model"),
                 QueryParam(`page`, current),
@@ -516,6 +517,7 @@ export function CollectionServer(props) {
                 unlock();
             }, (err) => errorCatch(err, unlock));
         } else {
+            lock();
             READWITH(auth, name, [
                 QueryDetail("model"),
                 QueryParam(`page`, current),
@@ -830,7 +832,7 @@ export function CollectionServer(props) {
             };
             return (<div>
                 {/* <SpinLoading visible={loading} /> */}
-                {loading && <Spin tip="Загрузка" />}
+                {/* {loading && <Spin tip="Загрузка" />} */}
                 <List
                     loading={loading}
                     locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Нет данных" /> }}
