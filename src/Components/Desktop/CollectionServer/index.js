@@ -830,6 +830,7 @@ export function CollectionServer(props) {
             };
             return (<div>
                 {/* <SpinLoading visible={loading} /> */}
+                {loading && <Spin tip="Загрузка" />}
                 <List
                     loading={loading}
                     locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Нет данных" /> }}
