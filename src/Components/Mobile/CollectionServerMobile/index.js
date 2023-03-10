@@ -958,14 +958,14 @@ export function CollectionServerMobile(props) {
 
             {(!!filters?.length) &&
                 <div className="filtered" style={{ position: "relative", height: "100%", paddingTop: "5px" }}>
-                    <div style={{
+                    <div className={"filtered-header"} style={{
                         height: "43px",
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
-                        border: "1px solid #f0f0f0",
+                        // border: "1px solid #f0f0f0",
                         padding: "7px",
-                        borderRadius: "3px",
+                        // borderRadius: "3px",
                     }}>
                         <div style={{ flex: "auto", paddingRight: "15px" }}>
                             {RenderOnCollectionActions()}
@@ -987,7 +987,7 @@ export function CollectionServerMobile(props) {
                         </div>
                     </div>
                     <MaskWithLoading visible={loading} />
-                    <List className="my-list">
+                    <List className="my-list filtered-list">
                         {(collection && collection.length > 0) && collection?.map((item, index) => (
                             <Item key={index} multipleLine align="top" wrap style={{ paddingLeft: "0px" }}>
                                 {RenderOnModelActions(item, index, () => _render(item, index), (modelActionsTitle) ? modelActionsTitle(item) : undefined)}

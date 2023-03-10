@@ -221,7 +221,7 @@ export function CollectionServer(props) {
         return sorted;
     }
 
-    const fltrs = (props.filters)?props.filters():[];
+    const fltrs = (props.filters) ? props.filters() : [];
     const meta = useMetaContext();
     const [loading, setLoading] = useState(false);
     const [collection, _setCollection] = useState([]);
@@ -235,8 +235,8 @@ export function CollectionServer(props) {
     const [filters, setFilters] = useState();
     const [mobject, setMObject] = useState();
     const [sorting, setSorting] = useState(defSorting((props.filters) ? fltrs : []));
-    const [current, _setCurrent] = useState((props.page)?props.page():1);
-    const [count, setCount] = useState((props.count)?props.count():20);
+    const [current, _setCurrent] = useState((props.page) ? props.page() : 1);
+    const [count, setCount] = useState((props.count) ? props.count() : 20);
     const [total, setTotal] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
@@ -253,7 +253,7 @@ export function CollectionServer(props) {
 
     const setCurrent = (value) => {
         _setCurrent(value);
-        window.scrollTo(0,0);
+        window.scrollTo(0, 0);
     }
     const lock = () => {
         setLoading(true);
@@ -830,7 +830,7 @@ export function CollectionServer(props) {
                 }
                 return {};
             };
-            return (<div>
+            return (<div className='filtered-list'>
                 {/* <SpinLoading visible={loading} /> */}
                 {/* {loading && <Spin tip="Загрузка" />} */}
                 <List
@@ -882,7 +882,13 @@ export function CollectionServer(props) {
     return (
         <React.Fragment>
             <div className="filtered">
-                <div className="filtered-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: "10px" }}>
+                <div className="filtered-header"
+                    style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        paddingBottom: "10px"
+                    }}>
                     <div style={{ flex: "auto", paddingRight: "15px", display: "flex", gap: "5px" }}>
                         {RenderOnCollectionActions()}
                     </div>
