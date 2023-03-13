@@ -336,6 +336,7 @@ export const filterByItem = (item, element) => {
     }
     return false;
 }
+
 export function FilterToQueryParameters(filters, filter, sorting, page, count) {
     let flt = {};
     Object.keys(filter).forEach(key => {
@@ -347,10 +348,10 @@ export function FilterToQueryParameters(filters, filter, sorting, page, count) {
                 switch (item.type) {
                     case "object":
                     case "document":
-                        flt["w-in-" + key] = filterByKey
+                        flt["w-in-" + key] = (filterByKey && filterByKey.length && filterByKey.join)?filterByKey.join(","):filterByKey
                         break;
                     default:
-                        flt["w-in-" + key] = filterByKey
+                        flt["w-in-" + key] = (filterByKey && filterByKey.length && filterByKey.join)?filterByKey.join(","):filterByKey
                         break;
                 }
                 break;
@@ -435,9 +436,9 @@ export function FilterToQueryParameters(filters, filter, sorting, page, count) {
 
     return { ...flt, /*...func,*/ ...srt, ...pc }
 }
+
 export function QueryParametersToFilters(urlRequestParameters, filters) {
     let flt = [...filters]
-
     for (let i = 0; i < flt.length; i++) {
         const item = flt[i];
 
@@ -445,6 +446,19 @@ export function QueryParametersToFilters(urlRequestParameters, filters) {
             let v = urlRequestParameters.get(`${s}${item.name}`)
             if (v) {
                 flt[i].filtered = v;
+            }
+        }
+        function setin(item, flt, i, s) {
+            let v = urlRequestParameters.get(`${s}${item.name}`)
+            if (v) {
+                flt[i].filtered = (v && v.split)?v.split(",").map((val)=>{
+                    let nval = parseInt(val)
+                    if (!isNaN(nval)) {
+                        return nval;
+                    }
+                    
+                    return val;
+                }):v;
             }
         }
         function seta(item, flt, i, s1,s2) {
@@ -466,10 +480,10 @@ export function QueryParametersToFilters(urlRequestParameters, filters) {
                 switch (item.type) {
                     case "object":
                     case "document":
-                        set(item, flt, i, "w-in-");
+                        setin(item, flt, i, "w-in-");
                         break;
                     default:
-                        set(item, flt, i, "w-in-");
+                        setin(item, flt, i, "w-in-");
                         break;
                 }
                 break;
@@ -533,6 +547,7 @@ export function QueryParametersToFilters(urlRequestParameters, filters) {
     // }
     return flt
 }
+
 //--------------------------------------------------------------
 export function FennecError(message = "", name = "") {
     this.name = `Error${(name) ? ": " + name : ""}`;
