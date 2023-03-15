@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import 'moment/locale/ru';
-import { errorCatch, getDisplay, getObjectValue, GETWITH, QueryDetail, QueryOrder, READWITH } from '../../../Tool';
+import { errorCatch, getDisplay, getObjectValue, GETWITH, JSXMap, QueryDetail, QueryOrder, READWITH } from '../../../Tool';
 import moment from 'moment';
-import { Checkbox, Input, List, TextArea, Slider, Picker, DatePicker, Button, ImageUploader } from 'antd-mobile';
+import { Checkbox, Input, List, TextArea, Slider, Picker, DatePicker, Button, ImageUploader, Popup, Radio, Space, CheckList, SearchBar } from 'antd-mobile';
 import { createUseStyles } from 'react-jss';
 import { CalendarItem } from '../CalendarItem';
 import { useMetaContext } from '../../Context';
@@ -105,46 +105,6 @@ function ActionItem({ auth, item, value, onChange, onAfterChange, changed }) {
             value={value}
             onChange={onChange}
         />
-        {/* <Action
-            auth={auth}
-            brief={(!value) ? undefined : (item.display) ? item.display(changed[item.duplex] || value) : undefined}
-            form={item.form || ModelMobile}
-            okText={item.okText || "Выбрать"}
-            dismissText={item.dismissText || "Отмена"}
-
-            // virtualized={true}
-            // search={search}
-            meta={item.meta}
-            steps={item.steps}
-            triggerOptions={{
-                className: classes.Act
-            }}
-            placeholder={item.placeholder || ("введите " + ((item.label)?item.label.toLowerCase():"значение"))}
-            closable={false}
-            object={value}
-            titles={(item.titles) ? item.titles : {
-                header: item.label,
-                subheader: "",
-            }}
-            action={(values, unlock, close) => {
-                if (onChange) {
-                    onChange((item.modify) ? item.modify(values) : values, item, (item.modifyDuplex) ? item.modifyDuplex(values) : undefined);
-                }
-                close();
-            }}
-            swipe={[
-                {
-                    key: 'danger',
-                    text: (<Icofont icon="close" />),
-                    onClick: () => {
-                        if (onChange) {
-                            onChange(undefined, item, undefined);
-                        }
-                    },
-                    color: 'danger',
-                },
-            ]}
-        /> */}
     </React.Fragment>);
 }
 function RangeDate({ item, value, onChange, onAfterChange }) {
@@ -490,7 +450,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
     }
     useEffect(() => {
         if (item.source || item.url || (item && _.get(item, "relation.reference.url")) || (item && _.get(item, "relation.reference.source"))) {
-            let filter = item.queryFilter || item.filter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
+            let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
             let url = item.source || item.relation.reference.url || item.relation.reference.source;
             GETWITH(auth, url, [
                 ...defaultQueryParams(filter)
@@ -502,7 +462,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
         } else if (item && _.get(item, "relation.reference.object")) {
             let object = getObjectValue(item, "relation.reference.object");
             if (object) {
-                let filter = item.queryFilter || item.filter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
+                let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
                 READWITH(auth, object, [
                     ...defaultQueryParams(filter)
                 ], ({ data }) => {
@@ -515,7 +475,6 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
         item?.source,
         item?.url,
         item?.queryFilter,
-        item?.filter,
         item?.relation?.reference?.url,
         item?.relation?.reference?.source,
         item?.relation?.reference?.queryFilter,
@@ -625,7 +584,197 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
         </div>
     )
 }
+function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
+    const [data, setData] = useState([]);
+    const meta = useMetaContext();
 
+    const dataOrContent = (data) => {
+        return (data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data
+    }
+    const defaultQueryParams = (filter) => {
+        if (!filter) {
+            return [
+                QueryDetail("model"),
+                QueryOrder("ID", "ASC")
+            ]
+        } else if (_.isArray(filter)) {
+            return filter
+        }
+        return []
+    }
+    useEffect(() => {
+        if (item.source || item.url || (item && _.get(item, "relation.reference.url")) || (item && _.get(item, "relation.reference.source"))) {
+            let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
+            let url = item.source || item.relation.reference.url || item.relation.reference.source;
+            GETWITH(auth, url, [
+                ...defaultQueryParams(filter)
+            ], ({ data }) => {
+                setData(dataOrContent(data));
+            }, (err) => errorCatch(err, () => { }));
+        } else if (item && _.get(item, "relation.reference.data")) {
+            setData(item.relation.reference.data);
+        } else if (item && _.get(item, "relation.reference.object")) {
+            let object = getObjectValue(item, "relation.reference.object");
+            if (object) {
+                let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
+                READWITH(auth, object, [
+                    ...defaultQueryParams(filter)
+                ], ({ data }) => {
+                    setData(dataOrContent(data));
+                }, (err) => errorCatch(err, () => { }));
+            }
+        }
+    }, [
+        auth,
+        item?.source,
+        item?.url,
+        item?.queryFilter,
+        item?.relation?.reference?.url,
+        item?.relation?.reference?.source,
+        item?.relation?.reference?.queryFilter,
+        item?.relation?.reference?.filter
+    ]);
+    const property = (item, value) => {
+        if (item && _.get(item, "relation.reference.property") && value) {
+            return value[item.relation.reference.property];
+        }
+        if (value) {
+            return value.ID;
+        }
+        return undefined;
+    };
+    const itemByProperty = (item, value) => {
+        if (_.get(item, "relation.reference.property")) {
+            return data.find(e => e[item.relation.reference.property] === value);
+        }
+        return data.find(e => e.ID === value);
+    };
+    const itemsByProperty = (item, value) => {
+        return data?.filter(e => value?.find(f => property(item, e) === f));
+    };
+    const label = (item, value) => {
+        if (item && value) {
+            if (item.display && _.isFunction(item.display)) {
+                return item.display(value)
+            } else if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
+                return item.relation.display(value)
+            } else {
+                let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
+                return getDisplay(value, item?.relation?.display || fieldMeta?.display, fieldMeta, meta)
+            }
+        }
+        return "";
+    };
+    const by = (item) => {
+        if (changed && item.dependence && item.dependence.field) {
+            return (changed[item.dependence.by] && item.dependence.eq) ? changed[item.dependence.by][item.dependence.eq] : changed[item.dependence.eq];
+        }
+    };
+
+    const [searchText, setSearchText] = useState('')
+    const [visible, setVisible] = React.useState(false)
+    const filteredItems = useMemo(() => {
+        if (searchText) {
+            return data.filter(i => label(item, i).includes(searchText))
+        } else {
+            return data
+        }
+    }, [data, searchText])
+    const elements = (data) => {
+        if (item.dependence) {
+            if (item.dependence.field && by(item)) {
+                if (value[item.dependence.field] === by(item)) {
+                    return data?.map(i => (
+                        <CheckList.Item key={property(item, i)} value={property(item, i)}>{label(item, i)}</CheckList.Item>
+                    ));
+                }
+            }
+        } else {
+            return data?.map(i => (
+                <CheckList.Item key={property(item, i)} value={property(item, i)}>{label(item, i)}</CheckList.Item>
+            ));
+        }
+    };
+    const current = React.useMemo(() => {
+        return data?.filter((e) => value?.find(f => property(item, e) === f))
+    }, [value, data])
+
+    return (
+        <div style={{ padding: "5px 0px" }}>
+            {(item && item.header !== false) && <div className='bg bg-grey' style={{
+                textAlign: "left",
+                paddingLeft: "5px",
+                marginBottom: "5px",
+                display: "flex",
+                justifyContent: "space-between"
+            }}>
+                <div>{item.label}</div>
+                <Button fill='none' size='mini' onClick={(v) => {
+                    onChange(undefined, item, undefined);
+                }}>
+                    <Icofont icon="close" />
+                </Button>
+            </div>}
+            <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
+                <div onClick={() => {
+                    setVisible(true)
+                }} style={{
+                    flex: "1",
+                    border: "1px solid #e5e5e5",
+                    borderRadius: "4px",
+                    padding: "2px 6px"
+                }}>
+                    <Popup
+                        visible={visible}
+                        showCloseButton
+                        bodyStyle={{ height: "100%" }}
+                        onClose={() => {
+                            setVisible(false)
+                        }}
+                    >
+                        <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+                            <div style={{ flex: "0", padding: "0 10px" }}>
+                                <div style={{ display: "flex", justifyContent: "center", padding: "10px 30px 10px 15px", fontSize: "16px" }}>
+                                    <div>{item.label}</div>
+                                </div>
+                            </div>
+                            <div style={{ flex: "0", padding: "0 10px" }}>
+                                <SearchBar
+                                    value={searchText}
+                                    onChange={v => {
+                                        setSearchText(v)
+                                    }}
+                                />
+                            </div>
+                            <div style={{ overflowY: 'scroll', flex: "1", height: "100%" }}>
+                                <div style={{ height: "100%", padding: "0px 15px 15px 15px" }}>
+                                    <CheckList multiple defaultValue={value}
+                                        onChange={e => {
+                                            onChange(e, item, itemsByProperty(item, e))
+                                        }}>
+                                        {elements(filteredItems)}
+                                    </CheckList>
+                                </div>
+                            </div>
+                            <div style={{ flex: "0" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", gap: "10px", padding: "10px" }}>
+                                    <Button style={{ flex: "auto" }} type="ghost" onClick={() => {
+                                        setVisible(false)
+                                    }}>Закрыть</Button>
+                                </div>
+                            </div>
+                        </div>
+                    </Popup>
+                    {(current && current.length) ? <span>
+                        {JSXMap(current, (i, idx) => (
+                            <span key={idx}>{label(item, i)}{(idx < current.length - 1) ? ", " : ""}</span>
+                        ))}
+                    </span> : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item.label) ? item.label.toLowerCase() : "значение"}`)}</span>}
+                </div>
+            </div >
+        </div >
+    )
+}
 function Date({ item, value, onChange, onAfterChange }) {
     const [visible, setVisible] = useState(false)
     const [val, setVal] = useState();
@@ -1000,7 +1149,7 @@ export function FieldMobile({ auth, item, value, onChange, onAfterChange, change
                     return (props.func) ? props.func(auth, item, value, onChange, onAfterChange) : undefined;
                 case "object":
                 case "document":
-                    return (<Obj auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} changed={changed}></Obj>)
+                    return (<GroupObj auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} changed={changed}></GroupObj>)
                 default:
                     return (<Unknown auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Unknown>)
             }

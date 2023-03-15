@@ -65,8 +65,8 @@ const CurrentForm = (props) => {
         auth={props.auth}
         meta={item.meta}
         options={item.options}
-        virtualized={item.virtualized}
-        search={item.search}
+        // virtualized={item.virtualized}
+        // search={item.search}
         steps={cstep}
         subheader={csubheader}
         form={frm}

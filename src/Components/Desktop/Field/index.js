@@ -120,7 +120,7 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
     }
     useEffect(() => {
         if (item.source || item.url || (item && _.get(item, "relation.reference.url")) || (item && _.get(item, "relation.reference.source"))) {
-            let filter = item.queryFilter || item.filter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
+            let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
             let url = item.source || item.relation.reference.url || item.relation.reference.source;
             GETWITH(auth, url, [
                 ...defaultQueryParams(filter)
@@ -132,7 +132,7 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
         } else if (item && _.get(item, "relation.reference.object")) {
             let object = getObjectValue(item, "relation.reference.object");
             if (object) {
-                let filter = item.queryFilter || item.filter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
+                let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
                 READWITH(auth, object, [
                     ...defaultQueryParams(filter)
                 ], ({ data }) => {
@@ -145,7 +145,6 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
         item?.source,
         item?.url,
         item?.queryFilter,
-        item?.filter,
         item?.relation?.reference?.url,
         item?.relation?.reference?.source,
         item?.relation?.reference?.queryFilter,
@@ -350,7 +349,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
     }
     useEffect(() => {
         if (item.source || item.url || (item && _.get(item, "relation.reference.url")) || (item && _.get(item, "relation.reference.source"))) {
-            let filter = item.queryFilter || item.filter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
+            let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
             let url = item.source || item.relation.reference.url || item.relation.reference.source;
             GETWITH(auth, url, [
                 ...defaultQueryParams(filter)
@@ -362,7 +361,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
         } else if (item && _.get(item, "relation.reference.object")) {
             let object = getObjectValue(item, "relation.reference.object");
             if (object) {
-                let filter = item.queryFilter || item.filter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
+                let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
                 READWITH(auth, object, [
                     ...defaultQueryParams(filter)
                 ], ({ data }) => {
@@ -375,7 +374,6 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
         item?.source,
         item?.url,
         item?.queryFilter,
-        item?.filter,
         item?.relation?.reference?.url,
         item?.relation?.reference?.source,
         item?.relation?.reference?.queryFilter,
