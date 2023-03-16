@@ -675,7 +675,10 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
     const [visible, setVisible] = React.useState(false)
     const filteredItems = useMemo(() => {
         if (searchText) {
-            return data.filter(i => label(item, i).includes(searchText))
+            return data.filter(i => {
+                let l = label(item, i).toLowerCase();
+                return l.includes(searchText?.toLowerCase())
+            })
         } else {
             return data
         }
