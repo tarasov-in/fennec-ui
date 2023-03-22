@@ -346,20 +346,23 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
     const onFieldChange = (value, item, obj) => {
         if (item && item.duplex && (item.type === "object" || item.type === "action")) {
             setChanged({ ...changed, ...splitedValue(item.name, value), ...splitedValue(item.duplex, obj) });
-        } else if(item) {
+        } else if (item) {
             setChanged({ ...changed, ...splitedValue(item.name, value) });
         }
     };
     const propertiesVirtualized = propertiesFiltered?.filter(e => !!e);
     const virtualizedItem = (item, idx) => {
         if (!item.name && item.type === "func" && item.func) {
-            return <div key={"func_"+idx}>
+            return <div key={"func_" + idx}>
                 {item.func(auth, item)}
             </div>
         }
         if (item && !item.view || (item && item.view && item.view.unvisible === false)) {
             return (
                 <Form.Item
+                    // style={{
+                    //     padding: "0px 15px"
+                    // }}
                     preserve={(item.hidden) ? "true" : "false"}
                     hidden={item.hidden}
 

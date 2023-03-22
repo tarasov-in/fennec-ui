@@ -20,6 +20,7 @@ import { useMetaContext } from '../../Context';
 import { InboxOutlined } from '@ant-design/icons';
 import 'moment/locale/ru';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+import ImageEditor from '../ImageEditor';
 
 var _ = require('lodash');
 const { Dragger } = Upload;
@@ -612,6 +613,8 @@ export function Field(props) {
                     return (<Obj auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} changed={changed}></Obj>)
                 case "file":
                     return (<UploadItem auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></UploadItem>)
+                case "imageeditor":
+                    return (<ImageEditor auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></ImageEditor>)
                 default:
                     return (<Unknown auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Unknown>)
             }

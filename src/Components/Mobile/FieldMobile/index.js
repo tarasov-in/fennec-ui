@@ -11,6 +11,7 @@ import Icofont from 'react-icofont';
 import styles from './index.less'
 import { EyeInvisibleOutline, EyeOutline } from 'antd-mobile-icons'
 import { InboxOutlined } from '@ant-design/icons';
+import ImageEditor from '../ImageEditor';
 
 var _ = require('lodash');
 
@@ -144,10 +145,14 @@ function RangeDate({ item, value, onChange, onAfterChange }) {
                 }} style={{
                     flex: "1",
                     border: "1px solid #e5e5e5",
+                    fontSize: "13px",
                     borderRadius: "4px",
                     padding: "2px 6px"
                 }}>
                     <DatePicker
+                        style={{
+                            "--item-font-size": "13px"
+                        }}
                         precision='day'
                         max={val[1]}
                         min={moment().subtract(100, "years").toDate()}
@@ -172,10 +177,14 @@ function RangeDate({ item, value, onChange, onAfterChange }) {
                 }} style={{
                     flex: "1",
                     border: "1px solid #e5e5e5",
+                    fontSize: "13px",
                     borderRadius: "4px",
                     padding: "2px 6px"
                 }}>
                     <DatePicker
+                        style={{
+                            "--item-font-size": "13px"
+                        }}
                         precision='day'
                         min={val[0]}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
@@ -237,6 +246,7 @@ function RangeFloat({ item, value, onChange, onAfterChange }) {
                 <div style={{
                     flex: "1",
                     border: "1px solid #e5e5e5",
+                    fontSize: "13px",
                     borderRadius: "4px",
                     padding: "2px 6px"
                 }}>
@@ -249,6 +259,7 @@ function RangeFloat({ item, value, onChange, onAfterChange }) {
                 <div style={{
                     flex: "1",
                     border: "1px solid #e5e5e5",
+                    fontSize: "13px",
                     borderRadius: "4px",
                     padding: "2px 6px"
                 }}>
@@ -356,6 +367,7 @@ function RangeInteger({ item, value, onChange, onAfterChange }) {
                 <div style={{
                     flex: "1",
                     border: "1px solid #e5e5e5",
+                    fontSize: "13px",
                     borderRadius: "4px",
                     padding: "2px 6px"
                 }}>
@@ -368,6 +380,7 @@ function RangeInteger({ item, value, onChange, onAfterChange }) {
                 <div style={{
                     flex: "1",
                     border: "1px solid #e5e5e5",
+                    fontSize: "13px",
                     borderRadius: "4px",
                     padding: "2px 6px"
                 }}>
@@ -561,6 +574,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
                 }} style={{
                     flex: "1",
                     border: "1px solid #e5e5e5",
+                    fontSize: "13px",
                     borderRadius: "4px",
                     padding: "2px 6px"
                 }}>
@@ -727,6 +741,7 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
                 }} style={{
                     flex: "1",
                     border: "1px solid #e5e5e5",
+                    fontSize: "13px",
                     borderRadius: "4px",
                     padding: "2px 6px"
                 }}>
@@ -813,10 +828,14 @@ function Date({ item, value, onChange, onAfterChange }) {
                 }} style={{
                     flex: "1",
                     border: "1px solid #e5e5e5",
+                    fontSize: "13px",
                     borderRadius: "4px",
                     padding: "2px 6px"
                 }}>
                     <DatePicker
+                        style={{
+                            "--item-font-size": "13px"
+                        }}
                         precision='day'
                         min={moment().subtract(100, "years").toDate()}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
@@ -871,10 +890,14 @@ function DateTime({ item, value, onChange, onAfterChange }) {
                 }} style={{
                     flex: "1",
                     border: "1px solid #e5e5e5",
+                    fontSize: "13px",
                     borderRadius: "4px",
                     padding: "2px 6px"
                 }}>
                     <DatePicker
+                        style={{
+                            "--item-font-size": "13px"
+                        }}
                         precision='minute'
                         min={moment().subtract(100, "years").toDate()}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
@@ -930,9 +953,13 @@ function Time({ item, value, onChange, onAfterChange }) {
                     flex: "1",
                     border: "1px solid #e5e5e5",
                     borderRadius: "4px",
+                    fontSize: "13px",
                     padding: "2px 6px"
                 }}>
                     <DatePicker
+                        style={{
+                            "--item-font-size": "13px"
+                        }}
                         precision='second'
                         min={moment().subtract(100, "years").toDate()}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
@@ -987,6 +1014,7 @@ function Float({ item, value, onChange, onAfterChange }) {
                 <div style={{
                     flex: "1",
                     border: "1px solid #e5e5e5",
+                    fontSize: "13px",
                     borderRadius: "4px",
                     padding: "2px 6px"
                 }}>
@@ -1027,6 +1055,7 @@ function Integer({ item, value, onChange, onAfterChange }) {
                 <div style={{
                     flex: "1",
                     border: "1px solid #e5e5e5",
+                    fontSize: "13px",
                     borderRadius: "4px",
                     padding: "2px 6px"
                 }}>
@@ -1067,6 +1096,7 @@ function String({ item, value, onChange, onAfterChange }) {
                 <div style={{
                     flex: "1",
                     border: "1px solid #e5e5e5",
+                    fontSize: "13px",
                     borderRadius: "4px",
                     padding: "2px 6px"
                 }}>
@@ -1107,6 +1137,7 @@ function Password({ item, value, onChange, onAfterChange }) {
                 <div style={{
                     flex: "1",
                     border: "1px solid #e5e5e5",
+                    fontSize: "13px",
                     borderRadius: "4px",
                     padding: "2px 6px"
                 }}>
@@ -1242,6 +1273,8 @@ export function FieldMobile({ auth, item, value, onChange, onAfterChange, change
                     return (<ActionItem auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></ActionItem>)
                 case "file":
                     return (<UploadItem auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></UploadItem>)
+                case "imageeditor":
+                    return (<ImageEditor auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></ImageEditor>)
                 default:
                     return (<Unknown auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Unknown>)
             }
