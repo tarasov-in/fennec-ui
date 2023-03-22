@@ -331,7 +331,7 @@ export function CollectionServerMobile(props) {
     } = props;
 
     const meta = useMetaContext();
-    const fltrs = (props.filters)?props.filters():[];
+    const fltrs = (props.filters) ? props.filters() : [];
 
     const defFilters = (filters) => {
         var f = filters;
@@ -923,9 +923,21 @@ export function CollectionServerMobile(props) {
             {_.isEmpty(state.filter) && <Icofont icon="filter" />}
         </div>
     ), [state.filter])
-    const PaginatorChange = React.useCallback((v) => { setState(o => ({ ...o, current: v })); window.scrollTo(0, 0); }, [state]);
-    const PaginatorRight = React.useCallback(() => { setState(o => ({ ...o, current: state.current + 1 })); window.scrollTo(0, 0); }, [state]);
-    const PaginatorLeft = React.useCallback(() => { setState(o => ({ ...o, current: state.current - 1 })); window.scrollTo(0, 0); }, [state]);
+    const PaginatorChange = React.useCallback((v) => {
+        setState(o => ({ ...o, current: v }));
+        // window.scrollTo(0, 0);
+        document.querySelector(".page").scrollTo(0, 0);
+    }, [state]);
+    const PaginatorRight = React.useCallback(() => {
+        setState(o => ({ ...o, current: state.current + 1 }));
+        // window.scrollTo(0, 0);
+        document.querySelector(".page").scrollTo(0, 0)
+    }, [state]);
+    const PaginatorLeft = React.useCallback(() => {
+        setState(o => ({ ...o, current: state.current - 1 }));
+        // window.scrollTo(0, 0);
+        document.querySelector(".page").scrollTo(0, 0)
+    }, [state]);
     return (
         <React.Fragment>
             {!noheader && <BlockHeaderMobile
