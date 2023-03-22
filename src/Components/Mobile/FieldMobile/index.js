@@ -150,7 +150,7 @@ function RangeDate({ item, value, onChange, onAfterChange }) {
                     <DatePicker
                         precision='day'
                         max={val[1]}
-                        min={moment().subtract(100, "years").format('YYYY-MM-DD')}
+                        min={moment().subtract(100, "years").toDate()}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
                         title={item.label}
                         confirmText={item.okText || "Выбрать"}
@@ -818,7 +818,7 @@ function Date({ item, value, onChange, onAfterChange }) {
                 }}>
                     <DatePicker
                         precision='day'
-                        min={moment().subtract(100, "years").format('YYYY-MM-DD')}
+                        min={moment().subtract(100, "years").toDate()}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
                         title={item.label}
                         confirmText={item.okText || "Выбрать"}
@@ -876,7 +876,7 @@ function DateTime({ item, value, onChange, onAfterChange }) {
                 }}>
                     <DatePicker
                         precision='minute'
-                        min={moment().subtract(100, "years").format('YYYY-MM-DD')}
+                        min={moment().subtract(100, "years").toDate()}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
                         title={item.label}
                         confirmText={item.okText || "Выбрать"}
@@ -934,7 +934,7 @@ function Time({ item, value, onChange, onAfterChange }) {
                 }}>
                     <DatePicker
                         precision='second'
-                        min={moment().subtract(100, "years").format('YYYY-MM-DD')}
+                        min={moment().subtract(100, "years").toDate()}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
                         title={item.label}
                         confirmText={item.okText || "Выбрать"}
