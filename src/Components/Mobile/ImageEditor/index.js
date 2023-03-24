@@ -10,11 +10,10 @@ import { PictureOutline, UserAddOutline } from 'antd-mobile-icons'
 var _ = require('lodash');
 
 export default function ImageEditor(props) {
-    const { item, value, onChange, onAfterChange } = props;
+    const { item, value, onChange, onAfterChange, open, close } = props;
 
     const auth = useAuth();
     const user = useUserContext();
-    const navigation = useNavigation();
 
     const [object, setObject] = useState({
         angle: 0,
@@ -23,7 +22,6 @@ export default function ImageEditor(props) {
 
     const [canvas, setCanvas] = useState();
     const [photo, setPhoto] = useState();
-
     const canvasSize = 1200;
 
     const preparePhoto = (photo) => {
@@ -50,27 +48,6 @@ export default function ImageEditor(props) {
             // styleOverride = styleOverride || {};
             // fabric.controlsUtils.renderCircleControl.call(this, ctx, left, top, styleOverride, fabricObject);
         }
-
-        // photo.on('mouseover', function (e) {
-        //     if (photo.canvas) {
-        //         var canvas = photo.canvas
-        //         canvas.setActiveObject(photo)
-        //         if (canvas.overlayImage) {
-        //             canvas.overlayImage.set('opacity', 0.65);
-        //         }
-        //         canvas.renderAll();
-        //     }
-        // });
-
-        // photo.on('mouseout', function (e) {
-        //     if (photo.canvas) {
-        //         var canvas = photo.canvas
-        //         if (canvas.overlayImage) {
-        //             canvas.overlayImage.set('opacity', 1);
-        //         }
-        //         canvas.renderAll();
-        //     }
-        // });
 
         photo.on('mousewheel', function (e) {
             if (e && e.e) {
@@ -193,7 +170,7 @@ export default function ImageEditor(props) {
         }, false);
     }
 
-    const _triggerChange = useCallback(() => {
+    const triggerChange = useCallback(() => {
         if (onChange) {
             let b64 = canvas.toDataURL({
                 format: 'png',
@@ -217,9 +194,8 @@ export default function ImageEditor(props) {
 
         }
     }, [canvas, onChange]);
-    var triggerChange = _.throttle(_triggerChange, 3000, { 'trailing': false });
 
-    useEffect(() => {
+    const createCanvas = () => {
         let canvas = new fabric.Canvas('canvas', {
             enableRetinaScaling: false,
             height: canvasSize,
@@ -244,14 +220,21 @@ export default function ImageEditor(props) {
 
         setCanvas(canvas);
 
-    }, []);
-
-    // useEffect(() => {
-    //         setObject(o => ({
-    //             ...o,
-    //             // image: value
-    //         }));
-    // }, [value]);
+        if (value && _.isString(value)) {
+            fabric.Image.fromURL(value, function (img) {
+                const properties = img.set({
+                    originX: "center",
+                    originY: "center",
+                    left: canvasSize / 2,
+                    top: canvasSize / 2,
+                });
+                properties.scaleToWidth(canvasSize, false);
+                properties.set('selectable', true);
+                preparePhoto(img)
+                setPhoto(img);
+            }, { crossOrigin: 'Anonymous' });
+        }
+    }
 
     useEffect(() => {
         if (canvas) {
@@ -271,24 +254,6 @@ export default function ImageEditor(props) {
         }
     }, [canvas])
 
-    useEffect(() => {
-        if (value && _.isString(value)) {
-            fabric.Image.fromURL(value, function (img) {
-                const properties = img.set({
-                    originX: "center",
-                    originY: "center",
-                    left: canvasSize / 2,
-                    top: canvasSize / 2,
-                });
-                properties.scaleToWidth(canvasSize, false);
-                properties.set('selectable', true);
-                preparePhoto(img)
-                setPhoto(img);
-            }, { crossOrigin: 'Anonymous' });
-        }
-    }, [value]);
-
-
     const toLeft = (photo) => {
         if (!photo.canvas) {
             return
@@ -296,7 +261,6 @@ export default function ImageEditor(props) {
 
         photo.left -= 10;
         photo.canvas.renderAll();
-        triggerChange();
     }
     const toRight = (photo) => {
         if (!photo.canvas) {
@@ -305,7 +269,6 @@ export default function ImageEditor(props) {
 
         photo.left += 10;
         photo.canvas.renderAll();
-        triggerChange();
     }
     const toUp = (photo) => {
         if (!photo.canvas) {
@@ -314,7 +277,6 @@ export default function ImageEditor(props) {
 
         photo.top -= 10;
         photo.canvas.renderAll();
-        triggerChange();
     }
     const toDown = (photo) => {
         if (!photo.canvas) {
@@ -323,7 +285,6 @@ export default function ImageEditor(props) {
 
         photo.top += 10;
         photo.canvas.renderAll();
-        triggerChange();
     }
     const zoomIn = (photo) => {
         if (!photo.canvas) {
@@ -334,7 +295,6 @@ export default function ImageEditor(props) {
         photo.scaleY += scaleVal
         photo.scaleX += scaleVal
         photo.canvas.renderAll();
-        triggerChange();
     }
     const zoomOut = (photo) => {
         if (!photo.canvas) {
@@ -345,7 +305,6 @@ export default function ImageEditor(props) {
         photo.scaleY -= scaleVal
         photo.scaleX -= scaleVal
         photo.canvas.renderAll();
-        triggerChange();
     }
     const flipX = (photo) => {
         if (!photo.canvas) {
@@ -354,7 +313,6 @@ export default function ImageEditor(props) {
 
         photo.flipX = !photo.flipX
         photo.canvas.renderAll();
-        triggerChange();
     }
     const flipY = (photo) => {
         if (!photo.canvas) {
@@ -363,7 +321,6 @@ export default function ImageEditor(props) {
 
         photo.flipY = !photo.flipY
         photo.canvas.renderAll();
-        triggerChange();
     }
 
     useEffect(() => {
@@ -372,12 +329,9 @@ export default function ImageEditor(props) {
 
             if (photo) {
                 photo.rotate(object.angle || 0)
-
-                canvas.add(photo).sendToBack(photo);
+                canvas.add(photo);
                 canvas.renderAll();
             }
-
-            triggerChange();
         }
     }, [canvas, object, photo]);
 
@@ -398,103 +352,140 @@ export default function ImageEditor(props) {
                 properties.set('selectable', true);
                 preparePhoto(properties);
                 setPhoto(properties);
-                setDisabledDownload(false);
             }
         };
         reader.readAsDataURL(url);
     };
 
-    const [disabledDownload, setDisabledDownload] = useState(true)
-
     return (
         <React.Fragment>
-            <div style={{ paddingBottom: "25px", backgroundColor: "white" }}>
-                <div style={{ display: "flex", flexDirection: "column", paddingTop: "10px" }}>
-                    <div style={{
-                        display: "flex",
-                        justifyContent: "center",
-                    }}>
-                        <canvas id="canvas" style={{border: "1px solid #d9d9d9",
-                        borderRadius: "6px"}}/>
+            <Popup
+                visible={open}
+                showCloseButton
+                bodyStyle={{ height: "100%" }}
+                onClose={close}
+                onMaskClick={close}
+                destroyOnClose
+                afterShow={createCanvas}
+                afterClose={() => {
+                    if (canvas && canvas.dispose) {
+                        canvas.dispose();
+                    }
+                    setPhoto(undefined)
+                    setCanvas(undefined)
+                }}
+            >
+                <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+                    <div style={{ flex: "0", padding: "0 10px" }}>
+                        <div style={{ display: "flex", justifyContent: "center", padding: "10px 30px 10px 15px", fontSize: "16px" }}>
+                            Редактор изображения
+                        </div> 
                     </div>
-                    <div style={{ padding: "0px 5px" }}>
-                        <div style={{ padding: "5px 0px", width: "100%", display: "flex", justifyContent: "space-between", gap: "10px" }}>
-                            <div style={{ flex: "0" }}>
-                                <FieldMobile
-                                    key={"photo"}
-                                    auth={auth}
-                                    item={{
-                                        label: "Фото",
-                                        name: "file",
-                                        type: "file",
-                                        showUploadList: false,
-                                        accept: ".png,.jpg",
-                                        header: false,
-                                        trigger: () => (<div
-                                            style={{
-                                                width: 65,
-                                                height: 65,
-                                                borderRadius: "4px",
-                                                backgroundColor: '#f5f5f5',
-                                                display: 'flex',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                                color: '#999999',
-                                            }}
-                                        >
-                                            <UserAddOutline style={{ fontSize: 32 }} />
-                                        </div>)
-                                    }}
-                                    onChange={files => {
-                                        if (files && files.length) {
-                                            load(files[0]);
-                                        }
-                                    }}
-                                />
-                            </div>
-                            <div style={{ padding: "5px 0px", display: "flex", gap: "5px", flexWrap: "wrap" }}>
-                                <Button size="small" onClick={() => zoomIn(photo)}><Icofont icon="ui-zoom-in" /></Button>
-                                <Button size="small" onClick={() => zoomOut(photo)}><Icofont icon="ui-zoom-out" /></Button>
-                                <Button size="small" onClick={() => flipX(photo)}><SwapOutlined /></Button>
-                                <Button size="small" onClick={() => flipY(photo)}><SwapOutlined className="icofont-rotate-90" /></Button>
-                                <Button size="small" onClick={() => toLeft(photo)}><Icofont icon="long-arrow-left" /></Button>
-                                <Button size="small" onClick={() => toRight(photo)}><Icofont icon="long-arrow-right" /></Button>
-                                <Button size="small" onClick={() => toUp(photo)}><Icofont icon="long-arrow-up" /></Button>
-                                <Button size="small" onClick={() => toDown(photo)}><Icofont icon="long-arrow-down" /></Button>
-                            </div>
-                        </div>
-                        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-                            <div style={{ width: "100%", padding: "5px 10px", marginBottom: "5px", backgroundColor: "rgb(250 250 250)", borderRadius: "4px" }}>
-                                <div style={{ width: "100%", display: "flex", alignItems: "center" }}>
-                                    <div style={{ flex: "0" }}>
-                                        <Button type="text" size='small' style={{ padding: "2px 5px" }} onClick={v => setObject(o => ({ ...o, angle: 0 }))}>
-                                            <Icofont icon="rotation" />
-                                        </Button>
+                    <div style={{ overflowY: 'scroll', flex: "1", height: "100%" }}>
+                        <div style={{ paddingBottom: "25px", backgroundColor: "white" }}>
+                            <div style={{ display: "flex", flexDirection: "column", paddingTop: "10px" }}>
+                                <div style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                }}>
+                                    <canvas id="canvas" style={{
+                                        border: "1px solid #d9d9d9",
+                                        borderRadius: "6px"
+                                    }} />
+                                </div>
+                                <div style={{ padding: "0px 5px" }}>
+                                    <div style={{ padding: "5px 0px", width: "100%", display: "flex", justifyContent: "space-between", gap: "10px" }}>
+                                        <div style={{ flex: "0" }}>
+                                            <FieldMobile
+                                                key={"photo"}
+                                                auth={auth}
+                                                item={{
+                                                    label: "Фото",
+                                                    name: "file",
+                                                    type: "file",
+                                                    showUploadList: false,
+                                                    accept: ".png,.jpg",
+                                                    header: false,
+                                                    trigger: () => (<div
+                                                        style={{
+                                                            width: 65,
+                                                            height: 65,
+                                                            borderRadius: "4px",
+                                                            backgroundColor: '#f5f5f5',
+                                                            display: 'flex',
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                            color: '#999999',
+                                                        }}
+                                                    >
+                                                        <UserAddOutline style={{ fontSize: 32 }} />
+                                                    </div>)
+                                                }}
+                                                onChange={files => {
+                                                    if (files && files.length) {
+                                                        load(files[0]);
+                                                    }
+                                                }}
+                                            />
+                                        </div>
+                                        <div style={{ padding: "5px 0px", display: "flex", gap: "5px", flexWrap: "wrap" }}>
+                                            <Button size="small" onClick={() => zoomIn(photo)}><Icofont icon="ui-zoom-in" /></Button>
+                                            <Button size="small" onClick={() => zoomOut(photo)}><Icofont icon="ui-zoom-out" /></Button>
+                                            <Button size="small" onClick={() => flipX(photo)}><SwapOutlined /></Button>
+                                            <Button size="small" onClick={() => flipY(photo)}><SwapOutlined className="icofont-rotate-90" /></Button>
+                                            <Button size="small" onClick={() => toLeft(photo)}><Icofont icon="long-arrow-left" /></Button>
+                                            <Button size="small" onClick={() => toRight(photo)}><Icofont icon="long-arrow-right" /></Button>
+                                            <Button size="small" onClick={() => toUp(photo)}><Icofont icon="long-arrow-up" /></Button>
+                                            <Button size="small" onClick={() => toDown(photo)}><Icofont icon="long-arrow-down" /></Button>
+                                        </div>
                                     </div>
-                                    <div style={{ flex: "1" }}>
-                                        <FieldMobile
-                                            key={"angle"}
-                                            auth={auth}
-                                            item={{
-                                                label: 'Поворот',
-                                                name: "angle",
-                                                type: "int",
-                                                filterType: "slider",
-                                                realtime: true,
-                                                min: -180,
-                                                max: 180,
-                                                header: false,
-                                            }}
-                                            value={object.angle}
-                                            onChange={v => setObject(o => ({ ...o, angle: v }))}
-                                        />
+                                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+                                        <div style={{ width: "100%", padding: "5px 10px", marginBottom: "5px", backgroundColor: "rgb(250 250 250)", borderRadius: "4px" }}>
+                                            <div style={{ width: "100%", display: "flex", alignItems: "center" }}>
+                                                <div style={{ flex: "0" }}>
+                                                    <Button type="text" size='small' style={{ padding: "2px 5px" }} onClick={v => setObject(o => ({ ...o, angle: 0 }))}>
+                                                        <Icofont icon="rotation" />
+                                                    </Button>
+                                                </div>
+                                                <div style={{ flex: "1" }}>
+                                                    <FieldMobile
+                                                        key={"angle"}
+                                                        auth={auth}
+                                                        item={{
+                                                            label: 'Поворот',
+                                                            name: "angle",
+                                                            type: "int",
+                                                            filterType: "slider",
+                                                            realtime: true,
+                                                            min: -180,
+                                                            max: 180,
+                                                            header: false,
+                                                        }}
+                                                        value={object.angle}
+                                                        onChange={v => setObject(o => ({ ...o, angle: v }))}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div style={{ flex: "0" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", gap: "10px", padding: "10px" }}>
+                            <Button style={{ flex: "1 1 auto" }} onClick={close}>Отмена</Button>
+                            <Button                              
+                                color='primary' 
+                                style={{ flex: "1 1 auto" }} 
+                                onClick={e => {
+                                    triggerChange();
+                                    close();
+                                }}>Готово</Button>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </Popup>
         </React.Fragment>
     );
 }

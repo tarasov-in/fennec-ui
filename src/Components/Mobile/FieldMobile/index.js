@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import 'moment/locale/ru';
-import { errorCatch, getDisplay, getObjectValue, GETWITH, JSXMap, QueryDetail, QueryOrder, READWITH } from '../../../Tool';
+import { errorCatch, getDisplay, getObjectValue, GETWITH, JSXMap, pushStateHistoryModal, QueryDetail, QueryOrder, READWITH } from '../../../Tool';
 import moment from 'moment';
-import { Checkbox, Input, List, TextArea, Slider, Picker, DatePicker, Button, ImageUploader, Popup, Radio, Space, CheckList, SearchBar } from 'antd-mobile';
+import { Checkbox, Input, List, TextArea, Slider, Picker, DatePicker, Button, ImageUploader, Popup, Radio, Space, CheckList, SearchBar, Image as AntImage } from 'antd-mobile';
 import { createUseStyles } from 'react-jss';
 import { CalendarItem } from '../CalendarItem';
 import { useMetaContext } from '../../Context';
@@ -97,6 +97,88 @@ function UploadItem({ auth, item, value, onChange, changed }) {
         </div>
     );
 }
+
+function Image({ auth, item, value, onChange, changed }) {
+    const [open, setOpen] = useState(false);
+    const close = () => {
+        if (open) {
+            window.history.back();
+        }
+    }
+ 
+    useEffect(()=>{
+        if(onChange) {
+            onChange(value)
+        }
+    }, [])
+
+    const onOpenChange = () => {
+        if (!open) {
+            pushStateHistoryModal(setOpen);
+            setOpen(true);
+            return
+        }
+        close();
+    }
+
+    const toUrl = (value) => {
+        if (!value) {
+            return ""
+        }
+
+        if (_.isString(value)) {
+            return value;
+        } else if (value instanceof Blob) {
+            return URL.createObjectURL(value)
+        }
+    }
+
+    return (
+        <div style={{ padding: "5px 0px" }}>
+            {(item && item.header !== false) && <div className='bg bg-grey' style={{
+                textAlign: "left",
+                paddingLeft: "5px",
+                marginBottom: "5px",
+                display: "flex",
+                justifyContent: "space-between"
+            }}>
+                <div>{item.label}</div>
+                <Button fill='none' size='mini' onClick={(v) => {
+                    onChange(null);
+                }}>
+                    <Icofont icon="close" />
+                </Button>
+            </div>}
+            <div className='bg bg-grey' style={{
+                backgroundColor: "rgb(235 235 235 / 20%)",
+                padding: "5px",
+                display: "flex",
+                justifyContent: "space-between"
+            }}>
+                <div onClick={onOpenChange}>
+                    <AntImage
+                        width={48}
+                        height={48}
+                        style={{ borderRadius: "6px", border: "1px solid #e5e5e5" }}
+                        src={toUrl(value)}
+                    />
+                </div>
+                <Button onClick={onOpenChange} size="small" fill='none'>
+                    <Icofont key="1" icon="ui-edit" />
+                </Button>
+                <ImageEditor
+                    auth={auth}
+                    item={item}
+                    value={toUrl(value)}
+                    onChange={onChange}
+                    open={open}
+                    close={close}
+                />
+            </div>
+        </div>
+    );
+}
+
 function ActionItem({ auth, item, value, onChange, onAfterChange, changed }) {
     return (<React.Fragment>
         <ActionPickerItem
@@ -1273,8 +1355,10 @@ export function FieldMobile({ auth, item, value, onChange, onAfterChange, change
                     return (<ActionItem auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></ActionItem>)
                 case "file":
                     return (<UploadItem auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></UploadItem>)
-                case "imageeditor":
-                    return (<ImageEditor auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></ImageEditor>)
+                // case "imageeditor":
+                //     return (<ImageEditor auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></ImageEditor>)
+                case "image":
+                    return (<Image auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Image>)
                 default:
                     return (<Unknown auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Unknown>)
             }

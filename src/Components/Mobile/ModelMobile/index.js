@@ -235,6 +235,7 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
     const [visible, setVisible] = useState(false);
     const [changed, setChanged] = useState({ ...object });
     useEffect(() => {
+        console.log("m")
         form.resetFields();
         if (object) {
             form.setFieldsValue(object);
