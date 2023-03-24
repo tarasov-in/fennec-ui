@@ -134,8 +134,8 @@ export default function ImageEditor(props) {
 
     useEffect(() => {
         if (open) {
-            setTimeout(() => { createCanvas(); }, 100)
-            // createCanvas();
+            // setTimeout(() => { createCanvas(); }, 100)
+            createCanvas();
         }
     }, [open])
 
@@ -217,6 +217,7 @@ export default function ImageEditor(props) {
                 onCancel={close}
                 destroyOnClose={true}
                 width={"400px"}
+                forceRender={true}
                 footer={[
                     <Button key="1" style={{ flex: "1 1 auto" }} onClick={close}>Отмена</Button>,
                     <Button key="2"
