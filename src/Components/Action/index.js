@@ -735,7 +735,7 @@ export function Action(props) {
                                 </div>
                                 <div style={{ overflowY: 'scroll', flex: "1", height: "100%" }}>
                                     <div style={{ padding: "0 10px", textAlign: "center", fontWeight: "600", fontSize: "14px", minHeight: (!(titles && titles.header)) ? "47px" : "0px" }}>{(titles && titles.subheader) ? titles.subheader : ""}</div>
-                                    {!loading && <div style={{ height: "100%", padding: "0px 15px 15px 15px" }}>
+                                    {!loading && <div style={{ height: "100%", padding: "0px 10px 10px 10px" }}>
                                         {steps && <React.Fragment>
                                             <CurrentForm
                                                 setSubmit={setSubmit}

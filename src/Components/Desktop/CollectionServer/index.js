@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Card, Button, Tooltip, Pagination, Empty, Divider, Typography, Tag, Select, List, Table, Spin } from 'antd';
+import { Layout, Card, Button, Tooltip, Pagination, Empty, Divider, Typography, Tag, Select, List, Table, Spin, Badge } from 'antd';
 import 'moment/locale/ru';
 import { Action } from '../../Action'
 import { DropdownAction } from '../DropdownAction'
@@ -899,7 +899,9 @@ export function CollectionServer(props) {
                                 checked={filtered}
                                 onChange={checked => setFiltered(checked)}
                             >
-                                <FilterOutlined />
+                                <Badge dot={(state && state.filter && Object.keys(state.filter)?.length > 0)?true:false}>
+                                    <FilterOutlined style={{color: (filtered)?"white":"black"}}/>
+                                </Badge>
                             </CheckableTag>
                         </Tooltip>
                     </div>}

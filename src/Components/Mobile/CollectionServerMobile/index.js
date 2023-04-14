@@ -156,7 +156,8 @@ export function SortingFieldsUIMobile(props) {
                     // fontSize: "13px",
                     fontWeight: "600",
                     color: "rgba(0, 0, 0, 0.85)",
-                    padding: "0px 21px 0px 11px"
+                    padding: "0px 21px 0px 11px",
+                    // fontSize:"14px"
                 }}>
                     Сортировка
                 </div>
@@ -194,7 +195,8 @@ export function SortingFieldsUIMobile(props) {
                             flex: "1",
                             border: "1px solid #e5e5e5",
                             borderRadius: "4px",
-                            padding: "2px 6px"
+                            padding: "2px 6px",
+                            // fontSize:"14px"
                         }}>
                         {value.order === "ASC" &&
                             <span><SortDescendingOutlined /> Возростанию</span>
@@ -917,7 +919,7 @@ export function CollectionServerMobile(props) {
         ], []);
     const trigger = React.useCallback((click) => (
         <div onClick={click} style={{ cursor: "pointer", padding: "5px" }}>
-            {!_.isEmpty(state.filter) && <Badge dot>
+            {!_.isEmpty(state.filter) && <Badge content={Badge.dot}>
                 <Icofont icon="filter" />
             </Badge>}
             {_.isEmpty(state.filter) && <Icofont icon="filter" />}
