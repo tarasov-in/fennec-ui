@@ -602,7 +602,7 @@ export function Field(props) {
         case "group":
             switch (type) {
                 case "func":
-                    return (props?.item?.func) ? props?.item?.func(auth, item, value, onChange) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange) : undefined;
                 case "object":
                 case "document":
                     return (<GroupObj auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} changed={changed}></GroupObj>)
@@ -612,7 +612,7 @@ export function Field(props) {
         case "range":
             switch (type) {
                 case "func":
-                    return (props?.item?.func) ? props?.item?.func(auth, item, value, onChange, onAfterChange) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange) : undefined;
                 case "int":
                 case "uint":
                 case "integer":
@@ -639,7 +639,7 @@ export function Field(props) {
         case "slider":
             switch (type) {
                 case "func":
-                    return (props?.item?.func) ? props?.item?.func(auth, item, value, onChange, onAfterChange) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange) : undefined;
                 case "int":
                 case "uint":
                 case "integer":
@@ -659,7 +659,7 @@ export function Field(props) {
         default:
             switch (type) {
                 case "func":
-                    return (props?.item?.func) ? props?.item?.func(auth, item, value, onChange, onAfterChange) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange) : undefined;
                 case "text":
                     return (<MultilineText auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></MultilineText>)
                 case "string":

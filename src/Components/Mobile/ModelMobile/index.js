@@ -352,9 +352,9 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
     };
     const propertiesVirtualized = propertiesFiltered?.filter(e => !!e);
     const virtualizedItem = (item, idx) => {
-        if (!item.name && item.type === "func" && item.func) {
+        if (!item.name && item.type === "func" && item.render) {
             return <div key={"func_" + idx}>
-                {item.func(auth, item)}
+                {item.render(auth, item)}
             </div>
         }
         if (item && !item.view || (item && item.view && item.view.unvisible === false)) {
@@ -371,7 +371,13 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
                     name={uncapitalize(item.name)}
                     rules={formItemRules(item)}
                 >
-                    <FieldMobile className={classes.Field} auth={auth} item={item} onChange={onFieldChange} changed={changed}></FieldMobile>
+                    <FieldMobile
+                        className={classes.Field}
+                        auth={auth}
+                        item={item}
+                        
+                        onChange={onFieldChange}
+                        changed={changed} />
                 </Form.Item>
             );
         }

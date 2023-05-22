@@ -1265,7 +1265,7 @@ export function FieldMobile({ auth, item, value, onChange, onAfterChange, change
         case "group":
             switch (item.type) {
                 case "func":
-                    return (props?.item?.func) ? props?.item?.func(auth, item, value, onChange, onAfterChange) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange) : undefined;
                 case "object":
                 case "document":
                     return (<GroupObj auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} changed={changed}></GroupObj>)
@@ -1275,7 +1275,7 @@ export function FieldMobile({ auth, item, value, onChange, onAfterChange, change
         case "range":
             switch (item.type) {
                 case "func":
-                    return (props?.item?.func) ? props?.item?.func(auth, item, value, onChange, onAfterChange) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange) : undefined;
                 case "int":
                 case "uint":
                 case "integer":
@@ -1300,7 +1300,7 @@ export function FieldMobile({ auth, item, value, onChange, onAfterChange, change
         case "slider":
             switch (item.type) {
                 case "func":
-                    return (props?.item?.func) ? props?.item?.func(auth, item, value, onChange, onAfterChange) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange) : undefined;
                 case "int":
                 case "uint":
                 case "integer":
@@ -1320,7 +1320,7 @@ export function FieldMobile({ auth, item, value, onChange, onAfterChange, change
         default:
             switch (item.type) {
                 case "func":
-                    return (props?.item?.func) ? props?.item?.func(auth, item, value, onChange, onAfterChange) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange) : undefined;
                 case "string":
                     return (<String auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></String>)
                 case "password":
