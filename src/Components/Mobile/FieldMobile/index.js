@@ -25,6 +25,71 @@ if (isIPhone) {
     };
 }
 
+function UploadItems({ auth, item, value, onChange, changed }) {
+    const [files, setFiles] = useState([]);
+    const [urls, setUrls] = useState([]);
+    useEffect(() => {
+        triggerChange(files);
+    }, [files]);
+    const triggerChange = (changedValue) => {
+        if (onChange) {
+            onChange([
+                ...changedValue,
+            ]);
+        }
+    };
+    const uploadingProps = {
+        maxCount: 10,
+        name: 'files',
+        multiple: true,
+        accept: item.accept,
+        onDelete: file => {
+            setUrls([]);
+            setFiles([]);
+        },
+        beforeUpload: file => {
+            setFiles(o=>[...o, file]);
+            return file;
+        },
+    };
+    const upload = (file) => {
+        return {
+            url: URL.createObjectURL(file),
+        }
+    }
+    return (
+        <div className='bg bg-grey' style={{
+            backgroundColor: "rgb(235 235 235 / 20%)",
+            padding: "5px 0px",
+            display: "flex",
+            justifyContent: "space-between"
+        }}>
+            <div style={{ flex: "0" }}>
+                <ImageUploader
+                    style={{
+                        borderRadius: "4px",
+                        border: "1px solid #cfcfcf",
+                        '--cell-size': '65px'
+                    }}
+                    value={urls}
+                    onChange={(f) => {
+                        setUrls(f);
+                    }}
+                    upload={upload}
+                    {...uploadingProps}
+                    showUpload={urls.length < uploadingProps.maxCount}
+                >
+                    {(item.trigger && _.isFunction(item.trigger)) && item.trigger(item)}
+                    {/* {(item.trigger && !_.isFunction(item.trigger)) && content(item)} */}
+                </ImageUploader>
+            </div>
+            {/* <div style={{ flex: "1" }}>
+                {content(item)}
+            </div> */}
+        </div>
+    );
+}
+
 function UploadItem({ auth, item, value, onChange, changed }) {
     const [files, setFiles] = useState([]);
     const [urls, setUrls] = useState([]);
@@ -105,9 +170,9 @@ function Image({ auth, item, value, onChange, changed }) {
             window.history.back();
         }
     }
- 
-    useEffect(()=>{
-        if(onChange) {
+
+    useEffect(() => {
+        if (onChange) {
             onChange(value)
         }
     }, [])
@@ -1355,6 +1420,8 @@ export function FieldMobile({ auth, item, value, onChange, onAfterChange, change
                     return (<ActionItem auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></ActionItem>)
                 case "file":
                     return (<UploadItem auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></UploadItem>)
+                case "files":
+                    return (<UploadItems auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></UploadItems>)
                 // case "imageeditor":
                 //     return (<ImageEditor auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></ImageEditor>)
                 case "image":
