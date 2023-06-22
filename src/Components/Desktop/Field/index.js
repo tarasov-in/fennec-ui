@@ -139,7 +139,6 @@ function UploadItem({ auth, item, value, onChange, changed }) {
         </Dragger >
     );
 }
-
 function Image({ auth, item, value, onChange, changed }) {
     const [open, setOpen] = useState(false);
     const close = () => {
@@ -217,8 +216,6 @@ function Image({ auth, item, value, onChange, changed }) {
         </div>
     );
 }
-
-
 function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
     const [data, setData] = useState([]);
     const meta = useMetaContext();
