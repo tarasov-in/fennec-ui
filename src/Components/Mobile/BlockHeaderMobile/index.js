@@ -1,5 +1,4 @@
 import React, {  } from 'react';
-import 'moment/locale/ru';
 
 export function BlockHeaderMobile(props) {
     const { title, extra, style } = props;

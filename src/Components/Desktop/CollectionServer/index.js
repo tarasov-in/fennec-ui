@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Card, Button, Tooltip, Pagination, Empty, Divider, Typography, Tag, Select, List, Table, Spin, Badge } from 'antd';
-import 'moment/locale/ru';
 import { Action } from '../../Action'
 import { DropdownAction } from '../DropdownAction'
 import { unwrap, GET, errorCatch, Request, QueryParam, GETWITH, If, READWITH, QueryFunc, JSX, GetMetaPropertyByPath, updateInArray, deleteInArray, QueryDetail, subscribe as _subscribe, unsubscribe, clean, JSXMap } from '../../../Tool'
 import { createUseStyles } from 'react-jss';
 import "./index.css"
 import { FilterOutlined, SortAscendingOutlined, SortDescendingOutlined } from '@ant-design/icons';
-import 'moment/locale/ru';
 import { Field } from '../Field';
 import { Model } from '../Model';
 import { useMetaContext } from '../../Context';

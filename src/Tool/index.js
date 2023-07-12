@@ -1,9 +1,10 @@
 import { message } from "antd";
-import moment from "moment";
 import numeral from 'numeral';
 import React, { useEffect, useRef, useState } from 'react';
 import PubSub from 'pubsub-js'
 import uuid from 'react-uuid';
+import dayjs from 'dayjs'
+import 'dayjs/locale/ru'
 var _ = require('lodash');
 //--------------------------------------------------------------
 export const publish = (msg, data) => {
@@ -472,7 +473,7 @@ export function QueryParametersToFilters(urlRequestParameters, filters) {
             let v1 = urlRequestParameters.get(`${s1}${item.name}`)
             let v2 = urlRequestParameters.get(`${s2}${item.name}`)
             if (v1 && v2) {
-                flt[i].filtered = [moment(v1),moment(v2)];
+                flt[i].filtered = [dayjs(v1),dayjs(v2)];
             }
         }
         switch (item.filterType) {
@@ -606,13 +607,13 @@ export const upgradeInArray = (array, item) => {
 export const createInArray = (array, item) => {
     return updateInArray(array, item);
 }
-export const updateInArray = (array, item) => {
+export const updateInArray = (array, item, first) => {
     if (!array) array = [];
     if (!item || !item.ID) return array;
     if (_.findIndex(array, { ID: item.ID }) >= 0) {
         return array?.map(e => IfElse(e.ID === item.ID, item, e));
     } else {
-        return [...array, item];
+        return (first)?[item, ...array]:[...array, item];
     }
     return;
 }
@@ -1194,21 +1195,21 @@ export function getFormatFieldValueTableView(data, type, meta) {
     }
 
     if (type === "timestamp" || type === "datetime" || type == "localdatetime") {
-        var mDate = moment(data);
+        var mDate = dayjs(data);
         if (mDate && mDate.isValid()) {
             return mDate.format("DD.MM.YYYY HH:mm:ss");
         }
     } else if (type === "date" || type == "localdate") {
-        var mDate = moment(data);
+        var mDate = dayjs(data);
         if (mDate && mDate.isValid()) {
             return mDate.format("DD.MM.YYYY");
         }
     } else if (type === "time" || type === "localtime") {
         var mDate = '';
         if (data.length <= 8) {
-            mDate = moment(data, "HH:mm:ss");
+            mDate = dayjs(data, "HH:mm:ss");
         } else if (data.length > 8) {
-            mDate = moment(data);
+            mDate = dayjs(data);
         }
 
         if (mDate && mDate.isValid()) {

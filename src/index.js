@@ -1,4 +1,8 @@
 import React from 'react'
+
+import dayjs from 'dayjs'
+import 'dayjs/locale/ru'
+
 import styles from './styles.module.css'
 import {
   publish,

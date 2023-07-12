@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import 'moment/locale/ru';
+import React, { useState, useEffect, useMemo } from 'react';
 import locale from 'antd/es/date-picker/locale/ru_RU';
 import {
     Input,
@@ -7,8 +6,6 @@ import {
     Checkbox,
     DatePicker,
     InputNumber,
-    Dropdown,
-    Menu,
     TimePicker,
     Slider,
     Upload,
@@ -16,13 +13,14 @@ import {
     Button,
 } from 'antd';
 import { errorCatch, getDisplay, getObjectValue, GETWITH, pushStateHistoryModal, QueryDetail, QueryOrder, READWITH, useHover } from '../../../Tool';
-import moment from 'moment';
 import Icofont from 'react-icofont';
 import { useMetaContext } from '../../Context';
 import { InboxOutlined } from '@ant-design/icons';
-import 'moment/locale/ru';
 import { EyeInvisibleOutlined, EyeTwoTone, UploadOutlined } from '@ant-design/icons';
 import ImageEditor from '../ImageEditor';
+
+import dayjs from 'dayjs'
+import 'dayjs/locale/ru'
 
 var _ = require('lodash');
 const { Dragger } = Upload;
@@ -54,7 +52,7 @@ function UploadItems({ auth, item, value, onChange, changed }) {
             setFiles(newFiles);
         },
         beforeUpload: (file, fileList) => {
-            setFiles(o=>[...o, file]);
+            setFiles(o => [...o, file]);
             return false;
         },
         fileList: files,
@@ -333,36 +331,36 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
     )
 }
 function RangeTime({ item, value, onChange, onAfterChange }) {
-    var a = undefined;
-    if (value && value[0] && value[1]) {
-        a = [];
-        a.push(moment(value[0]))
-        a.push(moment(value[1]))
-    }
+    const a = useMemo(() => {
+        if (value && value[0] && value[1]) {
+            return [dayjs(value[0]), dayjs(value[1])]
+        }
+        return []
+    }, [value])
     return (
-        <TimePicker.RangePicker value={a} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }} />
+        <TimePicker.RangePicker changeOnBlur={true} value={a} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }} />
     )
 }
 function RangeDate({ item, value, onChange, onAfterChange }) {
-    var a = undefined;
-    if (value && value[0] && value[1]) {
-        a = [];
-        a.push(moment(value[0]))
-        a.push(moment(value[1]))
-    }
+    const a = useMemo(() => {
+        if (value && value[0] && value[1]) {
+            return [dayjs(value[0]), dayjs(value[1])]
+        }
+        return []
+    }, [value])
     return (
-        <DatePicker.RangePicker value={a} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }} />
+        <DatePicker.RangePicker changeOnBlur={true} value={a} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }} />
     )
 }
 function RangeDateTime({ item, value, onChange, onAfterChange }) {
-    var a = undefined;
-    if (value && value[0] && value[1]) {
-        a = [];
-        a.push(moment(value[0]))
-        a.push(moment(value[1]))
-    }
+    const a = useMemo(() => {
+        if (value && value[0] && value[1]) {
+            return [dayjs(value[0]), dayjs(value[1])]
+        }
+        return []
+    }, [value])
     return (
-        <DatePicker.RangePicker showTime={{ format: 'HH:mm' }} value={a} onChange={onChange} format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }} />
+        <DatePicker.RangePicker changeOnBlur={true} showTime={{ format: 'HH:mm' }} value={a} onChange={onChange} format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }} />
     )
 }
 function RangeFloat({ item, value, onChange, onAfterChange }) {
@@ -562,17 +560,17 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
 }
 function DateTime({ item, value, onChange, onAfterChange }) {
     return (
-        <DatePicker value={(value) ? moment(value) : undefined} onChange={onChange} showTime format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }} />
+        <DatePicker changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} showTime format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }} />
     )
 }
 function Date({ item, value, onChange, onAfterChange }) {
     return (
-        <DatePicker value={(value) ? moment(value) : undefined} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }} />
+        <DatePicker changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }} />
     )
 }
 function Time({ item, value, onChange, onAfterChange }) {
     return (
-        <DatePicker value={(value) ? moment(value) : undefined} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }} />
+        <DatePicker changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }} />
     )
 }
 function Boolean({ item, value, onChange, onAfterChange }) {
@@ -730,8 +728,8 @@ export function Field(props) {
                     return (<UploadItem auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></UploadItem>)
                 case "files":
                     return (<UploadItems auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></UploadItems>)
-                // case "imageeditor":
-                //     return (<ImageEditor auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></ImageEditor>)
+                case "imageeditor":
+                    return (<ImageEditor auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></ImageEditor>)
                 case "image":
                     return (<Image auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></Image>)
                 default:

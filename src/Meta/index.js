@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import 'moment/locale/ru';
 import { useAuth } from '../Auth';
-import { GET } from '../Tool';
 import { MetaContext } from '../Components/Context';
 import fuuid from 'react-uuid'
 

@@ -2,8 +2,8 @@ import React, { createContext, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import decode from 'jwt-decode';
 import WSocket from '../IO/WSocket';
-import moment from 'moment-timezone';
-import 'moment/locale/ru';
+import dayjs from 'dayjs'
+import 'dayjs/locale/ru'
 import { message } from 'antd';
 import Cookies from 'js-cookie'
 
@@ -99,13 +99,13 @@ export class AuthService {
             if (this.performance.has(path)) {
                 var prev = this.performance.get(path);
                 this.performance.set(path, {
-                    last: moment(new Date()).format(),
+                    last: dayjs(new Date()).format(),
                     delta: end - start,
                     avg: Math.abs((end - start) + prev.avg) / 2,
                 });
             } else {
                 this.performance.set(path, {
-                    last: moment(new Date()).format(),
+                    last: dayjs(new Date()).format(),
                     delta: end - start,
                     avg: end - start,
                 });
