@@ -390,7 +390,7 @@ export function Action(props) {
             return [
                 FooterButton({
                     key: "dismiss",
-                    name: backText || 'Назад',
+                    name: steps[currentStep]?.dismissText || backText || 'Назад',
                     callback: FooterDismissFunction(),
                     options: {
                         type: "ghost"
@@ -420,7 +420,7 @@ export function Action(props) {
                 IfElse(currentStep < steps.length - 1,
                     FooterButton({
                         key: "next",
-                        name: nextText || 'Далее',
+                        name: steps[currentStep]?.okText || nextText || 'Далее',
                         callback: FooterOkFunction(),
                         options: {
                             type: "primary"
@@ -429,7 +429,7 @@ export function Action(props) {
                     }),
                     FooterButton({
                         key: "ok",
-                        name: okText || 'Отправить',
+                        name: steps[currentStep]?.okText || okText || 'Отправить',
                         callback: FooterOkFunction(),
                         options: {
                             type: "primary"
