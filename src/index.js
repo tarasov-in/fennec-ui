@@ -88,7 +88,10 @@ import {
   typeIsNumber,
   getFormatFieldValueTableView,
   priceFormat,
-  MetaColumns
+  MetaColumns,
+  isRequired,
+  validator,
+  formItemRules
 } from './Tool'
 
 import {
@@ -259,6 +262,9 @@ export {
   getFormatFieldValueTableView,
   priceFormat,
   MetaColumns,
+  isRequired,
+  validator,
+  formItemRules
 }
 export {
   AuthService,

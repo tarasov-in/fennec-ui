@@ -7,7 +7,7 @@ import 'react-virtualized/styles.css';
 import {
     Typography,
 } from 'antd';
-import { uncapitalize, GetMeta, GetMetaProperties } from '../../../Tool';
+import { uncapitalize, GetMeta, GetMetaProperties, formItemRules, isRequired, validator } from '../../../Tool';
 import { FieldMobile } from '../FieldMobile';
 var _ = require('lodash');
 const { Text, Link } = Typography;
@@ -246,47 +246,47 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
     const propertiesOneMany = properties?.filter(e => e.relation && e.relation.type === "one-many");
     const propertiesDocuments = properties?.filter(e => e.type === "document");
 
-    function isRequired(item) {
-        if (item && item.validators) {
-            return item.validators.required || item.required;
-        }
-        return false;
-    }
-    const validator = (func, message) => ({
-        validator: (_, value) => {
-            if (func(value)) {
-                return Promise.resolve();
-            }
-            return Promise.reject(new Error(message))
-        }
-    });
-    const formItemRules = (item) => {
-        let res = [];
-        if (item && item.validators) {
-            if (_.isArray(item.validators)) {
-                if (isRequired(item) === true) {
-                    res.push(
-                        { required: true, message: 'Укажите ' + item.label.toLowerCase() + '!' }
-                    );
-                }
-                for (let i = 0; i < item.validators.length; i++) {
-                    const _validator = item.validators[i];
-                    if (_validator.func) {
-                        res.push(
-                            validator(_validator.func, _validator.message),
-                        );
-                    } else {
-                        res.push(_validator);
-                    }
-                }
-            } else if (_.isObject(item.validators)) {
-                res.push(
-                    { required: isRequired(item), message: 'Укажите ' + item.label.toLowerCase() + '!' }
-                );
-            }
-        }
-        return res;
-    };
+    // function isRequired(item) {
+    //     if (item && item.validators) {
+    //         return item.validators.required || item.required;
+    //     }
+    //     return false;
+    // }
+    // const validator = (func, message) => ({
+    //     validator: (_, value) => {
+    //         if (func(value)) {
+    //             return Promise.resolve();
+    //         }
+    //         return Promise.reject(new Error(message))
+    //     }
+    // });
+    // const formItemRules = (item) => {
+    //     let res = [];
+    //     if (item && item.validators) {
+    //         if (_.isArray(item.validators)) {
+    //             if (isRequired(item) === true) {
+    //                 res.push(
+    //                     { required: true, message: 'Укажите ' + item.label.toLowerCase() + '!' }
+    //                 );
+    //             }
+    //             for (let i = 0; i < item.validators.length; i++) {
+    //                 const _validator = item.validators[i];
+    //                 if (_validator.func) {
+    //                     res.push(
+    //                         validator(_validator.func, _validator.message),
+    //                     );
+    //                 } else {
+    //                     res.push(_validator);
+    //                 }
+    //             }
+    //         } else if (_.isObject(item.validators)) {
+    //             res.push(
+    //                 { required: isRequired(item), message: 'Укажите ' + item.label.toLowerCase() + '!' }
+    //             );
+    //         }
+    //     }
+    //     return res;
+    // };
     // item: {
     //     validators: {
     //         required: false

@@ -5,7 +5,7 @@ import {
     Tag
 } from 'antd';
 import Icofont from 'react-icofont';
-import { GetMeta, GetMetaProperties, getObjectDisplay, uncapitalize } from '../../../Tool';
+import { GetMeta, GetMetaProperties, formItemRules, isRequired, validator, getObjectDisplay, uncapitalize } from '../../../Tool';
 import { Field } from '../Field';
 import { useMetaContext } from '../../Context';
 var _ = require('lodash');
@@ -58,47 +58,7 @@ function Frm(props) {
     const propertiesFiltered = properties?.filter(e => (!e.name || (e.name && e.name.toUpperCase() !== "ID")))?.filter(e => (!e.relation || (e.relation && e.relation.type !== "one-many")));
     const propertiesOneMany = properties?.filter(e => e.relation && e.relation.type === "one-many");
 
-    function isRequired(item) {
-        if (item && item.validators) {
-            return item.validators.required || item.required;
-        }
-        return false;
-    }
-    const validator = (func, message) => ({
-        validator: (_, value) => {
-            if (func(value)) {
-                return Promise.resolve();
-            }
-            return Promise.reject(new Error(message))
-        }
-    });
-    const formItemRules = (item) => {
-        let res = [];
-        if (item && item.validators) {
-            if (_.isArray(item.validators)) {
-                if (isRequired(item) === true) {
-                    res.push(
-                        { required: true, message: 'Укажите ' + item.label.toLowerCase() + '!' }
-                    );
-                }
-                for (let i = 0; i < item.validators.length; i++) {
-                    const _validator = item.validators[i];
-                    if (_validator.func) {
-                        res.push(
-                            validator(_validator.func, _validator.message),
-                        );
-                    } else {
-                        res.push(_validator);
-                    }
-                }
-            } else if (_.isObject(item.validators)) {
-                res.push(
-                    { required: isRequired(item), message: 'Укажите ' + item.label.toLowerCase() + '!' }
-                );
-            }
-        }
-        return res;
-    };
+
     // item: {
     //     validators: {
     //         required: false
@@ -163,7 +123,7 @@ function Frm(props) {
                                 auth={auth}
                                 filter={fieldsFilters[item.name.toLowerCase()]}
                                 item={{ ...item, filterType: undefined, func: (funcStat && funcStat[item.name.toLowerCase()]) ? funcStat[item.name.toLowerCase()] : {} }}
-                                
+
                             />
                         </Form.Item>);
                     })}
