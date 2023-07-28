@@ -202,6 +202,12 @@ export function Action(props) {
     const [stepObject, setStepObject] = useState({});
     const [currentStep, setCurrentStep] = useState(0);
 
+    useEffect(()=>{
+        if(!currentStep){
+            setStepObject({})
+        }
+    },[currentStep])
+
     const [form] = Form.useForm();
     const closePopup = useCallback(() => {
         form.resetFields();
@@ -337,6 +343,9 @@ export function Action(props) {
             closePopup();
         }
     }, [currentStep, closePopup]);
+
+    
+
     const next = React.useCallback((values, item, currentStep) => {
         if (currentStep < steps.length - 1) {
             if (item && item.action) {
@@ -719,64 +728,64 @@ export function Action(props) {
             } else {
                 return (<React.Fragment>
                     {/* <RenderToLayer> */}
-                        <Popup
-                            visible={opened || (fire && visible)}
-                            showCloseButton
-                            bodyStyle={{ height: "100%" }}
-                            onClose={closePopup}
-                        >
-                            <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
-                                <div style={{ flex: "0", padding: "0 10px" }}>
-                                    {(titles && titles.header) ?
-                                        <div style={{ display: "flex", justifyContent: "center", padding: "10px 30px 10px 15px", fontSize: "16px" }}>
-                                            {titles.header}
-                                        </div> : undefined
+                    <Popup
+                        visible={opened || (fire && visible)}
+                        showCloseButton
+                        bodyStyle={{ height: "100%" }}
+                        onClose={closePopup}
+                    >
+                        <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+                            <div style={{ flex: "0", padding: "0 10px" }}>
+                                {(titles && titles.header) ?
+                                    <div style={{ display: "flex", justifyContent: "center", padding: "10px 30px 10px 15px", fontSize: "16px" }}>
+                                        {titles.header}
+                                    </div> : undefined
+                                }
+                            </div>
+                            <div style={{ overflowY: 'scroll', flex: "1", height: "100%" }}>
+                                <div style={{ padding: "0 10px", textAlign: "center", fontWeight: "600", fontSize: "14px", minHeight: (!(titles && titles.header)) ? "47px" : "0px" }}>{(titles && titles.subheader) ? titles.subheader : ""}</div>
+                                {!loading && <div style={{ height: "100%", padding: "0px 10px 10px 10px" }}>
+                                    {steps && <React.Fragment>
+                                        <CurrentForm
+                                            setSubmit={setSubmit}
+                                            auth={props.auth}
+                                            current={currentStep}
+                                            steps={steps}
+                                            object={stepObject}
+                                            action={(values) => {
+                                                let o = {
+                                                    ...stepObject,
+                                                    [steps[currentStep].key]: { ...steps[currentStep].object, ...values }
+                                                };
+                                                next(values, steps[currentStep], currentStep);
+                                            }}
+                                        />
+                                    </React.Fragment>}
+                                    {(!steps && props.form) &&
+                                        <ContentForm
+                                            {...props}
+                                            subheader={(titles && titles.subheader) ? titles.subheader : ""}
+                                            submit={action}
+                                            form={form}
+                                        />
                                     }
-                                </div>
-                                <div style={{ overflowY: 'scroll', flex: "1", height: "100%" }}>
-                                    <div style={{ padding: "0 10px", textAlign: "center", fontWeight: "600", fontSize: "14px", minHeight: (!(titles && titles.header)) ? "47px" : "0px" }}>{(titles && titles.subheader) ? titles.subheader : ""}</div>
-                                    {!loading && <div style={{ height: "100%", padding: "0px 10px 10px 10px" }}>
-                                        {steps && <React.Fragment>
-                                            <CurrentForm
-                                                setSubmit={setSubmit}
-                                                auth={props.auth}
-                                                current={currentStep}
-                                                steps={steps}
-                                                object={stepObject}
-                                                action={(values) => {
-                                                    let o = {
-                                                        ...stepObject,
-                                                        [steps[currentStep].key]: { ...steps[currentStep].object, ...values }
-                                                    };
-                                                    next(values, steps[currentStep], currentStep);
-                                                }}
-                                            />
-                                        </React.Fragment>}
-                                        {(!steps && props.form) &&
-                                            <ContentForm
-                                                {...props}
-                                                subheader={(titles && titles.subheader) ? titles.subheader : ""}
-                                                submit={action}
-                                                form={form}
-                                            />
-                                        }
-                                    </div>}
-                                    {loading && <div className="loading">
-                                        <div className="align" style={{ textAlign: "center" }}>
-                                            <div style={{ display: "flex", justifyContent: "center" }}>
-                                                <SpinLoading style={{ '--size': '48px' }} />
-                                            </div>
-                                            <span style={{ marginTop: 8 }}>Отправка ...</span>
+                                </div>}
+                                {loading && <div className="loading">
+                                    <div className="align" style={{ textAlign: "center" }}>
+                                        <div style={{ display: "flex", justifyContent: "center" }}>
+                                            <SpinLoading style={{ '--size': '48px' }} />
                                         </div>
-                                    </div>}
-                                </div>
-                                <div style={{ flex: "0" }}>
-                                    <div style={{ display: "flex", justifyContent: "space-between", gap: "10px", padding: "10px" }}>
-                                        {footer()?.map((e, idx) => <Button key={idx} style={{ flex: "auto" }} type="ghost" {...e.options} onClick={e.onPress}>{e.text}</Button>)}
+                                        <span style={{ marginTop: 8 }}>Отправка ...</span>
                                     </div>
+                                </div>}
+                            </div>
+                            <div style={{ flex: "0" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", gap: "10px", padding: "10px" }}>
+                                    {footer()?.map((e, idx) => <Button key={idx} style={{ flex: "auto" }} type="ghost" {...e.options} onClick={e.onPress}>{e.text}</Button>)}
                                 </div>
                             </div>
-                        </Popup>
+                        </div>
+                    </Popup>
                     {/* </RenderToLayer> */}
                     {trigger && trigger()}
                 </React.Fragment>);

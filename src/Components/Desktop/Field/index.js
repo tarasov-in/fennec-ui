@@ -558,6 +558,120 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
         </Select>
     )
 }
+function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
+    const [data, setData] = useState([]);
+    const meta = useMetaContext();
+
+    const dataOrContent = (data) => {
+        return (data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data
+    }
+    const defaultQueryParams = (filter) => {
+        if (!filter) {
+            return [
+                QueryDetail("model"),
+                QueryOrder("ID", "ASC")
+            ]
+        } else if (_.isArray(filter)) {
+            return filter
+        }
+        return []
+    }
+    useEffect(() => {
+        if (item.source || item.url || (item && _.get(item, "relation.reference.url")) || (item && _.get(item, "relation.reference.source"))) {
+            let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
+            let url = item.source || item.relation.reference.url || item.relation.reference.source;
+            GETWITH(auth, url, [
+                ...defaultQueryParams(filter)
+            ], ({ data }) => {
+                setData(dataOrContent(data));
+            }, (err) => errorCatch(err, () => { }));
+        } else if (item && _.get(item, "relation.reference.data")) {
+            setData(item.relation.reference.data);
+        } else if (item && _.get(item, "relation.reference.object")) {
+            let object = getObjectValue(item, "relation.reference.object");
+            if (object) {
+                let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
+                READWITH(auth, object, [
+                    ...defaultQueryParams(filter)
+                ], ({ data }) => {
+                    setData(dataOrContent(data));
+                }, (err) => errorCatch(err, () => { }));
+            }
+        }
+    }, [
+        auth,
+        item?.source,
+        item?.url,
+        item?.queryFilter,
+        item?.relation?.reference?.data,
+        item?.relation?.reference?.url,
+        item?.relation?.reference?.source,
+        item?.relation?.reference?.queryFilter,
+        item?.relation?.reference?.filter
+    ]);
+    const property = (item, value) => {
+        if (item && _.get(item, "relation.reference.property") && value) {
+            return value[item.relation.reference.property];
+        }
+        if (value) {
+            return value.ID;
+        }
+        return undefined;
+    };
+    const itemByProperty = (item, value) => {
+        if (_.get(item, "relation.reference.property")) {
+            return data.find(e => e[item.relation.reference.property] === value);
+        }
+        return data.find(e => e.ID === value);
+    };
+    const label = (item, value) => {
+        if (item && value) {
+            if (item.display && _.isFunction(item.display)) {
+                return item.display(value)
+            } else if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
+                return item.relation.display(value)
+            } else {
+                let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
+                return getDisplay(value, item?.relation?.display || fieldMeta?.display, fieldMeta, meta)
+            }
+        }
+        return "";
+    };
+    const by = (item) => {
+        if (changed && item.dependence && item.dependence.field) {
+            return (changed[item.dependence.by] && item.dependence.eq) ? changed[item.dependence.by][item.dependence.eq] : changed[item.dependence.eq];
+        }
+    };
+    const elements = (data) => {
+        if (item.dependence) {
+            if (item.dependence.field && by(item)) {
+                if (value[item.dependence.field] === by(item)) {
+                    return data?.map(i => (
+                        <Option key={property(item, i)} value={property(item, i)}>{label(item, i)}</Option>
+                    ));
+                }
+            }
+        } else {
+            return data?.map(i => (
+                <Option key={property(item, i)} value={property(item, i)}>{label(item, i)}</Option>
+            ));
+        }
+    };
+    return (
+        <Select showSearch
+            size={(item.size) ? item.size : "middle"}
+            value={value}
+            onChange={e => onChange(e, item, itemByProperty(item, e))}
+            style={{ width: "100%" }}
+            allowClear={true}
+            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
+            filterOption={(input, element) =>
+                element.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }>
+            {elements(data)}
+        </Select>
+    )
+}
 function DateTime({ item, value, onChange, onAfterChange }) {
     return (
         <DatePicker changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} showTime format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }} />
@@ -721,6 +835,8 @@ export function Field(props) {
                 case "datetime":
                 case "time.Time":
                     return (<DateTime auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></DateTime>)
+                case "bigobject":
+                    return (<BigObj auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} changed={changed}></BigObj>)
                 case "object":
                 case "document":
                     return (<Obj auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} changed={changed}></Obj>)
