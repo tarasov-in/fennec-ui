@@ -21,6 +21,15 @@ import ImageEditor from '../ImageEditor';
 
 import dayjs from 'dayjs'
 import 'dayjs/locale/ru'
+import weekday from "dayjs/plugin/weekday"
+import localeData from "dayjs/plugin/localeData"
+var utc = require('dayjs/plugin/utc')
+var timezone = require('dayjs/plugin/timezone') // dependent on utc plugin
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.locale('ru');
+dayjs.extend(weekday)
+dayjs.extend(localeData)
 
 var _ = require('lodash');
 const { Dragger } = Upload;
