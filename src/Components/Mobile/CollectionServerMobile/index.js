@@ -308,6 +308,8 @@ export function CollectionServerMobile(props) {
         selection, // undefined, "radio" или "checkbox"
 
         render,
+        customRender,
+        collectionRef,
         titleFunc,
         extraFunc,
         noheader,
@@ -940,6 +942,23 @@ export function CollectionServerMobile(props) {
         // window.scrollTo(0, 0);
         document.querySelector(".page").scrollTo(0, 0)
     }, [state]);
+
+    React.useEffect(() => {
+        if (collectionRef) {
+            collectionRef.current = {
+                collection,
+                setCollection,
+                setCollectionItem,
+                removeCollectionItem,
+                update
+            }
+        }
+    }, [collection,
+        setCollection,
+        setCollectionItem,
+        removeCollectionItem,
+        update])
+
     return (
         <React.Fragment>
             {!noheader && <BlockHeaderMobile
@@ -948,7 +967,14 @@ export function CollectionServerMobile(props) {
             />}
             {(!filters?.length) && <div>
                 <MaskWithLoading visible={loading} />
-                <div>
+                {customRender && customRender(collection, {
+                    collection,
+                    setCollection,
+                    setCollectionItem,
+                    removeCollectionItem,
+                    update: request
+                })}
+                {!customRender && <div>
                     {(collection && collection.length > 0) && <div>
                         <List className="my-list">
                             {collection?.map((item, index) => (
@@ -967,7 +993,7 @@ export function CollectionServerMobile(props) {
                         <EmptyMobile />
                         <div>Нет данных</div>
                     </div>}
-                </div>
+                </div>}
             </div>}
 
             {(!!filters?.length) &&
@@ -1001,7 +1027,14 @@ export function CollectionServerMobile(props) {
                         </div>
                     </div>
                     <MaskWithLoading visible={loading} />
-                    <List className="my-list filtered-list">
+                    {customRender && customRender(collection, {
+                        collection,
+                        setCollection,
+                        setCollectionItem,
+                        removeCollectionItem,
+                        update: request
+                    })}
+                    {!customRender && <List className="my-list filtered-list">
                         {(collection && collection.length > 0) && collection?.map((item, index) => (
                             <Item key={index} multipleLine align="top" wrap style={{ paddingLeft: "0px" }}>
                                 {RenderOnModelActions(item, index, () => _render(item, index), (modelActionsTitle) ? modelActionsTitle(item) : undefined)}
@@ -1016,7 +1049,7 @@ export function CollectionServerMobile(props) {
                             <EmptyMobile />
                             <div>Нет данных</div>
                         </div>}
-                    </List>
+                    </List>}
                     <div style={{ padding: "15px 0px" }}>
                         {(total > 1) &&
                             <div style={{ display: "flex", justifyContent: "center" }}>

@@ -77,10 +77,10 @@ export function SortingFieldsUI(props) {
         <React.Fragment>
             <Divider type="horizontal"
                 orientation="left"
-                style={{ margin: "12px 0", fontSize: "13px", fontWeight: "600", padding: "0px 15px 0px 5px" }} >
+                style={{ margin: "12px 0", fontSize: "13px", fontWeight: "600", padding: "0px 15px 0px 0px" }} >
                 Сортировка
             </Divider>
-            <div style={{ margin: "10px" }}>
+            <div style={{}}>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <Select
                         allowClear={true}
@@ -90,7 +90,7 @@ export function SortingFieldsUI(props) {
                         filterOption={(input, option) =>
                             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
-                        style={{ width: "100%", maxWidth: "183px", marginRight: "5px" }}
+                        style={{ width: "100%", maxWidth: "203px", marginRight: "5px" }}
                     >
                         {JSXMap(filters?.filter(f => f.sort), (item, idx) => (
                             <Option key={idx} value={item.name}>{item.label}</Option>
@@ -128,10 +128,10 @@ export function FiltersFieldsUI(props) {
         <React.Fragment>
             <Divider type="horizontal"
                 orientation="left"
-                style={{ margin: "12px 0", fontSize: "13px", fontWeight: "600", padding: "0px 15px 0px 5px" }} >
+                style={{ margin: "12px 0", fontSize: "13px", fontWeight: "600", padding: "0px 15px 0px 0px" }} >
                 Фильтры
             </Divider>
-            <div style={{ margin: "10px" }}>
+            <div style={{}}>
                 <div>
                     {JSXMap(filters?.filter(i => i.filter), (item, idx) => (
                         <div key={item.name} style={{ marginBottom: "10px" }}>
@@ -167,6 +167,8 @@ export function CollectionServer(props) {
         selection, // undefined, "radio" или "checkbox"
         mode, // table, list
         render,
+        customRender,
+        collectionRef,
         titleFunc,
         contextFilters,
         subscribe,
@@ -806,28 +808,56 @@ export function CollectionServer(props) {
         setState(o => ({ ...o, filterChanged: !_.isEqual(o.filter, value), newFilter: value }));
     }, [state]);
 
+    React.useEffect(() => {
+        if (collectionRef) {
+            collectionRef.current = {
+                collection,
+                setCollection,
+                setCollectionItem,
+                removeCollectionItem,
+                update
+            }
+        }
+    }, [collection,
+        setCollection,
+        setCollectionItem,
+        removeCollectionItem,
+        update])
+
     const view = (items) => {
+        const _render = (item, index) => {
+            if (render) {
+                return render(item, index, {
+                    collection,
+                    setCollection,
+                    setCollectionItem,
+                    removeCollectionItem,
+                    update
+                });
+            }
+            return "" + item
+        };
+        const actions = (item, index) => {
+            if (modelActions || defaultModelActions) {
+                return {
+                    actions: [RenderOnModelActions(item, index)]
+                };
+            }
+            return {};
+        };
+
+        // if (customRender) {
+        //     return customRender(items, {
+        //         collection,
+        //         setCollection,
+        //         setCollectionItem,
+        //         removeCollectionItem,
+        //         update,
+        //         //subscribe !!!!
+        //     })
+        // }
+
         if (mode === "list") {
-            const _render = (item, index) => {
-                if (render) {
-                    return render(item, index, {
-                        collection,
-                        setCollection,
-                        setCollectionItem,
-                        removeCollectionItem,
-                        update
-                    });
-                }
-                return "" + item
-            };
-            const actions = (item, index) => {
-                if (modelActions || defaultModelActions) {
-                    return {
-                        actions: [RenderOnModelActions(item, index)]
-                    };
-                }
-                return {};
-            };
             return (<div className='filtered-list'>
                 {/* <SpinLoading visible={loading} /> */}
                 {/* {loading && <Spin tip="Загрузка" />} */}
@@ -893,12 +923,12 @@ export function CollectionServer(props) {
                     {(filters && filters.length > 0 /*&& collection && collection.length > 0*/) && <div justify="end">
                         <Tooltip title="Фильтр и сортировка">
                             <CheckableTag
-                                style={{ cursor: "pointer" }}
+                                style={{ cursor: "pointer", margin: "0" }}
                                 checked={filtered}
                                 onChange={checked => setFiltered(checked)}
                             >
-                                <Badge dot={(state && state.filter && Object.keys(state.filter)?.length > 0)?true:false}>
-                                    <FilterOutlined style={{color: (filtered)?"white":"black"}}/>
+                                <Badge dot={(state && state.filter && Object.keys(state.filter)?.length > 0) ? true : false}>
+                                    <FilterOutlined style={{ color: (filtered) ? "white" : "black" }} />
                                 </Badge>
                             </CheckableTag>
                         </Tooltip>
@@ -906,23 +936,30 @@ export function CollectionServer(props) {
                 </div>
                 <Layout style={{ backgroundColor: "transparent" }} className="filtered-body">
                     <div style={{ width: "100%", marginBottom: (size === "small") ? "0px" : "5px" }}>
-                        <Card size="small" bordered={(size !== "small")} className={(size === "small") ? classes.cardSmall : ""} style={{ width: "100%" }}>
+                        {customRender && customRender(collection, {
+                            collection,
+                            setCollection,
+                            setCollectionItem,
+                            removeCollectionItem,
+                            update
+                        })}
+                        {!customRender && <Card size="small" bordered={(size !== "small")} className={(size === "small") ? classes.cardSmall : ""} style={{ width: "100%" }}>
                             <div>
                                 {titleView()}
                                 {view(collection)}
                             </div>
-                        </Card>
+                        </Card>}
                     </div>
                     {((filters && filters.length > 0 /*&& collection && collection.length > 0*/) && filtered) &&
-                        <Sider width={240} theme={"light"} style={{ margin: "0 1px 5px 5px" }} className="filtered-sider">
+                        <Sider width={240} theme={"light"} style={{ margin: "0 0px 5px 10px" }} className="filtered-sider">
                             {JSX(() => {
                                 const fl = filters?.filter(i => i.filter);
                                 if (filtered && fl.length > 0) {
                                     return (<React.Fragment>
-                                        <div style={{ margin: "10px" }}>
+                                        <div style={{}}>
                                             <Button style={{ width: "100%" }} disabled={!state.filterChanged} type="primary" onClick={applyFilter}>Применить</Button>
                                         </div>
-                                        <div style={{ margin: "10px" }}>
+                                        <div style={{ marginTop: "5px" }}>
                                             <Button style={{ width: "100%" }} disabled={_.isEmpty(state.filter)} onClick={clearFilter}>Очистить</Button>
                                         </div>
                                     </React.Fragment>)

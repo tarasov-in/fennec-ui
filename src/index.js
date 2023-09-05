@@ -129,7 +129,8 @@ import {
   TranslateContext,
   useTranslateContext,
   MetaContext,
-  useMetaContext
+  useMetaContext,
+  useCollectionRef
 } from './Components/Context'
 
 import {
@@ -288,6 +289,7 @@ export {
   useTranslateContext,
   MetaContext,
   useMetaContext,
+  useCollectionRef,
 
   Field,
   FieldMobile,

@@ -19,3 +19,10 @@ export const MetaContext = createContext();
 export function useMetaContext() {
     return React.useContext(MetaContext);
 }
+//----------------------------------------------
+export function useCollectionRef(initialValue) {
+    return React.useState({
+        current: initialValue
+    })[0]
+}
+//----------------------------------------------
