@@ -950,14 +950,14 @@ export function CollectionServerMobile(props) {
                 setCollection,
                 setCollectionItem,
                 removeCollectionItem,
-                update
+                update: request
             }
         }
     }, [collection,
         setCollection,
         setCollectionItem,
         removeCollectionItem,
-        update])
+        request])
 
     return (
         <React.Fragment>
