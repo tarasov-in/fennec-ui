@@ -74,105 +74,39 @@ function Frm(props) {
 
     return (
         <div>
-            {(object && propertiesOneMany && propertiesOneMany.length > 0) &&
-                <div style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    paddingBottom: "10px",
-                }}>
-                    <div>
-                        {(meta.name && visible == true) && getObjectDisplay(object, meta.name, gmeta)}
-                    </div>
-                    <div>
-                        <Tooltip title="Связи">
-                            <CheckableTag
-                                checked={visible}
-                                onChange={checked => setVisible(checked)}
-                            >
-                                <Icofont icon="icofont-link-alt" />
-                            </CheckableTag>
-                        </Tooltip>
-                    </div>
-                </div>}
-            <div style={{ display: (!visible) ? "block" : "none" }}>
-                <Form form={form}
-                    onFinish={submit}
-                    initialValues={{
-                        ...object
-                    }}
-                    {...options}
-                    labelAlign={"left"}
-                    layout={"vertical"}>
-                    {propertiesFiltered?.filter(e => (e.name && excludeFields[e.name.toLowerCase()]) ? false : true)?.map((item, idx) => {
-                        if (!item.name && item.type === "func" && item.render) {
-                            return <div key={"func_" + idx}>
-                                {item.render(auth, item)}
-                            </div>
-                        }
-                        return (<Form.Item
-                            preserve={(item.hidden) ? "true" : "false"}
-                            hidden={item.hidden}
+            <Form form={form}
+                onFinish={submit}
+                initialValues={{
+                    ...object
+                }}
+                {...options}
+                labelAlign={"left"}
+                layout={"vertical"}>
+                {propertiesFiltered?.filter(e => (e.name && excludeFields[e.name.toLowerCase()]) ? false : true)?.map((item, idx) => {
+                    if (!item.name && item.type === "func" && item.render) {
+                        return <div key={"func_" + idx}>
+                            {item.render(auth, item)}
+                        </div>
+                    }
+                    return (<Form.Item
+                        preserve={(item.hidden) ? "true" : "false"}
+                        hidden={item.hidden}
+                        key={item.name}
+                        name={(item.type !== "object" && item.type !== "document") ? uncapitalize(item.name) : uncapitalize(item.name) + "ID"}
+                        label={(item.type !== "bool" && item.type !== "boolean") ? item.label : undefined}
+                        rules={formItemRules(item)}
+                    >
+                        <Field
+                            mode="model"
                             key={item.name}
-                            name={(item.type !== "object" && item.type !== "document") ? uncapitalize(item.name) : uncapitalize(item.name) + "ID"}
-                            label={(item.type !== "bool" && item.type !== "boolean") ? item.label : undefined}
-                            rules={formItemRules(item)}
-                        >
-                            <Field
-                                mode="model"
-                                key={item.name}
-                                auth={auth}
-                                filter={fieldsFilters[item.name.toLowerCase()]}
-                                item={{ ...item, filterType: undefined, func: (funcStat && funcStat[item.name.toLowerCase()]) ? funcStat[item.name.toLowerCase()] : {} }}
+                            auth={auth}
+                            filter={fieldsFilters[item.name.toLowerCase()]}
+                            item={{ ...item, filterType: undefined, func: (funcStat && funcStat[item.name.toLowerCase()]) ? funcStat[item.name.toLowerCase()] : {} }}
 
-                            />
-                        </Form.Item>);
-                    })}
-                </Form>
-            </div>
-            {/* <div style={{ display: (visible) ? "block" : "none" }}>
-                <Tabs>
-                    {propertiesOneMany?.map((e, idx) => {
-                        let p = getObjectValue(e, "relation.reference.property");
-                        let n = getObjectValue(e, "relation.reference.object");
-                        if (!n) return;
-                        return (<TabPane tab={e.label} key={idx}>
-                            <CollectionServer
-                                auth={auth}
-                                name={n.toLowerCase()}
-                                contextFilters={() => (object) ? [
-                                    {
-                                        action: true,
-                                        // method: "eq",
-                                        name: p,
-                                        value: object.ID
-                                    }
-                                ] : []}
-                                filters={() => filtersFromMeta(n.toLowerCase())}
-                                columns={() => [
-                                    {
-                                        key: "meta",
-                                        title: "Описание",
-                                        render: (text, record) => {
-                                            return (getObjectDisplay(record, n, gmeta));
-                                        }
-                                    }
-                                ]}
-
-                                // mode={"list"}
-                                // render={(item, idx, { setCollection, setCollectionItem, removeCollectionItem, update }) => (<div>
-                                //     {getObjectDisplay(item, n, gmeta)}
-                                // </div>)}
-
-                                form={Model}
-                                size={"small"}
-                                defaultModelActions={true}
-                                defaultCollectionActions={true}
-                            />
-                        </TabPane>
-                        )
-                    })}
-                </Tabs>
-            </div> */}
+                        />
+                    </Form.Item>);
+                })}
+            </Form>
         </div>
     )
 }

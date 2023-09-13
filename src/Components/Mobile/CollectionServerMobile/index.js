@@ -972,6 +972,8 @@ export function CollectionServerMobile(props) {
                     setCollection,
                     setCollectionItem,
                     removeCollectionItem,
+                    collectionActions: ()=>clean(unwrap(collectionActions())),
+                    modelActions: (item, index)=>clean(unwrap(modelActions(item, index))),
                     update: request
                 })}
                 {!customRender && <div>
@@ -1032,6 +1034,8 @@ export function CollectionServerMobile(props) {
                         setCollection,
                         setCollectionItem,
                         removeCollectionItem,
+                        collectionActions: ()=>clean(unwrap(collectionActions())),
+                        modelActions: (item, index)=>clean(unwrap(modelActions(item, index))),
                         update: request
                     })}
                     {!customRender && <List className="my-list filtered-list">

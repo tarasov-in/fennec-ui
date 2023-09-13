@@ -941,6 +941,8 @@ export function CollectionServer(props) {
                             setCollection,
                             setCollectionItem,
                             removeCollectionItem,
+                            collectionActions: ()=>clean(unwrap(collectionActions())),
+                            modelActions: (item, index)=>clean(unwrap(modelActions(item, index))),
                             update
                         })}
                         {!customRender && <Card size="small" bordered={(size !== "small")} className={(size === "small") ? classes.cardSmall : ""} style={{ width: "100%" }}>

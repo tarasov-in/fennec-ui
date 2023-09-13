@@ -11,7 +11,7 @@ import { Action } from '../../Action'
 import uuid from 'react-uuid';
 
 export function DropdownAction(props) {
-    const { button, menuOptions, items } = props;
+    const { button, menuOptions, items, style } = props;
     const auth = useAuth();
     const [actions, setActions] = useState([]);
     useEffect(() => {
@@ -33,7 +33,7 @@ export function DropdownAction(props) {
     return (
         <div onClick={(e) => {
             // e.preventDefault();
-        }}>
+        }} style={style}>
             {JSXMap(actions?.filter(e => (!!e.action || !!e.document)), (e, idx) => (<div key={idx}>
                 <Action
                     key={e.key || idx}
