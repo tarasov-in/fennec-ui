@@ -576,7 +576,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const meta = useMetaContext();
-
+console.log(item);
     const dataOrContent = (data) => {
         return (data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data
     }
@@ -648,7 +648,8 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
         }
         return data.find(e => e.ID === value);
     }, [data]);
-    const label = useCallback((item, value) => {
+
+    const display = useCallback((item, value) => {
         if (item && value) {
             if (item.display && _.isFunction(item.display)) {
                 return item.display(value)
@@ -657,6 +658,18 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
             } else {
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
                 return getDisplay(value, item?.relation?.display || fieldMeta?.display, fieldMeta, meta)
+            }
+        }
+        return "";
+    }, [meta]);
+    const displayString = useCallback((item, value) => {
+        if (item && value) {
+            if (item.displayString && _.isFunction(item.displayString)) {
+                return item.displayString(value)
+            } else if (item.relation && item.relation.displayString && _.isFunction(item.relation.displayString)) {
+                return item.relation.displayString(value)
+            } else {
+                return display(item, value)
             }
         }
         return "";
@@ -682,7 +695,6 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
     //     }
     // };
 
-
     const cAction = (values, unlock, close) => {
         const { selected } = values;
         if (selected) {
@@ -705,7 +717,13 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
     const cName = useCallback((item && _.get(item, "relation.reference.object")) ? getObjectValue(item, "relation.reference.object") : undefined, [item]);
     const cSource = useCallback(item?.source || item?.relation?.reference?.url || item?.relation?.reference?.source, [item]);
     const cContextFilters = useCallback(() => defaultQueryParams(item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter")), [item]);
-    const cFilters = useCallback(() => meta[getObjectValue(item, "relation.reference.object")]?.properties, [meta, item]);
+    const cFilters = useCallback(() => {
+        var uif = _.get(item, "relation.uiFilter");
+        if (uif) {
+            return uif()
+        }
+        return meta[getObjectValue(item, "relation.reference.object")]?.properties?.map(e => ({ ...e, sort: true, filter: true }));
+    }, [meta, item]);
 
     const cRender = (auth, _item, value, onChange) => {
         return (<CollectionServer
@@ -735,16 +753,16 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
                     <div>
                         {value && <div>
                             <div style={{ fontWeight: "lighter" }}>Сейчас выбрано</div>
-                            {JSXMap(value, (i, idx) => <div key={idx}>{label(item, i)}</div>)}
+                            {JSXMap(value, (i, idx) => <div key={idx}>{display(item, i)}</div>)}
                         </div>}
                         <div style={{ paddingTop: "10px" }}>
                             <div style={{ fontWeight: "lighter" }}>Можно выбрать из</div>
-                            <div style={{ display: "flex", flexDirection: "column"}}>
-                                <Spin spinning={loading} style={{paddingTop:"15px",paddingBottom:"15px"}}/>
+                            <div style={{ display: "flex", flexDirection: "column" }}>
+                                <Spin spinning={loading} style={{ paddingTop: "15px", paddingBottom: "15px" }} />
                                 {JSXMap(items, (o, oidx) => {
                                     return (<div key={oidx} onClick={(e) => { e.stopPropagation(); onSelection(o); }}
-                                        className={`bg bg-${(isSelected(o)) ? "blue dark-3" : ""}`} style={{ textAlign: "left" }}>
-                                        {label(item, o)}
+                                        className={`bg ${(isSelected(o)) ? "bg-blue dark-3" : "bg-grey-hover light"} pointer`} style={{ textAlign: "left" }}>
+                                        {display(item, o)}
                                     </div>)
                                 })}
                             </div>
@@ -765,7 +783,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
                 suffix={(loading) ? <Spin size="small" /> : undefined}
                 size={(item.size) ? item.size : "middle"}
                 allowClear={true}
-                value={label(item, itemByProperty(item, value))}
+                value={displayString(item, itemByProperty(item, value))}
                 readOnly
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
             />
