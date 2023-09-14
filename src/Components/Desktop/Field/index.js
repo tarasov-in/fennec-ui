@@ -751,7 +751,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
             }) => {
                 return (
                     <div>
-                        {value && <div>
+                        {(value && value.filter(e=>!!e).length>0) && <div>
                             <div style={{ fontWeight: "lighter" }}>Сейчас выбрано</div>
                             {JSXMap(value, (i, idx) => <div key={idx}>{display(item, i)}</div>)}
                         </div>}
