@@ -576,7 +576,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const meta = useMetaContext();
-console.log(item);
+
     const dataOrContent = (data) => {
         return (data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data
     }
