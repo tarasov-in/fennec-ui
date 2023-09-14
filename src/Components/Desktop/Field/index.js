@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import locale from 'antd/es/date-picker/locale/ru_RU';
 import {
     Input,
@@ -11,8 +11,10 @@ import {
     Upload,
     Image as AntImage,
     Button,
+    Space,
+    Spin,
 } from 'antd';
-import { errorCatch, getDisplay, getObjectValue, GETWITH, pushStateHistoryModal, QueryDetail, QueryOrder, READWITH, useHover } from '../../../Tool';
+import { errorCatch, getDisplay, getObjectValue, GETWITH, JSXMap, pushStateHistoryModal, QueryDetail, QueryOrder, QueryParam, READWITH, useHover } from '../../../Tool';
 import Icofont from 'react-icofont';
 import { useMetaContext } from '../../Context';
 import { InboxOutlined } from '@ant-design/icons';
@@ -23,6 +25,9 @@ import dayjs from 'dayjs'
 import 'dayjs/locale/ru'
 import weekday from "dayjs/plugin/weekday"
 import localeData from "dayjs/plugin/localeData"
+import { Model } from '../Model';
+import { Action } from '../../Action';
+import { CollectionServer } from '../CollectionServer';
 var utc = require('dayjs/plugin/utc')
 var timezone = require('dayjs/plugin/timezone') // dependent on utc plugin
 dayjs.extend(utc)
@@ -569,6 +574,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
 }
 function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
     const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
     const meta = useMetaContext();
 
     const dataOrContent = (data) => {
@@ -577,7 +583,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
     const defaultQueryParams = (filter) => {
         if (!filter) {
             return [
-                QueryDetail("model"),
+                QueryDetail("none"),
                 QueryOrder("ID", "ASC")
             ]
         } else if (_.isArray(filter)) {
@@ -586,29 +592,38 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
         return []
     }
     useEffect(() => {
-        if (item.source || item.url || (item && _.get(item, "relation.reference.url")) || (item && _.get(item, "relation.reference.source"))) {
-            let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
-            let url = item.source || item.relation.reference.url || item.relation.reference.source;
-            GETWITH(auth, url, [
-                ...defaultQueryParams(filter)
-            ], ({ data }) => {
-                setData(dataOrContent(data));
-            }, (err) => errorCatch(err, () => { }));
-        } else if (item && _.get(item, "relation.reference.data")) {
-            setData(item.relation.reference.data);
-        } else if (item && _.get(item, "relation.reference.object")) {
-            let object = getObjectValue(item, "relation.reference.object");
-            if (object) {
+        if (value) {
+            if (item.source || item.url || (item && _.get(item, "relation.reference.url")) || (item && _.get(item, "relation.reference.source"))) {
                 let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
-                READWITH(auth, object, [
-                    ...defaultQueryParams(filter)
+                let url = item.source || item.relation.reference.url || item.relation.reference.source;
+                setLoading(true)
+                GETWITH(auth, url, [
+                    ...defaultQueryParams(filter),
+                    QueryParam("w-ID", value)
                 ], ({ data }) => {
                     setData(dataOrContent(data));
-                }, (err) => errorCatch(err, () => { }));
+                    setLoading(false)
+                }, (err) => errorCatch(err, () => setLoading(false)));
+                // } else if (item && _.get(item, "relation.reference.data")) {
+                //     setData(item.relation.reference.data);
+            } else if (item && _.get(item, "relation.reference.object")) {
+                let object = getObjectValue(item, "relation.reference.object");
+                if (object) {
+                    let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
+                    setLoading(true)
+                    READWITH(auth, object, [
+                        ...defaultQueryParams(filter),
+                        QueryParam("w-ID", value)
+                    ], ({ data }) => {
+                        setData(dataOrContent(data));
+                        setLoading(false)
+                    }, (err) => errorCatch(err, () => setLoading(false)));
+                }
             }
         }
     }, [
         auth,
+        value,
         item?.source,
         item?.url,
         item?.queryFilter,
@@ -627,13 +642,13 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
         }
         return undefined;
     };
-    const itemByProperty = (item, value) => {
+    const itemByProperty = useCallback((item, value) => {
         if (_.get(item, "relation.reference.property")) {
             return data.find(e => e[item.relation.reference.property] === value);
         }
         return data.find(e => e.ID === value);
-    };
-    const label = (item, value) => {
+    }, [data]);
+    const label = useCallback((item, value) => {
         if (item && value) {
             if (item.display && _.isFunction(item.display)) {
                 return item.display(value)
@@ -645,40 +660,132 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
             }
         }
         return "";
-    };
-    const by = (item) => {
-        if (changed && item.dependence && item.dependence.field) {
-            return (changed[item.dependence.by] && item.dependence.eq) ? changed[item.dependence.by][item.dependence.eq] : changed[item.dependence.eq];
+    }, [meta]);
+    // const by = (item) => {
+    //     if (changed && item.dependence && item.dependence.field) {
+    //         return (changed[item.dependence.by] && item.dependence.eq) ? changed[item.dependence.by][item.dependence.eq] : changed[item.dependence.eq];
+    //     }
+    // };
+    // const elements = (data) => {
+    //     if (item.dependence) {
+    //         if (item.dependence.field && by(item)) {
+    //             if (value[item.dependence.field] === by(item)) {
+    //                 return data?.map(i => (
+    //                     <Option key={property(item, i)} value={property(item, i)}>{label(item, i)}</Option>
+    //                 ));
+    //             }
+    //         }
+    //     } else {
+    //         return data?.map(i => (
+    //             <Option key={property(item, i)} value={property(item, i)}>{label(item, i)}</Option>
+    //         ));
+    //     }
+    // };
+
+
+    const cAction = (values, unlock, close) => {
+        const { selected } = values;
+        if (selected) {
+            var h = _.head(selected)
+            onChange(property(item, h), item, h)
         }
-    };
-    const elements = (data) => {
-        if (item.dependence) {
-            if (item.dependence.field && by(item)) {
-                if (value[item.dependence.field] === by(item)) {
-                    return data?.map(i => (
-                        <Option key={property(item, i)} value={property(item, i)}>{label(item, i)}</Option>
-                    ));
-                }
-            }
-        } else {
-            return data?.map(i => (
-                <Option key={property(item, i)} value={property(item, i)}>{label(item, i)}</Option>
-            ));
-        }
-    };
-    return (
-        <Select showSearch
+        close()
+    }
+    const cTrigger = useCallback((click) => (
+        <Button
+            onClick={click}
+            type="default"
             size={(item.size) ? item.size : "middle"}
+            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+        >
+            <i className="fa fa-ellipsis-h"></i>
+        </Button>
+    ), [item, loading])
+
+    const cName = useCallback((item && _.get(item, "relation.reference.object")) ? getObjectValue(item, "relation.reference.object") : undefined, [item]);
+    const cSource = useCallback(item?.source || item?.relation?.reference?.url || item?.relation?.reference?.source, [item]);
+    const cContextFilters = useCallback(() => defaultQueryParams(item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter")), [item]);
+    const cFilters = useCallback(() => meta[getObjectValue(item, "relation.reference.object")]?.properties, [meta, item]);
+
+    const cRender = (auth, _item, value, onChange) => {
+        return (<CollectionServer
+            selection={"radio"}
             value={value}
-            onChange={e => onChange(e, item, itemByProperty(item, e))}
-            style={{ width: "100%" }}
-            allowClear={true}
-            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
-            filterOption={(input, element) =>
-                element.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }>
-            {elements(data)}
-        </Select>
+            onChange={onChange}
+            auth={auth}
+            name={cName}
+            source={cSource}
+            contextFilters={cContextFilters}
+            filters={cFilters}
+            customRender={(items, {
+                collection,
+                setCollection,
+                setCollectionItem,
+                removeCollectionItem,
+                collectionActions,
+                modelActions,
+                onSelection,
+                isSelected,
+                lock,
+                unlock,
+                loading,
+                update
+            }) => {
+                return (
+                    <div>
+                        {value && <div>
+                            <div style={{ fontWeight: "lighter" }}>Сейчас выбрано</div>
+                            {JSXMap(value, (i, idx) => <div key={idx}>{label(item, i)}</div>)}
+                        </div>}
+                        <div style={{ paddingTop: "10px" }}>
+                            <div style={{ fontWeight: "lighter" }}>Можно выбрать из</div>
+                            <div style={{ display: "flex", flexDirection: "column"}}>
+                                <Spin spinning={loading} style={{paddingTop:"15px",paddingBottom:"15px"}}/>
+                                {JSXMap(items, (o, oidx) => {
+                                    return (<div key={oidx} onClick={(e) => { e.stopPropagation(); onSelection(o); }}
+                                        className={`bg bg-${(isSelected(o)) ? "blue dark-3" : ""}`} style={{ textAlign: "left" }}>
+                                        {label(item, o)}
+                                    </div>)
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                )
+            }}
+            size={"small"}
+        />)
+    }
+    return (
+        <Space.Compact
+            style={{
+                width: '100%',
+            }}
+        >
+            <Input
+                suffix={(loading) ? <Spin size="small" /> : undefined}
+                size={(item.size) ? item.size : "middle"}
+                allowClear={true}
+                value={label(item, itemByProperty(item, value))}
+                readOnly
+                disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+            />
+            <Action
+                title={`Выберите ${(item.label) ? item.label.toLowerCase() : "элемент"}`}
+                auth={auth}
+                action={cAction}
+                okText="Выбрать"
+                object={{ selected: [itemByProperty(item, value)] }}
+                modal={(item.modal) ? item.modal : { width: "600px" }}
+                form={Model}
+                meta={[{
+                    type: "func",
+                    name: "selected",
+                    render: cRender
+                }]}
+                mode={"func"}
+                trigger={cTrigger}
+            />
+        </Space.Compact>
     )
 }
 function DateTime({ item, value, onChange, onAfterChange }) {
@@ -751,7 +858,7 @@ function Unknown({ item }) {
 // }
 
 export function Field(props) {
-    const { auth, item, value, onChange, onAfterChange, changed, mode } = props;
+    const { auth, item, value, onChange, onAfterChange, changed } = props;
     let type = ((item.view) ? item.view.type : undefined) || item.type;
     switch (item.filterType) {
         case "group":
@@ -844,11 +951,12 @@ export function Field(props) {
                 case "datetime":
                 case "time.Time":
                     return (<DateTime auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></DateTime>)
-                case "bigobject":
-                    return (<BigObj auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} changed={changed}></BigObj>)
                 case "object":
                 case "document":
-                    return (<Obj auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} changed={changed}></Obj>)
+                    if (item.mode === "dialog") {
+                        return (<BigObj auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} changed={changed}></BigObj>)
+                    } else
+                        return (<Obj auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} changed={changed}></Obj>)
                 case "file":
                     return (<UploadItem auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange}></UploadItem>)
                 case "files":

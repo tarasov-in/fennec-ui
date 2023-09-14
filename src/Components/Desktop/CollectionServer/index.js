@@ -263,6 +263,20 @@ export function CollectionServer(props) {
     };
 
     useEffect(() => {
+        if (value) {
+            if (selectionType === "radio") {
+                setSelectedRowKeys(o => _.union(o, value.map(e => e?.ID)));
+                setSelectedRows(o => _.unionBy(o, value, 'ID'));
+            } else {
+                setSelectedRowKeys(value.map(e => e?.ID));
+                setSelectedRows(value);
+            }
+        } else {
+            setSelectedRowKeys([]);
+            setSelectedRows([]);
+        }
+    }, [value])
+    useEffect(() => {
         if (name && meta) {
             let mo = meta[name] || meta[name.toLowerCase()];
             if (mo) {
@@ -499,7 +513,7 @@ export function CollectionServer(props) {
         if (source) {
             lock();
             GETWITH(auth, source, [
-                QueryDetail("model"),
+                QueryDetail("model"), // ! убрать настройку детализации по умолчанию
                 QueryParam(`page`, current),
                 QueryParam(`count`, count),
                 If(sorting.name, QueryParam(`s-${sorting.name}`, sorting.order)),
@@ -519,7 +533,7 @@ export function CollectionServer(props) {
         } else {
             lock();
             READWITH(auth, name, [
-                QueryDetail("model"),
+                QueryDetail("model"), // ! убрать настройку детализации по умолчанию
                 QueryParam(`page`, current),
                 QueryParam(`count`, count),
                 If(sorting.name, QueryParam(`s-${sorting.name}`, sorting.order)),
@@ -776,31 +790,37 @@ export function CollectionServer(props) {
         }
     };
     const onSelection = (item) => {
-        if (!selection) return {};
-        let sr = selectedRows.filter(e => e.ID !== item.ID);
-        let srk = selectedRowKeys.filter(e => e !== item.ID);
-        let vsr = value.filter(e => e.ID !== item.ID);
-        if (sr.length !== selectedRows.length) {
-            setSelectedRowKeys(srk);
-            setSelectedRows(sr);
-            if (!getSelectedOnly) {
-                triggerChange(_.unionBy([...vsr], sr, 'ID'));
-            } else {
-                triggerChange(sr);
-            }
+        if (!selection || !item) return;
+        if (selectionType === "radio") {
+            setSelectedRowKeys([item.ID]);
+            setSelectedRows([item]);
+            triggerChange([item]);
         } else {
-            let v = [...sr, item];
-            setSelectedRowKeys([...srk, item.ID]);
-            setSelectedRows(v);
-            if (!getSelectedOnly) {
-                triggerChange(_.unionBy([...vsr], v, 'ID'));
+            let sr = selectedRows.filter(e => e?.ID !== item?.ID);
+            let srk = selectedRowKeys.filter(e => e !== item?.ID);
+            let vsr = value.filter(e => e?.ID !== item?.ID);
+            if (sr.length !== selectedRows.length) {
+                setSelectedRowKeys(srk);
+                setSelectedRows(sr);
+                if (!getSelectedOnly) {
+                    triggerChange(_.unionBy([...vsr], sr, 'ID'));
+                } else {
+                    triggerChange(sr);
+                }
             } else {
-                triggerChange(v);
+                let v = [...sr, item];
+                setSelectedRowKeys([...srk, item?.ID]);
+                setSelectedRows(v);
+                if (!getSelectedOnly) {
+                    triggerChange(_.unionBy([...vsr], v, 'ID'));
+                } else {
+                    triggerChange(v);
+                }
             }
         }
     };
     const isSelected = (item) => {
-        let v = selectedRows.find(e => e.ID === item.ID);
+        let v = selectedRows.find(e => e?.ID === item?.ID);
         return v !== undefined
     };
 
@@ -815,6 +835,11 @@ export function CollectionServer(props) {
                 setCollection,
                 setCollectionItem,
                 removeCollectionItem,
+                onSelection,
+                isSelected,
+                lock,
+                unlock,
+                loading,
                 update
             }
         }
@@ -822,6 +847,7 @@ export function CollectionServer(props) {
         setCollection,
         setCollectionItem,
         removeCollectionItem,
+        loading,
         update])
 
     const view = (items) => {
@@ -941,8 +967,13 @@ export function CollectionServer(props) {
                             setCollection,
                             setCollectionItem,
                             removeCollectionItem,
-                            collectionActions: ()=>clean(unwrap(collectionActions())),
-                            modelActions: (item, index)=>clean(unwrap(modelActions(item, index))),
+                            collectionActions: () => (collectionActions) ? clean(unwrap(collectionActions())) : undefined,
+                            modelActions: (item, index) => (modelActions) ? clean(unwrap(modelActions(item, index))) : undefined,
+                            onSelection,
+                            isSelected,
+                            lock,
+                            unlock,
+                            loading,
                             update
                         })}
                         {!customRender && <Card size="small" bordered={(size !== "small")} className={(size === "small") ? classes.cardSmall : ""} style={{ width: "100%" }}>

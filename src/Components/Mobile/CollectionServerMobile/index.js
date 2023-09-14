@@ -831,9 +831,9 @@ export function CollectionServerMobile(props) {
     };
     const onSelection = (item, index) => {
         if (!selection) return {};
-        let sr = selectedRows?.filter(e => e.ID !== item.ID);
-        let srk = selectedRowKeys?.filter(e => e !== item.ID);
-        let vsr = value?.filter(e => e.ID !== item.ID);
+        let sr = selectedRows?.filter(e => e?.ID !== item?.ID);
+        let srk = selectedRowKeys?.filter(e => e !== item?.ID);
+        let vsr = value?.filter(e => e?.ID !== item?.ID);
         if (sr.length !== selectedRows.length) {
             setSelectedRowKeys(srk);
             setSelectedRows(sr);
@@ -844,7 +844,7 @@ export function CollectionServerMobile(props) {
             }
         } else {
             let v = [...sr, item];
-            setSelectedRowKeys([...srk, item.ID]);
+            setSelectedRowKeys([...srk, item?.ID]);
             setSelectedRows(v);
             if (!getSelectedOnly) {
                 triggerChange(_.unionBy([...vsr], v, 'ID'));
@@ -864,11 +864,18 @@ export function CollectionServerMobile(props) {
                 setCollection,
                 setCollectionItem,
                 removeCollectionItem,
+                collectionActions: () => (collectionActions) ? clean(unwrap(collectionActions())) : undefined,
+                modelActions: (item, index) => (modelActions) ? clean(unwrap(modelActions(item, index))) : undefined,
+                onSelection,
+                isSelected,
+                lock,
+                unlock,
+                loading,
                 update: request
             });
         }
         return "" + item
-    }, [render, setCollection, setCollectionItem, removeCollectionItem, request]);
+    }, [render, loading, setCollection, setCollectionItem, removeCollectionItem, request]);
     const titleView = React.useCallback(() => {
         if (title || titleFunc) {
             if (titleFunc) {
@@ -950,10 +957,16 @@ export function CollectionServerMobile(props) {
                 setCollection,
                 setCollectionItem,
                 removeCollectionItem,
+                onSelection,
+                isSelected,
+                lock,
+                unlock,
+                loading,
                 update: request
             }
         }
     }, [collection,
+        loading,
         setCollection,
         setCollectionItem,
         removeCollectionItem,
@@ -972,8 +985,13 @@ export function CollectionServerMobile(props) {
                     setCollection,
                     setCollectionItem,
                     removeCollectionItem,
-                    collectionActions: ()=>clean(unwrap(collectionActions())),
-                    modelActions: (item, index)=>clean(unwrap(modelActions(item, index))),
+                    collectionActions: () => (collectionActions) ? clean(unwrap(collectionActions())) : undefined,
+                    modelActions: (item, index) => (modelActions) ? clean(unwrap(modelActions(item, index))) : undefined,
+                    onSelection,
+                    isSelected,
+                    lock,
+                    unlock,
+                    loading,
                     update: request
                 })}
                 {!customRender && <div>
@@ -1034,8 +1052,13 @@ export function CollectionServerMobile(props) {
                         setCollection,
                         setCollectionItem,
                         removeCollectionItem,
-                        collectionActions: ()=>clean(unwrap(collectionActions())),
-                        modelActions: (item, index)=>clean(unwrap(modelActions(item, index))),
+                        collectionActions: () => (collectionActions) ? clean(unwrap(collectionActions())) : undefined,
+                        modelActions: (item, index) => (modelActions) ? clean(unwrap(modelActions(item, index))) : undefined,
+                        onSelection,
+                        isSelected,
+                        lock,
+                        unlock,
+                        loading,
                         update: request
                     })}
                     {!customRender && <List className="my-list filtered-list">
