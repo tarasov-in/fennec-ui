@@ -800,14 +800,30 @@ export function CollectionServerMobile(props) {
         let values = clean(unwrap(collectionActions()));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <div>
-            {values?.map((e, idx) => <Action
-                key={idx}
-                auth={auth}
-                mode={"button"}
-                collection={collection}
-                setCollection={setCollection}
-                {...e}
-            />)}
+            {values?.map((e, idx) => {
+                if (_.isFunction(e)) {
+                    return (e({
+                        collection,
+                        setCollection,
+                        setCollectionItem,
+                        removeCollectionItem,
+                        onSelection,
+                        isSelected,
+                        lock,
+                        unlock,
+                        loading,
+                        update: request
+                    }, idx))
+                }
+                return (<Action
+                    key={idx}
+                    auth={auth}
+                    mode={"button"}
+                    collection={collection}
+                    setCollection={setCollection}
+                    {...e}
+                />)
+            })}
         </div>;
     }, [auth, collection, collectionActions]);
     const hasSelected = selectedRowKeys.length > 0;

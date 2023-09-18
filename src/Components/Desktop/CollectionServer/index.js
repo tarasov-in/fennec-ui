@@ -761,15 +761,31 @@ export function CollectionServer(props) {
         if (!collectionActions) return <React.Fragment></React.Fragment>;
         let values = clean(unwrap(collectionActions()));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
-        return values?.map((e, idx) => <Action
-            key={e.key || idx}
-            auth={auth}
-            mode={"button"}
+        return values?.map((e, idx) => {
+            if(_.isFunction(e)){
+                return (e({
+                    collection,
+                    setCollection,
+                    setCollectionItem,
+                    removeCollectionItem,
+                    onSelection,
+                    isSelected,
+                    lock,
+                    unlock,
+                    loading,
+                    update
+                }, idx))
+            }
+            return (<Action
+                key={e.key || idx}
+                auth={auth}
+                mode={"button"}
 
-            collection={collection}
-            setCollection={setCollection}
-            {...e}
-        />);
+                collection={collection}
+                setCollection={setCollection}
+                {...e}
+            />)
+        });
     }, [auth, collection, collectionActions]);
     const selectionConfig = (selectionType) => {
         if (!selection) return {};

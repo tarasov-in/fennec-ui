@@ -674,26 +674,26 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
         }
         return "";
     }, [meta]);
-    // const by = (item) => {
-    //     if (changed && item.dependence && item.dependence.field) {
-    //         return (changed[item.dependence.by] && item.dependence.eq) ? changed[item.dependence.by][item.dependence.eq] : changed[item.dependence.eq];
-    //     }
-    // };
-    // const elements = (data) => {
-    //     if (item.dependence) {
-    //         if (item.dependence.field && by(item)) {
-    //             if (value[item.dependence.field] === by(item)) {
-    //                 return data?.map(i => (
-    //                     <Option key={property(item, i)} value={property(item, i)}>{label(item, i)}</Option>
-    //                 ));
-    //             }
-    //         }
-    //     } else {
-    //         return data?.map(i => (
-    //             <Option key={property(item, i)} value={property(item, i)}>{label(item, i)}</Option>
-    //         ));
-    //     }
-    // };
+    const by = (item) => {
+        if (changed && item.dependence && item.dependence.field) {
+            return (changed[item.dependence.by] && item.dependence.eq) ? changed[item.dependence.by][item.dependence.eq] : changed[item.dependence.eq];
+        }
+    };
+    const elements = (data) => {
+        if (item.dependence) {
+            if (item.dependence.field && by(item)) {
+                if (value[item.dependence.field] === by(item)) {
+                    return data?.map(i => (
+                        <Option key={property(item, i)} value={property(item, i)}>{display(item, i)}</Option>
+                    ));
+                }
+            }
+        } else {
+            return data?.map(i => (
+                <Option key={property(item, i)} value={property(item, i)}>{display(item, i)}</Option>
+            ));
+        }
+    };
 
     const cAction = (values, unlock, close) => {
         const { selected } = values;
@@ -751,7 +751,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
             }) => {
                 return (
                     <div>
-                        {(value && value.filter(e=>!!e).length>0) && <div>
+                        {(value && value.filter(e => !!e).length > 0) && <div>
                             <div style={{ fontWeight: "lighter" }}>Сейчас выбрано</div>
                             {JSXMap(value, (i, idx) => <div key={idx}>{display(item, i)}</div>)}
                         </div>}
@@ -773,18 +773,38 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
             size={"small"}
         />)
     }
+    const clear = (str) => {
+        if (!str) {
+            // onChange(value, item, itemByProperty(item, e))
+            onChange(undefined, item, undefined)
+        }
+    }
+
     return (
         <Space.Compact
             style={{
                 width: '100%',
             }}
         >
+            {/* <Select showSearch
+                size={(item.size) ? item.size : "middle"}
+                value={value}
+                onChange={e => onChange(e, item, itemByProperty(item, e))}
+                style={{ width: "100%" }}
+                allowClear={true}
+                disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
+                filterOption={(input, element) =>
+                    element.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }>
+                {elements(data)}
+            </Select> */}
             <Input
                 suffix={(loading) ? <Spin size="small" /> : undefined}
                 size={(item.size) ? item.size : "middle"}
                 allowClear={true}
+                // readOnly
+                onChange={e => clear(e.target.value)}
                 value={displayString(item, itemByProperty(item, value))}
-                readOnly
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
             />
             <Action
