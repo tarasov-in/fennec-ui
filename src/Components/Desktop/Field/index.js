@@ -235,23 +235,44 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
     const dataOrContent = (data) => {
         return (data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data
     }
-    const defaultQueryParams = (filter) => {
+    const by = (item) => {
+        if(!!item?.dependence && !!item?.dependence?.field){
+            if (changed) {
+                if (!!changed[item.dependence.by] && !!item.dependence.eq) {
+                    return changed[item.dependence.by][item.dependence.eq]
+                } else if (!!item.dependence.eq) {
+                    return changed[item.dependence.eq]
+                }
+                return null
+            }
+            return null
+        }
+    };
+    const dependenceValue = by(item);
+    const defaultQueryParams = useCallback((filter) => {
+        var _dependence = (item.dependence?.mode === "server" && item.dependence?.field && by(item)) ? [QueryParam(`w-${item.dependence?.field}`, by(item))] : []
         if (!filter) {
             return [
-                QueryDetail("model"),
-                QueryOrder("ID", "ASC")
+                QueryDetail("none"),
+                QueryOrder("ID", "ASC"),
+                ..._dependence
             ]
         } else if (_.isArray(filter)) {
-            return filter
+            return [
+                ...filter,
+                ..._dependence
+            ]
         }
-        return []
-    }
+        return [
+            ..._dependence
+        ]
+    }, [item.dependence, changed])
     useEffect(() => {
         if (item.source || item.url || (item && _.get(item, "relation.reference.url")) || (item && _.get(item, "relation.reference.source"))) {
             let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
             let url = item.source || item.relation.reference.url || item.relation.reference.source;
             GETWITH(auth, url, [
-                ...defaultQueryParams(filter)
+                ...defaultQueryParams(filter),
             ], ({ data }) => {
                 setData(dataOrContent(data));
             }, (err) => errorCatch(err, () => { }));
@@ -262,7 +283,7 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
             if (object) {
                 let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
                 READWITH(auth, object, [
-                    ...defaultQueryParams(filter)
+                    ...defaultQueryParams(filter),
                 ], ({ data }) => {
                     setData(dataOrContent(data));
                 }, (err) => errorCatch(err, () => { }));
@@ -277,7 +298,8 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
         item?.relation?.reference?.url,
         item?.relation?.reference?.source,
         item?.relation?.reference?.queryFilter,
-        item?.relation?.reference?.filter
+        item?.relation?.reference?.filter,
+        dependenceValue
     ]);
     const property = (item, value) => {
         if (item && _.get(item, "relation.reference.property") && value) {
@@ -307,26 +329,20 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
         }
         return "";
     };
-    const by = (item) => {
-        if (changed && item.dependence && item.dependence.field) {
-            return (changed[item.dependence.by] && item.dependence.eq) ? changed[item.dependence.by][item.dependence.eq] : changed[item.dependence.eq];
-        }
-    };
-    const elements = (data) => {
-        if (item.dependence) {
+    const elements = useCallback((data) => {
+        if (item.dependence?.mode !== "server" && item.dependence) {
             if (item.dependence.field && by(item)) {
-                if (value[item.dependence.field] === by(item)) {
-                    return data?.map(i => (
-                        <Option key={property(item, i)} value={property(item, i)}>{label(item, i)}</Option>
-                    ));
-                }
+                return data?.filter(e => _.get(e, item.dependence.field) === by(item))?.map(i => (
+                    <Option key={property(item, i)} value={property(item, i)}>{label(item, i)}</Option>
+                ));
             }
         } else {
             return data?.map(i => (
                 <Option key={property(item, i)} value={property(item, i)}>{label(item, i)}</Option>
             ));
         }
-    };
+    }, [value, changed]);
+
     return (
         <Select
             size={(item.size) ? item.size : "middle"}
@@ -465,23 +481,44 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
     const dataOrContent = (data) => {
         return (data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data
     }
-    const defaultQueryParams = (filter) => {
+    const by = (item) => {
+        if(!!item?.dependence && !!item?.dependence?.field){
+            if (changed) {
+                if (!!changed[item.dependence.by] && !!item.dependence.eq) {
+                    return changed[item.dependence.by][item.dependence.eq]
+                } else if (!!item.dependence.eq) {
+                    return changed[item.dependence.eq]
+                }
+                return null
+            }
+            return null
+        }
+    };
+    const dependenceValue = by(item);
+    const defaultQueryParams = useCallback((filter) => {
+        var _dependence = (item.dependence?.mode === "server" && item.dependence?.field && by(item)) ? [QueryParam(`w-${item.dependence?.field}`, by(item))] : []
         if (!filter) {
             return [
-                QueryDetail("model"),
-                QueryOrder("ID", "ASC")
+                QueryDetail("none"),
+                QueryOrder("ID", "ASC"),
+                ..._dependence
             ]
         } else if (_.isArray(filter)) {
-            return filter
+            return [
+                ...filter,
+                ..._dependence
+            ]
         }
-        return []
-    }
+        return [
+            ..._dependence
+        ]
+    }, [item.dependence, changed])
     useEffect(() => {
         if (item.source || item.url || (item && _.get(item, "relation.reference.url")) || (item && _.get(item, "relation.reference.source"))) {
             let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
             let url = item.source || item.relation.reference.url || item.relation.reference.source;
             GETWITH(auth, url, [
-                ...defaultQueryParams(filter)
+                ...defaultQueryParams(filter),
             ], ({ data }) => {
                 setData(dataOrContent(data));
             }, (err) => errorCatch(err, () => { }));
@@ -492,7 +529,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
             if (object) {
                 let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
                 READWITH(auth, object, [
-                    ...defaultQueryParams(filter)
+                    ...defaultQueryParams(filter),
                 ], ({ data }) => {
                     setData(dataOrContent(data));
                 }, (err) => errorCatch(err, () => { }));
@@ -507,7 +544,8 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
         item?.relation?.reference?.url,
         item?.relation?.reference?.source,
         item?.relation?.reference?.queryFilter,
-        item?.relation?.reference?.filter
+        item?.relation?.reference?.filter,
+        dependenceValue
     ]);
     const property = (item, value) => {
         if (item && _.get(item, "relation.reference.property") && value) {
@@ -537,26 +575,20 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
         }
         return "";
     };
-    const by = (item) => {
-        if (changed && item.dependence && item.dependence.field) {
-            return (changed[item.dependence.by] && item.dependence.eq) ? changed[item.dependence.by][item.dependence.eq] : changed[item.dependence.eq];
-        }
-    };
-    const elements = (data) => {
-        if (item.dependence) {
+
+    const elements = useCallback((data) => {
+        if (item.dependence?.mode !== "server" && item.dependence) {
             if (item.dependence.field && by(item)) {
-                if (value[item.dependence.field] === by(item)) {
-                    return data?.map(i => (
-                        <Option key={property(item, i)} value={property(item, i)}>{label(item, i)}</Option>
-                    ));
-                }
+                return data?.filter(e => _.get(e, item.dependence.field) === by(item))?.map(i => (
+                    <Option key={property(item, i)} value={property(item, i)}>{label(item, i)}</Option>
+                ));
             }
         } else {
             return data?.map(i => (
                 <Option key={property(item, i)} value={property(item, i)}>{label(item, i)}</Option>
             ));
         }
-    };
+    }, [value, changed]);
     return (
         <Select showSearch
             size={(item.size) ? item.size : "middle"}
@@ -580,17 +612,38 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
     const dataOrContent = (data) => {
         return (data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data
     }
-    const defaultQueryParams = (filter) => {
+    const by = (item) => {
+        if(!!item?.dependence && !!item?.dependence?.field){
+            if (changed) {
+                if (!!changed[item.dependence.by] && !!item.dependence.eq) {
+                    return changed[item.dependence.by][item.dependence.eq]
+                } else if (!!item.dependence.eq) {
+                    return changed[item.dependence.eq]
+                }
+                return null
+            }
+            return null
+        }
+    };
+    const dependenceValue = by(item);
+    const defaultQueryParams = useCallback((filter) => {
+        var _dependence = (item.dependence?.mode === "server" && item.dependence?.field && by(item)) ? [QueryParam(`w-${item.dependence?.field}`, by(item))] : []
         if (!filter) {
             return [
                 QueryDetail("none"),
-                QueryOrder("ID", "ASC")
+                QueryOrder("ID", "ASC"),
+                ..._dependence
             ]
         } else if (_.isArray(filter)) {
-            return filter
+            return [
+                ...filter,
+                ..._dependence
+            ]
         }
-        return []
-    }
+        return [
+            ..._dependence
+        ]
+    }, [item.dependence, changed])
     useEffect(() => {
         if (value) {
             if (item.source || item.url || (item && _.get(item, "relation.reference.url")) || (item && _.get(item, "relation.reference.source"))) {
@@ -631,7 +684,8 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
         item?.relation?.reference?.url,
         item?.relation?.reference?.source,
         item?.relation?.reference?.queryFilter,
-        item?.relation?.reference?.filter
+        item?.relation?.reference?.filter,
+        dependenceValue
     ]);
     const property = (item, value) => {
         if (item && _.get(item, "relation.reference.property") && value) {
@@ -674,27 +728,20 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
         }
         return "";
     }, [meta]);
-    const by = (item) => {
-        if (changed && item.dependence && item.dependence.field) {
-            return (changed[item.dependence.by] && item.dependence.eq) ? changed[item.dependence.by][item.dependence.eq] : changed[item.dependence.eq];
-        }
-    };
-    const elements = (data) => {
-        if (item.dependence) {
+
+    const elements = useCallback((data) => {
+        if (item.dependence?.mode !== "server" && item.dependence) {
             if (item.dependence.field && by(item)) {
-                if (value[item.dependence.field] === by(item)) {
-                    return data?.map(i => (
-                        <Option key={property(item, i)} value={property(item, i)}>{display(item, i)}</Option>
-                    ));
-                }
+                return data?.filter(e => _.get(e, item.dependence.field) === by(item))?.map(i => (
+                    <Option key={property(item, i)} value={property(item, i)}>{display(item, i)}</Option>
+                ));
             }
         } else {
             return data?.map(i => (
                 <Option key={property(item, i)} value={property(item, i)}>{display(item, i)}</Option>
             ));
         }
-    };
-
+    }, [value, changed]);
     const cAction = (values, unlock, close) => {
         const { selected } = values;
         if (selected) {

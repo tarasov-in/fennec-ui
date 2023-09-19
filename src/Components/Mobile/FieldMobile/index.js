@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import 'moment/locale/ru';
-import { errorCatch, getDisplay, getObjectValue, GETWITH, JSXMap, pushStateHistoryModal, QueryDetail, QueryOrder, READWITH } from '../../../Tool';
+import { errorCatch, getDisplay, getObjectValue, GETWITH, IfElse, JSXMap, pushStateHistoryModal, QueryDetail, QueryOrder, QueryParam, READWITH } from '../../../Tool';
 import moment from 'moment';
 import { Checkbox, Input, TextArea, Slider, DatePicker, Button, ImageUploader, Popup, CheckList, SearchBar, Image as AntImage } from 'antd-mobile';
 import { useMetaContext } from '../../Context';
@@ -43,7 +43,7 @@ function UploadItems({ auth, item, value, onChange, changed }) {
             setFiles([]);
         },
         beforeUpload: file => {
-            setFiles(o=>[...o, file]);
+            setFiles(o => [...o, file]);
             return file;
         },
     };
@@ -583,161 +583,6 @@ function IntegerSlider({ item, value, onChange, onAfterChange }) {
         </div>
     )
 }
-// function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
-//     const [data, setData] = useState([]);
-//     const meta = useMetaContext();
-//     const dataOrContent = (data) => {
-//         return (data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data
-//     }
-//     const defaultQueryParams = (filter) => {
-//         if (!filter) {
-//             return [
-//                 QueryDetail("model"),
-//                 QueryOrder("ID", "ASC")
-//             ]
-//         } else if (_.isArray(filter)) {
-//             return filter
-//         }
-//         return []
-//     }
-//     useEffect(() => {
-//         if (item.source || item.url || (item && _.get(item, "relation.reference.url")) || (item && _.get(item, "relation.reference.source"))) {
-//             let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
-//             let url = item.source || item.relation.reference.url || item.relation.reference.source;
-//             GETWITH(auth, url, [
-//                 ...defaultQueryParams(filter)
-//             ], ({ data }) => {
-//                 setData(dataOrContent(data));
-//             }, (err) => errorCatch(err, () => { }));
-//         } else if (item && _.get(item, "relation.reference.data")) {
-//             setData(item.relation.reference.data);
-//         } else if (item && _.get(item, "relation.reference.object")) {
-//             let object = getObjectValue(item, "relation.reference.object");
-//             if (object) {
-//                 let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
-//                 READWITH(auth, object, [
-//                     ...defaultQueryParams(filter)
-//                 ], ({ data }) => {
-//                     setData(dataOrContent(data));
-//                 }, (err) => errorCatch(err, () => { }));
-//             }
-//         }
-//     }, [
-//         auth,
-//         item?.source,
-//         item?.url,
-//         item?.queryFilter,
-//         item?.relation?.reference?.data,
-//         item?.relation?.reference?.url,
-//         item?.relation?.reference?.source,
-//         item?.relation?.reference?.queryFilter,
-//         item?.relation?.reference?.filter
-//     ]);
-//     const property = (item, value) => {
-//         if (item && _.get(item, "relation.reference.property") && value) {
-//             return value[item.relation.reference.property];
-//         }
-//         if (value) {
-//             return value.ID;
-//         }
-//         return undefined;
-//     };
-//     const itemByProperty = (item, value) => {
-//         if (_.get(item, "relation.reference.property")) {
-//             return data.find(e => e[item.relation.reference.property] === value);
-//         }
-//         return data.find(e => e.ID === value);
-//     };
-//     const label = (item, value) => {
-//         if (item && value) {
-//             if (item.display && _.isFunction(item.display)) {
-//                 return item.display(value)
-//             } else if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
-//                 return item.relation.display(value)
-//             } else {
-//                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
-//                 return getDisplay(value, item?.relation?.display || fieldMeta?.display, fieldMeta, meta)
-//             }
-//         }
-//         return "";
-//     };
-//     const by = (item) => {
-//         if (changed && item.dependence && item.dependence.field) {
-//             return (changed[item.dependence.by] && item.dependence.eq) ? changed[item.dependence.by][item.dependence.eq] : changed[item.dependence.eq];
-//         }
-//     };
-//     const oui = [];
-//     if (data) {
-//         data.forEach((value) => {
-//             if (item.dependence) {
-//                 if (item.dependence.field && by(item)) {
-//                     if (value[item.dependence.field] === by(item)) {
-//                         oui.push({
-//                             label: label(item, value),
-//                             value: property(item, value),
-//                         });
-//                     }
-//                 }
-//             } else {
-//                 oui.push({
-//                     label: label(item, value),
-//                     value: property(item, value),
-//                 });
-//             }
-//         });
-//     }
-//     const [visible, setVisible] = React.useState(false)
-//     const current = React.useMemo(() => {
-//         return oui?.find((e) => e.value == value)?.label
-//     }, [value, oui])
-//     return (
-//         <div style={{ padding: "5px 0px" }}>
-//             {(item && item.header !== false) && <div className='bg bg-grey' style={{
-//                 textAlign: "left",
-//                 paddingLeft: "5px",
-//                 marginBottom: "5px",
-//                 display: "flex",
-//                 justifyContent: "space-between"
-//             }}>
-//                 <div>{item.label}</div>
-//                 <Button fill='none' size='mini' onClick={(v) => {
-//                     onChange(undefined, item, undefined);
-//                 }}>
-//                     <Icofont icon="close" />
-//                 </Button>
-//             </div>}
-//             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
-//                 <div onClick={() => {
-//                     setVisible(true)
-//                 }} style={{
-//                     flex: "1",
-//                     border: "1px solid #e5e5e5",
-//                     fontSize: "13px",
-//                     borderRadius: "4px",
-//                     padding: "2px 6px"
-//                 }}>
-//                     <Picker
-//                         visible={visible}
-//                         onClose={() => {
-//                             setVisible(false)
-//                         }}
-//                         disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
-//                         value={[value]}
-//                         columns={[oui]}
-//                         onConfirm={e => {
-//                             if (onChange) {
-//                                 onChange(e[0], item, itemByProperty(item, e[0]));
-//                             }
-//                         }}
-//                         confirmText={item.okText || 'Выбрать'}
-//                         cancelText={item.dismissText || 'Отмена'}>
-//                     </Picker>
-//                     {current || <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item.label) ? item.label.toLowerCase() : "значение"}`)}</span>}
-//                 </div>
-//             </div>
-//         </div>
-//     )
-// }
 function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
     const [data, setData] = useState([]);
     const meta = useMetaContext();
@@ -745,23 +590,44 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
     const dataOrContent = (data) => {
         return (data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data
     }
-    const defaultQueryParams = (filter) => {
+    const by = (item) => {
+        if(!!item?.dependence && !!item?.dependence?.field){
+            if (changed) {
+                if (!!changed[item.dependence.by] && !!item.dependence.eq) {
+                    return changed[item.dependence.by][item.dependence.eq]
+                } else if (!!item.dependence.eq) {
+                    return changed[item.dependence.eq]
+                }
+                return null
+            }
+            return null
+        }
+    };
+    const dependenceValue = by(item);
+    const defaultQueryParams = useCallback((filter) => {
+        var _dependence = (item.dependence?.mode === "server" && item.dependence?.field && by(item)) ? [QueryParam(`w-${item.dependence?.field}`, by(item))] : []
         if (!filter) {
             return [
-                QueryDetail("model"),
-                QueryOrder("ID", "ASC")
+                QueryDetail("none"),
+                QueryOrder("ID", "ASC"),
+                ..._dependence
             ]
         } else if (_.isArray(filter)) {
-            return filter
+            return [
+                ...filter,
+                ..._dependence
+            ]
         }
-        return []
-    }
+        return [
+            ..._dependence
+        ]
+    }, [item.dependence, changed])
     useEffect(() => {
         if (item.source || item.url || (item && _.get(item, "relation.reference.url")) || (item && _.get(item, "relation.reference.source"))) {
             let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
             let url = item.source || item.relation.reference.url || item.relation.reference.source;
             GETWITH(auth, url, [
-                ...defaultQueryParams(filter)
+                ...defaultQueryParams(filter),
             ], ({ data }) => {
                 setData(dataOrContent(data));
             }, (err) => errorCatch(err, () => { }));
@@ -772,7 +638,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
             if (object) {
                 let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
                 READWITH(auth, object, [
-                    ...defaultQueryParams(filter)
+                    ...defaultQueryParams(filter),
                 ], ({ data }) => {
                     setData(dataOrContent(data));
                 }, (err) => errorCatch(err, () => { }));
@@ -787,7 +653,8 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
         item?.relation?.reference?.url,
         item?.relation?.reference?.source,
         item?.relation?.reference?.queryFilter,
-        item?.relation?.reference?.filter
+        item?.relation?.reference?.filter,
+        dependenceValue
     ]);
     const property = (item, value) => {
         if (item && _.get(item, "relation.reference.property") && value) {
@@ -800,7 +667,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
     };
     const itemByProperty = (item, value) => {
         if (_.get(item, "relation.reference.property")) {
-            return data.find(e => e[item.relation.reference.property] === value);
+            return data.find(e => _.get(e, item.relation.reference.property) === value);
         }
         return data.find(e => e.ID === value);
     };
@@ -821,11 +688,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
         }
         return "";
     };
-    const by = (item) => {
-        if (changed && item.dependence && item.dependence.field) {
-            return (changed[item.dependence.by] && item.dependence.eq) ? changed[item.dependence.by][item.dependence.eq] : changed[item.dependence.eq];
-        }
-    };
+
 
     const [searchText, setSearchText] = useState('')
     const [visible, setVisible] = React.useState(false)
@@ -839,21 +702,20 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
             return data
         }
     }, [data, searchText])
-    const elements = (data) => {
-        if (item.dependence) {
+
+    const elements = useCallback((data) => {
+        if (item.dependence?.mode !== "server" && item.dependence) {
             if (item.dependence.field && by(item)) {
-                if (value[item.dependence.field] === by(item)) {
-                    return data?.map(i => (
-                        <CheckList.Item key={property(item, i)} value={property(item, i)}>{label(item, i)}</CheckList.Item>
-                    ));
-                }
+                return data?.filter(e => _.get(e, item.dependence.field) === by(item))?.map(i => (
+                    <CheckList.Item key={property(item, i)} value={property(item, i)}>{label(item, i)}</CheckList.Item>
+                ));
             }
         } else {
             return data?.map(i => (
                 <CheckList.Item key={property(item, i)} value={property(item, i)}>{label(item, i)}</CheckList.Item>
             ));
         }
-    };
+    }, [value, changed]);
     const current = React.useMemo(() => {
         // return data?.filter((e) => value?.find(f => property(item, e) === f))
         return data?.filter((e) => property(item, e) === value)
@@ -912,7 +774,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
                                     <CheckList /*multiple*/ defaultValue={[value]}
                                         onChange={e => {
                                             // onChange(e, item, itemsByProperty(item, e))
-                                            onChange(_.head(e), item, itemsByProperty(item, _.head(e)));
+                                            onChange(_.head(e), item, itemByProperty(item, _.head(e)));
                                         }}>
                                         {elements(filteredItems)}
                                     </CheckList>
@@ -944,23 +806,44 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
     const dataOrContent = (data) => {
         return (data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data
     }
-    const defaultQueryParams = (filter) => {
+    const by = (item) => {
+        if(!!item?.dependence && !!item?.dependence?.field){
+            if (changed) {
+                if (!!changed[item.dependence.by] && !!item.dependence.eq) {
+                    return changed[item.dependence.by][item.dependence.eq]
+                } else if (!!item.dependence.eq) {
+                    return changed[item.dependence.eq]
+                }
+                return null
+            }
+            return null
+        }
+    };
+    const dependenceValue = by(item);
+    const defaultQueryParams = useCallback((filter) => {
+        var _dependence = (item.dependence?.mode === "server" && item.dependence?.field && by(item)) ? [QueryParam(`w-${item.dependence?.field}`, by(item))] : []
         if (!filter) {
             return [
-                QueryDetail("model"),
-                QueryOrder("ID", "ASC")
+                QueryDetail("none"),
+                QueryOrder("ID", "ASC"),
+                ..._dependence
             ]
         } else if (_.isArray(filter)) {
-            return filter
+            return [
+                ...filter,
+                ..._dependence
+            ]
         }
-        return []
-    }
+        return [
+            ..._dependence
+        ]
+    }, [item.dependence, changed])
     useEffect(() => {
         if (item.source || item.url || (item && _.get(item, "relation.reference.url")) || (item && _.get(item, "relation.reference.source"))) {
             let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
             let url = item.source || item.relation.reference.url || item.relation.reference.source;
             GETWITH(auth, url, [
-                ...defaultQueryParams(filter)
+                ...defaultQueryParams(filter),
             ], ({ data }) => {
                 setData(dataOrContent(data));
             }, (err) => errorCatch(err, () => { }));
@@ -971,7 +854,7 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
             if (object) {
                 let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
                 READWITH(auth, object, [
-                    ...defaultQueryParams(filter)
+                    ...defaultQueryParams(filter),
                 ], ({ data }) => {
                     setData(dataOrContent(data));
                 }, (err) => errorCatch(err, () => { }));
@@ -986,7 +869,8 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
         item?.relation?.reference?.url,
         item?.relation?.reference?.source,
         item?.relation?.reference?.queryFilter,
-        item?.relation?.reference?.filter
+        item?.relation?.reference?.filter,
+        dependenceValue
     ]);
     const property = (item, value) => {
         if (item && _.get(item, "relation.reference.property") && value) {
@@ -1019,11 +903,6 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
         }
         return "";
     };
-    const by = (item) => {
-        if (changed && item.dependence && item.dependence.field) {
-            return (changed[item.dependence.by] && item.dependence.eq) ? changed[item.dependence.by][item.dependence.eq] : changed[item.dependence.eq];
-        }
-    };
 
     const [searchText, setSearchText] = useState('')
     const [visible, setVisible] = React.useState(false)
@@ -1037,21 +916,19 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
             return data
         }
     }, [data, searchText])
-    const elements = (data) => {
-        if (item.dependence) {
+    const elements = useCallback((data) => {
+        if (item.dependence?.mode !== "server" && item.dependence) {
             if (item.dependence.field && by(item)) {
-                if (value[item.dependence.field] === by(item)) {
-                    return data?.map(i => (
-                        <CheckList.Item key={property(item, i)} value={property(item, i)}>{label(item, i)}</CheckList.Item>
-                    ));
-                }
+                return data?.filter(e => _.get(e, item.dependence.field) === by(item))?.map(i => (
+                    <CheckList.Item key={property(item, i)} value={property(item, i)}>{label(item, i)}</CheckList.Item>
+                ));
             }
         } else {
             return data?.map(i => (
                 <CheckList.Item key={property(item, i)} value={property(item, i)}>{label(item, i)}</CheckList.Item>
             ));
         }
-    };
+    }, [value, changed]);
     const current = React.useMemo(() => {
         return data?.filter((e) => value?.find(f => property(item, e) === f))
         // return data?.find((e) => e.value == value)?.label

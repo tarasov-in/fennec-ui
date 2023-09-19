@@ -344,6 +344,7 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
         return o;
     };
     const onFieldChange = (value, item, obj) => {
+        // console.log(value, item, obj);
         if (item && item.duplex && (item.type === "object" || item.type === "action")) {
             setChanged({ ...changed, ...splitedValue(item.name, value), ...splitedValue(item.duplex, obj) });
         } else if (item) {
