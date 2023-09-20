@@ -25,4 +25,9 @@ export function useCollectionRef(initialValue) {
         current: initialValue
     })[0]
 }
+export function useActionRef(initialValue) {
+    return React.useState({
+        current: initialValue
+    })[0]
+}
 //----------------------------------------------

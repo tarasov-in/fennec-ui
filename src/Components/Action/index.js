@@ -188,7 +188,8 @@ export function Action(props) {
         nextText,
         backText,
         noAntForm,
-        uuid
+        uuid,
+        actionRef,
     } = props;
 
     // Helpers
@@ -202,11 +203,11 @@ export function Action(props) {
     const [stepObject, setStepObject] = useState({});
     const [currentStep, setCurrentStep] = useState(0);
 
-    useEffect(()=>{
-        if(!currentStep){
+    useEffect(() => {
+        if (!currentStep) {
             setStepObject({})
         }
-    },[currentStep])
+    }, [currentStep])
 
     const [form] = Form.useForm();
     const closePopup = useCallback(() => {
@@ -344,7 +345,7 @@ export function Action(props) {
         }
     }, [currentStep, closePopup]);
 
-    
+
 
     const next = React.useCallback((values, item, currentStep) => {
         if (currentStep < steps.length - 1) {
@@ -792,7 +793,17 @@ export function Action(props) {
             }
         }
     }, [mode, steps, stepObject, currentStep, stepObject, props.auth, loading, titles, opened, fire, visible, formWraperStyle, next, action, form]);
-
+    React.useEffect(() => {
+        if (actionRef) {
+            actionRef.current = {
+                click,
+                opened,
+                loading
+            }
+        }
+    }, [opened,
+        visible,
+        loading])
     return (<React.Fragment>
         {content && content()}
     </React.Fragment>);
