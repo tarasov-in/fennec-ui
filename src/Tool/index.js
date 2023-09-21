@@ -1340,11 +1340,6 @@ export function formItemRules(item) {
     let res = [];
     if (item && item.validators) {
         if (_.isArray(item.validators)) {
-            if (isRequired(item) === true) {
-                res.push(
-                    { required: true, message: 'Укажите ' + item.label.toLowerCase() + '!' }
-                );
-            }
             for (let i = 0; i < item.validators.length; i++) {
                 const _validator = item.validators[i];
                 if (_validator.func) {
@@ -1356,9 +1351,18 @@ export function formItemRules(item) {
                 }
             }
         } else if (_.isObject(item.validators)) {
-            res.push(
-                { required: isRequired(item), message: 'Укажите ' + item.label.toLowerCase() + '!' }
-            );
+            if (isRequired(item) === true) {
+                res.push({ required: true, message: 'Укажите ' + item.label.toLowerCase() + '!' });
+            }
+            if (item?.validators?.max) {
+                res.push({ max: item?.validators?.max, message: `Значение должно быть не больше ${item?.validators?.max} символов!`});
+            }
+            if (item?.validators?.min) {
+                res.push({ min: item?.validators?.min, message: `Значение должно быть не меньше ${item?.validators?.max} символов!`});
+            }
+            if (item?.validators?.pattern) {
+                res.push({ pattern: item?.validators?.pattern, message: `Значение должно соответствовать шаблону ${item?.validators?.pattern}!`});
+            }
         }
     }
     return res;

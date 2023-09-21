@@ -232,7 +232,6 @@ const useStyles = createUseStyles({
 
 function Frm({ auth, form, meta, options, submit, object, virtualized, search }) {
     const classes = useStyles()
-    const [visible, setVisible] = useState(false);
     const [changed, setChanged] = useState({ ...object });
     useEffect(() => {
         form.resetFields();
@@ -246,47 +245,6 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
     const propertiesOneMany = properties?.filter(e => e.relation && e.relation.type === "one-many");
     const propertiesDocuments = properties?.filter(e => e.type === "document");
 
-    // function isRequired(item) {
-    //     if (item && item.validators) {
-    //         return item.validators.required || item.required;
-    //     }
-    //     return false;
-    // }
-    // const validator = (func, message) => ({
-    //     validator: (_, value) => {
-    //         if (func(value)) {
-    //             return Promise.resolve();
-    //         }
-    //         return Promise.reject(new Error(message))
-    //     }
-    // });
-    // const formItemRules = (item) => {
-    //     let res = [];
-    //     if (item && item.validators) {
-    //         if (_.isArray(item.validators)) {
-    //             if (isRequired(item) === true) {
-    //                 res.push(
-    //                     { required: true, message: 'Укажите ' + item.label.toLowerCase() + '!' }
-    //                 );
-    //             }
-    //             for (let i = 0; i < item.validators.length; i++) {
-    //                 const _validator = item.validators[i];
-    //                 if (_validator.func) {
-    //                     res.push(
-    //                         validator(_validator.func, _validator.message),
-    //                     );
-    //                 } else {
-    //                     res.push(_validator);
-    //                 }
-    //             }
-    //         } else if (_.isObject(item.validators)) {
-    //             res.push(
-    //                 { required: isRequired(item), message: 'Укажите ' + item.label.toLowerCase() + '!' }
-    //             );
-    //         }
-    //     }
-    //     return res;
-    // };
     // item: {
     //     validators: {
     //         required: false
@@ -361,9 +319,6 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
         if (item && !item.view || (item && item.view && item.view.unvisible === false)) {
             return (
                 <Form.Item
-                    // style={{
-                    //     padding: "0px 15px"
-                    // }}
                     preserve={(item.hidden) ? "true" : "false"}
                     hidden={item.hidden}
 
@@ -396,7 +351,7 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
     }
     return (
         <div>
-            {!visible && <div>
+            <div>
                 <Form
                     form={form}
                     onFinish={(values) => {
@@ -424,45 +379,7 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
                     </AutoSizer>}
                     {!virtualized && propertiesVirtualized?.map((item, idx) => virtualizedItem(item, idx))}
                 </Form>
-            </div>}
-            {visible && <div>
-                {propertiesOneMany.length > 0 && <div>
-                    <Text strong>Связи</Text>
-                    {propertiesOneMany.sort((a, b) => {
-                        if (a.label < b.label) {
-                            return -1;
-                        }
-                        if (a.label > b.label) {
-                            return 1;
-                        }
-                        return 0;
-                    })?.map((e, idx) => (
-                        <div key={idx} style={{ paddingLeft: "10px" }}>
-                            <Link href="#">
-                                {e.label}
-                            </Link>
-                        </div>
-                    ))}
-                </div>}
-                {propertiesDocuments.length > 0 && <div>
-                    <Text strong>Документы</Text>
-                    {propertiesDocuments.sort((a, b) => {
-                        if (a.label < b.label) {
-                            return -1;
-                        }
-                        if (a.label > b.label) {
-                            return 1;
-                        }
-                        return 0;
-                    })?.map((e, idx) => (
-                        <div key={idx} style={{ paddingLeft: "10px" }}>
-                            <Link href="#">
-                                {e.label}
-                            </Link>
-                        </div>
-                    ))}
-                </div>}
-            </div>}
+            </div>
         </div>
     )
 }
