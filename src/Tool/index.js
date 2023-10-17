@@ -165,7 +165,7 @@ export const POST = (auth, url, object, callback, error) => {
                 callback(res);
             }
         } else if (res && res.status === false) {
-            throw new FennecError(res.message/*, err.exception*/);
+            throw new FennecError(res.message/*, err.exception*/, "", res);
         }
     }).catch(error || errorCatch);
 };
@@ -179,7 +179,7 @@ export const POSTFormData = (auth, url, formData, callback, error) => {
                 callback(res);
             }
         } else if (res && res.status === false) {
-            throw new FennecError(res.message/*, err.exception*/);
+            throw new FennecError(res.message/*, err.exception*/, "", res);
         }
     }).catch(error || errorCatch);
 };
@@ -194,7 +194,7 @@ export const GET = (auth, url, callback, error) => {
                 callback(res);
             }
         } else if (res && res.status === false) {
-            throw new FennecError(res.message/*, err.exception*/);
+            throw new FennecError(res.message/*, err.exception*/, "", res);
         }
     }).catch(error || errorCatch);
 };
@@ -224,7 +224,7 @@ export const POSTP = (auth, url, object) => {
             if (res && res.status === true) {
                 resolve(res);
             } else if (res && res.status === false) {
-                throw new FennecError(res.message, err.exception);
+                throw new FennecError(res.message, err.exception, res);
             }
         }).catch(reject);
     });
@@ -238,7 +238,7 @@ export const POSTFormDataP = (auth, url, formData) => {
             if (res && res.status === true) {
                 resolve(res);
             } else if (res && res.status === false) {
-                throw new FennecError(res.message, err.exception);
+                throw new FennecError(res.message, err.exception, res);
             }
         }).catch(reject);
     });
@@ -253,7 +253,7 @@ export const GETP = (auth, url) => {
             if (res && res.status === true) {
                 resolve(res);
             } else if (res && res.status === false) {
-                throw new FennecError(res.message, err.exception);
+                throw new FennecError(res.message, err.exception, res);
             }
         }).catch(reject);
     });
@@ -550,12 +550,13 @@ export function QueryParametersToFilters(urlRequestParameters, filters) {
 }
 
 //--------------------------------------------------------------
-export function FennecError(message = "", name = "") {
+export function FennecError(message = "", name = "", object = {}) {
     this.name = `Error${(name) ? ": " + name : ""}`;
     this.message = message;
+    this.object = object;
 }
 FennecError.prototype = Error.prototype;
-// throw new FennecError(res.message, err.exception);
+// throw new FennecError(res.message, err.exception, res);
 
 export const errorCatch = (err, callback) => {
     if (err) {

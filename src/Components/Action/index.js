@@ -352,7 +352,13 @@ export function Action(props) {
             if (item && item.action) {
                 setLoading(true);
                 item.action(values,
-                    () => setLoading(false),
+                    // () => setLoading(false),
+                    (v) => {
+                        if(v){
+                            setStepObject(x=>({...x, [steps[currentStep].key]: { ...steps[currentStep].object, ...v }}));
+                        }
+                        setLoading(false);
+                    },
                     (v) => {
                         let o = {
                             ...stepObject,
@@ -361,7 +367,7 @@ export function Action(props) {
                         setStepObject(o);
                         setCurrentStep(currentStep + 1);
                         setLoading(false);
-                    });
+                    }, { state: stepObject });
             } else {
                 setStepObject(values);
                 setCurrentStep(currentStep + 1);
