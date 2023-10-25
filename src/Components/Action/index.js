@@ -360,11 +360,12 @@ export function Action(props) {
                         setLoading(false);
                     },
                     (v) => {
-                        let o = {
-                            ...stepObject,
-                            [steps[currentStep].key]: { ...steps[currentStep].object, ...v }
-                        };
-                        setStepObject(o);
+                        // let o = {
+                        //     ...stepObject,
+                        //     [steps[currentStep].key]: { ...steps[currentStep].object, ...v }
+                        // };
+                        // setStepObject(o);
+                        setStepObject(x=>({...x, [steps[currentStep].key]: { ...steps[currentStep].object, ...v }}));
                         setCurrentStep(currentStep + 1);
                         setLoading(false);
                     }, { state: stepObject });
