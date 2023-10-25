@@ -203,11 +203,11 @@ export function Action(props) {
     const [stepObject, setStepObject] = useState({});
     const [currentStep, setCurrentStep] = useState(0);
 
-    useEffect(() => {
-        if (!currentStep) {
-            setStepObject({})
-        }
-    }, [currentStep])
+    // useEffect(() => {
+    //     if (!currentStep) {
+    //         setStepObject({})
+    //     }
+    // }, [currentStep])
 
     const [form] = Form.useForm();
     const closePopup = useCallback(() => {
