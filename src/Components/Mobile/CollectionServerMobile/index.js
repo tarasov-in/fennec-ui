@@ -230,7 +230,7 @@ export function FiltersFieldsUIMobile(props) {
         });
     }, [value, filters]);
     const onFilterChange = React.useMemo(() => (v, item) => {
-        if (!v || (_.isArray(v) && v.length == 0)) {
+        if ((!v && !item?.permanent) || (item?.permanent && (v === undefined || v === null)) || (_.isArray(v) && v.length == 0)) {
             let f = { ...value };
             delete f[item.name]
             onChange(f);
