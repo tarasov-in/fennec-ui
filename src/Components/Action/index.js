@@ -16,6 +16,7 @@ import {
 import RenderToLayer from '../RenderToLayer'
 import Icofont from 'react-icofont';
 import { EllipsisOutlined } from '@ant-design/icons';
+import { DeviceUUID } from "device-uuid"
 
 var _ = require('lodash');
 
@@ -153,8 +154,15 @@ export const FooterButton = ({ key, name, callback, options, isDesktopOrLaptop }
 }
 export function Action(props) {
     const classes = useStyles()
-    const isDesktopOrLaptop = useMediaQuery({ minDeviceWidth: 1224 })
-    // const isPortrait = useMediaQuery({ orientation: 'portrait' })
+    
+    let isMobile = false;
+	try {
+		isMobile = new DeviceUUID().parse()?.isMobile
+	} catch (error) {
+		console.error(error)
+	}
+
+	const isDesktopOrLaptop = useMediaQuery({ minWidth: 1224 })
 
     // Props 
     const {
@@ -412,7 +420,7 @@ export function Action(props) {
                     options: {
                         type: "ghost"
                     },
-                    isDesktopOrLaptop
+                    isDesktopOrLaptop: isDesktopOrLaptop || !isMobile
                 })
             ];
         } else {
@@ -425,7 +433,7 @@ export function Action(props) {
                         options: {
                             type: "ghost"
                         },
-                        isDesktopOrLaptop
+                        isDesktopOrLaptop: isDesktopOrLaptop || !isMobile
                     })
                 ]
             } else return []
@@ -442,7 +450,7 @@ export function Action(props) {
                         options: {
                             type: "primary"
                         },
-                        isDesktopOrLaptop
+                        isDesktopOrLaptop: isDesktopOrLaptop || !isMobile
                     }),
                     FooterButton({
                         key: "ok",
@@ -451,7 +459,7 @@ export function Action(props) {
                         options: {
                             type: "primary"
                         },
-                        isDesktopOrLaptop
+                        isDesktopOrLaptop: isDesktopOrLaptop || !isMobile
                     }))
             ]
         } else {
@@ -463,7 +471,7 @@ export function Action(props) {
                     options: {
                         type: "primary"
                     },
-                    isDesktopOrLaptop
+                    isDesktopOrLaptop: isDesktopOrLaptop || !isMobile
                 })
             ]
         }
@@ -473,7 +481,7 @@ export function Action(props) {
         if (props.footerExtendedButtons) {
             let btns = props.footerExtendedButtons(parameters);
             if (btns) {
-                return btns?.map(e => FooterButton({ isDesktopOrLaptop, ...e }))
+                return btns?.map(e => FooterButton({ isDesktopOrLaptop: isDesktopOrLaptop || !isMobile, ...e }))
             }
         }
         return []
@@ -495,7 +503,7 @@ export function Action(props) {
         if (props.footer) {
             let btns = props.footer(ctx);
             if (btns) {
-                let a = btns?.map(e => FooterButton({ isDesktopOrLaptop, ...e }))
+                let a = btns?.map(e => FooterButton({ isDesktopOrLaptop: isDesktopOrLaptop || !isMobile, ...e }))
                 return a
             }
         }
@@ -513,7 +521,7 @@ export function Action(props) {
     }, [props.footer, isDesktopOrLaptop, currentStep, form, object, unlock, close, mode, readonly, loading]);
     const trigger = React.useCallback(() => {
         if (fire) return <React.Fragment></React.Fragment>;
-        if (isDesktopOrLaptop) {
+        if (isDesktopOrLaptop || !isMobile) {
             if (mode == "inline") {
                 return <React.Fragment></React.Fragment>;
             } else if (mode == "func") {
@@ -595,7 +603,7 @@ export function Action(props) {
         }
     }, [fire, object, props.action, isDesktopOrLaptop, mode, props.title, props.trigger, loading, disabled, triggerOptions, triggerStyle, props.closable]);
     const content = React.useCallback(() => {
-        if (isDesktopOrLaptop) {
+        if (isDesktopOrLaptop || !isMobile) {
             const width = (props.modal) ? props.modal.width : undefined;
             const title = (props.modal && props.modal.title) ? props.modal.title : props.title;
             if (mode == "inline") {
