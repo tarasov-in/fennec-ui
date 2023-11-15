@@ -19,6 +19,8 @@ export class AuthService {
         this.authschemhttp = process.env.REACT_APP_AUTHSCHEMHTTP || this.schemhttp
         this.domain = domain || this.schemhttp + '://' + this.Hostname
         this.appProfile = process.env.REACT_APP_PROFILE || "dev"
+        this.publicMode = false
+        this.setPublicMode = this.setPublicMode.bind(this)
         this.fetch = this.fetch.bind(this)
         this.fetchRfToken = this.fetchRfToken.bind(this)
         this.login = this.login.bind(this)
@@ -298,6 +300,11 @@ export class AuthService {
         return decode(this.getToken());
     }
 
+    setPublicMode(value) {
+        this.publicMode = value;
+    }
+
+
     fetchRfToken = configureRefreshFetch(this)
 
     fetchRaw(url, options) {
@@ -435,7 +442,13 @@ export class AuthService {
         if (response.status >= 200 && response.status < 300) { // Success status lies between 200 to 300
             return response
         } else if (response.status == 401 && response.headers.get('x-authenticate-error') == 'NeedLogin') {
-            window.location.href = this.authschemhttp + "://auth." + this.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
+            if (this.publicMode) {
+                Cookies.remove("token", {domain: this.getDomainWithoutSubdomain(window.location.href)})
+                Cookies.remove("refreshToken", {domain: this.getDomainWithoutSubdomain(window.location.href)})
+                window.location.href = window.location.href;
+            } else {
+                window.location.href = this.authschemhttp + "://auth." + this.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
+            }
             return response;
         } else if (response.status == 403) {
             console.error(response.status, "Доступ запрещен", response.url);
@@ -455,8 +468,12 @@ export class AuthService {
 let XAuthContext = createContext(null);
 let NavigationContext = createContext(null);
 
-export function AuthProvider({ children }) {
+//Свойство publicMode указывать провайдеру аутентификации, 
+//что при невозможности обновить токен, не нужно кидать на сервер аутентификации, 
+//а необходимо удалить куки токена и рефрешТокена, и перезагрузить текущую страницу.
+export function AuthProvider({ children, publicMode }) {
     const auth = new AuthService();
+    auth.setPublicMode(publicMode);
     return <XAuthContext.Provider value={auth}>{children}</XAuthContext.Provider>;
 }
 export function useAuth() {
@@ -532,7 +549,13 @@ function configureRefreshFetch(auth) {
                         }).then(response => {
                             let xAuthError = response.headers.get('x-authenticate-error')
                             if (response.status == 401 && xAuthError == 'NeedLogin') {
-                                window.location.href = auth.authschemhttp + "://auth." + auth.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
+                                if (auth.publicMode) {
+                                    Cookies.remove("token", {domain: auth.getDomainWithoutSubdomain(window.location.href)})
+                                    Cookies.remove("refreshToken", {domain: auth.getDomainWithoutSubdomain(window.location.href)})
+                                    window.location.href = window.location.href;
+                                } else {
+                                    window.location.href = auth.authschemhttp + "://auth." + auth.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
+                                }
                                 return
                             }
 
@@ -555,7 +578,13 @@ function configureRefreshFetch(auth) {
                 })
 
             } else if (response.status == 401 && xAuthError == 'NeedLogin') {
-                window.location.href = auth.authschemhttp + "://auth." + auth.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
+                if (auth.publicMode) {
+                    Cookies.remove("token", {domain: auth.getDomainWithoutSubdomain(window.location.href)})
+                    Cookies.remove("refreshToken", {domain: auth.getDomainWithoutSubdomain(window.location.href)})
+                    window.location.href = window.location.href;
+                } else {
+                    window.location.href = auth.authschemhttp + "://auth." + auth.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
+                }
                 return
             }
 
