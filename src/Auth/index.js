@@ -68,7 +68,7 @@ export class AuthService {
                         ID: (!isNaN(IDi)) ? IDi : undefined,
                         name,
                         region,
-                        latitude, 
+                        latitude,
                         longitude,
                     }
                 }
@@ -278,7 +278,7 @@ export class AuthService {
         // })
     }
 
-    refresh(location){
+    refresh(location) {
         let l = location || window.location.href;
         window.location.href = l;
     }
@@ -443,9 +443,13 @@ export class AuthService {
             return response
         } else if (response.status == 401 && response.headers.get('x-authenticate-error') == 'NeedLogin') {
             if (this.publicMode) {
-                Cookies.remove("token", {domain: this.getDomainWithoutSubdomain(window.location.href)})
-                Cookies.remove("refreshToken", {domain: this.getDomainWithoutSubdomain(window.location.href)})
-                window.location.href = window.location.href;
+                if (this.getCookie("token") || this.getCookie("refreshToken")) {
+                    Cookies.remove("token", { domain: this.getDomainWithoutSubdomain(window.location.href) })
+                    Cookies.remove("refreshToken", { domain: this.getDomainWithoutSubdomain(window.location.href) })
+                    window.location.href = window.location.href;
+                } else {
+                    return response;
+                }
             } else {
                 window.location.href = this.authschemhttp + "://auth." + this.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
             }
@@ -550,9 +554,13 @@ function configureRefreshFetch(auth) {
                             let xAuthError = response.headers.get('x-authenticate-error')
                             if (response.status == 401 && xAuthError == 'NeedLogin') {
                                 if (auth.publicMode) {
-                                    Cookies.remove("token", {domain: auth.getDomainWithoutSubdomain(window.location.href)})
-                                    Cookies.remove("refreshToken", {domain: auth.getDomainWithoutSubdomain(window.location.href)})
-                                    window.location.href = window.location.href;
+                                    if (this.getCookie("token") || this.getCookie("refreshToken")) {
+                                        Cookies.remove("token", { domain: auth.getDomainWithoutSubdomain(window.location.href) })
+                                        Cookies.remove("refreshToken", { domain: auth.getDomainWithoutSubdomain(window.location.href) })
+                                        window.location.href = window.location.href;
+                                    } else {
+                                        return response;
+                                    }
                                 } else {
                                     window.location.href = auth.authschemhttp + "://auth." + auth.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
                                 }
@@ -579,9 +587,13 @@ function configureRefreshFetch(auth) {
 
             } else if (response.status == 401 && xAuthError == 'NeedLogin') {
                 if (auth.publicMode) {
-                    Cookies.remove("token", {domain: auth.getDomainWithoutSubdomain(window.location.href)})
-                    Cookies.remove("refreshToken", {domain: auth.getDomainWithoutSubdomain(window.location.href)})
-                    window.location.href = window.location.href;
+                    if (this.getCookie("token") || this.getCookie("refreshToken")) {
+                        Cookies.remove("token", { domain: auth.getDomainWithoutSubdomain(window.location.href) })
+                        Cookies.remove("refreshToken", { domain: auth.getDomainWithoutSubdomain(window.location.href) })
+                        window.location.href = window.location.href;
+                    } else {
+                        return response;
+                    }
                 } else {
                     window.location.href = auth.authschemhttp + "://auth." + auth.getDomainWithoutSubdomain(window.location.href) + "/login?service=" + window.location.href;
                 }
@@ -594,7 +606,7 @@ function configureRefreshFetch(auth) {
 
     //Избегаем множественного переопределения fetch, 
     //которое в последующем приводит к бесконечному вызову самой себя
-    if(window.fetch.toString() != customFetch.toString()) {
+    if (window.fetch.toString() != customFetch.toString()) {
         window.__fetch = fetch;
         window.fetch = customFetch;
     }
