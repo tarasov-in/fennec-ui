@@ -554,7 +554,7 @@ function configureRefreshFetch(auth) {
                             let xAuthError = response.headers.get('x-authenticate-error')
                             if (response.status == 401 && xAuthError == 'NeedLogin') {
                                 if (auth.publicMode) {
-                                    if (this.getCookie("token") || this.getCookie("refreshToken")) {
+                                    if (auth.getCookie("token") || auth.getCookie("refreshToken")) {
                                         Cookies.remove("token", { domain: auth.getDomainWithoutSubdomain(window.location.href) })
                                         Cookies.remove("refreshToken", { domain: auth.getDomainWithoutSubdomain(window.location.href) })
                                         window.location.href = window.location.href;
@@ -587,7 +587,7 @@ function configureRefreshFetch(auth) {
 
             } else if (response.status == 401 && xAuthError == 'NeedLogin') {
                 if (auth.publicMode) {
-                    if (this.getCookie("token") || this.getCookie("refreshToken")) {
+                    if (auth.getCookie("token") || auth.getCookie("refreshToken")) {
                         Cookies.remove("token", { domain: auth.getDomainWithoutSubdomain(window.location.href) })
                         Cookies.remove("refreshToken", { domain: auth.getDomainWithoutSubdomain(window.location.href) })
                         window.location.href = window.location.href;
