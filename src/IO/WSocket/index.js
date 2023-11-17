@@ -9,20 +9,27 @@ class WSocket extends React.Component {
         this.open = this.open.bind(this);
     }
 
-    open(url, wsName, onmessage_callback, onopen_callback, onclose_callback, onerror_callback) {
+    async open(url, wsName, onmessage_callback, onopen_callback, onclose_callback, onerror_callback) {
         var context = this;
         const { auth } = this.props;
 
         if (this.state.ws[wsName] && this.state.ws[wsName].cancelConnect) {
             console.warn("Отмена открытия соединения с идентификатором " + wsName);
-            return;
+            return Promise.resolve(1);
         }
 
         if (this.state.ws[wsName] && this.state.ws[wsName].socket && this.state.ws[wsName].socket.send) {
             console.error("Соединение с идентификатором " + wsName + " уже существует");
-            return;
+            return Promise.resolve(1);
         }
 
+        if (auth.keepAlive) {
+            try {
+                await auth.fetch(auth.keepAlive)
+            } catch (error) {
+            }
+        }
+        
         // var ws = new WebSocket(url, [(auth.getToken()) || null]);
         var ws = new WebSocket(url);
         ws.onmessage = onmessage_callback;
@@ -61,6 +68,8 @@ class WSocket extends React.Component {
         ws.onerror = function (error) {
             // console.error("Ошибка соединения с идентификатором " + wsName, error)
         }
+
+        return Promise.resolve(1);
     };
     close(wsName, cancelConnect = true) {
         console.log("Закрываем соединение " + wsName);

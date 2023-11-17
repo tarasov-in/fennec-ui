@@ -21,6 +21,8 @@ export class AuthService {
         this.appProfile = process.env.REACT_APP_PROFILE || "dev"
         this.publicMode = false
         this.setPublicMode = this.setPublicMode.bind(this)
+        this.keepAlive = ""
+        this.setKeepAlive = this.setKeepAlive.bind(this)
         this.fetch = this.fetch.bind(this)
         this.fetchRfToken = this.fetchRfToken.bind(this)
         this.login = this.login.bind(this)
@@ -303,8 +305,10 @@ export class AuthService {
     setPublicMode(value) {
         this.publicMode = value;
     }
-
-
+    setKeepAlive(value) {
+        this.keepAlive = value;
+    }
+    
     fetchRfToken = configureRefreshFetch(this)
 
     fetchRaw(url, options) {
@@ -477,9 +481,10 @@ let NavigationContext = createContext(null);
 //Свойство publicMode указывать провайдеру аутентификации, 
 //что при невозможности обновить токен, не нужно кидать на сервер аутентификации, 
 //а необходимо удалить куки токена и рефрешТокена, и перезагрузить текущую страницу.
-export function AuthProvider({ children, publicMode }) {
+export function AuthProvider({ children, publicMode, keepAlive }) {
     const auth = new AuthService();
     auth.setPublicMode(publicMode);
+    auth.setKeepAlive(keepAlive);
     return <XAuthContext.Provider value={auth}>{children}</XAuthContext.Provider>;
 }
 export function useAuth() {
