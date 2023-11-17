@@ -310,7 +310,7 @@ export class AuthService {
     fetchRaw(url, options) {
         // performs api calls sending the required authentication headers
         const headers = {
-
+            ...options?.headers
         }
 
         // Setting Authorization header
@@ -320,8 +320,8 @@ export class AuthService {
         }
         var end = this.PerformanceStart(url);
         return this.fetchRfToken(this.domain + url, {
+            ...options,
             headers,
-            ...options
         })
             .then(this._checkStatus)
             .then(response => {
@@ -335,6 +335,7 @@ export class AuthService {
     fetchFile(url, options) {
         const headers = {
             // 'X-Requested-With': 'XMLHttpRequest'
+            ...options?.headers
         }
         // Setting Authorization header
         // Authorization: Bearer xxxxxxx.xxxxxxxx.xxxxxx
@@ -343,8 +344,8 @@ export class AuthService {
         }
         var end = this.PerformanceStart(url);
         return this.fetchRfToken(this.domain + url, {
+            ...options,
             headers,
-            ...options
         })
             .then(this._checkStatus)
             .then((res) => {
@@ -374,7 +375,7 @@ export class AuthService {
     fetchForData(url, options) {
         // performs api calls sending the required authentication headers
         const headers = {
-
+            ...options?.headers
         }
 
         // Setting Authorization header
@@ -384,8 +385,8 @@ export class AuthService {
         }
         var end = this.PerformanceStart(url);
         return this.fetchRfToken(this.domain + url, {
+            ...options,
             headers,
-            ...options
         })
             .then(this._checkStatus)
             .then(response => {
@@ -407,7 +408,8 @@ export class AuthService {
         // performs api calls sending the required authentication headers
         const headers = {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            ...options?.headers
         }
 
         // Setting Authorization header
@@ -417,8 +419,8 @@ export class AuthService {
         }
         var end = this.PerformanceStart(url);
         return this.fetchRfToken(this.domain + url, {
+            ...options,
             headers,
-            ...options
         })
             .then(this._checkStatus)
             .then(response => {
