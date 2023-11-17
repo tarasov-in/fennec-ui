@@ -208,7 +208,7 @@ export function Action(props) {
     }, [object]);
     const isChangedField = React.useCallback((name) => {
         return (values[name] !== object[name])
-    }, [values, object]);    
+    }, [values, object]);
     const isChangedForm = React.useMemo(() => !_.isEqual({ ...object, ...values }, object), [values, object]);
     const onValuesChange = React.useCallback((changed, all) => {
         setValues(all)
@@ -501,7 +501,7 @@ export function Action(props) {
         }
         return []
     }
-    const footer = React.useCallback((isChangedForm) => {
+    const footer = React.useCallback(() => {
         let ctx = {
             DismissFunction: FooterDismissFunction(),
             OkFunction: FooterOkFunction(),
@@ -513,7 +513,8 @@ export function Action(props) {
             close,
             mode,
             readonly,
-            loading
+            loading,
+            isChangedForm
         };
         if (props.footer) {
             let btns = props.footer(ctx);
@@ -532,6 +533,7 @@ export function Action(props) {
             ...FooterExtendedButtons(ctx),
             ...FooterDismissButtons(),
             // ...(isChangedForm)?FooterOkButtons():[]
+            // ...(isChangedForm)?[FooterButton({ isDesktopOrLaptop: isDesktopOrLaptop || !isMobile,  key: "test", name:`T${isChangedForm}`, callback: FooterOkFunction })]:[],
             ...FooterOkButtons()
         ]
     }, [isChangedForm, props.footer, isDesktopOrLaptop, currentStep, form, object, unlock, close, mode, readonly, loading]);
@@ -647,7 +649,7 @@ export function Action(props) {
                                     {...props}
                                     submit={action}
                                     form={(!noAntForm) ? form : undefined}
-                                    
+
                                     isChangedForm={isChangedForm}
                                     isChangedField={isChangedField}
                                     onValuesChange={onValuesChange}
@@ -673,6 +675,7 @@ export function Action(props) {
                         destroyOnClose={true}
                         onCancel={closePopup}
                         footer={footer()}
+
                         keyboard={false}
                         bodyStyle={(props.modal && props.modal.bodyStyle) ? props.modal.bodyStyle : {}}
                         {...props.modal}
