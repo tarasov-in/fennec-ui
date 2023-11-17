@@ -131,7 +131,9 @@ import {
   MetaContext,
   useMetaContext,
   useCollectionRef,
-  useActionRef
+  useActionRef,
+  FormObserverContext,
+  useFormObserverContext
 } from './Components/Context'
 
 import {
@@ -292,7 +294,9 @@ export {
   useMetaContext,
   useCollectionRef,
   useActionRef,
-  
+  FormObserverContext,
+  useFormObserverContext,
+
   Field,
   FieldMobile,
   Model,

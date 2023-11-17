@@ -9,6 +9,7 @@ import {
 } from 'antd';
 import { uncapitalize, GetMeta, GetMetaProperties, formItemRules, isRequired, validator } from '../../../Tool';
 import { FieldMobile } from '../FieldMobile';
+import { useFormObserverContext } from '../../Context';
 var _ = require('lodash');
 const { Text, Link } = Typography;
 const isIPhone = new RegExp('\\biPhone\\b|\\biPod\\b', 'i').test(window.navigator.userAgent);
@@ -310,6 +311,8 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
         }
     };
     const propertiesVirtualized = propertiesFiltered?.filter(e => !!e);
+    const [isChangedForm, isChangedField, onValuesChange] = useFormObserverContext()
+
     const virtualizedItem = (item, idx) => {
         if (!item.name && item.type === "func" && item.render) {
             return <div key={"func_" + idx}>
@@ -333,7 +336,8 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
                         item={item}
                         
                         onChange={onFieldChange}
-                        changed={changed} />
+                        changed={changed}
+                        isChanged={(isChangedField)?isChangedField(uncapitalize(item.name)):undefined} />
                 </Form.Item>
             );
         }
@@ -354,6 +358,7 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
             <div>
                 <Form
                     form={form}
+                    onValuesChange={onValuesChange}
                     onFinish={(values) => {
                         submit(splitedObject(values));
                     }}

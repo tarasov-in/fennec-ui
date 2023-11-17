@@ -7,7 +7,7 @@ import {
 import Icofont from 'react-icofont';
 import { GetMeta, GetMetaProperties, formItemRules, isRequired, validator, getObjectDisplay, uncapitalize } from '../../../Tool';
 import { Field } from '../Field';
-import { useMetaContext } from '../../Context';
+import { useFormObserverContext, useMetaContext } from '../../Context';
 var _ = require('lodash');
 const { CheckableTag } = Tag;
 
@@ -72,10 +72,13 @@ function Frm(props) {
     //     ]
     // }
 
+    const [isChangedForm, isChangedField, onValuesChange] = useFormObserverContext()
+
     return (
         <div>
             <Form form={form}
                 onFinish={submit}
+                onValuesChange={onValuesChange}
                 initialValues={{
                     ...object
                 }}
@@ -102,7 +105,8 @@ function Frm(props) {
                             auth={auth}
                             filter={fieldsFilters[item.name.toLowerCase()]}
                             item={{ ...item, filterType: undefined, func: (funcStat && funcStat[item.name.toLowerCase()]) ? funcStat[item.name.toLowerCase()] : {} }}
-
+                            
+                            isChanged={(isChangedField)?isChangedField((item.type !== "object" && item.type !== "document") ? uncapitalize(item.name) : uncapitalize(item.name) + "ID"):undefined}
                         />
                     </Form.Item>);
                 })}

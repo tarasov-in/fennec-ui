@@ -31,3 +31,8 @@ export function useActionRef(initialValue) {
     })[0]
 }
 //----------------------------------------------
+export const FormObserverContext = createContext();
+export function useFormObserverContext() {
+    let o = React.useContext(FormObserverContext)
+    return (o)?o:[];
+}

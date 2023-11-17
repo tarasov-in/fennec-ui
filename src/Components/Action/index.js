@@ -17,6 +17,7 @@ import RenderToLayer from '../RenderToLayer'
 import Icofont from 'react-icofont';
 import { EllipsisOutlined } from '@ant-design/icons';
 import { DeviceUUID } from "device-uuid"
+import { FormObserverContext } from '../Context';
 
 var _ = require('lodash');
 
@@ -154,15 +155,15 @@ export const FooterButton = ({ key, name, callback, options, isDesktopOrLaptop }
 }
 export function Action(props) {
     const classes = useStyles()
-    
-    let isMobile = false;
-	try {
-		isMobile = new DeviceUUID().parse()?.isMobile
-	} catch (error) {
-		console.error(error)
-	}
 
-	const isDesktopOrLaptop = useMediaQuery({ minWidth: 1224 })
+    let isMobile = false;
+    try {
+        isMobile = new DeviceUUID().parse()?.isMobile
+    } catch (error) {
+        console.error(error)
+    }
+
+    const isDesktopOrLaptop = useMediaQuery({ minWidth: 1224 })
 
     // Props 
     const {
@@ -199,6 +200,20 @@ export function Action(props) {
         uuid,
         actionRef,
     } = props;
+
+    //----FormObserver-----------------
+    const [values, setValues] = useState({});
+    useEffect(() => {
+        setValues(object);
+    }, [object]);
+    const isChangedField = React.useCallback((name) => {
+        return (values[name] !== object[name])
+    }, [values, object]);    
+    const isChangedForm = React.useMemo(() => !_.isEqual({ ...object, ...values }, object), [values, object]);
+    const onValuesChange = React.useCallback((changed, all) => {
+        setValues(all)
+    }, [values, setValues])
+    //---------------------------------
 
     // Helpers
     const scrollLocker = new ScrollLocker();
@@ -362,8 +377,8 @@ export function Action(props) {
                 item.action(values,
                     // () => setLoading(false),
                     (v) => {
-                        if(v){
-                            setStepObject(x=>({...x, [steps[currentStep].key]: { ...steps[currentStep].object, ...v }}));
+                        if (v) {
+                            setStepObject(x => ({ ...x, [steps[currentStep].key]: { ...steps[currentStep].object, ...v } }));
                         }
                         setLoading(false);
                     },
@@ -373,7 +388,7 @@ export function Action(props) {
                         //     [steps[currentStep].key]: { ...steps[currentStep].object, ...v }
                         // };
                         // setStepObject(o);
-                        setStepObject(x=>({...x, [steps[currentStep].key]: { ...steps[currentStep].object, ...v }}));
+                        setStepObject(x => ({ ...x, [steps[currentStep].key]: { ...steps[currentStep].object, ...v } }));
                         setCurrentStep(currentStep + 1);
                         setLoading(false);
                     }, { state: stepObject });
@@ -486,7 +501,7 @@ export function Action(props) {
         }
         return []
     }
-    const footer = React.useCallback(() => {
+    const footer = React.useCallback((isChangedForm) => {
         let ctx = {
             DismissFunction: FooterDismissFunction(),
             OkFunction: FooterOkFunction(),
@@ -516,9 +531,10 @@ export function Action(props) {
         return [
             ...FooterExtendedButtons(ctx),
             ...FooterDismissButtons(),
+            // ...(isChangedForm)?FooterOkButtons():[]
             ...FooterOkButtons()
         ]
-    }, [props.footer, isDesktopOrLaptop, currentStep, form, object, unlock, close, mode, readonly, loading]);
+    }, [isChangedForm, props.footer, isDesktopOrLaptop, currentStep, form, object, unlock, close, mode, readonly, loading]);
     const trigger = React.useCallback(() => {
         if (fire) return <React.Fragment></React.Fragment>;
         if (isDesktopOrLaptop || !isMobile) {
@@ -626,7 +642,17 @@ export function Action(props) {
                             />
                         </React.Fragment>}
                         {(!steps && props.form) &&
-                            <ContentForm {...props} submit={action} form={(!noAntForm) ? form : undefined} />
+                            <FormObserverContext.Provider value={[isChangedForm, isChangedField, onValuesChange]}>
+                                <ContentForm
+                                    {...props}
+                                    submit={action}
+                                    form={(!noAntForm) ? form : undefined}
+                                    
+                                    isChangedForm={isChangedForm}
+                                    isChangedField={isChangedField}
+                                    onValuesChange={onValuesChange}
+                                />
+                            </FormObserverContext.Provider>
                         }
                         <div>
                             <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }} className='action-footer'>
@@ -807,7 +833,7 @@ export function Action(props) {
                 </React.Fragment>);
             }
         }
-    }, [mode, steps, stepObject, currentStep, stepObject, props.auth, loading, titles, opened, fire, visible, formWraperStyle, next, action, form]);
+    }, [isChangedForm, isChangedField, onValuesChange, mode, steps, stepObject, currentStep, stepObject, props.auth, loading, titles, opened, fire, visible, formWraperStyle, next, action, form]);
     React.useEffect(() => {
         if (actionRef) {
             actionRef.current = {
