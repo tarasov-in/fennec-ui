@@ -199,6 +199,7 @@ export function Action(props) {
         noAntForm,
         uuid,
         actionRef,
+        disabledOkOnUncahngedForm
     } = props;
 
     //----FormObserver-----------------
@@ -209,7 +210,17 @@ export function Action(props) {
     const isChangedField = React.useCallback((name) => {
         return (values[name] !== object[name])
     }, [values, object]);
-    const isChangedForm = React.useMemo(() => !_.isEqual({ ...object, ...values }, object), [values, object]);
+    const isChangedForm = React.useMemo(() => {
+        // return !_.isEqual({ ...object, ...values }, object)
+        let f = false;
+        for (const key in values) {
+            if (values[key] !== object[key]) {
+                f = true;
+                break
+            }
+        }
+        return f;
+    }, [values, object]);
     const onValuesChange = React.useCallback((changed, all) => {
         setValues(all)
     }, [values, setValues])
@@ -454,7 +465,7 @@ export function Action(props) {
             } else return []
         }
     }
-    const FooterOkButtons = () => {
+    const FooterOkButtons = useCallback(() => {
         if (steps) {
             return [
                 IfElse(currentStep < steps.length - 1,
@@ -463,7 +474,8 @@ export function Action(props) {
                         name: steps[currentStep]?.okText || nextText || 'Далее',
                         callback: FooterOkFunction(),
                         options: {
-                            type: "primary"
+                            type: "primary",
+                            disabled: disabledOkOnUncahngedForm && !isChangedForm
                         },
                         isDesktopOrLaptop: isDesktopOrLaptop || !isMobile
                     }),
@@ -472,7 +484,8 @@ export function Action(props) {
                         name: steps[currentStep]?.okText || okText || 'Отправить',
                         callback: FooterOkFunction(),
                         options: {
-                            type: "primary"
+                            type: "primary",
+                            disabled: disabledOkOnUncahngedForm && !isChangedForm
                         },
                         isDesktopOrLaptop: isDesktopOrLaptop || !isMobile
                     }))
@@ -484,13 +497,14 @@ export function Action(props) {
                     name: okText || 'Отправить',
                     callback: FooterOkFunction(),
                     options: {
-                        type: "primary"
+                        type: "primary",
+                        disabled: disabledOkOnUncahngedForm && !isChangedForm
                     },
                     isDesktopOrLaptop: isDesktopOrLaptop || !isMobile
                 })
             ]
         }
-    }
+    }, [isChangedForm, disabledOkOnUncahngedForm])
     const FooterExtendedButtons = (parameters) => {
         // функция должна возвращать массив объектов для FooterButton
         if (props.footerExtendedButtons) {
@@ -532,7 +546,7 @@ export function Action(props) {
         return [
             ...FooterExtendedButtons(ctx),
             ...FooterDismissButtons(),
-            // ...(isChangedForm)?FooterOkButtons():[]
+            // ...(isChangedForm)?FooterOkButtons():[],
             // ...(isChangedForm)?[FooterButton({ isDesktopOrLaptop: isDesktopOrLaptop || !isMobile,  key: "test", name:`T${isChangedForm}`, callback: FooterOkFunction })]:[],
             ...FooterOkButtons()
         ]
