@@ -159,7 +159,7 @@ export function CollectionServer(props) {
         name,
         source,
         title,
-        size,
+
         modelActions,
         defaultModelActions,
         collectionActions,
@@ -404,8 +404,6 @@ export function CollectionServer(props) {
             return
         }
 
-        // console.log("request!", filter, sorting);
-
         let ctxFlt = [];
         if (contextFilters) {
             let ctx = clean(contextFilters());
@@ -428,76 +426,78 @@ export function CollectionServer(props) {
         Object.keys(filter).forEach(key => {
             var item = filters?.find(e => e.name == key);
 
-            let filterByKey = filter[key];
-            switch (item.filterType) {
-                case "group":
-                    switch (item.type) {
-                        case "object":
-                        case "document":
-                            flt.push(QueryParam("w-in-" + key, filterByKey))
-                            break;
-                        default:
-                            flt.push(QueryParam("w-in-" + key, filterByKey))
-                            break;
-                    }
-                    break;
-                case "range":
-                    switch (item.type) {
-                        case "int":
-                        case "uint":
-                        case "integer":
-                        case "int64":
-                        case "int32":
-                        case "uint64":
-                        case "uint32":
-                            if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-                                flt.push(QueryParam("w-lge-" + key, filterByKey[0]))
-                                flt.push(QueryParam("w-lwe-" + key, filterByKey[1]))
-                            }
-                            break;
-                        case "double":
-                        case "float":
-                        case "float64":
-                        case "float32":
-                            if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-                                flt.push(QueryParam("w-lge-" + key, filterByKey[0]))
-                                flt.push(QueryParam("w-lwe-" + key, filterByKey[1]))
-                            }
-                            break;
-                        case "time":
-                            if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-                                flt.push(QueryParam("w-lge-" + key, filterByKey[0].format("HH:mm:ss")))
-                                flt.push(QueryParam("w-lwe-" + key, filterByKey[1].format("HH:mm:ss")))
-                            }
-                            break;
-                        case "date":
-                            if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-                                flt.push(QueryParam("w-lge-" + key, filterByKey[0].format("YYYY-MM-DD")))
-                                flt.push(QueryParam("w-lwe-" + key, filterByKey[1].format("YYYY-MM-DD")))
-                            }
-                            break;
-                        case "datetime":
-                        case "time.Time":
-                            if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-                                flt.push(QueryParam("w-lge-" + key, filterByKey[0].format("YYYY-MM-DD HH:mm")))
-                                flt.push(QueryParam("w-lwe-" + key, filterByKey[1].format("YYYY-MM-DD HH:mm")))
-                            }
-                            break;
-                        default:
-                            flt.push(QueryParam("w-" + key, filterByKey))
-                            break;
-                    }
-                    break;
-                default:
-                    switch (item.type) {
-                        case "string":
-                            flt.push(QueryParam("w-co-" + key, filterByKey))
-                            break;
-                        default:
-                            flt.push(QueryParam("w-" + key, filterByKey))
-                            break;
-                    }
-                    break;
+            if (item) {
+                let filterByKey = filter[key];
+                switch (item?.filterType) {
+                    case "group":
+                        switch (item?.type) {
+                            case "object":
+                            case "document":
+                                flt.push(QueryParam("w-in-" + key, filterByKey))
+                                break;
+                            default:
+                                flt.push(QueryParam("w-in-" + key, filterByKey))
+                                break;
+                        }
+                        break;
+                    case "range":
+                        switch (item?.type) {
+                            case "int":
+                            case "uint":
+                            case "integer":
+                            case "int64":
+                            case "int32":
+                            case "uint64":
+                            case "uint32":
+                                if (_.isArray(filterByKey) && filterByKey.length >= 2) {
+                                    flt.push(QueryParam("w-lge-" + key, filterByKey[0]))
+                                    flt.push(QueryParam("w-lwe-" + key, filterByKey[1]))
+                                }
+                                break;
+                            case "double":
+                            case "float":
+                            case "float64":
+                            case "float32":
+                                if (_.isArray(filterByKey) && filterByKey.length >= 2) {
+                                    flt.push(QueryParam("w-lge-" + key, filterByKey[0]))
+                                    flt.push(QueryParam("w-lwe-" + key, filterByKey[1]))
+                                }
+                                break;
+                            case "time":
+                                if (_.isArray(filterByKey) && filterByKey.length >= 2) {
+                                    flt.push(QueryParam("w-lge-" + key, filterByKey[0].format("HH:mm:ss")))
+                                    flt.push(QueryParam("w-lwe-" + key, filterByKey[1].format("HH:mm:ss")))
+                                }
+                                break;
+                            case "date":
+                                if (_.isArray(filterByKey) && filterByKey.length >= 2) {
+                                    flt.push(QueryParam("w-lge-" + key, filterByKey[0].format("YYYY-MM-DD")))
+                                    flt.push(QueryParam("w-lwe-" + key, filterByKey[1].format("YYYY-MM-DD")))
+                                }
+                                break;
+                            case "datetime":
+                            case "time.Time":
+                                if (_.isArray(filterByKey) && filterByKey.length >= 2) {
+                                    flt.push(QueryParam("w-lge-" + key, filterByKey[0].format("YYYY-MM-DD HH:mm")))
+                                    flt.push(QueryParam("w-lwe-" + key, filterByKey[1].format("YYYY-MM-DD HH:mm")))
+                                }
+                                break;
+                            default:
+                                flt.push(QueryParam("w-" + key, filterByKey))
+                                break;
+                        }
+                        break;
+                    default:
+                        switch (item?.type) {
+                            case "string":
+                                flt.push(QueryParam("w-co-" + key, filterByKey))
+                                break;
+                            default:
+                                flt.push(QueryParam("w-" + key, filterByKey))
+                                break;
+                        }
+                        break;
+                }
             }
         });
 
@@ -509,8 +509,29 @@ export function CollectionServer(props) {
                 });
             }
         });
+        if (source && _.isFunction(source)) {
+            // lock();
+            source({
+                lock,
+                unlock,
 
-        if (source) {
+                page: current,
+                count: count,
+                sorting,
+                filter,
+                // {stat, totalPages, size, totalElements, content}
+                apply: (data) => {
+                    if (!funcStat) {
+                        setFuncStat(data?.stat);
+                    }
+                    setTotalPages(data?.totalPages);
+                    setCount(data?.size);
+                    setTotal(data?.totalElements);
+                    setCollection((data && data?.content) ? data?.content : []);
+                    // unlock();
+                }
+            });
+        } else if (source && !_.isFunction(source)) {
             lock();
             GETWITH(auth, source, [
                 QueryDetail("model"), // ! убрать настройку детализации по умолчанию
@@ -522,12 +543,12 @@ export function CollectionServer(props) {
                 ...ctxFlt
             ], ({ data }) => {
                 if (!funcStat) {
-                    setFuncStat(data.stat);
+                    setFuncStat(data?.stat);
                 }
-                setTotalPages(data.totalPages);
-                setCount(data.size);
-                setTotal(data.totalElements);
-                setCollection((data && data.content) ? data.content : []);
+                setTotalPages(data?.totalPages);
+                setCount(data?.size);
+                setTotal(data?.totalElements);
+                setCollection((data && data?.content) ? data?.content : []);
                 unlock();
             }, (err) => errorCatch(err, unlock));
         } else {
@@ -542,12 +563,12 @@ export function CollectionServer(props) {
                 ...ctxFlt
             ], ({ data }) => {
                 if (!funcStat) {
-                    setFuncStat(data.stat);
+                    setFuncStat(data?.stat);
                 }
-                setTotalPages(data.totalPages);
-                setCount(data.size);
-                setTotal(data.totalElements);
-                setCollection((data && data.content) ? data.content : []);
+                setTotalPages(data?.totalPages);
+                setCount(data?.size);
+                setTotal(data?.totalElements);
+                setCollection((data && data?.content) ? data?.content : []);
                 unlock();
             }, (err) => errorCatch(err, unlock));
         }
@@ -762,7 +783,7 @@ export function CollectionServer(props) {
         let values = clean(unwrap(collectionActions()));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return values?.map((e, idx) => {
-            if(_.isFunction(e)){
+            if (_.isFunction(e)) {
                 return (e({
                     collection,
                     setCollection,
@@ -977,7 +998,7 @@ export function CollectionServer(props) {
                     </div>}
                 </div>
                 <Layout style={{ backgroundColor: "transparent" }} className="filtered-body">
-                    <div style={{ width: "100%", marginBottom: (size === "small") ? "0px" : "5px" }}>
+                    <div style={{ width: "100%", marginBottom: "0px" }}>
                         {customRender && customRender(collection, {
                             collection,
                             setCollection,
@@ -992,7 +1013,7 @@ export function CollectionServer(props) {
                             loading,
                             update
                         })}
-                        {!customRender && <Card size="small" bordered={(size !== "small")} className={(size === "small") ? classes.cardSmall : ""} style={{ width: "100%" }}>
+                        {!customRender && <Card size="small" bordered={false} className={classes.cardSmall} style={{ width: "100%" }}>
                             <div>
                                 {titleView()}
                                 {view(collection)}
@@ -1019,7 +1040,7 @@ export function CollectionServer(props) {
                             <FiltersFieldsUI auth={auth} value={state.newFilter} onChange={onFilterChange} filters={filters} funcs={funcStat} />
                         </Sider>}
                 </Layout>
-                {(!!count && !!total && totalPages && totalPages > 1) && <Card size="small" bordered={(size !== "small")} className={(size === "small") ? classes.cardSmall : ""} style={{ display: "flex", justifyContent: "flex-end", paddingTop: "10px", paddingBottom: "10px" }}>
+                {(!!count && !!total && totalPages && totalPages > 1) && <Card size="small" bordered={false} className={classes.cardSmall} style={{ display: "flex", justifyContent: "flex-end", paddingTop: "10px", paddingBottom: "10px" }}>
                     <Pagination className="filtered-pagination" size="small"
                         current={current}
                         onChange={setCurrent}

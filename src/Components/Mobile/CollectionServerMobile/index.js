@@ -503,86 +503,88 @@ export function CollectionServerMobile(props) {
         let flt = [];
         Object.keys(state.filter).forEach(key => {
             var item = filters?.find(e => e.name == key);
-            let filterByKey = state.filter[key];
-            switch (item.filterType) {
-                case "group":
-                    switch (item.type) {
-                        case "object":
-                        case "document":
-                            flt.push(QueryParam("w-in-" + key, filterByKey))
-                            break;
-                        default:
-                            flt.push(QueryParam("w-in-" + key, filterByKey))
-                            break;
-                    }
-                    break;
-                case "range":
-                    switch (item.type) {
-                        case "int":
-                        case "uint":
-                        case "integer":
-                        case "int64":
-                        case "int32":
-                        case "uint64":
-                        case "uint32":
-                            if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-                                flt.push(QueryParam("w-lge-" + key, filterByKey[0]))
-                                flt.push(QueryParam("w-lwe-" + key, filterByKey[1]))
-                            }
-                            break;
-                        case "double":
-                        case "float":
-                        case "float64":
-                        case "float32":
-                            if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-                                flt.push(QueryParam("w-lge-" + key, filterByKey[0]))
-                                flt.push(QueryParam("w-lwe-" + key, filterByKey[1]))
-                            }
-                            break;
-                        case "time":
-                            if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-                                flt.push(QueryParam("w-lge-" + key, filterByKey[0].format("HH:mm:ss")))
-                                flt.push(QueryParam("w-lwe-" + key, filterByKey[1].format("HH:mm:ss")))
-                            }
-                            break;
-                        case "date":
-                            if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-                                flt.push(QueryParam("w-lge-" + key, filterByKey[0].format("YYYY-MM-DD")))
-                                flt.push(QueryParam("w-lwe-" + key, filterByKey[1].format("YYYY-MM-DD")))
-                            }
-                            break;
-                        case "datetime":
-                        case "time.Time":
-                            if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-                                flt.push(QueryParam("w-lge-" + key, filterByKey[0].format("YYYY-MM-DD HH:mm")))
-                                flt.push(QueryParam("w-lwe-" + key, filterByKey[1].format("YYYY-MM-DD HH:mm")))
-                            }
-                            break;
-                        default:
-                            flt.push(QueryParam("w-" + key, filterByKey))
-                            break;
-                    }
-                    break;
-                default:
-                    switch (item.type) {
-                        case "string":
-                            flt.push(QueryParam("w-co-" + key, filterByKey))
-                            break;
-                        case "time":
-                            flt.push(QueryParam("w-eq-" + key, filterByKey.format("HH:mm:ss")))
-                            break;
-                        case "date":
-                            flt.push(QueryParam("w-eq-" + key, filterByKey.format("YYYY-MM-DD")))
-                            break;
-                        case "datetime":
-                        case "time.Time":
-                            flt.push(QueryParam("w-eq-" + key, filterByKey.format("YYYY-MM-DD HH:mm")))
-                            break;
-                        default:
-                            flt.push(QueryParam("w-" + key, filterByKey))
-                            break;
-                    }
-                    break;
+            if (item) {
+                let filterByKey = state.filter[key];
+                switch (item?.filterType) {
+                    case "group":
+                        switch (item?.type) {
+                            case "object":
+                            case "document":
+                                flt.push(QueryParam("w-in-" + key, filterByKey))
+                                break;
+                            default:
+                                flt.push(QueryParam("w-in-" + key, filterByKey))
+                                break;
+                        }
+                        break;
+                    case "range":
+                        switch (item?.type) {
+                            case "int":
+                            case "uint":
+                            case "integer":
+                            case "int64":
+                            case "int32":
+                            case "uint64":
+                            case "uint32":
+                                if (_.isArray(filterByKey) && filterByKey.length >= 2) {
+                                    flt.push(QueryParam("w-lge-" + key, filterByKey[0]))
+                                    flt.push(QueryParam("w-lwe-" + key, filterByKey[1]))
+                                }
+                                break;
+                            case "double":
+                            case "float":
+                            case "float64":
+                            case "float32":
+                                if (_.isArray(filterByKey) && filterByKey.length >= 2) {
+                                    flt.push(QueryParam("w-lge-" + key, filterByKey[0]))
+                                    flt.push(QueryParam("w-lwe-" + key, filterByKey[1]))
+                                }
+                                break;
+                            case "time":
+                                if (_.isArray(filterByKey) && filterByKey.length >= 2) {
+                                    flt.push(QueryParam("w-lge-" + key, filterByKey[0].format("HH:mm:ss")))
+                                    flt.push(QueryParam("w-lwe-" + key, filterByKey[1].format("HH:mm:ss")))
+                                }
+                                break;
+                            case "date":
+                                if (_.isArray(filterByKey) && filterByKey.length >= 2) {
+                                    flt.push(QueryParam("w-lge-" + key, filterByKey[0].format("YYYY-MM-DD")))
+                                    flt.push(QueryParam("w-lwe-" + key, filterByKey[1].format("YYYY-MM-DD")))
+                                }
+                                break;
+                            case "datetime":
+                            case "time.Time":
+                                if (_.isArray(filterByKey) && filterByKey.length >= 2) {
+                                    flt.push(QueryParam("w-lge-" + key, filterByKey[0].format("YYYY-MM-DD HH:mm")))
+                                    flt.push(QueryParam("w-lwe-" + key, filterByKey[1].format("YYYY-MM-DD HH:mm")))
+                                }
+                                break;
+                            default:
+                                flt.push(QueryParam("w-" + key, filterByKey))
+                                break;
+                        }
+                        break;
+                    default:
+                        switch (item?.type) {
+                            case "string":
+                                flt.push(QueryParam("w-co-" + key, filterByKey))
+                                break;
+                            case "time":
+                                flt.push(QueryParam("w-eq-" + key, filterByKey.format("HH:mm:ss")))
+                                break;
+                            case "date":
+                                flt.push(QueryParam("w-eq-" + key, filterByKey.format("YYYY-MM-DD")))
+                                break;
+                            case "datetime":
+                            case "time.Time":
+                                flt.push(QueryParam("w-eq-" + key, filterByKey.format("YYYY-MM-DD HH:mm")))
+                                break;
+                            default:
+                                flt.push(QueryParam("w-" + key, filterByKey))
+                                break;
+                        }
+                        break;
+                }
             }
         });
 
@@ -595,7 +597,28 @@ export function CollectionServerMobile(props) {
             }
         });
 
-        if (source) {
+        if (source && _.isFunction(source)) {
+            // lock();
+            source({
+                lock,
+                unlock,
+
+                page: state.current,
+                count: count,
+                sorting: state.sorting,
+                filter: state.filter,
+                // {stat, totalPages, size, totalElements, content}
+                apply: (data) => {
+                    if (!funcStat) {
+                        setFuncStat(data?.stat);
+                    }
+                    setCount(data?.size);
+                    setTotal(data?.totalPages /*totalElements*/);
+                    setCollection((data && data?.content) ? data?.content : []);
+                    // unlock();
+                }
+            });
+        } else if (source && !_.isFunction(source)) {
             lock();
             GETWITH(auth, source, [
                 QueryDetail("model"),
@@ -607,11 +630,11 @@ export function CollectionServerMobile(props) {
                 ...ctxFlt
             ], ({ data }) => {
                 if (!funcStat) {
-                    setFuncStat(data.stat);
+                    setFuncStat(data?.stat);
                 }
-                setCount(data.size);
-                setTotal(data.totalPages /*totalElements*/);
-                setCollection((data && data.content) ? data.content : []);
+                setCount(data?.size);
+                setTotal(data?.totalPages /*totalElements*/);
+                setCollection((data && data?.content) ? data?.content : []);
                 unlock();
             }, (err) => errorCatch(err, unlock));
         } else {
@@ -626,11 +649,11 @@ export function CollectionServerMobile(props) {
                 ...ctxFlt
             ], ({ data }) => {
                 if (!funcStat) {
-                    setFuncStat(data.stat);
+                    setFuncStat(data?.stat);
                 }
-                setCount(data.size);
-                setTotal(data.totalPages /*totalElements*/);
-                setCollection((data && data.content) ? data.content : []);
+                setCount(data?.size);
+                setTotal(data?.totalPages /*totalElements*/);
+                setCollection((data && data?.content) ? data?.content : []);
                 unlock();
             }, (err) => errorCatch(err, unlock));
         }
