@@ -504,7 +504,7 @@ export function Action(props) {
                 })
             ]
         }
-    }, [isChangedForm, disabledOkOnUncahngedForm])
+    }, [isChangedForm, disabledOkOnUncahngedForm, currentStep, steps, FooterOkFunction])
     const FooterExtendedButtons = (parameters) => {
         // функция должна возвращать массив объектов для FooterButton
         if (props.footerExtendedButtons) {
