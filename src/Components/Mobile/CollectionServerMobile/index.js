@@ -561,14 +561,19 @@ export function CollectionServerMobile(props) {
                                 }
                                 break;
                             default:
-                                flt.push(QueryParam("w-" + key, filterByKey))
+                                if(item?.queryComparer){
+                                    flt.push(QueryParam(`w-${item?.queryComparer}-` + key, filterByKey))
+                                } else {
+                                    flt.push(QueryParam("w-" + key, filterByKey))
+                                }
                                 break;
                         }
                         break;
                     default:
                         switch (item?.type) {
+                            // queryComparer:"sim", // wsim, swsim
                             case "string":
-                                flt.push(QueryParam("w-co-" + key, filterByKey))
+                                flt.push(QueryParam(`w-${item?.queryComparer || "co"}-` + key, filterByKey))
                                 break;
                             case "time":
                                 flt.push(QueryParam("w-eq-" + key, filterByKey.format("HH:mm:ss")))
@@ -581,7 +586,11 @@ export function CollectionServerMobile(props) {
                                 flt.push(QueryParam("w-eq-" + key, filterByKey.format("YYYY-MM-DD HH:mm")))
                                 break;
                             default:
-                                flt.push(QueryParam("w-" + key, filterByKey))
+                                if(item?.queryComparer){
+                                    flt.push(QueryParam(`w-${item?.queryComparer}-` + key, filterByKey))
+                                } else {
+                                    flt.push(QueryParam("w-" + key, filterByKey))
+                                }
                                 break;
                         }
                         break;

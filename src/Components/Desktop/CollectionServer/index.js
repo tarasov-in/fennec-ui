@@ -484,17 +484,26 @@ export function CollectionServer(props) {
                                 }
                                 break;
                             default:
-                                flt.push(QueryParam("w-" + key, filterByKey))
+                                if(item?.queryComparer){
+                                    flt.push(QueryParam(`w-${item?.queryComparer}-` + key, filterByKey))
+                                } else {
+                                    flt.push(QueryParam("w-" + key, filterByKey))
+                                }
                                 break;
                         }
                         break;
                     default:
                         switch (item?.type) {
                             case "string":
-                                flt.push(QueryParam("w-co-" + key, filterByKey))
+                                // queryComparer:"sim", // wsim, swsim
+                                flt.push(QueryParam(`w-${item?.queryComparer || "co"}-` + key, filterByKey))
                                 break;
                             default:
-                                flt.push(QueryParam("w-" + key, filterByKey))
+                                if(item?.queryComparer){
+                                    flt.push(QueryParam(`w-${item?.queryComparer}-` + key, filterByKey))
+                                } else {
+                                    flt.push(QueryParam("w-" + key, filterByKey))
+                                }
                                 break;
                         }
                         break;
