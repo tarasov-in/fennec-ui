@@ -158,6 +158,7 @@ export function CollectionServer(props) {
         auth,
         name,
         source,
+        queryDetail,
         title,
 
         modelActions,
@@ -534,7 +535,7 @@ export function CollectionServer(props) {
         } else if (source && !_.isFunction(source)) {
             lock();
             GETWITH(auth, source, [
-                QueryDetail("model"), // ! убрать настройку детализации по умолчанию
+                QueryDetail(queryDetail || "model"),
                 QueryParam(`page`, current),
                 QueryParam(`count`, count),
                 If(sorting.name, QueryParam(`s-${sorting.name}`, sorting.order)),
@@ -554,7 +555,7 @@ export function CollectionServer(props) {
         } else {
             lock();
             READWITH(auth, name, [
-                QueryDetail("model"), // ! убрать настройку детализации по умолчанию
+                QueryDetail(queryDetail || "model"),
                 QueryParam(`page`, current),
                 QueryParam(`count`, count),
                 If(sorting.name, QueryParam(`s-${sorting.name}`, sorting.order)),

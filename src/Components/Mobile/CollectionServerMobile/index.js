@@ -297,6 +297,7 @@ export function CollectionServerMobile(props) {
         auth,
         name,
         source,
+        queryDetail,
         title,
         extra,
 
@@ -621,7 +622,7 @@ export function CollectionServerMobile(props) {
         } else if (source && !_.isFunction(source)) {
             lock();
             GETWITH(auth, source, [
-                QueryDetail("model"),
+                QueryDetail(queryDetail || "model"),
                 QueryParam(`page`, state.current),
                 QueryParam(`count`, count),
                 If(state.sorting.name, QueryParam(`s-${state.sorting.name}`, state.sorting.order)),
@@ -640,7 +641,7 @@ export function CollectionServerMobile(props) {
         } else {
             lock();
             READWITH(auth, name, [
-                QueryDetail("model"),
+                QueryDetail(queryDetail || "model"),
                 QueryParam(`page`, state.current),
                 QueryParam(`count`, count),
                 If(state.sorting.name, QueryParam(`s-${state.sorting.name}`, state.sorting.order)),
