@@ -236,7 +236,7 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
         return (data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data
     }
     const by = (item) => {
-        if(!!item?.dependence && !!item?.dependence?.field){
+        if (!!item?.dependence && !!item?.dependence?.field) {
             if (changed) {
                 if (!!changed[item.dependence.by] && !!item.dependence.eq) {
                     return changed[item.dependence.by][item.dependence.eq]
@@ -482,7 +482,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
         return (data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data
     }
     const by = (item) => {
-        if(!!item?.dependence && !!item?.dependence?.field){
+        if (!!item?.dependence && !!item?.dependence?.field) {
             if (changed) {
                 if (!!changed[item.dependence.by] && !!item.dependence.eq) {
                     return changed[item.dependence.by][item.dependence.eq]
@@ -613,7 +613,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
         return (data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data
     }
     const by = (item) => {
-        if(!!item?.dependence && !!item?.dependence?.field){
+        if (!!item?.dependence && !!item?.dependence?.field) {
             if (changed) {
                 if (!!changed[item.dependence.by] && !!item.dependence.eq) {
                     return changed[item.dependence.by][item.dependence.eq]
@@ -728,6 +728,16 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
         }
         return "";
     }, [meta]);
+    const suffix = useCallback((item, value) => {
+        if (item && value) {
+            if (item.suffix && _.isFunction(item.suffix)) {
+                return item.suffix(value)
+            } else if (item.relation && item.relation.suffix && _.isFunction(item.relation.suffix)) {
+                return item.relation.suffix(value)
+            }
+        }
+        return undefined;
+    }, [meta]);
 
     const elements = useCallback((data) => {
         if (item.dependence?.mode !== "server" && item.dependence) {
@@ -774,6 +784,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
 
     const cRender = (auth, _item, value, onChange) => {
         return (<CollectionServer
+            count={_item?.count}
             selection={"radio"}
             value={value}
             onChange={onChange}
@@ -826,27 +837,14 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
             onChange(undefined, item, undefined)
         }
     }
-
     return (
         <Space.Compact
             style={{
                 width: '100%',
             }}
         >
-            {/* <Select showSearch
-                size={(item.size) ? item.size : "middle"}
-                value={value}
-                onChange={e => onChange(e, item, itemByProperty(item, e))}
-                style={{ width: "100%" }}
-                allowClear={true}
-                disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
-                filterOption={(input, element) =>
-                    element.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }>
-                {elements(data)}
-            </Select> */}
             <Input
-                suffix={(loading) ? <Spin size="small" /> : undefined}
+                suffix={(loading) ? <Spin size="small" /> : suffix(item, itemByProperty(item, value))}
                 size={(item.size) ? item.size : "middle"}
                 allowClear={true}
                 // readOnly
@@ -855,7 +853,11 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
             />
             <Action
-                title={`Выберите ${(item.label) ? item.label.toLowerCase() : "элемент"}`}
+                // title={`Выберите ${(item.label) ? item.label.toLowerCase() : "элемент"}`}
+                title={<div>
+                    <div style={{ fontSize: "12px", fontStyle: "italic", color: "rgba(0, 0, 0, 0.45)" }}>Выберите элемент</div>
+                    {(item?.label) && <div>{item?.label}</div>}
+                </div>}
                 auth={auth}
                 action={cAction}
                 okText="Выбрать"
@@ -865,6 +867,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
                 meta={[{
                     type: "func",
                     name: "selected",
+                    count: item?.count,
                     render: cRender
                 }]}
                 mode={"func"}
@@ -899,8 +902,9 @@ function Boolean({ item, value, onChange, onAfterChange }) {
     )
 }
 function Float({ item, value, onChange, onAfterChange }) {
+    
     return (
-        <InputNumber value={value} onChange={onChange} style={{ width: "100%" }} />
+        <InputNumber value={value} onChange={onChange} style={{ width: "100%" }} min={item?.min} max={item?.max}/>
     )
 }
 function Integer({ item, value, onChange, onAfterChange }) {
