@@ -121,6 +121,7 @@ export function Model(props) {
     if (!xmeta) return <React.Fragment></React.Fragment>;
     return (
         <React.Fragment>
+            {(props?.subheader)? props?.subheader:<React.Fragment></React.Fragment>}
             {<Frm auth={auth} form={form} contextFilters={contextFilters} submit={submit} meta={meta} options={options} object={object} funcStat={funcStat}></Frm>}
         </React.Fragment>
     )

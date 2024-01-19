@@ -42,6 +42,7 @@ const { TextArea } = Input;
 const { Option } = Select;
 
 function UploadItems({ auth, item, value, onChange, changed }) {
+    const [loading, setLoading] = useState(false);
     const [files, setFiles] = useState([]);
     useEffect(() => {
         triggerChange(files);
@@ -79,6 +80,7 @@ function UploadItems({ auth, item, value, onChange, changed }) {
     </Upload>)
 }
 function UploadItem({ auth, item, value, onChange, changed }) {
+    const [loading, setLoading] = useState(false);
     const [hoverRef, isHovered] = useHover();
     const [files, setFiles] = useState([]);
     useEffect(() => {
@@ -152,6 +154,7 @@ function UploadItem({ auth, item, value, onChange, changed }) {
     );
 }
 function Image({ auth, item, value, onChange, changed }) {
+    const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const close = () => {
         if (open) {
@@ -229,6 +232,7 @@ function Image({ auth, item, value, onChange, changed }) {
     );
 }
 function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
+    const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
     const meta = useMetaContext();
 
@@ -361,6 +365,7 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
     )
 }
 function RangeTime({ item, value, onChange, onAfterChange }) {
+    const [loading, setLoading] = useState(false);
     const a = useMemo(() => {
         if (value && value[0] && value[1]) {
             return [dayjs(value[0]), dayjs(value[1])]
@@ -372,6 +377,7 @@ function RangeTime({ item, value, onChange, onAfterChange }) {
     )
 }
 function RangeDate({ item, value, onChange, onAfterChange }) {
+    const [loading, setLoading] = useState(false);
     const a = useMemo(() => {
         if (value && value[0] && value[1]) {
             return [dayjs(value[0]), dayjs(value[1])]
@@ -383,6 +389,7 @@ function RangeDate({ item, value, onChange, onAfterChange }) {
     )
 }
 function RangeDateTime({ item, value, onChange, onAfterChange }) {
+    const [loading, setLoading] = useState(false);
     const a = useMemo(() => {
         if (value && value[0] && value[1]) {
             return [dayjs(value[0]), dayjs(value[1])]
@@ -394,6 +401,7 @@ function RangeDateTime({ item, value, onChange, onAfterChange }) {
     )
 }
 function RangeFloat({ item, value, onChange, onAfterChange }) {
+    const [loading, setLoading] = useState(false);
     const [val, setVal] = useState();
     useEffect(() => {
         setVal(value);
@@ -415,6 +423,7 @@ function RangeFloat({ item, value, onChange, onAfterChange }) {
     )
 }
 function FloatSlider({ item, value, onChange, onAfterChange }) {
+    const [loading, setLoading] = useState(false);
     const [val, setVal] = useState();
     useEffect(() => {
         setVal(value);
@@ -434,6 +443,7 @@ function FloatSlider({ item, value, onChange, onAfterChange }) {
     )
 }
 function RangeInteger({ item, value, onChange, onAfterChange }) {
+    const [loading, setLoading] = useState(false);
     const [val, setVal] = useState();
     useEffect(() => {
         setVal(value);
@@ -455,6 +465,7 @@ function RangeInteger({ item, value, onChange, onAfterChange }) {
     )
 }
 function IntegerSlider({ item, value, onChange, onAfterChange }) {
+    const [loading, setLoading] = useState(false);
     const [val, setVal] = useState();
     useEffect(() => {
         setVal(value);
@@ -475,6 +486,7 @@ function IntegerSlider({ item, value, onChange, onAfterChange }) {
     )
 }
 function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
+    const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
     const meta = useMetaContext();
 
@@ -877,56 +889,81 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
     )
 }
 function DateTime({ item, value, onChange, onAfterChange }) {
+    const [loading, setLoading] = useState(false);
     return (
-        <DatePicker changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} showTime format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }} />
+        <DatePicker changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} showTime format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }} 
+        disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+        />
     )
 }
 function Date({ item, value, onChange, onAfterChange }) {
+    const [loading, setLoading] = useState(false);
     return (
-        <DatePicker changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }} />
+        <DatePicker changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }} 
+        disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+        />
     )
 }
 function Time({ item, value, onChange, onAfterChange }) {
+    const [loading, setLoading] = useState(false);
     return (
-        <DatePicker changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }} />
+        <DatePicker changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }} 
+        disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+        />
     )
 }
 function Boolean({ item, value, onChange, onAfterChange }) {
+    const [loading, setLoading] = useState(false);
     const change = (e) => {
         onChange(e.target.checked);
     }
     return (
-        <Checkbox checked={value} onChange={change}>
+        <Checkbox checked={value} onChange={change}
+        disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+        >
             {item.label}
         </Checkbox>
     )
 }
 function Float({ item, value, onChange, onAfterChange }) {
-    
+    const [loading, setLoading] = useState(false);
     return (
-        <InputNumber value={value} onChange={onChange} style={{ width: "100%" }} min={item?.min} max={item?.max}/>
+        <InputNumber value={value} onChange={onChange} style={{ width: "100%" }} min={item?.min} max={item?.max}
+        disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+        />
     )
 }
 function Integer({ item, value, onChange, onAfterChange }) {
+    const [loading, setLoading] = useState(false);
     return (
-        <InputNumber value={value} onChange={onChange} style={{ width: "100%" }} />
+        <InputNumber value={value} onChange={onChange} style={{ width: "100%" }} 
+        disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+        />
     )
 }
 function String({ item, value, onChange, onAfterChange }) {
+    const [loading, setLoading] = useState(false);
     return (
-        <Input size={(item.size) ? item.size : "middle"} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }} />
+        <Input size={(item.size) ? item.size : "middle"} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }} 
+        disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+        />
     )
 }
 function Password({ item, value, onChange, onAfterChange }) {
+    const [loading, setLoading] = useState(false);
     return (
         <Input.Password allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
             iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
         />
     )
 }
 function MultilineText({ item, value, onChange, onAfterChange }) {
+    const [loading, setLoading] = useState(false);
     return (
-        <TextArea rows={6} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }} />
+        <TextArea rows={6} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }} 
+        disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+        />
     )
 }
 function Unknown({ item }) {
