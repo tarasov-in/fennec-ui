@@ -561,7 +561,7 @@ export function CollectionServerMobile(props) {
                                 }
                                 break;
                             default:
-                                if(item?.queryComparer){
+                                if (item?.queryComparer) {
                                     flt.push(QueryParam(`w-${item?.queryComparer}-` + key, filterByKey))
                                 } else {
                                     flt.push(QueryParam("w-" + key, filterByKey))
@@ -585,8 +585,11 @@ export function CollectionServerMobile(props) {
                             case "time.Time":
                                 flt.push(QueryParam("w-eq-" + key, filterByKey.format("YYYY-MM-DD HH:mm")))
                                 break;
+                            case "func":
+                                flt.push(QueryParam(`${item?.queryPrefix}` + key, filterByKey))
+                                break;
                             default:
-                                if(item?.queryComparer){
+                                if (item?.queryComparer) {
                                     flt.push(QueryParam(`w-${item?.queryComparer}-` + key, filterByKey))
                                 } else {
                                     flt.push(QueryParam("w-" + key, filterByKey))

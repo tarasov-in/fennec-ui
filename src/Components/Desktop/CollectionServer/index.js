@@ -484,7 +484,7 @@ export function CollectionServer(props) {
                                 }
                                 break;
                             default:
-                                if(item?.queryComparer){
+                                if (item?.queryComparer) {
                                     flt.push(QueryParam(`w-${item?.queryComparer}-` + key, filterByKey))
                                 } else {
                                     flt.push(QueryParam("w-" + key, filterByKey))
@@ -498,8 +498,11 @@ export function CollectionServer(props) {
                                 // queryComparer:"sim", // wsim, swsim
                                 flt.push(QueryParam(`w-${item?.queryComparer || "co"}-` + key, filterByKey))
                                 break;
+                            case "func":
+                                flt.push(QueryParam(`${item?.queryPrefix}` + key, filterByKey))
+                                break;
                             default:
-                                if(item?.queryComparer){
+                                if (item?.queryComparer) {
                                     flt.push(QueryParam(`w-${item?.queryComparer}-` + key, filterByKey))
                                 } else {
                                     flt.push(QueryParam("w-" + key, filterByKey))
