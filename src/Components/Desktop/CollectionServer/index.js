@@ -499,7 +499,7 @@ export function CollectionServer(props) {
                                 flt.push(QueryParam(`w-${item?.queryComparer || "co"}-` + key, filterByKey))
                                 break;
                             case "func":
-                                flt.push(QueryParam(`${item?.queryPrefix}` + key, filterByKey))
+                                flt.push(QueryParam(`${item?.queryPrefix || ""}` + key, filterByKey))
                                 break;
                             default:
                                 if (item?.queryComparer) {

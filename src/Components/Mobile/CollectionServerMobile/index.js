@@ -586,7 +586,7 @@ export function CollectionServerMobile(props) {
                                 flt.push(QueryParam("w-eq-" + key, filterByKey.format("YYYY-MM-DD HH:mm")))
                                 break;
                             case "func":
-                                flt.push(QueryParam(`${item?.queryPrefix}` + key, filterByKey))
+                                flt.push(QueryParam(`${item?.queryPrefix || ""}` + key, filterByKey))
                                 break;
                             default:
                                 if (item?.queryComparer) {
