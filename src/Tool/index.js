@@ -746,6 +746,10 @@ export const Request = (values, item, props) => {
         auth,
         collection,
         setCollection,
+        property,
+        label,
+        itemByProperty,
+        apply,
 
         index,
         lock,
@@ -764,6 +768,10 @@ export const Request = (values, item, props) => {
             index,
             collection,
             setCollection,
+            property,
+            label,
+            itemByProperty,
+            apply,
         };
         if (_.isFunction(item.action)) {
             // Свойство action может быть функцией или объектом

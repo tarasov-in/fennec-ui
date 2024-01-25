@@ -14,7 +14,7 @@ import {
     Space,
     Spin,
 } from 'antd';
-import { errorCatch, getDisplay, getObjectValue, GETWITH, JSXMap, pushStateHistoryModal, QueryDetail, QueryOrder, QueryParam, READWITH, useHover } from '../../../Tool';
+import { clean, deleteInArray, errorCatch, getDisplay, getObjectValue, GETWITH, JSXMap, pushStateHistoryModal, QueryDetail, QueryOrder, QueryParam, READWITH, unwrap, updateInArray, useHover } from '../../../Tool';
 import Icofont from 'react-icofont';
 import { useMetaContext } from '../../Context';
 import { InboxOutlined } from '@ant-design/icons';
@@ -28,6 +28,7 @@ import localeData from "dayjs/plugin/localeData"
 import { Model } from '../Model';
 import { Action } from '../../Action';
 import { CollectionServer } from '../CollectionServer';
+import { DropdownAction } from '../DropdownAction';
 var utc = require('dayjs/plugin/utc')
 var timezone = require('dayjs/plugin/timezone') // dependent on utc plugin
 dayjs.extend(utc)
@@ -601,20 +602,119 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
             ));
         }
     }, [value, changed]);
+
+    const RendeActions = React.useCallback(() => {
+        if (!item?.actions) return <React.Fragment></React.Fragment>;
+        let values = clean(unwrap(item?.actions(value)));
+        if (!values || !values.length) return <React.Fragment></React.Fragment>;
+        return values?.map((e, idx) => {
+            if (_.isFunction(e)) {
+                return (e({
+                    collection: data,
+                    setCollection: setData,
+                    setCollectionItem: (item, first) => setData(o => updateInArray(o, item, first)),
+                    removeCollectionItem: (item) => setData(o => deleteInArray(o, item)),
+                    // onSelection,
+                    // isSelected,
+                    lock: () => setLoading(true),
+                    unlock: () => setLoading(false),
+                    loading,
+                    property: (obj) => property(item, obj),
+                    label: (obj) => label(item, obj),
+                    itemByProperty: (value) => itemByProperty(item, value),
+                    apply: (obj) => onChange(value, item, itemByProperty(item, value)),
+                    // update
+                }, idx))
+            }
+            return (<Action
+                key={e.key || idx}
+                auth={auth}
+                mode={"button"}
+                disabled={loading || (item && item.view && item.view.disabled) ? item.view.disabled : false}
+                item={item}
+                object={value}
+                collection={data}
+                setCollection={setData}
+                property={(obj) => property(item, obj)}
+                label={(obj) => label(item, obj)}
+                itemByProperty={(value) => itemByProperty(item, value)}
+                apply={(obj) => onChange(property(item, obj), item, obj)}
+                {...e}
+            />)
+        });
+    }, [item, data, loading, value]);
+
+    const RenderDropdownActions = React.useCallback(() => {
+        if (!item?.dropdownActions) return <React.Fragment></React.Fragment>;
+        let values = clean(unwrap(item?.dropdownActions(value)));
+        if (!values || !values.length) return <React.Fragment></React.Fragment>;
+        return <DropdownAction
+            button={() => (<Button type="default">
+                <i className="fa fa-ellipsis-v"></i>
+                {/* <i className="fa fa-ellipsis-h"></i> */}
+                {/* <i className="fa fa-angle-down"></i> */}
+                {/* <i className="fa fa-chevron-down"></i> */}
+                {/* <i className="fa fa-caret-down"></i> */}
+                {/* <i className="fa fa-bars"></i> */}
+                {/* <i className="fa fa-caret-square-o-down"></i> */}
+            </Button>)}
+            items={values?.map((e, idx) => ({
+                key: e.key || idx,
+                auth: auth,
+                mode: "MenuItem",
+                disabled: loading || (item && item.view && item.view.disabled) ? item.view.disabled : false,
+                item: item,
+                object: value,
+                collection: data,
+                setCollection: setData,
+                property: (obj) => property(item, obj),
+                label: (obj) => label(item, obj),
+                itemByProperty: (value) => itemByProperty(item, value),
+                apply: (obj) => onChange(property(item, obj), item, obj),
+                ...e
+            }))} />
+    }, [item, data, loading, value]);
+
     return (
-        <Select showSearch
-            size={(item.size) ? item.size : "middle"}
-            value={value}
-            onChange={e => onChange(e, item, itemByProperty(item, e))}
-            style={{ width: "100%" }}
-            allowClear={true}
-            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
-            filterOption={(input, element) =>
-                element.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }>
-            {elements(data)}
-        </Select>
+        <Space.Compact
+            style={{
+                width: '100%',
+            }}
+        >
+            <Select showSearch
+                size={(item.size) ? item.size : "middle"}
+                value={value}
+                onChange={e => onChange(e, item, itemByProperty(item, e))}
+                style={{ width: "100%" }}
+                allowClear={true}
+                disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
+                filterOption={(input, element) =>
+                    element.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }>
+                {elements(data)}
+            </Select>
+            {item?.actions && <React.Fragment>
+                {RendeActions()}
+            </React.Fragment>}
+            {item?.dropdownActions && <React.Fragment>
+                {RenderDropdownActions()}
+            </React.Fragment>}
+        </Space.Compact>
     )
+    // return (
+    // <Select showSearch
+    //     size={(item.size) ? item.size : "middle"}
+    //     value={value}
+    //     onChange={e => onChange(e, item, itemByProperty(item, e))}
+    //     style={{ width: "100%" }}
+    //     allowClear={true}
+    //     disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
+    //     filterOption={(input, element) =>
+    //         element.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+    //     }>
+    //     {elements(data)}
+    // </Select>
+    // )
 }
 function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
     const [data, setData] = useState([]);
@@ -891,24 +991,24 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
 function DateTime({ item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (
-        <DatePicker changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} showTime format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }} 
-        disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+        <DatePicker changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} showTime format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }}
+            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
         />
     )
 }
 function Date({ item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (
-        <DatePicker changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }} 
-        disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+        <DatePicker changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }}
+            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
         />
     )
 }
 function Time({ item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (
-        <DatePicker changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }} 
-        disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+        <DatePicker changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }}
+            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
         />
     )
 }
@@ -919,7 +1019,7 @@ function Boolean({ item, value, onChange, onAfterChange }) {
     }
     return (
         <Checkbox checked={value} onChange={change}
-        disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
         >
             {item.label}
         </Checkbox>
@@ -929,23 +1029,23 @@ function Float({ item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (
         <InputNumber value={value} onChange={onChange} style={{ width: "100%" }} min={item?.min} max={item?.max}
-        disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
         />
     )
 }
 function Integer({ item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (
-        <InputNumber value={value} onChange={onChange} style={{ width: "100%" }} 
-        disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+        <InputNumber value={value} onChange={onChange} style={{ width: "100%" }}
+            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
         />
     )
 }
 function String({ item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (
-        <Input size={(item.size) ? item.size : "middle"} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }} 
-        disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+        <Input size={(item.size) ? item.size : "middle"} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
+            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
         />
     )
 }
@@ -961,8 +1061,8 @@ function Password({ item, value, onChange, onAfterChange }) {
 function MultilineText({ item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (
-        <TextArea rows={6} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }} 
-        disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+        <TextArea rows={6} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
+            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
         />
     )
 }

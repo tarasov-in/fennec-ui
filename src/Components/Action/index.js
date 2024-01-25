@@ -364,6 +364,12 @@ export function Action(props) {
                 auth: props.auth,
                 collection: props.collection || [],
                 setCollection: props.setCollection || (() => { }),
+
+                property: props.property || (() => { }),
+                label: props.label || (() => { }),
+                itemByProperty: props.itemByProperty || (() => { }),
+                apply: props.apply || (() => { }),
+
                 onData: (values, context) => values.data,
                 unlock,
                 close,
