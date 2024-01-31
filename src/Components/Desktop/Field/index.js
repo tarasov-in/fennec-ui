@@ -321,6 +321,18 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
         }
         return data.find(e => e.ID === value);
     };
+    const labelString = (item, value) => {
+        if (item && value) {
+            if (item.displayString && _.isFunction(item.displayString)) {
+                return item.displayString(value)
+            } else if (item.relation && item.relation.displayString && _.isFunction(item.relation.displayString)) {
+                return item.relation.displayString(value)
+            } else {
+                return label(item, value)
+            }
+        }
+        return "";
+    };
     const label = (item, value) => {
         if (item && value) {
             if (item.display && _.isFunction(item.display)) {
@@ -338,12 +350,12 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
         if (item.dependence?.mode !== "server" && item.dependence) {
             if (item.dependence.field && by(item)) {
                 return data?.filter(e => _.get(e, item.dependence.field) === by(item))?.map(i => (
-                    <Option key={property(item, i)} value={property(item, i)}>{label(item, i)}</Option>
+                    <Option key={property(item, i)} value={property(item, i)} label={labelString(item, i)}>{label(item, i)}</Option>
                 ));
             }
         } else {
             return data?.map(i => (
-                <Option key={property(item, i)} value={property(item, i)}>{label(item, i)}</Option>
+                <Option key={property(item, i)} value={property(item, i)} label={labelString(item, i)}>{label(item, i)}</Option>
             ));
         }
     }, [value, changed]);
@@ -358,8 +370,14 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
             style={{ width: "100%" }}
             allowClear={true}
             disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
-            filterOption={(input, element) =>
-                element.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            // filterOption={(input, element) =>
+            //     element.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            // }
+            filterOption={(input, option) => {
+                return option?.label?.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }}
+            filterSort={(optionA, optionB) =>
+                optionA?.label?.toLowerCase().localeCompare(optionB?.label?.toLowerCase())
             }>
             {elements(data)}
         </Select>
@@ -575,6 +593,19 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
         }
         return data.find(e => e.ID === value);
     };
+    
+    const labelString = (item, value) => {
+        if (item && value) {
+            if (item.displayString && _.isFunction(item.displayString)) {
+                return item.displayString(value)
+            } else if (item.relation && item.relation.displayString && _.isFunction(item.relation.displayString)) {
+                return item.relation.displayString(value)
+            } else {
+                return label(item, value)
+            }
+        }
+        return "";
+    };
     const label = (item, value) => {
         if (item && value) {
             if (item.display && _.isFunction(item.display)) {
@@ -593,12 +624,12 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
         if (item.dependence?.mode !== "server" && item.dependence) {
             if (item.dependence.field && by(item)) {
                 return data?.filter(e => _.get(e, item.dependence.field) === by(item))?.map(i => (
-                    <Option key={property(item, i)} value={property(item, i)}>{label(item, i)}</Option>
+                    <Option key={property(item, i)} value={property(item, i)} label={labelString(item, i)}>{label(item, i)}</Option>
                 ));
             }
         } else {
             return data?.map(i => (
-                <Option key={property(item, i)} value={property(item, i)}>{label(item, i)}</Option>
+                <Option key={property(item, i)} value={property(item, i)} label={labelString(item, i)}>{label(item, i)}</Option>
             ));
         }
     }, [value, changed]);
@@ -688,9 +719,16 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
                 style={{ width: "100%" }}
                 allowClear={true}
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
-                filterOption={(input, element) =>
-                    element.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }>
+                filterOption={(input, option) => {
+                    return option?.label?.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }}
+                filterSort={(optionA, optionB) =>
+                    optionA?.label?.toLowerCase().localeCompare(optionB?.label?.toLowerCase())
+                }
+                // filterOption={(input, element) =>
+                //     element.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                // }
+                >
                 {elements(data)}
             </Select>
             {item?.actions && <React.Fragment>
@@ -701,20 +739,6 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
             </React.Fragment>}
         </Space.Compact>
     )
-    // return (
-    // <Select showSearch
-    //     size={(item.size) ? item.size : "middle"}
-    //     value={value}
-    //     onChange={e => onChange(e, item, itemByProperty(item, e))}
-    //     style={{ width: "100%" }}
-    //     allowClear={true}
-    //     disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
-    //     filterOption={(input, element) =>
-    //         element.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-    //     }>
-    //     {elements(data)}
-    // </Select>
-    // )
 }
 function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
     const [data, setData] = useState([]);
