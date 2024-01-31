@@ -675,6 +675,18 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
         return data?.filter((e) => property(item, e) === value)
         // return data?.filter(e => value?.find(f => property(item, e) === f));
     };
+    const labelString = (item, value) => {
+        if (item && value) {
+            if (item.displayString && _.isFunction(item.displayString)) {
+                return item.displayString(value)
+            } else if (item.relation && item.relation.displayString && _.isFunction(item.relation.displayString)) {
+                return item.relation.displayString(value)
+            } else {
+                return label(item, value)
+            }
+        }
+        return "";
+    };
     const label = (item, value) => {
         if (item && value) {
             if (item.display && _.isFunction(item.display)) {
@@ -695,7 +707,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
     const filteredItems = useMemo(() => {
         if (searchText) {
             return data.filter(i => {
-                let l = label(item, i).toLowerCase();
+                let l = labelString(item, i).toLowerCase();
                 return l.includes(searchText?.toLowerCase())
             })
         } else {
@@ -707,12 +719,12 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
         if (item.dependence?.mode !== "server" && item.dependence) {
             if (item.dependence.field && by(item)) {
                 return data?.filter(e => _.get(e, item.dependence.field) === by(item))?.map(i => (
-                    <CheckList.Item key={property(item, i)} value={property(item, i)}>{label(item, i)}</CheckList.Item>
+                    <CheckList.Item key={property(item, i)} value={property(item, i)} label={labelString(item, i)}>{label(item, i)}</CheckList.Item>
                 ));
             }
         } else {
             return data?.map(i => (
-                <CheckList.Item key={property(item, i)} value={property(item, i)}>{label(item, i)}</CheckList.Item>
+                <CheckList.Item key={property(item, i)} value={property(item, i)} label={labelString(item, i)}>{label(item, i)}</CheckList.Item>
             ));
         }
     }, [value, changed]);
@@ -890,6 +902,18 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
     const itemsByProperty = (item, value) => {
         return data?.filter(e => value?.find(f => property(item, e) === f));
     };
+    const labelString = (item, value) => {
+        if (item && value) {
+            if (item.displayString && _.isFunction(item.displayString)) {
+                return item.displayString(value)
+            } else if (item.relation && item.relation.displayString && _.isFunction(item.relation.displayString)) {
+                return item.relation.displayString(value)
+            } else {
+                return label(item, value)
+            }
+        }
+        return "";
+    };
     const label = (item, value) => {
         if (item && value) {
             if (item.display && _.isFunction(item.display)) {
@@ -909,7 +933,7 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
     const filteredItems = useMemo(() => {
         if (searchText) {
             return data.filter(i => {
-                let l = label(item, i).toLowerCase();
+                let l = labelString(item, i).toLowerCase();
                 return l.includes(searchText?.toLowerCase())
             })
         } else {
@@ -920,12 +944,12 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
         if (item.dependence?.mode !== "server" && item.dependence) {
             if (item.dependence.field && by(item)) {
                 return data?.filter(e => _.get(e, item.dependence.field) === by(item))?.map(i => (
-                    <CheckList.Item key={property(item, i)} value={property(item, i)}>{label(item, i)}</CheckList.Item>
+                    <CheckList.Item key={property(item, i)} value={property(item, i)} label={labelString(item, i)}>{label(item, i)}</CheckList.Item>
                 ));
             }
         } else {
             return data?.map(i => (
-                <CheckList.Item key={property(item, i)} value={property(item, i)}>{label(item, i)}</CheckList.Item>
+                <CheckList.Item key={property(item, i)} value={property(item, i)} label={labelString(item, i)}>{label(item, i)}</CheckList.Item>
             ));
         }
     }, [value, changed]);
