@@ -1060,7 +1060,7 @@ function Float({ item, value, onChange, onAfterChange }) {
 function Integer({ item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (
-        <InputNumber value={value} onChange={onChange} style={{ width: "100%" }}
+        <InputNumber value={value} onChange={onChange} style={{ width: "100%" }} min={item?.min} max={item?.max}
             disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
         />
     )
