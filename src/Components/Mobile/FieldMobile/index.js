@@ -695,7 +695,8 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
                 return item.relation.display(value)
             } else {
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
-                return getDisplay(value, item?.relation?.display || fieldMeta?.display, fieldMeta, meta)
+                let _display = ((item?.relation?.display?.fields)?item?.relation?.display:undefined) || ((fieldMeta?.display?.fields)?fieldMeta?.display:undefined)
+                return getDisplay(value, _display, fieldMeta, meta)
             }
         }
         return "";
@@ -922,7 +923,8 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
                 return item.relation.display(value)
             } else {
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
-                return getDisplay(value, item?.relation?.display || fieldMeta?.display, fieldMeta, meta)
+                let _display = ((item?.relation?.display?.fields)?item?.relation?.display:undefined) || ((fieldMeta?.display?.fields)?fieldMeta?.display:undefined)
+                return getDisplay(value, _display, fieldMeta, meta)
             }
         }
         return "";
