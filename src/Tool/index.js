@@ -1013,12 +1013,13 @@ export function getObjectValueOrDefault(object, subObject, defValue) {
 export function getObjectDisplay(data, name, meta) {
     if (!name || !meta || !data) return undefined;
     const display = (display) => {
-        if (display.fields) {
+        if (display?.fields) {
             return display
         }
     }
-    const metaObject = meta[name.toLowerCase()];
-    return getDisplay(data, display(metaObject.display), metaObject, meta)
+    // const metaObject = meta[name?.toLowerCase()];
+    const metaObject = meta[name];
+    return getDisplay(data, display(metaObject?.display), metaObject, meta)
 }
 export function getFieldDisplay(data, propertyMeta, meta) {
     if (!propertyMeta || !meta || !data) return undefined;
