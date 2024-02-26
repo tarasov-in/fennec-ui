@@ -349,10 +349,10 @@ export function FilterToQueryParameters(filters, filter, sorting, page, count) {
                 switch (item.type) {
                     case "object":
                     case "document":
-                        flt["w-in-" + key] = (filterByKey && filterByKey.length && filterByKey.join)?filterByKey.join(","):filterByKey
+                        flt["w-in-" + key] = (filterByKey && filterByKey.length && filterByKey.join) ? filterByKey.join(",") : filterByKey
                         break;
                     default:
-                        flt["w-in-" + key] = (filterByKey && filterByKey.length && filterByKey.join)?filterByKey.join(","):filterByKey
+                        flt["w-in-" + key] = (filterByKey && filterByKey.length && filterByKey.join) ? filterByKey.join(",") : filterByKey
                         break;
                 }
                 break;
@@ -452,28 +452,28 @@ export function QueryParametersToFilters(urlRequestParameters, filters) {
         function setin(item, flt, i, s) {
             let v = urlRequestParameters.get(`${s}${item.name}`)
             if (v) {
-                flt[i].filtered = (v && v.split)?v.split(",").map((val)=>{
+                flt[i].filtered = (v && v.split) ? v.split(",").map((val) => {
                     let nval = parseInt(val)
                     if (!isNaN(nval)) {
                         return nval;
                     }
-                    
+
                     return val;
-                }):v;
+                }) : v;
             }
         }
-        function seta(item, flt, i, s1,s2) {
+        function seta(item, flt, i, s1, s2) {
             let v1 = urlRequestParameters.get(`${s1}${item.name}`)
             let v2 = urlRequestParameters.get(`${s2}${item.name}`)
             if (v1 && v2) {
-                flt[i].filtered = [v1,v2];
+                flt[i].filtered = [v1, v2];
             }
         }
-        function setm(item, flt, i, s1,s2,format) {
+        function setm(item, flt, i, s1, s2, format) {
             let v1 = urlRequestParameters.get(`${s1}${item.name}`)
             let v2 = urlRequestParameters.get(`${s2}${item.name}`)
             if (v1 && v2) {
-                flt[i].filtered = [dayjs(v1),dayjs(v2)];
+                flt[i].filtered = [dayjs(v1), dayjs(v2)];
             }
         }
         switch (item.filterType) {
@@ -497,23 +497,23 @@ export function QueryParametersToFilters(urlRequestParameters, filters) {
                     case "int32":
                     case "uint64":
                     case "uint32":
-                            seta(item, flt, i, "w-lge-","w-lwe-");
+                        seta(item, flt, i, "w-lge-", "w-lwe-");
                         break;
                     case "double":
                     case "float":
                     case "float64":
                     case "float32":
-                            seta(item, flt, i, "w-lge-","w-lwe-");
+                        seta(item, flt, i, "w-lge-", "w-lwe-");
                         break;
                     case "time":
-                        setm(item, flt, i, "w-lge-","w-lwe-","HH:mm:ss");
+                        setm(item, flt, i, "w-lge-", "w-lwe-", "HH:mm:ss");
                         break;
                     case "date":
-                        setm(item, flt, i, "w-lge-","w-lwe-","YYYY-MM-DD");
+                        setm(item, flt, i, "w-lge-", "w-lwe-", "YYYY-MM-DD");
                         break;
                     case "datetime":
                     case "time.Time":
-                        setm(item, flt, i, "w-lge-","w-lwe-","YYYY-MM-DD HH:mm");
+                        setm(item, flt, i, "w-lge-", "w-lwe-", "YYYY-MM-DD HH:mm");
                         break;
                     default:
                         set(item, flt, i, "w-");
@@ -614,7 +614,7 @@ export const updateInArray = (array, item, first) => {
     if (_.findIndex(array, { ID: item.ID }) >= 0) {
         return array?.map(e => IfElse(e.ID === item.ID, item, e));
     } else {
-        return (first)?[item, ...array]:[...array, item];
+        return (first) ? [item, ...array] : [...array, item];
     }
     return;
 }
@@ -1064,7 +1064,6 @@ export function getDisplay(data, display, metaObject, meta) {
 
         if (_.isObject(value_field)) {
             value_field = getDisplay(value_field, metaGetFieldByName(metaObject, meta, name_field)?.relation?.display, metaObject, meta);
-
             if (!value_field) {
                 var subMeta = meta[metaGetFieldByName(metaObject, meta, name_field)?.relation?.reference?.object];
                 value_field = getDisplay(getObjectValue(data, name_field), subMeta?.display, subMeta, meta);
@@ -1126,7 +1125,7 @@ export function metaGetFieldByName(metaObject, meta, fieldName) {
     }
 
     for (var tag in metaObject.properties) {
-        if (metaObject.properties[tag].name === fieldName[0]) {
+        if (metaObject.properties[tag].name?.toLowerCase() === fieldName[0].toLowerCase()) {
             //Если сейчас не последняя часть fieldName
             if (fieldName.length > 1) {
                 //Если текущая часть является объектом
@@ -1365,13 +1364,13 @@ export function formItemRules(item) {
                 res.push({ required: true, message: 'Укажите ' + item.label.toLowerCase() + '!' });
             }
             if (item?.validators?.max) {
-                res.push({ max: item?.validators?.max, message: `Значение должно быть не больше ${item?.validators?.max} символов!`});
+                res.push({ max: item?.validators?.max, message: `Значение должно быть не больше ${item?.validators?.max} символов!` });
             }
             if (item?.validators?.min) {
-                res.push({ min: item?.validators?.min, message: `Значение должно быть не меньше ${item?.validators?.max} символов!`});
+                res.push({ min: item?.validators?.min, message: `Значение должно быть не меньше ${item?.validators?.max} символов!` });
             }
             if (item?.validators?.pattern) {
-                res.push({ pattern: item?.validators?.pattern, message: `Значение должно соответствовать шаблону ${item?.validators?.pattern}!`});
+                res.push({ pattern: item?.validators?.pattern, message: `Значение должно соответствовать шаблону ${item?.validators?.pattern}!` });
             }
         }
     }
