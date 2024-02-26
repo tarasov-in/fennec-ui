@@ -1029,7 +1029,7 @@ export function getFieldDisplay(data, propertyMeta, meta) {
         }
     }
     const metaObject = meta[getObjectValue(propertyMeta, "relation.reference.object")];
-    return getDisplay(data, display(propertyMeta.relation.display) || display(metaObject.display), metaObject, meta)
+    return getDisplay(data, display(propertyMeta?.relation?.display) || display(metaObject?.display), metaObject, meta)
 }
 /**
  * Возвращает представление объекта по его данным
@@ -1063,11 +1063,11 @@ export function getDisplay(data, display, metaObject, meta) {
         var value_field = getObjectValue(data, name_field);
 
         if (_.isObject(value_field)) {
-            value_field = getDisplay(value_field, metaGetFieldByName(metaObject, meta, name_field).relation.display, metaObject, meta);
+            value_field = getDisplay(value_field, metaGetFieldByName(metaObject, meta, name_field)?.relation?.display, metaObject, meta);
 
             if (!value_field) {
-                var subMeta = meta[metaGetFieldByName(metaObject, meta, name_field).relation.reference.object];
-                value_field = getDisplay(getObjectValue(data, name_field), subMeta.display, subMeta, meta);
+                var subMeta = meta[metaGetFieldByName(metaObject, meta, name_field)?.relation?.reference?.object];
+                value_field = getDisplay(getObjectValue(data, name_field), subMeta?.display, subMeta, meta);
             }
         }
 
