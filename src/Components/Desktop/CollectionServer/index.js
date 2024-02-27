@@ -749,7 +749,7 @@ export function CollectionServer(props) {
             setCollection: setCollection,
             ...e
         }))} />
-    }, [auth, collection, modelActions]);
+    }, [auth, collection, modelActions, defaultModelActions, defaultnModelActionMeta]);
     const RenderOnCollectionActions = React.useCallback(() => {
         
         let defaultAction = (!name) ? [] : [
@@ -823,7 +823,7 @@ export function CollectionServer(props) {
                 {...e}
             />)
         });
-    }, [auth, collection, collectionActions]);
+    }, [auth, collection, collectionActions, defaultCollectionActions, defaultCollectionActionMeta]);
     const selectionConfig = (selectionType) => {
         if (!selection) return {};
         return {
