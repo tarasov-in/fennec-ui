@@ -750,7 +750,7 @@ export function CollectionServerMobile(props) {
                         ...item
                     },
                 },
-                meta: (defaultnModelActionMeta)?defaultnModelActionMeta(mobject):mobject,
+                meta: (defaultnModelActionMeta)?defaultnModelActionMeta(mobject, item):mobject,
                 object: item,
             },
             {
