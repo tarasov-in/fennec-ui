@@ -163,8 +163,10 @@ export function CollectionServer(props) {
 
         modelActions,
         defaultModelActions,
+        defaultnModelActionMeta,
         collectionActions,
         defaultCollectionActions,
+        defaultCollectionActionMeta,
         selection, // undefined, "radio" или "checkbox"
         mode, // table, list
         render,
@@ -710,7 +712,7 @@ export function CollectionServer(props) {
                         ...item
                     },
                 },
-                meta: mobject,
+                meta: (defaultnModelActionMeta)?defaultnModelActionMeta(mobject):mobject,
                 object: item,
             },
             {
@@ -749,6 +751,7 @@ export function CollectionServer(props) {
         }))} />
     }, [auth, collection, modelActions]);
     const RenderOnCollectionActions = React.useCallback(() => {
+        
         let defaultAction = (!name) ? [] : [
             {
                 key: "create",
@@ -778,7 +781,7 @@ export function CollectionServer(props) {
                 options: {
                     initialValues: {},
                 },
-                meta: mobject,
+                meta: (defaultCollectionActionMeta)?defaultCollectionActionMeta(mobject):mobject,
             }
         ];
         if (defaultCollectionActions) return <div>

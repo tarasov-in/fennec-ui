@@ -303,9 +303,11 @@ export function CollectionServerMobile(props) {
 
         modelActions,
         defaultModelActions,
+        defaultnModelActionMeta,
         modelActionsTitle,
         collectionActions,
         defaultCollectionActions,
+        defaultCollectionActionMeta,
         selection, // undefined, "radio" или "checkbox"
 
         render,
@@ -748,7 +750,7 @@ export function CollectionServerMobile(props) {
                         ...item
                     },
                 },
-                meta: mobject,
+                meta: (defaultnModelActionMeta)?defaultnModelActionMeta(mobject):mobject,
                 object: item,
             },
             {
@@ -819,7 +821,7 @@ export function CollectionServerMobile(props) {
                 options: {
                     initialValues: {},
                 },
-                meta: mobject,
+                meta: (defaultCollectionActionMeta)?defaultCollectionActionMeta(mobject):mobject,
             }
         ];
         if (defaultCollectionActions) return <div>
