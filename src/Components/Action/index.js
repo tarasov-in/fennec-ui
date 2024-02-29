@@ -208,13 +208,13 @@ export function Action(props) {
         setValues(object);
     }, [object]);
     const isChangedField = React.useCallback((name) => {
-        return (values[name] !== object[name])
+        return (_.get(values,name) !== _.get(object,name))
     }, [values, object]);
     const isChangedForm = React.useMemo(() => {
         // return !_.isEqual({ ...object, ...values }, object)
         let f = false;
         for (const key in values) {
-            if (values[key] !== object[key]) {
+            if (_.get(values,key) !== _.get(object,key)) {
                 f = true;
                 break
             }

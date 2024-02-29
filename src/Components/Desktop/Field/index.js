@@ -341,7 +341,7 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
                 return item.relation.display(value)
             } else {
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
-                let _display = ((item?.relation?.display?.fields)?item?.relation?.display:undefined) || ((fieldMeta?.display?.fields)?fieldMeta?.display:undefined)
+                let _display = ((item?.relation?.display?.fields) ? item?.relation?.display : undefined) || ((fieldMeta?.display?.fields) ? fieldMeta?.display : undefined)
                 return getDisplay(value, _display, fieldMeta, meta)
             }
         }
@@ -594,7 +594,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
         }
         return data.find(e => e.ID === value);
     };
-    
+
     const labelString = (item, value) => {
         if (item && value) {
             if (item.displayString && _.isFunction(item.displayString)) {
@@ -615,7 +615,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
                 return item.relation.display(value)
             } else {
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
-                let _display = ((item?.relation?.display?.fields)?item?.relation?.display:undefined) || ((fieldMeta?.display?.fields)?fieldMeta?.display:undefined)
+                let _display = ((item?.relation?.display?.fields) ? item?.relation?.display : undefined) || ((fieldMeta?.display?.fields) ? fieldMeta?.display : undefined)
                 return getDisplay(value, _display, fieldMeta, meta)
             }
         }
@@ -718,7 +718,11 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
                 size={(item.size) ? item.size : "middle"}
                 value={value}
                 onChange={e => onChange(e, item, itemByProperty(item, e))}
-                style={{ width: "100%" }}
+                style={{
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap"
+                }}
                 allowClear={true}
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
                 filterOption={(input, option) => {
@@ -727,10 +731,10 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
                 filterSort={(optionA, optionB) =>
                     optionA?.label?.toLowerCase().localeCompare(optionB?.label?.toLowerCase())
                 }
-                // filterOption={(input, element) =>
-                //     element.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                // }
-                >
+            // filterOption={(input, element) =>
+            //     element.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            // }
+            >
                 {elements(data)}
             </Select>
             {item?.actions && <React.Fragment>
@@ -849,7 +853,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
                 return item.relation.display(value)
             } else {
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
-                let _display = ((item?.relation?.display?.fields)?item?.relation?.display:undefined) || ((fieldMeta?.display?.fields)?fieldMeta?.display:undefined)
+                let _display = ((item?.relation?.display?.fields) ? item?.relation?.display : undefined) || ((fieldMeta?.display?.fields) ? fieldMeta?.display : undefined)
                 return getDisplay(value, _display, fieldMeta, meta)
             }
         }

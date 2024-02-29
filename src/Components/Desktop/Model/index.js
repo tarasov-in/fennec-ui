@@ -81,7 +81,7 @@ function Frm(props) {
     // }
 
     const [isChangedForm, isChangedField, onValuesChange] = useFormObserverContext()
-console.log(object);
+
     return (
         <div>
             {(object && links && propertiesOneMany && propertiesOneMany.length > 0) &&
