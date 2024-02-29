@@ -638,7 +638,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
 
     const RendeActions = React.useCallback(() => {
         if (!item?.actions) return <React.Fragment></React.Fragment>;
-        let values = clean(unwrap(item?.actions(value)));
+        let values = clean(unwrap(item?.actions(value, item)));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return values?.map((e, idx) => {
             if (_.isFunction(e)) {
@@ -679,7 +679,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
 
     const RenderDropdownActions = React.useCallback(() => {
         if (!item?.dropdownActions) return <React.Fragment></React.Fragment>;
-        let values = clean(unwrap(item?.dropdownActions(value)));
+        let values = clean(unwrap(item?.dropdownActions(value, item)));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <DropdownAction
             button={() => (<Button type="default">

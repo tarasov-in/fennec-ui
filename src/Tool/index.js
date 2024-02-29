@@ -822,7 +822,6 @@ export const Request = (values, item, props) => {
                     );
                     // console.log("collection",collection);
                     // console.log("x",x);
-                    // console.log("v",v);
                     if (onDispatchFunc) {
                         let _dispatch = onDispatchFunc(v, properties);
                         if (_.isFunction(_dispatch)) {

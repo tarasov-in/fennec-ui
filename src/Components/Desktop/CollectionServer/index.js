@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Card, Button, Tooltip, Pagination, Empty, Divider, Typography, Tag, Select, List, Table, Spin, Badge } from 'antd';
+import { Layout, Card, Button, Tooltip, Pagination, Empty, Divider, Typography, Tag, Select, List, Table, Spin, Badge, Modal } from 'antd';
 import { Action } from '../../Action'
 import { DropdownAction } from '../DropdownAction'
-import { unwrap, GET, errorCatch, Request, QueryParam, GETWITH, If, READWITH, QueryFunc, JSX, GetMetaPropertyByPath, updateInArray, deleteInArray, QueryDetail, subscribe as _subscribe, unsubscribe, clean, JSXMap } from '../../../Tool'
+import { unwrap, GET, errorCatch, Request, QueryParam, GETWITH, If, READWITH, QueryFunc, JSX, GetMetaPropertyByPath, updateInArray, deleteInArray, QueryDetail, subscribe as _subscribe, unsubscribe, clean, JSXMap, getObjectDisplay } from '../../../Tool'
 import { createUseStyles } from 'react-jss';
 import "./index.css"
 import { FilterOutlined, SortAscendingOutlined, SortDescendingOutlined } from '@ant-design/icons';
@@ -10,6 +10,7 @@ import { Field } from '../Field';
 import { Model } from '../Model';
 import { useMetaContext } from '../../Context';
 import uuid from 'react-uuid';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 const { CheckableTag } = Tag;
 const { Sider } = Layout;
@@ -167,6 +168,10 @@ export function CollectionServer(props) {
         collectionActions,
         defaultCollectionActions,
         defaultCollectionActionMeta,
+
+        linksModelActions,
+        // linksCollectionActions,
+
         selection, // undefined, "radio" или "checkbox"
         mode, // table, list
         render,
@@ -704,6 +709,14 @@ export function CollectionServer(props) {
                 },
                 contextFilters: contextFilters,
                 form: Model,
+
+                links: linksModelActions,
+                queryDetail: queryDetail,
+                defaultModelActions: defaultModelActions,
+                defaultnModelActionMeta: defaultnModelActionMeta,
+                defaultCollectionActions: defaultCollectionActions,
+                defaultCollectionActionMeta: defaultCollectionActionMeta,
+
                 modal: {
                     width: "700px"
                 },
@@ -712,16 +725,28 @@ export function CollectionServer(props) {
                         ...item
                     },
                 },
-                meta: (defaultnModelActionMeta)?defaultnModelActionMeta(mobject,item):mobject,
+                meta: (defaultnModelActionMeta) ? defaultnModelActionMeta(mobject, item) : mobject,
                 object: item,
             },
             {
                 key: "delete",
-                title: "Удалить",
+                title: <span style={{ color: "red" }}>Удалить</span>,
                 action: (values, unlock, close, { collection, setCollection }) => {
-                    GET(auth, "/api/query-delete/" + name.toLowerCase() + '/' + item.ID,
-                        () => setCollection(deleteInArray(collection, item)), errorCatch
-                    );
+                    Modal.confirm({
+                        title: `Вы уверены что хотите удалить элемент?`,
+                        icon: <ExclamationCircleOutlined />,
+                        content: <span>{getObjectDisplay(item, name, meta)}</span>,
+                        okText: "Да",
+                        okType: 'danger',
+                        cancelText: "Нет",
+                        onOk: () => {
+                            GET(auth, "/api/query-delete/" + name.toLowerCase() + '/' + item.ID,
+                                () => {
+                                    setCollection(deleteInArray(collection, item))
+                                }, errorCatch
+                            );
+                        },
+                    });
                 },
             }
         ];
@@ -747,11 +772,19 @@ export function CollectionServer(props) {
             object: item,
             collection: collection,
             setCollection: setCollection,
+
+            links: linksModelActions,
+            queryDetail: queryDetail,
+            defaultModelActions: defaultModelActions,
+            defaultnModelActionMeta: defaultnModelActionMeta,
+            defaultCollectionActions: defaultCollectionActions,
+            defaultCollectionActionMeta: defaultCollectionActionMeta,
+
             ...e
         }))} />
     }, [auth, collection, modelActions, defaultModelActions, defaultnModelActionMeta]);
     const RenderOnCollectionActions = React.useCallback(() => {
-        
+
         let defaultAction = (!name) ? [] : [
             {
                 key: "create",
@@ -778,10 +811,18 @@ export function CollectionServer(props) {
                 },
                 contextFilters: contextFilters,
                 form: Model,
+
+                links: linksModelActions,
+                queryDetail: queryDetail,
+                defaultModelActions: defaultModelActions,
+                defaultnModelActionMeta: defaultnModelActionMeta,
+                defaultCollectionActions: defaultCollectionActions,
+                defaultCollectionActionMeta: defaultCollectionActionMeta,
+
                 options: {
                     initialValues: {},
                 },
-                meta: (defaultCollectionActionMeta)?defaultCollectionActionMeta(mobject):mobject,
+                meta: (defaultCollectionActionMeta) ? defaultCollectionActionMeta(mobject) : mobject,
             }
         ];
         if (defaultCollectionActions) return <div>
@@ -820,6 +861,14 @@ export function CollectionServer(props) {
 
                 collection={collection}
                 setCollection={setCollection}
+                
+                links={linksModelActions}
+                queryDetail={queryDetail}
+                defaultModelActions={defaultModelActions}
+                defaultnModelActionMeta={defaultnModelActionMeta}
+                defaultCollectionActions={defaultCollectionActions}
+                defaultCollectionActionMeta={defaultCollectionActionMeta}
+
                 {...e}
             />)
         });
