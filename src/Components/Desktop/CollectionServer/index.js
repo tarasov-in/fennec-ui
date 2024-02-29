@@ -735,7 +735,12 @@ export function CollectionServer(props) {
                     Modal.confirm({
                         title: `Вы уверены что хотите удалить элемент?`,
                         icon: <ExclamationCircleOutlined />,
-                        content: <span>{getObjectDisplay(item, name, meta)}</span>,
+                        content: (<div>
+                            {(mobject) && <div style={{ fontSize: "12px", color: "grey" }}>
+                                <div>{mobject?.label}</div>
+                            </div>}
+                            <div>{getObjectDisplay(item, name, meta)}</div>
+                        </div>),
                         okText: "Да",
                         okType: 'danger',
                         cancelText: "Нет",
@@ -861,7 +866,7 @@ export function CollectionServer(props) {
 
                 collection={collection}
                 setCollection={setCollection}
-                
+
                 links={linksModelActions}
                 queryDetail={queryDetail}
                 defaultModelActions={defaultModelActions}

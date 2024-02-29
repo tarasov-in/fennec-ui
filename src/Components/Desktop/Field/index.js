@@ -638,7 +638,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
 
     const RendeActions = React.useCallback(() => {
         if (!item?.actions) return <React.Fragment></React.Fragment>;
-        let values = clean(unwrap(item?.actions(value, item)));
+        let values = clean(unwrap(item?.actions(value, item, meta)));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return values?.map((e, idx) => {
             if (_.isFunction(e)) {
@@ -675,11 +675,11 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
                 {...e}
             />)
         });
-    }, [item, data, loading, value]);
+    }, [item, data, loading, value, meta]);
 
     const RenderDropdownActions = React.useCallback(() => {
         if (!item?.dropdownActions) return <React.Fragment></React.Fragment>;
-        let values = clean(unwrap(item?.dropdownActions(value, item)));
+        let values = clean(unwrap(item?.dropdownActions(value, item, meta)));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <DropdownAction
             button={() => (<Button type="default">
@@ -706,7 +706,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
                 apply: (obj) => onChange(property(item, obj), item, obj),
                 ...e
             }))} />
-    }, [item, data, loading, value]);
+    }, [item, data, loading, value, meta]);
 
     return (
         <Space.Compact
