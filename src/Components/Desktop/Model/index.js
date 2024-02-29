@@ -81,7 +81,7 @@ function Frm(props) {
     // }
 
     const [isChangedForm, isChangedField, onValuesChange] = useFormObserverContext()
-
+console.log(object);
     return (
         <div>
             {(object && links && propertiesOneMany && propertiesOneMany.length > 0) &&
@@ -142,7 +142,7 @@ function Frm(props) {
                     })}
                 </Form>
             </div>
-            <div style={{ display: (visible) ? "block" : "none" }}>
+            {object && <div style={{ display: (visible) ? "block" : "none" }}>
                 <Tabs>
                     {propertiesOneMany.map((e, idx) => {
                         let p = getObjectValue(e, "relation.reference.property");
@@ -181,7 +181,7 @@ function Frm(props) {
                         )
                     })}
                 </Tabs>
-            </div>
+            </div>}
         </div>
     )
 }

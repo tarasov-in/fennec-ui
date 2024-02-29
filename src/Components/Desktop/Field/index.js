@@ -697,7 +697,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
                 mode: "MenuItem",
                 disabled: loading || (item && item.view && item.view.disabled) ? item.view.disabled : false,
                 item: item,
-                object: value,
+                object: itemByProperty(item, value),
                 collection: data,
                 setCollection: setData,
                 property: (obj) => property(item, obj),
