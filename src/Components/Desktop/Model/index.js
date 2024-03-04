@@ -66,6 +66,8 @@ function Frm(props) {
     if (!properties) return <React.Fragment></React.Fragment>;
     const propertiesFiltered = properties?.filter(e => (!e.name || (e.name && e.name.toUpperCase() !== "ID")))?.filter(e => (!e.relation || (e.relation && e.relation.type !== "one-many")));
     const propertiesOneMany = properties?.filter(e => e.relation && e.relation.type === "one-many");
+    // const propertiesDocument = properties?.filter(e => e.relation && e.relation.type === "polymorphic");
+    // const propertiesDocuments = properties.filter(e => e.type === "document");
 
     // item: {
     //     validators: {

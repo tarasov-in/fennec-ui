@@ -768,7 +768,7 @@ export function CollectionServer(props) {
                 }))
             } />)
         if (!modelActions) return <React.Fragment></React.Fragment>;
-        let values = clean(unwrap(modelActions(item, index)));
+        let values = clean(unwrap(modelActions(item, index, {name, mobject, actions: defaultAction})));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <DropdownAction items={values?.map((e, idx) => ({
             key: e.key || idx,
@@ -787,7 +787,7 @@ export function CollectionServer(props) {
 
             ...e
         }))} />
-    }, [auth, collection, modelActions, defaultModelActions, defaultnModelActionMeta]);
+    }, [auth, collection, modelActions, defaultModelActions, defaultnModelActionMeta, name, mobject]);
     const RenderOnCollectionActions = React.useCallback(() => {
 
         let defaultAction = (!name) ? [] : [
@@ -842,7 +842,7 @@ export function CollectionServer(props) {
             />)}
         </div>;
         if (!collectionActions) return <React.Fragment></React.Fragment>;
-        let values = clean(unwrap(collectionActions()));
+        let values = clean(unwrap(collectionActions({name, mobject, actions: defaultAction})));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return values?.map((e, idx) => {
             if (_.isFunction(e)) {
@@ -877,7 +877,7 @@ export function CollectionServer(props) {
                 {...e}
             />)
         });
-    }, [auth, collection, collectionActions, defaultCollectionActions, defaultCollectionActionMeta]);
+    }, [auth, collection, collectionActions, defaultCollectionActions, defaultCollectionActionMeta, name, mobject]);
     const selectionConfig = (selectionType) => {
         if (!selection) return {};
         return {
