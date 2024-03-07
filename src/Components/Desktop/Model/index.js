@@ -168,7 +168,7 @@ function Frm(props) {
                     })}
                 </Form>
             </div>
-            {(object && propertiesOneMany && propertiesOneMany?.length > 0) && <div style={{ display: (visible || links === "inline") ? "block" : "none" }}>
+            {(object && object?.ID && propertiesOneMany && propertiesOneMany?.length > 0 && links) && <div style={{ display: (visible || links === "inline") ? "block" : "none" }}>
                 <Tabs>
                     {propertiesOneMany.map((e, idx) => {
                         let p = getObjectValue(e, "relation.reference.property");

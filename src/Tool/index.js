@@ -928,7 +928,9 @@ export function GetMetaProperties(meta, exclude) {
         console.warn("Не удалось определить метаданные из переданного параметра");
     }
 };
-
+export function SetMetaProperties(meta, properties) {
+    return (meta && _.isArray(meta)) ? properties : { ...meta, properties: properties }
+};
 export function GetMeta(meta) {
     if (meta && meta !== null && typeof meta === "function") {
         let m = meta();
@@ -940,6 +942,82 @@ export function GetMeta(meta) {
     }
     return meta;
 };
+//-------------------------------------------------------------------
+export const updateInProperties = (properties, item, first) => {
+    // uuid | name
+    let key = "name"
+
+    if (!properties) properties = [];
+    if (!item || !key(item)) return properties;
+    if (_.findIndex(properties, { [key]: item[key] }) >= 0) {
+        return properties?.map(e => IfElse(e[key] === item[key], { ...e, ...item }, e));
+    } else {
+        return (first) ? [item, ...properties] : [...properties, item];
+    }
+}
+export const deleteInProperties = (properties, item) => {
+    let key = "name"
+    if (!properties) properties = [];
+    if (!item || (!_.isArray(item) && _.isObject(item) && !item[key])) return properties;
+    let i = unwrap(item);
+    if(_.isArray(item)){
+        return properties?.filter(e => And(item.map(c=>e[key] !== ((_.isObject(c))?c[key]:c))))
+    } 
+    return properties?.filter(e => e[key] !== item[key]);
+}
+export const triggerInProperties = (properties, item) => {
+    let key = "name"
+    if (properties.find(x => x[key] === item[key]) !== undefined) {
+        return deleteInArray(properties, item);
+    } else {
+        return updateInArray(properties, item);
+    }
+}
+export const foreachInProperties = (properties, func, item) => {
+    if (!properties) properties = [];
+    if (!item) return properties;
+    return properties.map(n => And(func(n)) ? {...n, ...item} : n )
+}
+export const updatePropertiesInProperties = (properties, items) => {
+    if (!properties) properties = [];
+    if (_.isArray(items)) {
+        let tmp = [...properties];
+        for (let i = 0; i < items.length; i++) {
+            const it = items[i];
+            tmp = updateInProperties(tmp, it);
+        }
+        return tmp;
+    } else {
+        return updateInProperties(properties, items);
+    }
+}
+export const deletePropertiesInProperties = (properties, items) => {
+    if (!properties) properties = [];
+    if (_.isArray(items)) {
+        let tmp = [...properties];
+        for (let i = 0; i < items.length; i++) {
+            const it = items[i];
+            tmp = deleteInProperties(tmp, it);
+        }
+        return tmp;
+    } else {
+        return deleteInProperties(properties, items);
+    }
+}
+export const triggerPropertiesInProperties = (properties, items) => {
+    if (!properties) properties = [];
+    if (_.isArray(items)) {
+        let tmp = [...properties];
+        for (let i = 0; i < items.length; i++) {
+            const it = items[i];
+            tmp = triggerInProperties(tmp, it);
+        }
+        return tmp;
+    } else {
+        return triggerInProperties(properties, items);
+    }
+}
+//-------------------------------------------------------------------
 //-------------------------------------------------------------------
 //Получение значения объекта. object - сам объект, subObject - строка содержащая описание подъобъекта.
 export function getObjectValue(object, subObject) {
