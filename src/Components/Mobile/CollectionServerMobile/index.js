@@ -301,13 +301,14 @@ export function CollectionServerMobile(props) {
         title,
         extra,
 
+        linksModelActions,
         modelActions,
-        defaultModelActions,
-        defaultnModelActionMeta,
+        // defaultModelActions,
+        // defaultModelActionMeta,
         modelActionsTitle,
         collectionActions,
-        defaultCollectionActions,
-        defaultCollectionActionMeta,
+        // defaultCollectionActions,
+        // defaultCollectionActionMeta,
         selection, // undefined, "radio" или "checkbox"
 
         render,
@@ -742,6 +743,12 @@ export function CollectionServerMobile(props) {
                 },
                 contextFilters: contextFilters,
                 form: ModelMobile,
+
+                links: linksModelActions,
+                queryDetail: queryDetail,
+                modelActions: modelActions,
+                collectionActions: collectionActions,
+
                 modal: {
                     width: "700px"
                 },
@@ -750,7 +757,7 @@ export function CollectionServerMobile(props) {
                         ...item
                     },
                 },
-                meta: (defaultnModelActionMeta)?defaultnModelActionMeta(mobject, item):mobject,
+                meta: mobject,
                 object: item,
             },
             {
@@ -766,20 +773,20 @@ export function CollectionServerMobile(props) {
                 },
             }
         ];
-        if (defaultModelActions) return (<DropdownAction
-            items={
-                defaultAction?.map((e, idx) => ({
-                    key: e.key || idx,
-                    auth: auth,
-                    mode: "MenuItem",
-                    object: item,
-                    collection: collection,
-                    setCollection: setCollection,
-                    ...e
-                }))
-            } />)
+        // if (defaultModelActions) return (<DropdownAction
+        //     items={
+        //         defaultAction?.map((e, idx) => ({
+        //             key: e.key || idx,
+        //             auth: auth,
+        //             mode: "MenuItem",
+        //             object: item,
+        //             collection: collection,
+        //             setCollection: setCollection,
+        //             ...e
+        //         }))
+        //     } />)
         if (!modelActions) return <React.Fragment>{trigger && trigger()}</React.Fragment>;
-        let values = clean(unwrap(modelActions(item, index)));
+        let values = clean(unwrap(modelActions(item, index, {name, mobject, actions: defaultAction})));
         if (!values || !values.length) return <React.Fragment>{trigger && trigger()}</React.Fragment>;
         return <DropdownMobile
             auth={auth}
@@ -790,7 +797,7 @@ export function CollectionServerMobile(props) {
                     {trigger && trigger()}
                 </div>
             )} />
-    }, [auth, collection, modelActions]);
+    }, [auth, collection, modelActions, name, mobject]);
     const RenderOnCollectionActions = React.useCallback(() => {
         let defaultAction = (!name) ? [] : [
             {
@@ -818,24 +825,30 @@ export function CollectionServerMobile(props) {
                 },
                 contextFilters: contextFilters,
                 form: ModelMobile,
+
+                links: linksModelActions,
+                queryDetail: queryDetail,
+                modelActions: modelActions,
+                collectionActions: collectionActions,
+
                 options: {
                     initialValues: {},
                 },
-                meta: (defaultCollectionActionMeta)?defaultCollectionActionMeta(mobject):mobject,
+                meta: mobject,
             }
         ];
-        if (defaultCollectionActions) return <div>
-            {defaultAction?.map((e, idx) => <Action
-                key={e.key || idx}
-                auth={auth}
-                mode={"button"}
-                collection={collection}
-                setCollection={setCollection}
-                {...e}
-            />)}
-        </div>;
+        // if (defaultCollectionActions) return <div>
+        //     {defaultAction?.map((e, idx) => <Action
+        //         key={e.key || idx}
+        //         auth={auth}
+        //         mode={"button"}
+        //         collection={collection}
+        //         setCollection={setCollection}
+        //         {...e}
+        //     />)}
+        // </div>;
         if (!collectionActions) return <React.Fragment></React.Fragment>;
-        let values = clean(unwrap(collectionActions()));
+        let values = clean(unwrap(collectionActions({name, mobject, actions: defaultAction})));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <div>
             {values?.map((e, idx) => {
@@ -863,7 +876,7 @@ export function CollectionServerMobile(props) {
                 />)
             })}
         </div>;
-    }, [auth, collection, collectionActions]);
+    }, [auth, collection, collectionActions, name, mobject]);
     const hasSelected = selectedRowKeys.length > 0;
     const selectionConfig = (selectionType) => {
         if (!selection) return {};

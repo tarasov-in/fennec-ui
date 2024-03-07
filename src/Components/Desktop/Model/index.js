@@ -16,12 +16,10 @@ const { TabPane } = Tabs;
 
 function Frm(props) {
 
-    const { auth, form, meta, options, object, submit, funcStat, contextFilters, links,
+    const { auth, form, meta, options, object, submit, funcStat, contextFilters, links, scheme, linksCompareFunction,
         queryDetail,
-        defaultModelActions,
-        defaultnModelActionMeta,
-        defaultCollectionActions,
-        defaultCollectionActionMeta
+        modelActions,
+        collectionActions
     } = props;
     const [visible, setVisible] = useState(false);
     const [excludeFields, setExcludeFields] = useState({});
@@ -65,7 +63,33 @@ function Frm(props) {
     var properties = GetMetaProperties(meta);
     if (!properties) return <React.Fragment></React.Fragment>;
     const propertiesFiltered = properties?.filter(e => (!e.name || (e.name && e.name.toUpperCase() !== "ID")))?.filter(e => (!e.relation || (e.relation && e.relation.type !== "one-many")));
-    const propertiesOneMany = properties?.filter(e => e.relation && e.relation.type === "one-many");
+    let propertiesOneMany = properties?.filter(e => e.relation && e.relation.type === "one-many");
+    let tailScheme = undefined
+    if(scheme && !scheme.length){
+        propertiesOneMany = []
+    }
+    if (scheme?.length) {
+        let headScheme = {}
+        tailScheme = []
+        for (let i = 0; i < scheme.length; i++) {
+            const element = scheme[i].toLowerCase();
+            let arr = element.split(".")
+
+            if (arr && arr.length && arr[0]) {
+                headScheme[arr[0]] = true
+                arr.splice(0, 1);
+                if (arr && arr.length) {
+                    let c = arr.join(".")
+                    tailScheme.push(c)
+                }
+            }
+        }
+        let func = (linksCompareFunction)?linksCompareFunction:(e)=>_.get(e, "name");
+        propertiesOneMany = propertiesOneMany?.filter(e => {
+            return (func(e) && (headScheme[func(e)?.toLowerCase()]))
+        })
+    }
+
     // const propertiesDocument = properties?.filter(e => e.relation && e.relation.type === "polymorphic");
     // const propertiesDocuments = properties.filter(e => e.type === "document");
 
@@ -86,7 +110,7 @@ function Frm(props) {
 
     return (
         <div>
-            {(object && links && propertiesOneMany && propertiesOneMany.length > 0) &&
+            {(object && links && links !== "inline" && propertiesOneMany && propertiesOneMany.length > 0) &&
                 <div className='bg bg-grey' style={{ textAlign: "left", marginBottom: "5px", padding: "3px 5px", display: "flex", justifyContent: "space-between", gap: "5px" }}>
                     <div style={{ flex: "1 1 auto" }}>
                         {(meta.name && visible == true) && <div style={{ fontSize: "12px", color: "grey" }}>
@@ -144,16 +168,20 @@ function Frm(props) {
                     })}
                 </Form>
             </div>
-            {object && <div style={{ display: (visible) ? "block" : "none" }}>
+            {(object && propertiesOneMany && propertiesOneMany?.length > 0) && <div style={{ display: (visible || links === "inline") ? "block" : "none" }}>
                 <Tabs>
                     {propertiesOneMany.map((e, idx) => {
                         let p = getObjectValue(e, "relation.reference.property");
                         let n = getObjectValue(e, "relation.reference.object");
+                        let f = getObjectValue(e, "name");
                         if (!n) return;
                         return (<TabPane tab={e.label} key={idx}>
                             <CollectionServer
                                 auth={auth}
                                 name={n}
+                                field={e}
+                                fieldName={f}
+                                linksCompareFunction={linksCompareFunction}
                                 contextFilters={() => (object) ? [
                                     {
                                         action: true,
@@ -172,12 +200,11 @@ function Frm(props) {
                                 )}
 
                                 linksModelActions={links}
-
+                                scheme={tailScheme}
                                 queryDetail={queryDetail}
-                                defaultModelActions={defaultModelActions}
-                                defaultnModelActionMeta={defaultnModelActionMeta}
-                                defaultCollectionActions={defaultCollectionActions}
-                                defaultCollectionActionMeta={defaultCollectionActionMeta}
+                                modelActions={modelActions}
+                                collectionActions={collectionActions}
+
                             />
                         </TabPane>
                         )
@@ -189,12 +216,10 @@ function Frm(props) {
 }
 
 export function Model(props) {
-    const { auth, meta, options, object, form, submit, funcStat, contextFilters, links,
+    const { auth, meta, options, object, form, submit, funcStat, contextFilters, links, scheme, linksCompareFunction, 
         queryDetail,
-        defaultModelActions,
-        defaultnModelActionMeta,
-        defaultCollectionActions,
-        defaultCollectionActionMeta,
+        modelActions,
+        collectionActions,
     } = props;
     var xmeta = GetMeta(meta);
     if (!xmeta) return <React.Fragment></React.Fragment>;
@@ -207,11 +232,10 @@ export function Model(props) {
 
                 links={links}
                 queryDetail={queryDetail}
-                defaultModelActions={defaultModelActions}
-                defaultnModelActionMeta={defaultnModelActionMeta}
-                defaultCollectionActions={defaultCollectionActions}
-                defaultCollectionActionMeta={defaultCollectionActionMeta}
-
+                modelActions={modelActions}
+                collectionActions={collectionActions}
+                scheme={scheme}
+                linksCompareFunction={linksCompareFunction}
                 contextFilters={contextFilters}
                 submit={submit}
                 meta={meta}

@@ -163,14 +163,18 @@ export function CollectionServer(props) {
         title,
 
         modelActions,
-        defaultModelActions,
-        defaultnModelActionMeta,
+        // defaultModelActions,
+        // defaultModelActionMeta,
         collectionActions,
-        defaultCollectionActions,
-        defaultCollectionActionMeta,
+        // defaultCollectionActions,
+        // defaultCollectionActionMeta,
 
         linksModelActions,
         // linksCollectionActions,
+        scheme,
+        field,
+        fieldName,
+        linksCompareFunction,
 
         selection, // undefined, "radio" или "checkbox"
         mode, // table, list
@@ -669,7 +673,7 @@ export function CollectionServer(props) {
             const cx = tmp[i];
             c.push(cx);
         }
-        if (modelActions || defaultModelActions) {
+        if (modelActions) {
             c.push({
                 className: classes.whiteCell,
                 title: '',
@@ -711,11 +715,13 @@ export function CollectionServer(props) {
                 form: Model,
 
                 links: linksModelActions,
+                scheme: scheme,
+                linksCompareFunction: linksCompareFunction,
+                // field: field,
+                // fieldName: fieldName,
                 queryDetail: queryDetail,
-                defaultModelActions: defaultModelActions,
-                defaultnModelActionMeta: defaultnModelActionMeta,
-                defaultCollectionActions: defaultCollectionActions,
-                defaultCollectionActionMeta: defaultCollectionActionMeta,
+                modelActions: modelActions,
+                collectionActions: collectionActions,
 
                 modal: {
                     width: "700px"
@@ -725,7 +731,7 @@ export function CollectionServer(props) {
                         ...item
                     },
                 },
-                meta: (defaultnModelActionMeta) ? defaultnModelActionMeta(mobject, item) : mobject,
+                meta: mobject,
                 object: item,
             },
             {
@@ -755,20 +761,20 @@ export function CollectionServer(props) {
                 },
             }
         ];
-        if (defaultModelActions) return (<DropdownAction
-            items={
-                defaultAction?.map((e, idx) => ({
-                    key: e.key || idx,
-                    auth: auth,
-                    mode: "MenuItem",
-                    object: item,
-                    collection: collection,
-                    setCollection: setCollection,
-                    ...e
-                }))
-            } />)
+        // if (defaultModelActions) return (<DropdownAction
+        //     items={
+        //         defaultAction?.map((e, idx) => ({
+        //             key: e.key || idx,
+        //             auth: auth,
+        //             mode: "MenuItem",
+        //             object: item,
+        //             collection: collection,
+        //             setCollection: setCollection,
+        //             ...e
+        //         }))
+        //     } />)
         if (!modelActions) return <React.Fragment></React.Fragment>;
-        let values = clean(unwrap(modelActions(item, index, {name, mobject, actions: defaultAction})));
+        let values = clean(unwrap(modelActions(item, index, { mobject, name, field, fieldName, actions: defaultAction })));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <DropdownAction items={values?.map((e, idx) => ({
             key: e.key || idx,
@@ -779,15 +785,17 @@ export function CollectionServer(props) {
             setCollection: setCollection,
 
             links: linksModelActions,
+            scheme: scheme,
+            linksCompareFunction: linksCompareFunction,
+            // field: field,
+            // fieldName: fieldName,
             queryDetail: queryDetail,
-            defaultModelActions: defaultModelActions,
-            defaultnModelActionMeta: defaultnModelActionMeta,
-            defaultCollectionActions: defaultCollectionActions,
-            defaultCollectionActionMeta: defaultCollectionActionMeta,
+            modelActions: modelActions,
+            collectionActions: collectionActions,
 
             ...e
         }))} />
-    }, [auth, collection, modelActions, defaultModelActions, defaultnModelActionMeta, name, mobject]);
+    }, [auth, collection, modelActions, name, mobject]);
     const RenderOnCollectionActions = React.useCallback(() => {
 
         let defaultAction = (!name) ? [] : [
@@ -818,31 +826,33 @@ export function CollectionServer(props) {
                 form: Model,
 
                 links: linksModelActions,
+                scheme: scheme,
+                linksCompareFunction: linksCompareFunction,
+                // field: field,
+                // fieldName: fieldName,
                 queryDetail: queryDetail,
-                defaultModelActions: defaultModelActions,
-                defaultnModelActionMeta: defaultnModelActionMeta,
-                defaultCollectionActions: defaultCollectionActions,
-                defaultCollectionActionMeta: defaultCollectionActionMeta,
+                modelActions: modelActions,
+                collectionActions: collectionActions,
 
                 options: {
                     initialValues: {},
                 },
-                meta: (defaultCollectionActionMeta) ? defaultCollectionActionMeta(mobject) : mobject,
+                meta: mobject,
             }
         ];
-        if (defaultCollectionActions) return <div>
-            {defaultAction?.map((e, idx) => <Action
-                key={e.key || idx}
-                auth={auth}
-                mode={"button"}
+        // if (defaultCollectionActions) return <div>
+        //     {defaultAction?.map((e, idx) => <Action
+        //         key={e.key || idx}
+        //         auth={auth}
+        //         mode={"button"}
 
-                collection={collection}
-                setCollection={setCollection}
-                {...e}
-            />)}
-        </div>;
+        //         collection={collection}
+        //         setCollection={setCollection}
+        //         {...e}
+        //     />)}
+        // </div>;
         if (!collectionActions) return <React.Fragment></React.Fragment>;
-        let values = clean(unwrap(collectionActions({name, mobject, actions: defaultAction})));
+        let values = clean(unwrap(collectionActions({ mobject, name, field, fieldName, actions: defaultAction })));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return values?.map((e, idx) => {
             if (_.isFunction(e)) {
@@ -868,16 +878,18 @@ export function CollectionServer(props) {
                 setCollection={setCollection}
 
                 links={linksModelActions}
+                scheme={scheme}
+                linksCompareFunction={linksCompareFunction}
+                // field={field}
+                // fieldName={fieldName}
                 queryDetail={queryDetail}
-                defaultModelActions={defaultModelActions}
-                defaultnModelActionMeta={defaultnModelActionMeta}
-                defaultCollectionActions={defaultCollectionActions}
-                defaultCollectionActionMeta={defaultCollectionActionMeta}
+                modelActions={modelActions}
+                collectionActions={collectionActions}
 
                 {...e}
             />)
         });
-    }, [auth, collection, collectionActions, defaultCollectionActions, defaultCollectionActionMeta, name, mobject]);
+    }, [auth, collection, collectionActions, name, mobject]);
     const selectionConfig = (selectionType) => {
         if (!selection) return {};
         return {
@@ -971,7 +983,7 @@ export function CollectionServer(props) {
             return "" + item
         };
         const actions = (item, index) => {
-            if (modelActions || defaultModelActions) {
+            if (modelActions) {
                 return {
                     actions: [RenderOnModelActions(item, index)]
                 };
