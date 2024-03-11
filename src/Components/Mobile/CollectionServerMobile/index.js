@@ -309,6 +309,12 @@ export function CollectionServerMobile(props) {
         collectionActions,
         // defaultCollectionActions,
         // defaultCollectionActionMeta,
+        scheme,
+        field,
+        fieldName,
+        linksCompareFunction,
+
+
         selection, // undefined, "radio" или "checkbox"
 
         render,
@@ -716,75 +722,67 @@ export function CollectionServerMobile(props) {
         }
     };
     //---------------------------
-    const RenderOnModelActions = React.useCallback((item, index, trigger, titles) => {
-        let defaultAction = (!name) ? [] : [
-            {
-                key: "change",
-                title: "Изменить",
-                action: {
-                    method: "POST",
-                    path: "/api/query-update/" + name.toLowerCase(),
-                    mutation: "update",
-                    onValues: (values) => {
-                        let ctxFlt = {};
-                        if (contextFilters) {
-                            let ctx = clean(contextFilters());
-                            if (_.isArray(ctx)) {
-                                ctx.forEach(item => {
-                                    if (item.action) {
-                                        ctxFlt[item.name.toLowerCase() + ((item.name && item.name.endsWith("ID")) ? "" : "ID")] = item.value;
-                                    }
-                                });
-                            }
+    const defaultModelAction = React.useCallback((item, index) => (!name) ? [] : [
+        {
+            key: "change",
+            title: "Изменить",
+            action: {
+                method: "POST",
+                path: "/api/query-update/" + name.toLowerCase(),
+                mutation: "update",
+                onValues: (values) => {
+                    let ctxFlt = {};
+                    if (contextFilters) {
+                        let ctx = clean(contextFilters());
+                        if (_.isArray(ctx)) {
+                            ctx.forEach(item => {
+                                if (item.action) {
+                                    ctxFlt[item.name.toLowerCase() + ((item.name && item.name.endsWith("ID")) ? "" : "ID")] = item.value;
+                                }
+                            });
                         }
-                        return { ...values, ...ctxFlt, ID: item.ID }
-                    },
-                    onClose: ({ close }) => close()
+                    }
+                    return { ...values, ...ctxFlt, ID: item.ID }
                 },
-                contextFilters: contextFilters,
-                form: ModelMobile,
-
-                links: linksModelActions,
-                queryDetail: queryDetail,
-                modelActions: modelActions,
-                collectionActions: collectionActions,
-
-                modal: {
-                    width: "700px"
-                },
-                options: {
-                    initialValues: {
-                        ...item
-                    },
-                },
-                meta: mobject,
-                object: item,
+                onClose: ({ close }) => close()
             },
-            {
-                key: "delete",
-                title: "Удалить",
-                action: (values, unlock, close, { collection, setCollection }) => {
-                    GET(auth, "/api/query-delete/" + name.toLowerCase() + '/' + item.ID,
-                        () => setCollection(deleteInArray(collection, item)), errorCatch
-                    );
-                    // POST(auth, "/api/query-delete/" + name.toLowerCase(), { ...item },
-                    //     () => setCollection(deleteInArray(collection, item)), errorCatch
-                    // );
+            contextFilters: contextFilters,
+            form: ModelMobile,
+
+            links: linksModelActions,
+            queryDetail: queryDetail,
+            modelActions: modelActions,
+            collectionActions: collectionActions,
+
+            modal: {
+                width: "700px"
+            },
+            options: {
+                initialValues: {
+                    ...item
                 },
-            }
-        ];
-        // if (defaultModelActions) return (<DropdownAction
-        //     items={
-        //         defaultAction?.map((e, idx) => ({
-        //             key: e.key || idx,
-        //             auth: auth,
-        //             mode: "MenuItem",
-        //             object: item,
-        //             collection: collection,
-        //             setCollection: setCollection,
-        //             ...e
-        //         }))
-        //     } />)
+            },
+            meta: mobject,
+            object: item,
+        },
+        {
+            key: "delete",
+            title: "Удалить",
+            action: (values, unlock, close, { collection, setCollection }) => {
+                GET(auth, "/api/query-delete/" + name.toLowerCase() + '/' + item.ID,
+                    () => setCollection(deleteInArray(collection, item)), errorCatch
+                );
+                // POST(auth, "/api/query-delete/" + name.toLowerCase(), { ...item },
+                //     () => setCollection(deleteInArray(collection, item)), errorCatch
+                // );
+            },
+        }
+    ], [auth, collection, collectionActions, name, mobject]);
+
+    const RenderOnModelActions = React.useCallback((item, index, trigger, titles) => {
+        // let defaultAction = defaultModelAction; 
+        let defaultAction = defaultModelAction(item, index);
+
         if (!modelActions) return <React.Fragment>{trigger && trigger()}</React.Fragment>;
         let values = clean(unwrap(modelActions(item, index, {name, mobject, actions: defaultAction})));
         if (!values || !values.length) return <React.Fragment>{trigger && trigger()}</React.Fragment>;
@@ -797,56 +795,50 @@ export function CollectionServerMobile(props) {
                     {trigger && trigger()}
                 </div>
             )} />
-    }, [auth, collection, modelActions, name, mobject]);
-    const RenderOnCollectionActions = React.useCallback(() => {
-        let defaultAction = (!name) ? [] : [
-            {
-                key: "create",
-                title: "Создать",
-                action: {
-                    method: "POST",
-                    path: "/api/query-create/" + name.toLowerCase(),
-                    mutation: "update",
-                    onValues: (values) => {
-                        let ctxFlt = {};
-                        if (contextFilters) {
-                            let ctx = clean(contextFilters());
-                            if (_.isArray(ctx)) {
-                                ctx.forEach(item => {
-                                    if (item.action) {
-                                        ctxFlt[item.name.toLowerCase() + ((item.name && item.name.endsWith("ID")) ? "" : "ID")] = item.value;
-                                    }
-                                });
-                            }
+    }, [auth, collection, modelActions, name, mobject, defaultModelAction]);
+
+    const defaultCollectionAction = React.useCallback(() => (!name) ? [] : [
+        {
+            key: "create",
+            title: "Создать",
+            action: {
+                method: "POST",
+                path: "/api/query-create/" + name.toLowerCase(),
+                mutation: "update",
+                onValues: (values) => {
+                    let ctxFlt = {};
+                    if (contextFilters) {
+                        let ctx = clean(contextFilters());
+                        if (_.isArray(ctx)) {
+                            ctx.forEach(item => {
+                                if (item.action) {
+                                    ctxFlt[item.name.toLowerCase() + ((item.name && item.name.endsWith("ID")) ? "" : "ID")] = item.value;
+                                }
+                            });
                         }
-                        return { ...values, ...ctxFlt }
-                    },
-                    onClose: ({ close }) => close(),
+                    }
+                    return { ...values, ...ctxFlt }
                 },
-                contextFilters: contextFilters,
-                form: ModelMobile,
+                onClose: ({ close }) => close(),
+            },
+            contextFilters: contextFilters,
+            form: ModelMobile,
 
-                links: linksModelActions,
-                queryDetail: queryDetail,
-                modelActions: modelActions,
-                collectionActions: collectionActions,
+            links: linksModelActions,
+            queryDetail: queryDetail,
+            modelActions: modelActions,
+            collectionActions: collectionActions,
 
-                options: {
-                    initialValues: {},
-                },
-                meta: mobject,
-            }
-        ];
-        // if (defaultCollectionActions) return <div>
-        //     {defaultAction?.map((e, idx) => <Action
-        //         key={e.key || idx}
-        //         auth={auth}
-        //         mode={"button"}
-        //         collection={collection}
-        //         setCollection={setCollection}
-        //         {...e}
-        //     />)}
-        // </div>;
+            options: {
+                initialValues: {},
+            },
+            meta: mobject,
+        }
+    ], [auth, collection, collectionActions, name, mobject]);
+
+
+    const RenderOnCollectionActions = React.useCallback(() => {
+        let defaultAction = defaultCollectionAction();
         if (!collectionActions) return <React.Fragment></React.Fragment>;
         let values = clean(unwrap(collectionActions({name, mobject, actions: defaultAction})));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
@@ -876,7 +868,7 @@ export function CollectionServerMobile(props) {
                 />)
             })}
         </div>;
-    }, [auth, collection, collectionActions, name, mobject]);
+    }, [auth, collection, collectionActions, name, mobject, defaultCollectionAction]);
     const hasSelected = selectedRowKeys.length > 0;
     const selectionConfig = (selectionType) => {
         if (!selection) return {};
@@ -1052,14 +1044,22 @@ export function CollectionServerMobile(props) {
                     setCollection,
                     setCollectionItem,
                     removeCollectionItem,
-                    collectionActions: () => (collectionActions) ? clean(unwrap(collectionActions())) : undefined,
-                    modelActions: (item, index) => (modelActions) ? clean(unwrap(modelActions(item, index))) : undefined,
+                    collectionActions: () => (collectionActions) ? clean(unwrap(collectionActions({ mobject, name, field, fieldName, actions: defaultCollectionAction }))) : undefined,
+                    modelActions: (item, index) => (modelActions) ? clean(unwrap(modelActions(item, index, { mobject, name, field, fieldName, actions: defaultModelAction }))) : undefined,
                     onSelection,
                     isSelected,
                     lock,
                     unlock,
                     loading,
-                    update: request
+                    update: request,
+
+                    linksModelActions,
+                    mobject,
+                    name,
+                    field,
+                    fieldName,
+                    defaultCollectionAction,
+                    defaultModelAction,
                 })}
                 {!customRender && <div>
                     {(collection && collection.length > 0) && <div>
@@ -1126,7 +1126,15 @@ export function CollectionServerMobile(props) {
                         lock,
                         unlock,
                         loading,
-                        update: request
+                        update: request,
+
+                        linksModelActions,
+                        mobject,
+                        name,
+                        field,
+                        fieldName,
+                        defaultCollectionAction,
+                        defaultModelAction,
                     })}
                     {!customRender && <List className="my-list filtered-list">
                         {(collection && collection.length > 0) && collection?.map((item, index) => (

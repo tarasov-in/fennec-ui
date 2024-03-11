@@ -686,93 +686,82 @@ export function CollectionServer(props) {
         }
         return c;
     };
-    const RenderOnModelActions = React.useCallback((item, index) => {
-        let defaultAction = (!name) ? [] : [
-            {
-                key: "change",
-                title: "Изменить",
-                action: {
-                    method: "POST",
-                    path: "/api/query-update/" + name.toLowerCase(),
-                    mutation: "update",
-                    onValues: (values) => {
-                        let ctxFlt = {};
-                        if (contextFilters) {
-                            let ctx = clean(contextFilters());
-                            if (_.isArray(ctx)) {
-                                ctx.forEach(item => {
-                                    if (item.action) {
-                                        ctxFlt[item.name.toLowerCase() + ((item.name && item.name.endsWith("ID")) ? "" : "ID")] = item.value;
-                                    }
-                                });
-                            }
+    const defaultModelAction = React.useCallback((item, index) => (!name) ? [] : [
+        {
+            key: "change",
+            title: "Изменить",
+            action: {
+                method: "POST",
+                path: "/api/query-update/" + name.toLowerCase(),
+                mutation: "update",
+                onValues: (values) => {
+                    let ctxFlt = {};
+                    if (contextFilters) {
+                        let ctx = clean(contextFilters());
+                        if (_.isArray(ctx)) {
+                            ctx.forEach(item => {
+                                if (item.action) {
+                                    ctxFlt[item.name.toLowerCase() + ((item.name && item.name.endsWith("ID")) ? "" : "ID")] = item.value;
+                                }
+                            });
                         }
-                        return { ...values, ...ctxFlt, ID: item.ID }
-                    },
-                    onClose: ({ close }) => close()
+                    }
+                    return { ...values, ...ctxFlt, ID: item.ID }
                 },
-                contextFilters: contextFilters,
-                form: Model,
-
-                links: linksModelActions,
-                scheme: scheme,
-                linksCompareFunction: linksCompareFunction,
-                // field: field,
-                // fieldName: fieldName,
-                queryDetail: queryDetail,
-                modelActions: modelActions,
-                collectionActions: collectionActions,
-
-                modal: {
-                    width: "700px"
-                },
-                options: {
-                    initialValues: {
-                        ...item
-                    },
-                },
-                meta: mobject,
-                object: item,
+                onClose: ({ close }) => close()
             },
-            {
-                key: "delete",
-                title: <span style={{ color: "red" }}>Удалить</span>,
-                action: (values, unlock, close, { collection, setCollection }) => {
-                    Modal.confirm({
-                        title: `Вы уверены что хотите удалить элемент?`,
-                        icon: <ExclamationCircleOutlined />,
-                        content: (<div>
-                            {(mobject) && <div style={{ fontSize: "12px", color: "grey" }}>
-                                <div>{mobject?.label}</div>
-                            </div>}
-                            <div>{getObjectDisplay(item, name, meta)}</div>
-                        </div>),
-                        okText: "Да",
-                        okType: 'danger',
-                        cancelText: "Нет",
-                        onOk: () => {
-                            GET(auth, "/api/query-delete/" + name.toLowerCase() + '/' + item.ID,
-                                () => {
-                                    setCollection(deleteInArray(collection, item))
-                                }, errorCatch
-                            );
-                        },
-                    });
+            contextFilters: contextFilters,
+            form: Model,
+
+            links: linksModelActions,
+            scheme: scheme,
+            linksCompareFunction: linksCompareFunction,
+            // field: field,
+            // fieldName: fieldName,
+            queryDetail: queryDetail,
+            modelActions: modelActions,
+            collectionActions: collectionActions,
+
+            modal: {
+                width: "700px"
+            },
+            options: {
+                initialValues: {
+                    ...item
                 },
-            }
-        ];
-        // if (defaultModelActions) return (<DropdownAction
-        //     items={
-        //         defaultAction?.map((e, idx) => ({
-        //             key: e.key || idx,
-        //             auth: auth,
-        //             mode: "MenuItem",
-        //             object: item,
-        //             collection: collection,
-        //             setCollection: setCollection,
-        //             ...e
-        //         }))
-        //     } />)
+            },
+            meta: mobject,
+            object: item,
+        },
+        {
+            key: "delete",
+            title: <span style={{ color: "red" }}>Удалить</span>,
+            action: (values, unlock, close, { collection, setCollection }) => {
+                Modal.confirm({
+                    title: `Вы уверены что хотите удалить элемент?`,
+                    icon: <ExclamationCircleOutlined />,
+                    content: (<div>
+                        {(mobject) && <div style={{ fontSize: "12px", color: "grey" }}>
+                            <div>{mobject?.label}</div>
+                        </div>}
+                        <div>{getObjectDisplay(item, name, meta)}</div>
+                    </div>),
+                    okText: "Да",
+                    okType: 'danger',
+                    cancelText: "Нет",
+                    onOk: () => {
+                        GET(auth, "/api/query-delete/" + name.toLowerCase() + '/' + item.ID,
+                            () => {
+                                setCollection(deleteInArray(collection, item))
+                            }, errorCatch
+                        );
+                    },
+                });
+            },
+        }
+    ], [auth, collection, collectionActions, name, mobject]);
+    const RenderOnModelActions = React.useCallback((item, index) => {
+        let defaultAction = defaultModelAction(item, index);
         if (!modelActions) return <React.Fragment></React.Fragment>;
         let values = clean(unwrap(modelActions(item, index, { mobject, name, field, fieldName, actions: defaultAction })));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
@@ -795,62 +784,54 @@ export function CollectionServer(props) {
 
             ...e
         }))} />
-    }, [auth, collection, modelActions, name, mobject]);
+    }, [auth, collection, modelActions, name, mobject, defaultModelAction]);
+
+    const defaultCollectionAction = React.useCallback(() => (!name) ? [] : [
+        {
+            key: "create",
+            title: "Создать",
+            action: {
+                method: "POST",
+                path: "/api/query-create/" + name.toLowerCase(),
+                mutation: "update",
+                onValues: (values) => {
+                    let ctxFlt = {};
+                    if (contextFilters) {
+                        let ctx = clean(contextFilters());
+                        if (_.isArray(ctx)) {
+                            ctx.forEach(item => {
+                                if (item.action) {
+                                    ctxFlt[item.name.toLowerCase() + ((item.name && item.name.endsWith("ID")) ? "" : "ID")] = item.value;
+                                }
+                            });
+                        }
+                    }
+                    return { ...values, ...ctxFlt }
+                },
+                onClose: ({ close }) => close(),
+            },
+            contextFilters: contextFilters,
+            form: Model,
+
+            links: linksModelActions,
+            scheme: scheme,
+            linksCompareFunction: linksCompareFunction,
+            // field: field,
+            // fieldName: fieldName,
+            queryDetail: queryDetail,
+            modelActions: modelActions,
+            collectionActions: collectionActions,
+
+            options: {
+                initialValues: {},
+            },
+            meta: mobject,
+        }
+    ], [auth, collection, collectionActions, name, mobject]);
+
     const RenderOnCollectionActions = React.useCallback(() => {
 
-        let defaultAction = (!name) ? [] : [
-            {
-                key: "create",
-                title: "Создать",
-                action: {
-                    method: "POST",
-                    path: "/api/query-create/" + name.toLowerCase(),
-                    mutation: "update",
-                    onValues: (values) => {
-                        let ctxFlt = {};
-                        if (contextFilters) {
-                            let ctx = clean(contextFilters());
-                            if (_.isArray(ctx)) {
-                                ctx.forEach(item => {
-                                    if (item.action) {
-                                        ctxFlt[item.name.toLowerCase() + ((item.name && item.name.endsWith("ID")) ? "" : "ID")] = item.value;
-                                    }
-                                });
-                            }
-                        }
-                        return { ...values, ...ctxFlt }
-                    },
-                    onClose: ({ close }) => close(),
-                },
-                contextFilters: contextFilters,
-                form: Model,
-
-                links: linksModelActions,
-                scheme: scheme,
-                linksCompareFunction: linksCompareFunction,
-                // field: field,
-                // fieldName: fieldName,
-                queryDetail: queryDetail,
-                modelActions: modelActions,
-                collectionActions: collectionActions,
-
-                options: {
-                    initialValues: {},
-                },
-                meta: mobject,
-            }
-        ];
-        // if (defaultCollectionActions) return <div>
-        //     {defaultAction?.map((e, idx) => <Action
-        //         key={e.key || idx}
-        //         auth={auth}
-        //         mode={"button"}
-
-        //         collection={collection}
-        //         setCollection={setCollection}
-        //         {...e}
-        //     />)}
-        // </div>;
+        let defaultAction = defaultCollectionAction();
         if (!collectionActions) return <React.Fragment></React.Fragment>;
         let values = clean(unwrap(collectionActions({ mobject, name, field, fieldName, actions: defaultAction })));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
@@ -889,7 +870,7 @@ export function CollectionServer(props) {
                 {...e}
             />)
         });
-    }, [auth, collection, collectionActions, name, mobject]);
+    }, [auth, collection, collectionActions, name, mobject, defaultCollectionAction]);
     const selectionConfig = (selectionType) => {
         if (!selection) return {};
         return {
@@ -1086,14 +1067,22 @@ export function CollectionServer(props) {
                             setCollection,
                             setCollectionItem,
                             removeCollectionItem,
-                            collectionActions: () => (collectionActions) ? clean(unwrap(collectionActions())) : undefined,
-                            modelActions: (item, index) => (modelActions) ? clean(unwrap(modelActions(item, index))) : undefined,
+                            collectionActions: () => (collectionActions) ? clean(unwrap(collectionActions({ mobject, name, field, fieldName, actions: defaultCollectionAction }))) : undefined,
+                            modelActions: (item, index) => (modelActions) ? clean(unwrap(modelActions(item, index, { mobject, name, field, fieldName, actions: defaultModelAction }))) : undefined,
                             onSelection,
                             isSelected,
                             lock,
                             unlock,
                             loading,
-                            update
+                            update,
+
+                            linksModelActions,
+                            mobject,
+                            name,
+                            field,
+                            fieldName,
+                            defaultCollectionAction,
+                            defaultModelAction,
                         })}
                         {!customRender && <Card size="small" bordered={false} className={classes.cardSmall} style={{ width: "100%" }}>
                             <div>
