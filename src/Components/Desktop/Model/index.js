@@ -215,6 +215,23 @@ function Frm(props) {
     )
 }
 
+// setCollection - можно достать через collectionRef
+// action: (values, unlock, close, { collection, setCollection }) => {}
+
+// Возможно нужно использовать Promise-методы: GETP, POSTP или CREATEP, UPDATEP, DELETEP
+// POST(auth, "/api/query-create/" + name.toLowerCase(), { ...values, ...ctxFlt },
+// () => {
+//     setCollection(updateInArray(collection, item))
+// }, errorCatch);
+// POST(auth, "/api/query-update/" + name.toLowerCase(), { ...values, ...ctxFlt, ID: item.ID },
+// () => {
+//     setCollection(updateInArray(collection, item))
+// }, errorCatch);
+// GET(auth, "/api/query-delete/" + name.toLowerCase() + '/' + item.ID,
+// () => {
+//     setCollection(deleteInArray(collection, item))
+// }, errorCatch);
+
 export function Model(props) {
     const { auth, meta, options, object, form, submit, funcStat, contextFilters, links, scheme, linksCompareFunction, 
         queryDetail,

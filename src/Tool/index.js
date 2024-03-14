@@ -40,6 +40,7 @@ export const HasRole = (user, name) => {
     return false;
 };
 //--------------------------------------------------------------
+//--------------------------------------------------------------
 export const unwrap = (value, element) => {
     if (_.isFunction(value) == true) {
         return unwrap(value());
@@ -976,7 +977,7 @@ export const triggerInProperties = (properties, item) => {
 export const foreachInProperties = (properties, func, item) => {
     if (!properties) properties = [];
     if (!item) return properties;
-    return properties.map(n => And(func(n)) ? {...n, ...item} : n )
+    return properties.map(n => And(func(n)) ? {...n, ...((_.isFunction(item))?item(n):item)} : n )
 }
 export const updatePropertiesInProperties = (properties, items) => {
     if (!properties) properties = [];
