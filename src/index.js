@@ -143,7 +143,9 @@ import {
   useCollectionRef,
   useActionRef,
   FormObserverContext,
-  useFormObserverContext
+  useFormObserverContext,
+  ClipboardContext,
+  useClipboardContext
 } from './Components/Context'
 
 import {
@@ -314,7 +316,9 @@ export {
   useActionRef,
   FormObserverContext,
   useFormObserverContext,
-
+  ClipboardContext,
+  useClipboardContext,
+  
   Field,
   FieldMobile,
   Model,

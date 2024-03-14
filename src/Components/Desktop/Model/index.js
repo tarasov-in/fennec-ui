@@ -3,7 +3,8 @@ import {
     Form,
     Tooltip,
     Tag,
-    Tabs
+    Tabs,
+    Drawer
 } from 'antd';
 import Icofont from 'react-icofont';
 import { GetMeta, GetMetaProperties, formItemRules, isRequired, validator, getObjectDisplay, uncapitalize, getObjectValue, QueryDetail, QueryOrder } from '../../../Tool';
@@ -65,7 +66,7 @@ function Frm(props) {
     const propertiesFiltered = properties?.filter(e => (!e.name || (e.name && e.name.toUpperCase() !== "ID")))?.filter(e => (!e.relation || (e.relation && e.relation.type !== "one-many")));
     let propertiesOneMany = properties?.filter(e => e.relation && e.relation.type === "one-many");
     let tailScheme = undefined
-    if(scheme && !scheme.length){
+    if (scheme && !scheme.length) {
         propertiesOneMany = []
     }
     if (scheme?.length) {
@@ -84,7 +85,7 @@ function Frm(props) {
                 }
             }
         }
-        let func = (linksCompareFunction)?linksCompareFunction:(e)=>_.get(e, "name");
+        let func = (linksCompareFunction) ? linksCompareFunction : (e) => _.get(e, "name");
         propertiesOneMany = propertiesOneMany?.filter(e => {
             return (func(e) && (headScheme[func(e)?.toLowerCase()]))
         })
@@ -107,9 +108,10 @@ function Frm(props) {
     // }
 
     const [isChangedForm, isChangedField, onValuesChange] = useFormObserverContext()
+    const [clipboardVisible, setClipboardVisible] = useState(false)
 
     return (
-        <div>
+        <div className='model'>
             {(object && links && links !== "inline" && propertiesOneMany && propertiesOneMany.length > 0) &&
                 <div className='bg bg-grey' style={{ textAlign: "left", marginBottom: "5px", padding: "3px 5px", display: "flex", justifyContent: "space-between", gap: "5px" }}>
                     <div style={{ flex: "1 1 auto" }}>
@@ -168,55 +170,88 @@ function Frm(props) {
                     })}
                 </Form>
             </div>
-            {(object && object?.ID && propertiesOneMany && propertiesOneMany?.length > 0 && links) && <div style={{ display: (visible || links === "inline") ? "block" : "none" }}>
-                <Tabs>
-                    {propertiesOneMany.map((e, idx) => {
-                        let p = getObjectValue(e, "relation.reference.property");
-                        let n = getObjectValue(e, "relation.reference.object");
-                        let f = getObjectValue(e, "name");
-                        if (!n) return;
-                        return (<TabPane tab={e.label} key={idx}>
-                            <CollectionServer
-                                auth={auth}
-                                name={n}
-                                field={e}
-                                fieldName={f}
-                                linksCompareFunction={linksCompareFunction}
-                                contextFilters={() => (object) ? [
-                                    {
-                                        action: true,
-                                        // method: "eq",
-                                        name: p,
-                                        value: object.ID
-                                    }
-                                ] : []}
-                                filters={() => filtersFromMeta(n)}
-                                mode="list"
-                                render={(item, idx) => (
-                                    <div style={{ padding: "0px 5px" }}>
-                                        <div>{getObjectDisplay(item, n, gmeta)}</div>
-                                        <div style={{ color: "#6a6a6a" }}></div>
-                                    </div>
-                                )}
+            <div>
+                {(object && object?.ID && propertiesOneMany && propertiesOneMany?.length > 0 && links) && <div style={{ display: (visible || links === "inline") ? "block" : "none" }}>
+                    <Tabs>
+                        {propertiesOneMany.map((e, idx) => {
+                            let p = getObjectValue(e, "relation.reference.property");
+                            let n = getObjectValue(e, "relation.reference.object");
+                            let f = getObjectValue(e, "name");
+                            if (!n) return;
+                            return (<TabPane tab={e.label} key={idx}>
+                                <CollectionServer
+                                    auth={auth}
+                                    name={n}
+                                    field={e}
+                                    fieldName={f}
+                                    linksCompareFunction={linksCompareFunction}
+                                    contextFilters={() => (object) ? [
+                                        {
+                                            action: true,
+                                            // method: "eq",
+                                            name: p,
+                                            value: object.ID
+                                        }
+                                    ] : []}
+                                    filters={() => filtersFromMeta(n)}
+                                    mode="list"
+                                    render={(item, idx) => (
+                                        <div style={{ padding: "0px 5px" }}>
+                                            <div>{getObjectDisplay(item, n, gmeta)}</div>
+                                            <div style={{ color: "#6a6a6a" }}></div>
+                                        </div>
+                                    )}
 
-                                linksModelActions={links}
-                                scheme={tailScheme}
-                                queryDetail={queryDetail}
-                                modelActions={modelActions}
-                                collectionActions={collectionActions}
+                                    linksModelActions={links}
+                                    scheme={tailScheme}
+                                    queryDetail={queryDetail}
+                                    modelActions={modelActions}
+                                    collectionActions={collectionActions}
+                                />
+                            </TabPane>
+                            )
+                        })}
+                    </Tabs>
+                </div>}
 
-                            />
-                        </TabPane>
-                        )
-                    })}
-                </Tabs>
-            </div>}
+            </div>
+            {/* <i className="fa fa-clone"></i>
+            <i className="fa fa-clipboard"></i>
+            <i className="fa fa-bookmark"></i>
+            <i className="fa fa-bookmark-o"></i> */}
+            {/* <Drawer
+                title="Буфер обмена"
+                placement="right"
+                closable={false}
+                onClose={() => { setClipboardVisible(false) }}
+                open={clipboardVisible}
+                getContainer={false}
+            >
+                <div>
+                    <i className="fa fa-clipboard"></i>
+                </div>
+            </Drawer> */}
         </div>
     )
 }
 
 // setCollection - можно достать через collectionRef
 // action: (values, unlock, close, { collection, setCollection }) => {}
+
+// onValues: (values) => {
+//     let ctxFlt = {};
+//     if (contextFilters) {
+//         let ctx = clean(contextFilters());
+//         if (_.isArray(ctx)) {
+//             ctx.forEach(item => {
+//                 if (item.action) {
+//                     ctxFlt[item.name.toLowerCase() + ((item.name && item.name.endsWith("ID")) ? "" : "ID")] = item.value;
+//                 }
+//             });
+//         }
+//     }
+//     return { ...values, ...ctxFlt }
+// },
 
 // Возможно нужно использовать Promise-методы: GETP, POSTP или CREATEP, UPDATEP, DELETEP
 // POST(auth, "/api/query-create/" + name.toLowerCase(), { ...values, ...ctxFlt },
@@ -233,7 +268,7 @@ function Frm(props) {
 // }, errorCatch);
 
 export function Model(props) {
-    const { auth, meta, options, object, form, submit, funcStat, contextFilters, links, scheme, linksCompareFunction, 
+    const { auth, meta, options, object, form, submit, funcStat, contextFilters, links, scheme, linksCompareFunction,
         queryDetail,
         modelActions,
         collectionActions,

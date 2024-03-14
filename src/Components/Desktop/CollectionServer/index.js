@@ -763,7 +763,7 @@ export function CollectionServer(props) {
     const RenderOnModelActions = React.useCallback((item, index) => {
         let defaultAction = defaultModelAction(item, index);
         if (!modelActions) return <React.Fragment></React.Fragment>;
-        let values = clean(unwrap(modelActions(item, index, { mobject, name, field, fieldName, actions: defaultAction })));
+        let values = clean(unwrap(modelActions(item, index, { mobject, name, field, fieldName, collection, actions: defaultAction })));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <DropdownAction items={values?.map((e, idx) => ({
             key: e.key || idx,
@@ -772,6 +772,7 @@ export function CollectionServer(props) {
             object: item,
             collection: collection,
             setCollection: setCollection,
+            contextFilters: contextFilters,
 
             links: linksModelActions,
             scheme: scheme,
@@ -833,7 +834,7 @@ export function CollectionServer(props) {
 
         let defaultAction = defaultCollectionAction();
         if (!collectionActions) return <React.Fragment></React.Fragment>;
-        let values = clean(unwrap(collectionActions({ mobject, name, field, fieldName, actions: defaultAction })));
+        let values = clean(unwrap(collectionActions({ mobject, name, field, fieldName, collection, actions: defaultAction })));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return values?.map((e, idx) => {
             if (_.isFunction(e)) {
@@ -857,7 +858,7 @@ export function CollectionServer(props) {
 
                 collection={collection}
                 setCollection={setCollection}
-
+                contextFilters={contextFilters}
                 links={linksModelActions}
                 scheme={scheme}
                 linksCompareFunction={linksCompareFunction}
@@ -1067,8 +1068,8 @@ export function CollectionServer(props) {
                             setCollection,
                             setCollectionItem,
                             removeCollectionItem,
-                            collectionActions: () => (collectionActions) ? clean(unwrap(collectionActions({ mobject, name, field, fieldName, actions: defaultCollectionAction }))) : undefined,
-                            modelActions: (item, index) => (modelActions) ? clean(unwrap(modelActions(item, index, { mobject, name, field, fieldName, actions: defaultModelAction }))) : undefined,
+                            collectionActions: () => (collectionActions) ? clean(unwrap(collectionActions({ mobject, name, field, fieldName, collection, actions: defaultCollectionAction }))) : undefined,
+                            modelActions: (item, index) => (modelActions) ? clean(unwrap(modelActions(item, index, { mobject, name, field, fieldName, collection, actions: defaultModelAction }))) : undefined,
                             onSelection,
                             isSelected,
                             lock,

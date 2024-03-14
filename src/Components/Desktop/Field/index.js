@@ -882,19 +882,19 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
         return undefined;
     }, [meta]);
 
-    const elements = useCallback((data) => {
-        if (item.dependence?.mode !== "server" && item.dependence) {
-            if (item.dependence.field && by(item)) {
-                return data?.filter(e => _.get(e, item.dependence.field) === by(item))?.map(i => (
-                    <Option key={property(item, i)} value={property(item, i)}>{display(item, i)}</Option>
-                ));
-            }
-        } else {
-            return data?.map(i => (
-                <Option key={property(item, i)} value={property(item, i)}>{display(item, i)}</Option>
-            ));
-        }
-    }, [value, changed]);
+    // const elements = useCallback((data) => {
+    //     if (item.dependence?.mode !== "server" && item.dependence) {
+    //         if (item.dependence.field && by(item)) {
+    //             return data?.filter(e => _.get(e, item.dependence.field) === by(item))?.map(i => (
+    //                 <Option key={property(item, i)} value={property(item, i)}>{display(item, i)}</Option>
+    //             ));
+    //         }
+    //     } else {
+    //         return data?.map(i => (
+    //             <Option key={property(item, i)} value={property(item, i)}>{display(item, i)}</Option>
+    //         ));
+    //     }
+    // }, [value, changed]);
     const cAction = (values, unlock, close) => {
         const { selected } = values;
         if (selected) {
@@ -910,7 +910,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
             size={(item.size) ? item.size : "middle"}
             disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
         >
-            <i className="fa fa-ellipsis-h"></i>
+            <i className="fa fa-search" style={{fontSize:"12px"}}></i>
         </Button>
     ), [item, loading])
 
@@ -980,6 +980,79 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
             onChange(undefined, item, undefined)
         }
     }
+
+    const RendeActions = React.useCallback(() => {
+        if (!item?.actions) return <React.Fragment></React.Fragment>;
+        let values = clean(unwrap(item?.actions(value, item, meta)));
+        if (!values || !values.length) return <React.Fragment></React.Fragment>;
+        return values?.map((e, idx) => {
+            if (_.isFunction(e)) {
+                return (e({
+                    collection: data,
+                    setCollection: setData,
+                    setCollectionItem: (item, first) => setData(o => updateInArray(o, item, first)),
+                    removeCollectionItem: (item) => setData(o => deleteInArray(o, item)),
+                    // onSelection,
+                    // isSelected,
+                    lock: () => setLoading(true),
+                    unlock: () => setLoading(false),
+                    loading,
+                    property: (obj) => property(item, obj),
+                    label: (obj) => display(item, obj),
+                    itemByProperty: (value) => itemByProperty(item, value),
+                    apply: (obj) => onChange(value, item, itemByProperty(item, value)),
+                    // update
+                }, idx))
+            }
+            return (<Action
+                key={e.key || idx}
+                auth={auth}
+                mode={"button"}
+                disabled={loading || (item && item.view && item.view.disabled) ? item.view.disabled : false}
+                item={item}
+                object={e.object || itemByProperty(item, value)}
+                collection={data}
+                setCollection={setData}
+                property={(obj) => property(item, obj)}
+                label={(obj) => display(item, obj)}
+                itemByProperty={(value) => itemByProperty(item, value)}
+                apply={(obj) => onChange(property(item, obj), item, obj)}
+                {...e}
+            />)
+        });
+    }, [item, data, loading, value, meta]);
+
+    const RenderDropdownActions = React.useCallback(() => {
+        if (!item?.dropdownActions) return <React.Fragment></React.Fragment>;
+        let values = clean(unwrap(item?.dropdownActions(value, item, meta)));
+        if (!values || !values.length) return <React.Fragment></React.Fragment>;
+        return <DropdownAction
+            button={() => (<Button type="default">
+                <i className="fa fa-ellipsis-v"></i>
+                {/* <i className="fa fa-ellipsis-h"></i> */}
+                {/* <i className="fa fa-angle-down"></i> */}
+                {/* <i className="fa fa-chevron-down"></i> */}
+                {/* <i className="fa fa-caret-down"></i> */}
+                {/* <i className="fa fa-bars"></i> */}
+                {/* <i className="fa fa-caret-square-o-down"></i> */}
+            </Button>)}
+            items={values?.map((e, idx) => ({
+                key: e.key || idx,
+                auth: auth,
+                mode: "MenuItem",
+                disabled: loading || (item && item.view && item.view.disabled) ? item.view.disabled : false,
+                item: item,
+                object: e.object || itemByProperty(item, value),
+                collection: data,
+                setCollection: setData,
+                property: (obj) => property(item, obj),
+                label: (obj) => display(item, obj),
+                itemByProperty: (value) => itemByProperty(item, value),
+                apply: (obj) => onChange(property(item, obj), item, obj),
+                ...e
+            }))} />
+    }, [item, data, loading, value, meta]);
+
     return (
         <Space.Compact
             style={{
@@ -1016,6 +1089,12 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
                 mode={"func"}
                 trigger={cTrigger}
             />
+            {item?.actions && <React.Fragment>
+                {RendeActions()}
+            </React.Fragment>}
+            {item?.dropdownActions && <React.Fragment>
+                {RenderDropdownActions()}
+            </React.Fragment>}
         </Space.Compact>
     )
 }

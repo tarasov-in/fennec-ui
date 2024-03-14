@@ -19,6 +19,12 @@ export const MetaContext = createContext();
 export function useMetaContext() {
     return React.useContext(MetaContext);
 }
+
+export const ClipboardContext = createContext();
+export function useClipboardContext() {
+    return React.useContext(ClipboardContext);
+}
+
 //----------------------------------------------
 export function useCollectionRef(initialValue) {
     return React.useState({

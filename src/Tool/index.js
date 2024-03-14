@@ -747,6 +747,7 @@ export const Request = (values, item, props) => {
         auth,
         collection,
         setCollection,
+        contextFilters,
         property,
         label,
         itemByProperty,
@@ -769,6 +770,7 @@ export const Request = (values, item, props) => {
             index,
             collection,
             setCollection,
+            contextFilters,
             property,
             label,
             itemByProperty,
@@ -945,11 +947,9 @@ export function GetMeta(meta) {
 };
 //-------------------------------------------------------------------
 export const updateInProperties = (properties, item, first) => {
-    // uuid | name
     let key = "name"
-
     if (!properties) properties = [];
-    if (!item || !key(item)) return properties;
+    if (!item || !item[key]) return properties;
     if (_.findIndex(properties, { [key]: item[key] }) >= 0) {
         return properties?.map(e => IfElse(e[key] === item[key], { ...e, ...item }, e));
     } else {
@@ -961,8 +961,8 @@ export const deleteInProperties = (properties, item) => {
     if (!properties) properties = [];
     if (!item || (!_.isArray(item) && _.isObject(item) && !item[key])) return properties;
     let i = unwrap(item);
-    if(_.isArray(item)){
-        return properties?.filter(e => And(item.map(c=>e[key] !== ((_.isObject(c))?c[key]:c))))
+    if(_.isArray(i)){
+        return properties?.filter(e => And(i.map(c=>e[key] !== ((_.isObject(c))?c[key]:c))))
     } 
     return properties?.filter(e => e[key] !== item[key]);
 }

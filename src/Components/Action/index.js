@@ -199,7 +199,8 @@ export function Action(props) {
         noAntForm,
         uuid,
         actionRef,
-        disabledOkOnUncahngedForm
+        disabledOkOnUncahngedForm,
+        contextFilters
     } = props;
 
     //----FormObserver-----------------
@@ -364,7 +365,7 @@ export function Action(props) {
                 auth: props.auth,
                 collection: props.collection || [],
                 setCollection: props.setCollection || (() => { }),
-
+                contextFilters,
                 property: props.property || (() => { }),
                 label: props.label || (() => { }),
                 itemByProperty: props.itemByProperty || (() => { }),
@@ -375,7 +376,7 @@ export function Action(props) {
                 close,
             }
         );
-    }, [modify, form, isFormData, callback, props.action, props.document, props.collection, props.setCollection, props.auth]);
+    }, [modify, form, isFormData, callback, props.action, props.document, props.collection, props.setCollection, props.contextFilters, props.auth]);
     // ---------------------------------
     const prev = React.useCallback(() => {
         if (currentStep > 0) {
