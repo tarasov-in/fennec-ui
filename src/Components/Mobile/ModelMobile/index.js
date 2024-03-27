@@ -10,6 +10,7 @@ import {
 import { uncapitalize, GetMeta, GetMetaProperties, formItemRules, isRequired, validator } from '../../../Tool';
 import { FieldMobile } from '../FieldMobile';
 import { useFormObserverContext } from '../../Context';
+import { useModelFullReplacement, useModelPartialReplacement } from '../../../ComponetsReplacement';
 var _ = require('lodash');
 const { Text, Link } = Typography;
 const isIPhone = new RegExp('\\biPhone\\b|\\biPod\\b', 'i').test(window.navigator.userAgent);
@@ -231,7 +232,11 @@ const useStyles = createUseStyles({
     }
 })
 
-function Frm({ auth, form, meta, options, submit, object, virtualized, search }) {
+function Frm(props) {
+    const { auth, form, name, meta, options, submit, object, virtualized, search, partialReplacement } = props;
+
+    const PartialReplacementFunc = useModelPartialReplacement(name, partialReplacement)
+
     const classes = useStyles()
     const [changed, setChanged] = useState({ ...object });
     useEffect(() => {
@@ -334,10 +339,10 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
                         className={classes.Field}
                         auth={auth}
                         item={item}
-                        
+
                         onChange={onFieldChange}
                         changed={changed}
-                        isChanged={(isChangedField)?isChangedField(uncapitalize(item.name)):undefined} />
+                        isChanged={(isChangedField) ? isChangedField(uncapitalize(item.name)) : undefined} />
                 </Form.Item>
             );
         }
@@ -353,10 +358,30 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
             </div>
         );
     }
+
+    if (fullReplacementFunc) {
+        return (<div className='model full-replacement'>
+            <fullReplacementFunc
+                {...props}
+                properties={properties}
+                propertiesFiltered={propertiesFiltered}
+                propertiesOneMany={propertiesOneMany}
+            />
+        </div>)
+    }
     return (
-        <div>
+        <div className='model default-model'>
             <div>
-                <Form
+                {PartialReplacementFunc && <div className='partial-replacement'>
+                    <PartialReplacementFunc
+                        {...props}
+                        properties={properties}
+                        propertiesFiltered={propertiesFiltered}
+                        propertiesOneMany={propertiesOneMany}
+                        tailScheme={tailScheme}
+                    />
+                </div>}
+                {!PartialReplacementFunc && <Form
                     form={form}
                     onValuesChange={onValuesChange}
                     onFinish={(values) => {
@@ -383,19 +408,30 @@ function Frm({ auth, form, meta, options, submit, object, virtualized, search })
                         }}
                     </AutoSizer>}
                     {!virtualized && propertiesVirtualized?.map((item, idx) => virtualizedItem(item, idx))}
-                </Form>
+                </Form>}
             </div>
         </div>
     )
 }
 
-export function ModelMobile({ auth, meta, options, form, submit, object, virtualized, search, steps }) {
+export function ModelMobile(props) {
+    const { auth, name, meta, options, form, submit, object, virtualized, search, steps, partialReplacement, fullReplacement } = props;
     const classes = useStyles()
+    const FullReplacementFunc = useModelFullReplacement(name, fullReplacement)
+    if (FullReplacementFunc) {
+        return (<div className='model full-replacement'>
+            <FullReplacementFunc
+                {...props}
+            />
+        </div>)
+    }
     var xmeta = GetMeta(meta);
     if (!xmeta) return <React.Fragment></React.Fragment>;
     return (
         <React.Fragment>
-            {<Frm className={classes.Frm} auth={auth} form={form} meta={meta} options={options} submit={submit} object={object} virtualized={virtualized} search={search} steps={steps}></Frm>}
+            {<Frm className={classes.Frm}
+                partialReplacement={partialReplacement}
+                auth={auth} form={form} name={name} meta={meta} options={options} submit={submit} object={object} virtualized={virtualized} search={search} steps={steps}></Frm>}
         </React.Fragment>
     )
 };

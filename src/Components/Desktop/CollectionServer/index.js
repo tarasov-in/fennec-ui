@@ -11,6 +11,7 @@ import { Model } from '../Model';
 import { useMetaContext } from '../../Context';
 import uuid from 'react-uuid';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { useCollectionFullReplacement, useCollectionPartialReplacement } from '../../../ComponetsReplacement';
 
 const { CheckableTag } = Tag;
 const { Sider } = Layout;
@@ -153,7 +154,7 @@ export function FiltersFieldsUI(props) {
     )
 }
 
-export function CollectionServer(props) {
+function DefaultCollectionServer(props) {
     const classes = useStyles()
     const {
         auth,
@@ -201,7 +202,11 @@ export function CollectionServer(props) {
         // и в неё будет передано значение нового состояния
 
         onChangeRequestParameters,
+        partialReplacement
     } = props;
+
+    // const PartialReplacementFunc = useCollectionPartialReplacement(fieldName, partialReplacement)
+    const PartialReplacementFunc = useCollectionPartialReplacement(name, partialReplacement)
 
     const defFilters = (filters) => {
         var f = filters;
@@ -712,7 +717,7 @@ export function CollectionServer(props) {
             },
             contextFilters: contextFilters,
             form: Model,
-
+            name: name,
             links: linksModelActions,
             scheme: scheme,
             linksCompareFunction: linksCompareFunction,
@@ -813,7 +818,7 @@ export function CollectionServer(props) {
             },
             contextFilters: contextFilters,
             form: Model,
-
+            name: name,
             links: linksModelActions,
             scheme: scheme,
             linksCompareFunction: linksCompareFunction,
@@ -1034,9 +1039,34 @@ export function CollectionServer(props) {
         }
         return <React.Fragment></React.Fragment>
     };
+
+    const customProps = {
+        collection,
+        setCollection,
+        setCollectionItem,
+        removeCollectionItem,
+        collectionActions: () => (collectionActions) ? clean(unwrap(collectionActions({ mobject, name, field, fieldName, collection, actions: defaultCollectionAction }))) : undefined,
+        modelActions: (item, index) => (modelActions) ? clean(unwrap(modelActions(item, index, { mobject, name, field, fieldName, collection, actions: defaultModelAction }))) : undefined,
+        onSelection,
+        isSelected,
+        lock,
+        unlock,
+        loading,
+        update,
+
+        linksModelActions,
+        mobject,
+        name,
+        field,
+        fieldName,
+        defaultCollectionAction,
+        defaultModelAction,
+    }
+
     return (
         <React.Fragment>
-            <div className="filtered">
+            {/* <NearestCollectionContext.Provider value={collectionRef}> */}
+            <div className="collection default-collection filtered">
                 <div className="filtered-header"
                     style={{
                         display: "flex",
@@ -1063,29 +1093,14 @@ export function CollectionServer(props) {
                 </div>
                 <Layout style={{ backgroundColor: "transparent" }} className="filtered-body">
                     <div style={{ width: "100%", marginBottom: "0px" }}>
-                        {customRender && customRender(collection, {
-                            collection,
-                            setCollection,
-                            setCollectionItem,
-                            removeCollectionItem,
-                            collectionActions: () => (collectionActions) ? clean(unwrap(collectionActions({ mobject, name, field, fieldName, collection, actions: defaultCollectionAction }))) : undefined,
-                            modelActions: (item, index) => (modelActions) ? clean(unwrap(modelActions(item, index, { mobject, name, field, fieldName, collection, actions: defaultModelAction }))) : undefined,
-                            onSelection,
-                            isSelected,
-                            lock,
-                            unlock,
-                            loading,
-                            update,
-
-                            linksModelActions,
-                            mobject,
-                            name,
-                            field,
-                            fieldName,
-                            defaultCollectionAction,
-                            defaultModelAction,
-                        })}
-                        {!customRender && <Card size="small" bordered={false} className={classes.cardSmall} style={{ width: "100%" }}>
+                        {customRender && customRender(collection, customProps)}
+                        {(!customRender && PartialReplacementFunc) && <div className='partial-replacement'>
+                            <PartialReplacementFunc
+                                {...props}
+                                {...customProps}
+                            />
+                        </div>}
+                        {(!customRender && !PartialReplacementFunc) && <Card size="small" bordered={false} className={classes.cardSmall} style={{ width: "100%" }}>
                             <div>
                                 {titleView()}
                                 {view(collection)}
@@ -1122,6 +1137,25 @@ export function CollectionServer(props) {
                     />
                 </Card>}
             </div>
+            {/* </NearestCollectionContext.Provider> */}
         </React.Fragment>
     );
 }
+
+export function CollectionServer(props) {
+    const { name, fieldName, fullReplacement } = props;
+    // const FullReplacementFunc = useCollectionFullReplacement(fieldName, fullReplacement)
+    const FullReplacementFunc = useCollectionFullReplacement(name, fullReplacement)
+    if (FullReplacementFunc) {
+        return (<div className='collection full-replacement'>
+            <FullReplacementFunc
+                {...props}
+            />
+        </div>)
+    }
+    return (
+        <DefaultCollectionServer
+            {...props}
+        />
+    )
+};

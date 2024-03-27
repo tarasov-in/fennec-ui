@@ -11,17 +11,22 @@ import { GetMeta, GetMetaProperties, formItemRules, isRequired, validator, getOb
 import { Field } from '../Field';
 import { useFormObserverContext, useMetaContext } from '../../Context';
 import { CollectionServer } from '../CollectionServer';
+import { useModelFullReplacement, useModelPartialReplacement } from '../../../ComponetsReplacement';
 var _ = require('lodash');
 const { CheckableTag } = Tag;
 const { TabPane } = Tabs;
 
 function Frm(props) {
 
-    const { auth, form, meta, options, object, submit, funcStat, contextFilters, links, scheme, linksCompareFunction,
+    const { auth, form, name, meta, options, object, submit, funcStat, contextFilters, links, scheme, linksCompareFunction,
         queryDetail,
         modelActions,
-        collectionActions
+        collectionActions,
+        partialReplacement
     } = props;
+
+    const PartialReplacementFunc = useModelPartialReplacement(name, partialReplacement)
+
     const [visible, setVisible] = useState(false);
     const [excludeFields, setExcludeFields] = useState({});
     const [fieldsFilters, setFieldsFilters] = useState({});
@@ -111,7 +116,7 @@ function Frm(props) {
     const [clipboardVisible, setClipboardVisible] = useState(false)
 
     return (
-        <div className='model'>
+        <div className='model default-model'>
             {(object && links && links !== "inline" && propertiesOneMany && propertiesOneMany.length > 0) &&
                 <div className='bg bg-grey' style={{ textAlign: "left", marginBottom: "5px", padding: "3px 5px", display: "flex", justifyContent: "space-between", gap: "5px" }}>
                     <div style={{ flex: "1 1 auto" }}>
@@ -134,7 +139,16 @@ function Frm(props) {
                     </div>
                 </div>}
             <div style={{ display: (!visible) ? "block" : "none" }}>
-                <Form form={form}
+                {PartialReplacementFunc && <div className='partial-replacement'>
+                    <PartialReplacementFunc
+                        {...props}
+                        properties={properties}
+                        propertiesFiltered={propertiesFiltered}
+                        propertiesOneMany={propertiesOneMany}
+                        tailScheme={tailScheme}
+                    />
+                </div>}
+                {!PartialReplacementFunc && <Form form={form}
                     onFinish={submit}
                     onValuesChange={onValuesChange}
                     initialValues={{
@@ -168,7 +182,7 @@ function Frm(props) {
                             />
                         </Form.Item>);
                     })}
-                </Form>
+                </Form>}
             </div>
             <div>
                 {(object && object?.ID && propertiesOneMany && propertiesOneMany?.length > 0 && links) && <div style={{ display: (visible || links === "inline") ? "block" : "none" }}>
@@ -177,6 +191,7 @@ function Frm(props) {
                             let p = getObjectValue(e, "relation.reference.property");
                             let n = getObjectValue(e, "relation.reference.object");
                             let f = getObjectValue(e, "name");
+
                             if (!n) return;
                             return (<TabPane tab={e.label} key={idx}>
                                 <CollectionServer
@@ -235,44 +250,23 @@ function Frm(props) {
     )
 }
 
-// setCollection - можно достать через collectionRef
-// action: (values, unlock, close, { collection, setCollection }) => {}
-
-// onValues: (values) => {
-//     let ctxFlt = {};
-//     if (contextFilters) {
-//         let ctx = clean(contextFilters());
-//         if (_.isArray(ctx)) {
-//             ctx.forEach(item => {
-//                 if (item.action) {
-//                     ctxFlt[item.name.toLowerCase() + ((item.name && item.name.endsWith("ID")) ? "" : "ID")] = item.value;
-//                 }
-//             });
-//         }
-//     }
-//     return { ...values, ...ctxFlt }
-// },
-
-// Возможно нужно использовать Promise-методы: GETP, POSTP или CREATEP, UPDATEP, DELETEP
-// POST(auth, "/api/query-create/" + name.toLowerCase(), { ...values, ...ctxFlt },
-// () => {
-//     setCollection(updateInArray(collection, item))
-// }, errorCatch);
-// POST(auth, "/api/query-update/" + name.toLowerCase(), { ...values, ...ctxFlt, ID: item.ID },
-// () => {
-//     setCollection(updateInArray(collection, item))
-// }, errorCatch);
-// GET(auth, "/api/query-delete/" + name.toLowerCase() + '/' + item.ID,
-// () => {
-//     setCollection(deleteInArray(collection, item))
-// }, errorCatch);
-
 export function Model(props) {
-    const { auth, meta, options, object, form, submit, funcStat, contextFilters, links, scheme, linksCompareFunction,
+    const { auth, name, meta, options, object, form, submit, funcStat, contextFilters, links, scheme, linksCompareFunction,
         queryDetail,
         modelActions,
         collectionActions,
+        partialReplacement,
+        fullReplacement
     } = props;
+
+    const FullReplacementFunc = useModelFullReplacement(name, fullReplacement)
+    if (FullReplacementFunc) {
+        return (<div className='model full-replacement'>
+            <FullReplacementFunc
+                {...props}
+            />
+        </div>)
+    }
     var xmeta = GetMeta(meta);
     if (!xmeta) return <React.Fragment></React.Fragment>;
     return (
@@ -282,6 +276,8 @@ export function Model(props) {
                 auth={auth}
                 form={form}
 
+                partialReplacement={partialReplacement}
+                
                 links={links}
                 queryDetail={queryDetail}
                 modelActions={modelActions}
@@ -290,6 +286,7 @@ export function Model(props) {
                 linksCompareFunction={linksCompareFunction}
                 contextFilters={contextFilters}
                 submit={submit}
+                name={name}
                 meta={meta}
                 options={options}
                 object={object}

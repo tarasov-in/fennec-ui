@@ -9,6 +9,7 @@ import Icofont from 'react-icofont';
 import styles from './index.less'
 import { EyeInvisibleOutline, EyeOutline } from 'antd-mobile-icons'
 import ImageEditor from '../ImageEditor';
+import { useFieldReplacement } from '../../../ComponetsReplacement';
 
 var _ = require('lodash');
 
@@ -591,7 +592,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
         return (data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data
     }
     const by = (item) => {
-        if(!!item?.dependence && !!item?.dependence?.field){
+        if (!!item?.dependence && !!item?.dependence?.field) {
             if (changed) {
                 if (!!changed[item.dependence.by] && !!item.dependence.eq) {
                     return changed[item.dependence.by][item.dependence.eq]
@@ -695,7 +696,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
                 return item.relation.display(value)
             } else {
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
-                let _display = ((item?.relation?.display?.fields)?item?.relation?.display:undefined) || ((fieldMeta?.display?.fields)?fieldMeta?.display:undefined)
+                let _display = ((item?.relation?.display?.fields) ? item?.relation?.display : undefined) || ((fieldMeta?.display?.fields) ? fieldMeta?.display : undefined)
                 return getDisplay(value, _display, fieldMeta, meta)
             }
         }
@@ -820,7 +821,7 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
         return (data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data
     }
     const by = (item) => {
-        if(!!item?.dependence && !!item?.dependence?.field){
+        if (!!item?.dependence && !!item?.dependence?.field) {
             if (changed) {
                 if (!!changed[item.dependence.by] && !!item.dependence.eq) {
                     return changed[item.dependence.by][item.dependence.eq]
@@ -923,7 +924,7 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
                 return item.relation.display(value)
             } else {
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
-                let _display = ((item?.relation?.display?.fields)?item?.relation?.display:undefined) || ((fieldMeta?.display?.fields)?fieldMeta?.display:undefined)
+                let _display = ((item?.relation?.display?.fields) ? item?.relation?.display : undefined) || ((fieldMeta?.display?.fields) ? fieldMeta?.display : undefined)
                 return getDisplay(value, _display, fieldMeta, meta)
             }
         }
@@ -1420,7 +1421,12 @@ function Unknown({ item }) {
 //     source: "/api/query/name"
 // }
 
-export function FieldMobile({ auth, item, value, onChange, onAfterChange, changed, isChanged }) {
+export function FieldMobile({ auth, item, value, onChange, onAfterChange, changed, isChanged, replacement }) {
+    // const ReplacementFunc = useFieldReplacement(item?.name, replacement)
+    const ReplacementFunc = useFieldReplacement(item?.type, replacement)
+    if (ReplacementFunc) {
+        return (<ReplacementFunc auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed} />)
+    }
     switch (item.filterType) {
         case "group":
             switch (item.type) {

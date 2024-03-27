@@ -13,6 +13,7 @@ import "./index.css"
 import 'moment/locale/ru';
 import uuid from 'react-uuid';
 import { ModelMobile } from '../ModelMobile';
+import { useCollectionFullReplacement, useCollectionPartialReplacement } from '../../../ComponetsReplacement';
 
 var _ = require('lodash');
 const Item = List.Item;
@@ -291,7 +292,7 @@ export function FilteringUIMobile(props) {
         </div>)
 }
 
-export function CollectionServerMobile(props) {
+function DefaultCollectionServer(props) {
     const classes = useStyles()
     const {
         auth,
@@ -342,7 +343,11 @@ export function CollectionServerMobile(props) {
         // и в неё будет передано значение нового состояния
 
         onChangeRequestParameters,
+        partialReplacement
     } = props;
+
+    // const PartialReplacementFunc = useCollectionPartialReplacement(fieldName, partialReplacement)
+    const PartialReplacementFunc = useCollectionPartialReplacement(name, partialReplacement)
 
     const meta = useMetaContext();
     const fltrs = (props.filters) ? props.filters() : [];
@@ -748,7 +753,7 @@ export function CollectionServerMobile(props) {
             },
             contextFilters: contextFilters,
             form: ModelMobile,
-
+            name: name,
             links: linksModelActions,
             queryDetail: queryDetail,
             modelActions: modelActions,
@@ -796,7 +801,7 @@ export function CollectionServerMobile(props) {
                 collection: collection,
                 setCollection: setCollection,
                 contextFilters: contextFilters,
-    
+
                 links: linksModelActions,
                 scheme: scheme,
                 linksCompareFunction: linksCompareFunction,
@@ -805,7 +810,7 @@ export function CollectionServerMobile(props) {
                 queryDetail: queryDetail,
                 modelActions: modelActions,
                 collectionActions: collectionActions,
-    
+
                 ...e
             }))}
             trigger={(click) => (
@@ -841,7 +846,7 @@ export function CollectionServerMobile(props) {
             },
             contextFilters: contextFilters,
             form: ModelMobile,
-
+            name: name,
             links: linksModelActions,
             queryDetail: queryDetail,
             modelActions: modelActions,
@@ -1050,37 +1055,46 @@ export function CollectionServerMobile(props) {
         removeCollectionItem,
         request])
 
+
+    const customProps = {
+        collection,
+        setCollection,
+        setCollectionItem,
+        removeCollectionItem,
+        collectionActions: () => (collectionActions) ? clean(unwrap(collectionActions({ mobject, name, field, fieldName, collection, actions: defaultCollectionAction }))) : undefined,
+        modelActions: (item, index) => (modelActions) ? clean(unwrap(modelActions(item, index, { mobject, name, field, fieldName, collection, actions: defaultModelAction }))) : undefined,
+        onSelection,
+        isSelected,
+        lock,
+        unlock,
+        loading,
+        update: request,
+
+        linksModelActions,
+        mobject,
+        name,
+        field,
+        fieldName,
+        defaultCollectionAction,
+        defaultModelAction,
+    }
     return (
         <React.Fragment>
+            {/* <NearestCollectionContext.Provider value={collectionRef}> */}
             {!noheader && <BlockHeaderMobile
                 title={titleView()}
                 extra={titleExtra()}
             />}
             {(!filters?.length) && <div>
                 <MaskWithLoading visible={loading} />
-                {customRender && customRender(collection, {
-                    collection,
-                    setCollection,
-                    setCollectionItem,
-                    removeCollectionItem,
-                    collectionActions: () => (collectionActions) ? clean(unwrap(collectionActions({ mobject, name, field, fieldName, collection, actions: defaultCollectionAction }))) : undefined,
-                    modelActions: (item, index) => (modelActions) ? clean(unwrap(modelActions(item, index, { mobject, name, field, fieldName, collection, actions: defaultModelAction }))) : undefined,
-                    onSelection,
-                    isSelected,
-                    lock,
-                    unlock,
-                    loading,
-                    update: request,
-
-                    linksModelActions,
-                    mobject,
-                    name,
-                    field,
-                    fieldName,
-                    defaultCollectionAction,
-                    defaultModelAction,
-                })}
-                {!customRender && <div>
+                {customRender && customRender(collection, customProps)}
+                {(!customRender && PartialReplacementFunc) && <div className='partial-replacement'>
+                    <PartialReplacementFunc
+                        {...props}
+                        {...customProps}
+                    />
+                </div>}
+                {(!customRender && !PartialReplacementFunc) && <div>
                     {(collection && collection.length > 0) && <div>
                         <List className="my-list">
                             {collection?.map((item, index) => (
@@ -1200,6 +1214,25 @@ export function CollectionServerMobile(props) {
                     </div>
                 </div>
             }
+            {/* </NearestCollectionContext.Provider> */}
         </React.Fragment>
     );
 }
+
+export function CollectionServerMobile(props) {
+    const { name, fieldName, fullReplacement } = props;
+    // const FullReplacementFunc = useCollectionFullReplacement(fieldName, fullReplacement)
+    const FullReplacementFunc = useCollectionFullReplacement(name, fullReplacement)
+    if (FullReplacementFunc) {
+        return (<div className='collection full-replacement'>
+            <FullReplacementFunc
+                {...props}
+            />
+        </div>)
+    }
+    return (
+        <DefaultCollectionServer
+            {...props}
+        />
+    )
+};

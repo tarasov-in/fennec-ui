@@ -3,6 +3,7 @@ import React from 'react'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ru'
 
+
 import styles from './styles.module.css'
 import {
   publish,
@@ -192,6 +193,29 @@ import {
 import {
   CalendarItem
 } from './Components/Mobile/CalendarItem'
+import {
+  FieldReplacement,
+  ModelPartialReplacement,
+  ModelFullReplacement,
+  CollectionPartialReplacement,
+  CollectionFullReplacement,
+  useFieldReplacement,
+  useFieldReplacementHelper,
+  useModelPartialReplacement,
+  useModelPartialReplacementHelper,
+  useModelFullReplacement,
+  useModelFullReplacementHelper,
+  useCollectionPartialReplacement,
+  useCollectionPartialReplacementHelper,
+  useCollectionFullReplacement,
+  useCollectionFullReplacementHelper,
+  FieldReplacementProvider,
+  ModelPartialReplacementProvider,
+  ModelFullReplacementProvider,
+  CollectionPartialReplacementProvider,
+  CollectionFullReplacementProvider
+} from './ComponetsReplacement';
+
 
 export {
   publish,
@@ -318,7 +342,7 @@ export {
   useFormObserverContext,
   ClipboardContext,
   useClipboardContext,
-  
+
   Field,
   FieldMobile,
   Model,
@@ -335,6 +359,29 @@ export {
   BlockHeaderMobile,
   CalendarItem
 }
+
+export {
+  FieldReplacement,
+  ModelPartialReplacement,
+  ModelFullReplacement,
+  CollectionPartialReplacement,
+  CollectionFullReplacement,
+  useFieldReplacement,
+  useFieldReplacementHelper,
+  useModelPartialReplacement,
+  useModelPartialReplacementHelper,
+  useModelFullReplacement,
+  useModelFullReplacementHelper,
+  useCollectionPartialReplacement,
+  useCollectionPartialReplacementHelper,
+  useCollectionFullReplacement,
+  useCollectionFullReplacementHelper,
+  FieldReplacementProvider,
+  ModelPartialReplacementProvider,
+  ModelFullReplacementProvider,
+  CollectionPartialReplacementProvider,
+  CollectionFullReplacementProvider
+} 
 
 export const ExampleComponent = ({ text }) => {
   return <div className={styles.test}>Component: {text}</div>

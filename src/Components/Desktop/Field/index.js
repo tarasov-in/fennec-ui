@@ -29,6 +29,7 @@ import { Model } from '../Model';
 import { Action } from '../../Action';
 import { CollectionServer } from '../CollectionServer';
 import { DropdownAction } from '../DropdownAction';
+import { useFieldReplacement } from '../../../ComponetsReplacement';
 var utc = require('dayjs/plugin/utc')
 var timezone = require('dayjs/plugin/timezone') // dependent on utc plugin
 dayjs.extend(utc)
@@ -910,7 +911,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
             size={(item.size) ? item.size : "middle"}
             disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
         >
-            <i className="fa fa-search" style={{fontSize:"12px"}}></i>
+            <i className="fa fa-search" style={{ fontSize: "12px" }}></i>
         </Button>
     ), [item, loading])
 
@@ -1194,8 +1195,15 @@ function Unknown({ item }) {
 // }
 
 export function Field(props) {
-    const { auth, item, value, onChange, onAfterChange, changed, isChanged } = props;
+    const { auth, item, value, onChange, onAfterChange, changed, isChanged, replacement } = props;
     let type = ((item.view) ? item.view.type : undefined) || item.type;
+    
+    // const ReplacementFunc = useFieldReplacement(item?.name, replacement)
+    const ReplacementFunc = useFieldReplacement(type, replacement)
+    if (ReplacementFunc) {
+        return (<ReplacementFunc auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed} />)
+    }
+
     switch (item.filterType) {
         case "group":
             switch (type) {
