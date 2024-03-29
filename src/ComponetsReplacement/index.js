@@ -7,10 +7,10 @@ var _ = require('lodash');
 // const [mapOfFuncs, getByKey, setByKey] = useModelFullReplacementHelper()
 // const [mapOfFuncs, getByKey, setByKey] = useModelPartialReplacementHelper()
 //-------------------------------------------------------------------------------------
-// FieldReplacement
-export const FieldReplacement = createContext();
-export function useFieldReplacement(key, defaultValue) {
-    let ctx = React.useContext(FieldReplacement);
+// FieldPartialReplacement
+export const FieldPartialReplacement = createContext();
+export function useFieldPartialReplacement(key, defaultValue) {
+    let ctx = React.useContext(FieldPartialReplacement);
     if(ctx && _.isArray(ctx)){
         let [data, getByKey, setByKey] = ctx;
         if(getByKey){
@@ -19,10 +19,10 @@ export function useFieldReplacement(key, defaultValue) {
     }
     return defaultValue
 }
-export function useFieldReplacementHelper() {
-    return React.useContext(FieldReplacement);
+export function useFieldPartialReplacementHelper() {
+    return React.useContext(FieldPartialReplacement);
 }
-export function FieldReplacementProvider({ children, initial }) {
+export function FieldPartialReplacementProvider({ children, initial }) {
     const [data, setData] = useState({});
 
     const getByKey = (key) => {
@@ -38,9 +38,45 @@ export function FieldReplacementProvider({ children, initial }) {
             setData(initial)
         }
     }, [])
-    return (<FieldReplacement.Provider value={[data, getByKey, setByKey]}>
+    return (<FieldPartialReplacement.Provider value={[data, getByKey, setByKey]}>
         {children}
-    </FieldReplacement.Provider>);
+    </FieldPartialReplacement.Provider>);
+}
+//-------------------------------------------------------------------------------------
+// FieldFullReplacement
+export const FieldFullReplacement = createContext();
+export function useFieldFullReplacement(key, defaultValue) {
+    let ctx = React.useContext(FieldFullReplacement);
+    if(ctx && _.isArray(ctx)){
+        let [data, getByKey, setByKey] = ctx;
+        if(getByKey){
+            return getByKey(key) || defaultValue
+        }
+    }
+    return defaultValue
+}
+export function useFieldFullReplacementHelper() {
+    return React.useContext(FieldFullReplacement);
+}
+export function FieldFullReplacementProvider({ children, initial }) {
+    const [data, setData] = useState({});
+
+    const getByKey = (key) => {
+        if(key){
+            return data[key]
+        }
+    }
+    const setByKey = (key, value) => {
+        setData(o => ({ ...o, [key]: value }))
+    };
+    useEffect(() => {
+        if (initial && _.isObject(initial)) {
+            setData(initial)
+        }
+    }, [])
+    return (<FieldFullReplacement.Provider value={[data, getByKey, setByKey]}>
+        {children}
+    </FieldFullReplacement.Provider>);
 }
 //-------------------------------------------------------------------------------------
 // ModelPartialReplacement

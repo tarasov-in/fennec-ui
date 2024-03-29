@@ -29,7 +29,7 @@ import { Model } from '../Model';
 import { Action } from '../../Action';
 import { CollectionServer } from '../CollectionServer';
 import { DropdownAction } from '../DropdownAction';
-import { useFieldReplacement } from '../../../ComponetsReplacement';
+import { useFieldFullReplacement, useFieldPartialReplacement } from '../../../ComponetsReplacement';
 var utc = require('dayjs/plugin/utc')
 var timezone = require('dayjs/plugin/timezone') // dependent on utc plugin
 dayjs.extend(utc)
@@ -233,10 +233,12 @@ function Image({ auth, item, value, onChange, changed }) {
         </div>
     );
 }
-function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
+function GroupObj({ auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
     const meta = useMetaContext();
+
+    const PartialReplacementFunc = useFieldPartialReplacement(_.get(item, "relation.reference.object"), partialReplacement)
 
     const dataOrContent = (data) => {
         return (data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data
@@ -329,7 +331,13 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
             } else if (item.relation && item.relation.displayString && _.isFunction(item.relation.displayString)) {
                 return item.relation.displayString(value)
             } else {
-                return label(item, value)
+                let labeldisplay = label(item, value);
+                if(_.isString(labeldisplay)){
+                    return labeldisplay;
+                }
+                let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
+                let _display = ((item?.relation?.display?.fields) ? item?.relation?.display : undefined) || ((fieldMeta?.display?.fields) ? fieldMeta?.display : undefined)
+                return getDisplay(value, _display, fieldMeta, meta)
             }
         }
         return "";
@@ -340,6 +348,8 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed }) {
                 return item.display(value)
             } else if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
                 return item.relation.display(value)
+            } else if(PartialReplacementFunc){
+                return PartialReplacementFunc({item, value, changed, contextObject, objectName})
             } else {
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
                 let _display = ((item?.relation?.display?.fields) ? item?.relation?.display : undefined) || ((fieldMeta?.display?.fields) ? fieldMeta?.display : undefined)
@@ -506,10 +516,12 @@ function IntegerSlider({ item, value, onChange, onAfterChange }) {
             onAfterChange={(item.realtime) ? onAfterChange : onChange} />
     )
 }
-function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObject }) {
+function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
     const meta = useMetaContext();
+
+    const PartialReplacementFunc = useFieldPartialReplacement(_.get(item, "relation.reference.object"), partialReplacement)
 
     const dataOrContent = (data) => {
         return (data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data
@@ -603,7 +615,13 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
             } else if (item.relation && item.relation.displayString && _.isFunction(item.relation.displayString)) {
                 return item.relation.displayString(value)
             } else {
-                return label(item, value)
+                let labeldisplay = label(item, value);
+                if(_.isString(labeldisplay)){
+                    return labeldisplay;
+                }
+                let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
+                let _display = ((item?.relation?.display?.fields) ? item?.relation?.display : undefined) || ((fieldMeta?.display?.fields) ? fieldMeta?.display : undefined)
+                return getDisplay(value, _display, fieldMeta, meta)
             }
         }
         return "";
@@ -614,6 +632,8 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
                 return item.display(value)
             } else if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
                 return item.relation.display(value)
+            } else if(PartialReplacementFunc){
+                return PartialReplacementFunc({item, value, changed, contextObject, objectName})
             } else {
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
                 let _display = ((item?.relation?.display?.fields) ? item?.relation?.display : undefined) || ((fieldMeta?.display?.fields) ? fieldMeta?.display : undefined)
@@ -646,6 +666,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
                 return (e({
                     collection: data,
                     setCollection: setData,
+                    objectName: objectName,
                     contextObject: contextObject,
                     setCollectionItem: (item, first) => setData(o => updateInArray(o, item, first)),
                     removeCollectionItem: (item) => setData(o => deleteInArray(o, item)),
@@ -668,6 +689,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
                 disabled={loading || (item && item.view && item.view.disabled) ? item.view.disabled : false}
                 item={item}
                 object={e.object || itemByProperty(item, value)}
+                objectName={objectName}
                 contextObject={contextObject}
                 collection={data}
                 setCollection={setData}
@@ -678,7 +700,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
                 {...e}
             />)
         });
-    }, [item, data, loading, value, meta, contextObject]);
+    }, [item, data, loading, value, meta, contextObject, objectName]);
 
     const RenderDropdownActions = React.useCallback(() => {
         if (!item?.dropdownActions) return <React.Fragment></React.Fragment>;
@@ -701,6 +723,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
                 disabled: loading || (item && item.view && item.view.disabled) ? item.view.disabled : false,
                 item: item,
                 object: e.object || itemByProperty(item, value),
+                objectName: objectName,
                 contextObject: contextObject,
                 collection: data,
                 setCollection: setData,
@@ -710,7 +733,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
                 apply: (obj) => onChange(property(item, obj), item, obj),
                 ...e
             }))} />
-    }, [item, data, loading, value, meta, contextObject]);
+    }, [item, data, loading, value, meta, contextObject, objectName]);
 
     return (
         <Space.Compact
@@ -750,10 +773,12 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
         </Space.Compact>
     )
 }
-function BigObj({ auth, item, value, onChange, onAfterChange, changed, contextObject }) {
+function BigObj({ auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const meta = useMetaContext();
+
+    const PartialReplacementFunc = useFieldPartialReplacement(_.get(item, "relation.reference.object"), partialReplacement)
 
     const dataOrContent = (data) => {
         return (data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data
@@ -855,6 +880,8 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed, contextOb
                 return item.display(value)
             } else if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
                 return item.relation.display(value)
+            } else if(PartialReplacementFunc){
+                return PartialReplacementFunc({item, value, changed, contextObject, objectName})
             } else {
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
                 let _display = ((item?.relation?.display?.fields) ? item?.relation?.display : undefined) || ((fieldMeta?.display?.fields) ? fieldMeta?.display : undefined)
@@ -870,7 +897,13 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed, contextOb
             } else if (item.relation && item.relation.displayString && _.isFunction(item.relation.displayString)) {
                 return item.relation.displayString(value)
             } else {
-                return display(item, value)
+                let labeldisplay = display(item, value);
+                if(_.isString(labeldisplay)){
+                    return labeldisplay;
+                }
+                let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
+                let _display = ((item?.relation?.display?.fields) ? item?.relation?.display : undefined) || ((fieldMeta?.display?.fields) ? fieldMeta?.display : undefined)
+                return getDisplay(value, _display, fieldMeta, meta)
             }
         }
         return "";
@@ -936,12 +969,14 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed, contextOb
             value={value}
             onChange={onChange}
             auth={auth}
+            objectName={objectName}
             contextObject={contextObject}
             name={cName}
             source={cSource}
             contextFilters={cContextFilters}
             filters={cFilters}
             customRender={(items, {
+                objectName,
                 contextObject,
                 collection,
                 setCollection,
@@ -989,13 +1024,14 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed, contextOb
 
     const RendeActions = React.useCallback(() => {
         if (!item?.actions) return <React.Fragment></React.Fragment>;
-        let values = clean(unwrap(item?.actions(value, item, meta)));
+        let values = clean(unwrap(item?.actions(value, item, meta, contextObject)));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return values?.map((e, idx) => {
             if (_.isFunction(e)) {
                 return (e({
                     collection: data,
                     setCollection: setData,
+                    objectName: objectName,
                     contextObject: contextObject,
                     setCollectionItem: (item, first) => setData(o => updateInArray(o, item, first)),
                     removeCollectionItem: (item) => setData(o => deleteInArray(o, item)),
@@ -1018,6 +1054,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed, contextOb
                 disabled={loading || (item && item.view && item.view.disabled) ? item.view.disabled : false}
                 item={item}
                 object={e.object || itemByProperty(item, value)}
+                objectName={objectName}
                 contextObject={contextObject}
                 collection={data}
                 setCollection={setData}
@@ -1028,11 +1065,11 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed, contextOb
                 {...e}
             />)
         });
-    }, [item, data, loading, value, meta, contextObject]);
+    }, [item, data, loading, value, meta, contextObject, objectName]);
 
     const RenderDropdownActions = React.useCallback(() => {
         if (!item?.dropdownActions) return <React.Fragment></React.Fragment>;
-        let values = clean(unwrap(item?.dropdownActions(value, item, meta)));
+        let values = clean(unwrap(item?.dropdownActions(value, item, meta, contextObject)));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <DropdownAction
             button={() => (<Button type="default">
@@ -1051,6 +1088,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed, contextOb
                 disabled: loading || (item && item.view && item.view.disabled) ? item.view.disabled : false,
                 item: item,
                 object: e.object || itemByProperty(item, value),
+                objectName: objectName,
                 contextObject: contextObject,
                 collection: data,
                 setCollection: setData,
@@ -1060,7 +1098,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed, contextOb
                 apply: (obj) => onChange(property(item, obj), item, obj),
                 ...e
             }))} />
-    }, [item, data, loading, value, meta, contextObject]);
+    }, [item, data, loading, value, meta, contextObject, objectName]);
 
     return (
         <Space.Compact
@@ -1203,30 +1241,31 @@ function Unknown({ item }) {
 // }
 
 export function Field(props) {
-    const { auth, item, value, onChange, onAfterChange, changed, isChanged, replacement, contextObject } = props;
+    const { auth, item, value, onChange, onAfterChange, changed, isChanged, partialReplacement,
+        fullReplacement, contextObject, objectName } = props;
     let type = ((item.view) ? item.view.type : undefined) || item.type;
     
-    // const ReplacementFunc = useFieldReplacement(item?.name, replacement)
-    const ReplacementFunc = useFieldReplacement(type, replacement)
-    if (ReplacementFunc) {
-        return (<ReplacementFunc auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed} />)
+    // const FullReplacementFunc = useFieldFullReplacement(item?.name, fullReplacement)
+    const FullReplacementFunc = useFieldFullReplacement(type, fullReplacement)
+    if (FullReplacementFunc) {
+        return (<FullReplacementFunc auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed} />)
     }
 
     switch (item.filterType) {
         case "group":
             switch (type) {
                 case "func":
-                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, contextObject) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, partialReplacement, contextObject, objectName) : undefined;
                 case "object":
                 case "document":
-                    return (<GroupObj auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></GroupObj>)
+                    return (<GroupObj auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></GroupObj>)
                 default:
-                    return (<Unknown auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
+                    return (<Unknown auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
             }
         case "range":
             switch (type) {
                 case "func":
-                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, contextObject) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, partialReplacement, contextObject, objectName) : undefined;
                 case "int":
                 case "uint":
                 case "integer":
@@ -1234,26 +1273,26 @@ export function Field(props) {
                 case "int32":
                 case "uint64":
                 case "uint32":
-                    return (<RangeInteger auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeInteger>)
+                    return (<RangeInteger auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeInteger>)
                 case "double":
                 case "float":
                 case "float64":
                 case "float32":
-                    return (<RangeFloat auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeFloat>)
+                    return (<RangeFloat auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeFloat>)
                 case "time":
-                    return (<RangeTime auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeTime>)
+                    return (<RangeTime auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeTime>)
                 case "date":
-                    return (<RangeDate auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeDate>)
+                    return (<RangeDate auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeDate>)
                 case "datetime":
                 case "time.Time":
-                    return (<RangeDateTime auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeDateTime>)
+                    return (<RangeDateTime auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeDateTime>)
                 default:
-                    return (<Unknown auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
+                    return (<Unknown auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
             }
         case "slider":
             switch (type) {
                 case "func":
-                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, contextObject) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, partialReplacement, contextObject, objectName) : undefined;
                 case "int":
                 case "uint":
                 case "integer":
@@ -1261,25 +1300,25 @@ export function Field(props) {
                 case "int32":
                 case "uint64":
                 case "uint32":
-                    return (<IntegerSlider auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></IntegerSlider>)
+                    return (<IntegerSlider auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></IntegerSlider>)
                 case "double":
                 case "float":
                 case "float64":
                 case "float32":
-                    return (<FloatSlider auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></FloatSlider>)
+                    return (<FloatSlider auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></FloatSlider>)
                 default:
-                    return (<Unknown auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
+                    return (<Unknown auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
             }
         default:
             switch (type) {
                 case "func":
-                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, contextObject) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, partialReplacement, contextObject, objectName) : undefined;
                 case "text":
-                    return (<MultilineText auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></MultilineText>)
+                    return (<MultilineText auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></MultilineText>)
                 case "string":
-                    return (<String auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></String>)
+                    return (<String auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></String>)
                 case "password":
-                    return (<Password auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Password>)
+                    return (<Password auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Password>)
                 case "int":
                 case "uint":
                 case "integer":
@@ -1287,38 +1326,38 @@ export function Field(props) {
                 case "int32":
                 case "uint64":
                 case "uint32":
-                    return (<Integer auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Integer>)
+                    return (<Integer auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Integer>)
                 case "double":
                 case "float":
                 case "float64":
                 case "float32":
-                    return (<Float auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Float>)
+                    return (<Float auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Float>)
                 case "boolean":
                 case "bool":
-                    return (<Boolean auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Boolean>)
+                    return (<Boolean auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Boolean>)
                 case "time":
-                    return (<Time auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Time>)
+                    return (<Time auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Time>)
                 case "date":
-                    return (<Date auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Date>)
+                    return (<Date auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Date>)
                 case "datetime":
                 case "time.Time":
-                    return (<DateTime auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></DateTime>)
+                    return (<DateTime auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></DateTime>)
                 case "object":
                 case "document":
                     if (item.mode === "dialog") {
-                        return (<BigObj auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></BigObj>)
+                        return (<BigObj auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></BigObj>)
                     } else
-                        return (<Obj auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></Obj>)
+                        return (<Obj auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></Obj>)
                 case "file":
-                    return (<UploadItem auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></UploadItem>)
+                    return (<UploadItem auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></UploadItem>)
                 case "files":
-                    return (<UploadItems auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></UploadItems>)
+                    return (<UploadItems auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></UploadItems>)
                 case "imageeditor":
-                    return (<ImageEditor auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></ImageEditor>)
+                    return (<ImageEditor auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></ImageEditor>)
                 case "image":
-                    return (<Image auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Image>)
+                    return (<Image auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Image>)
                 default:
-                    return (<Unknown auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
+                    return (<Unknown auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
             }
 
     }

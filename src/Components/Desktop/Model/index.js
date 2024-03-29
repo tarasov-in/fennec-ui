@@ -174,7 +174,7 @@ function Frm(props) {
                             <Field
                                 mode="model"
                                 key={item.name}
-                                
+                                objectName={name}
                                 contextObject={contextObject}
                                 auth={auth}
                                 filter={fieldsFilters[item.name.toLowerCase()]}
