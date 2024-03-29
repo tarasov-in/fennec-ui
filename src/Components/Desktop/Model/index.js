@@ -174,6 +174,8 @@ function Frm(props) {
                             <Field
                                 mode="model"
                                 key={item.name}
+                                
+                                contextObject={contextObject}
                                 auth={auth}
                                 filter={fieldsFilters[item.name.toLowerCase()]}
                                 item={{ ...item, filterType: undefined, func: (funcStat && funcStat[item.name.toLowerCase()]) ? funcStat[item.name.toLowerCase()] : {} }}

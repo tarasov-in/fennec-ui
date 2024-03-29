@@ -506,7 +506,7 @@ function IntegerSlider({ item, value, onChange, onAfterChange }) {
             onAfterChange={(item.realtime) ? onAfterChange : onChange} />
     )
 }
-function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
+function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObject }) {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
     const meta = useMetaContext();
@@ -646,6 +646,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
                 return (e({
                     collection: data,
                     setCollection: setData,
+                    contextObject: contextObject,
                     setCollectionItem: (item, first) => setData(o => updateInArray(o, item, first)),
                     removeCollectionItem: (item) => setData(o => deleteInArray(o, item)),
                     // onSelection,
@@ -667,6 +668,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
                 disabled={loading || (item && item.view && item.view.disabled) ? item.view.disabled : false}
                 item={item}
                 object={e.object || itemByProperty(item, value)}
+                contextObject={contextObject}
                 collection={data}
                 setCollection={setData}
                 property={(obj) => property(item, obj)}
@@ -676,7 +678,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
                 {...e}
             />)
         });
-    }, [item, data, loading, value, meta]);
+    }, [item, data, loading, value, meta, contextObject]);
 
     const RenderDropdownActions = React.useCallback(() => {
         if (!item?.dropdownActions) return <React.Fragment></React.Fragment>;
@@ -699,6 +701,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
                 disabled: loading || (item && item.view && item.view.disabled) ? item.view.disabled : false,
                 item: item,
                 object: e.object || itemByProperty(item, value),
+                contextObject: contextObject,
                 collection: data,
                 setCollection: setData,
                 property: (obj) => property(item, obj),
@@ -707,7 +710,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
                 apply: (obj) => onChange(property(item, obj), item, obj),
                 ...e
             }))} />
-    }, [item, data, loading, value, meta]);
+    }, [item, data, loading, value, meta, contextObject]);
 
     return (
         <Space.Compact
@@ -747,7 +750,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
         </Space.Compact>
     )
 }
-function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
+function BigObj({ auth, item, value, onChange, onAfterChange, changed, contextObject }) {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const meta = useMetaContext();
@@ -933,11 +936,13 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
             value={value}
             onChange={onChange}
             auth={auth}
+            contextObject={contextObject}
             name={cName}
             source={cSource}
             contextFilters={cContextFilters}
             filters={cFilters}
             customRender={(items, {
+                contextObject,
                 collection,
                 setCollection,
                 setCollectionItem,
@@ -991,6 +996,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
                 return (e({
                     collection: data,
                     setCollection: setData,
+                    contextObject: contextObject,
                     setCollectionItem: (item, first) => setData(o => updateInArray(o, item, first)),
                     removeCollectionItem: (item) => setData(o => deleteInArray(o, item)),
                     // onSelection,
@@ -1012,6 +1018,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
                 disabled={loading || (item && item.view && item.view.disabled) ? item.view.disabled : false}
                 item={item}
                 object={e.object || itemByProperty(item, value)}
+                contextObject={contextObject}
                 collection={data}
                 setCollection={setData}
                 property={(obj) => property(item, obj)}
@@ -1021,7 +1028,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
                 {...e}
             />)
         });
-    }, [item, data, loading, value, meta]);
+    }, [item, data, loading, value, meta, contextObject]);
 
     const RenderDropdownActions = React.useCallback(() => {
         if (!item?.dropdownActions) return <React.Fragment></React.Fragment>;
@@ -1044,6 +1051,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
                 disabled: loading || (item && item.view && item.view.disabled) ? item.view.disabled : false,
                 item: item,
                 object: e.object || itemByProperty(item, value),
+                contextObject: contextObject,
                 collection: data,
                 setCollection: setData,
                 property: (obj) => property(item, obj),
@@ -1052,7 +1060,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed }) {
                 apply: (obj) => onChange(property(item, obj), item, obj),
                 ...e
             }))} />
-    }, [item, data, loading, value, meta]);
+    }, [item, data, loading, value, meta, contextObject]);
 
     return (
         <Space.Compact
@@ -1195,30 +1203,30 @@ function Unknown({ item }) {
 // }
 
 export function Field(props) {
-    const { auth, item, value, onChange, onAfterChange, changed, isChanged, replacement } = props;
+    const { auth, item, value, onChange, onAfterChange, changed, isChanged, replacement, contextObject } = props;
     let type = ((item.view) ? item.view.type : undefined) || item.type;
     
     // const ReplacementFunc = useFieldReplacement(item?.name, replacement)
     const ReplacementFunc = useFieldReplacement(type, replacement)
     if (ReplacementFunc) {
-        return (<ReplacementFunc auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed} />)
+        return (<ReplacementFunc auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed} />)
     }
 
     switch (item.filterType) {
         case "group":
             switch (type) {
                 case "func":
-                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, contextObject) : undefined;
                 case "object":
                 case "document":
-                    return (<GroupObj auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></GroupObj>)
+                    return (<GroupObj auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></GroupObj>)
                 default:
-                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
+                    return (<Unknown auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
             }
         case "range":
             switch (type) {
                 case "func":
-                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, contextObject) : undefined;
                 case "int":
                 case "uint":
                 case "integer":
@@ -1226,26 +1234,26 @@ export function Field(props) {
                 case "int32":
                 case "uint64":
                 case "uint32":
-                    return (<RangeInteger auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeInteger>)
+                    return (<RangeInteger auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeInteger>)
                 case "double":
                 case "float":
                 case "float64":
                 case "float32":
-                    return (<RangeFloat auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeFloat>)
+                    return (<RangeFloat auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeFloat>)
                 case "time":
-                    return (<RangeTime auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeTime>)
+                    return (<RangeTime auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeTime>)
                 case "date":
-                    return (<RangeDate auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeDate>)
+                    return (<RangeDate auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeDate>)
                 case "datetime":
                 case "time.Time":
-                    return (<RangeDateTime auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeDateTime>)
+                    return (<RangeDateTime auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeDateTime>)
                 default:
-                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
+                    return (<Unknown auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
             }
         case "slider":
             switch (type) {
                 case "func":
-                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, contextObject) : undefined;
                 case "int":
                 case "uint":
                 case "integer":
@@ -1253,25 +1261,25 @@ export function Field(props) {
                 case "int32":
                 case "uint64":
                 case "uint32":
-                    return (<IntegerSlider auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></IntegerSlider>)
+                    return (<IntegerSlider auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></IntegerSlider>)
                 case "double":
                 case "float":
                 case "float64":
                 case "float32":
-                    return (<FloatSlider auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></FloatSlider>)
+                    return (<FloatSlider auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></FloatSlider>)
                 default:
-                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
+                    return (<Unknown auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
             }
         default:
             switch (type) {
                 case "func":
-                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, contextObject) : undefined;
                 case "text":
-                    return (<MultilineText auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></MultilineText>)
+                    return (<MultilineText auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></MultilineText>)
                 case "string":
-                    return (<String auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></String>)
+                    return (<String auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></String>)
                 case "password":
-                    return (<Password auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Password>)
+                    return (<Password auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Password>)
                 case "int":
                 case "uint":
                 case "integer":
@@ -1279,38 +1287,38 @@ export function Field(props) {
                 case "int32":
                 case "uint64":
                 case "uint32":
-                    return (<Integer auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Integer>)
+                    return (<Integer auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Integer>)
                 case "double":
                 case "float":
                 case "float64":
                 case "float32":
-                    return (<Float auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Float>)
+                    return (<Float auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Float>)
                 case "boolean":
                 case "bool":
-                    return (<Boolean auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Boolean>)
+                    return (<Boolean auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Boolean>)
                 case "time":
-                    return (<Time auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Time>)
+                    return (<Time auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Time>)
                 case "date":
-                    return (<Date auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Date>)
+                    return (<Date auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Date>)
                 case "datetime":
                 case "time.Time":
-                    return (<DateTime auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></DateTime>)
+                    return (<DateTime auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></DateTime>)
                 case "object":
                 case "document":
                     if (item.mode === "dialog") {
-                        return (<BigObj auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></BigObj>)
+                        return (<BigObj auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></BigObj>)
                     } else
-                        return (<Obj auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></Obj>)
+                        return (<Obj auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></Obj>)
                 case "file":
-                    return (<UploadItem auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></UploadItem>)
+                    return (<UploadItem auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></UploadItem>)
                 case "files":
-                    return (<UploadItems auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></UploadItems>)
+                    return (<UploadItems auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></UploadItems>)
                 case "imageeditor":
-                    return (<ImageEditor auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></ImageEditor>)
+                    return (<ImageEditor auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></ImageEditor>)
                 case "image":
-                    return (<Image auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Image>)
+                    return (<Image auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Image>)
                 default:
-                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
+                    return (<Unknown auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
             }
 
     }

@@ -584,7 +584,7 @@ function IntegerSlider({ item, value, onChange, onAfterChange }) {
         </div>
     )
 }
-function Obj({ auth, item, value, onChange, onAfterChange, changed }) {
+function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObject }) {
     const [data, setData] = useState([]);
     const meta = useMetaContext();
 
@@ -1421,27 +1421,27 @@ function Unknown({ item }) {
 //     source: "/api/query/name"
 // }
 
-export function FieldMobile({ auth, item, value, onChange, onAfterChange, changed, isChanged, replacement }) {
+export function FieldMobile({ auth, item, value, onChange, onAfterChange, changed, isChanged, replacement, contextObject }) {
     // const ReplacementFunc = useFieldReplacement(item?.name, replacement)
     const ReplacementFunc = useFieldReplacement(item?.type, replacement)
     if (ReplacementFunc) {
-        return (<ReplacementFunc auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed} />)
+        return (<ReplacementFunc auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed} />)
     }
     switch (item.filterType) {
         case "group":
             switch (item.type) {
                 case "func":
-                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, contextObject) : undefined;
                 case "object":
                 case "document":
-                    return (<GroupObj auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></GroupObj>)
+                    return (<GroupObj auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></GroupObj>)
                 default:
-                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
+                    return (<Unknown auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
             }
         case "range":
             switch (item.type) {
                 case "func":
-                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, contextObject) : undefined;
                 case "int":
                 case "uint":
                 case "integer":
@@ -1449,24 +1449,24 @@ export function FieldMobile({ auth, item, value, onChange, onAfterChange, change
                 case "int32":
                 case "uint64":
                 case "uint32":
-                    return (<RangeInteger auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeInteger>)
+                    return (<RangeInteger auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeInteger>)
                 case "double":
                 case "float":
                 case "float64":
                 case "float32":
-                    return (<RangeFloat auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeFloat>)
+                    return (<RangeFloat auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeFloat>)
                 case "date":
                 case "time":
                 case "datetime":
                 case "time.Time":
-                    return (<RangeDate auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeDate>)
+                    return (<RangeDate auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeDate>)
                 default:
-                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
+                    return (<Unknown auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
             }
         case "slider":
             switch (item.type) {
                 case "func":
-                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, contextObject) : undefined;
                 case "int":
                 case "uint":
                 case "integer":
@@ -1474,23 +1474,23 @@ export function FieldMobile({ auth, item, value, onChange, onAfterChange, change
                 case "int32":
                 case "uint64":
                 case "uint32":
-                    return (<IntegerSlider auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></IntegerSlider>)
+                    return (<IntegerSlider auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></IntegerSlider>)
                 case "double":
                 case "float":
                 case "float64":
                 case "float32":
-                    return (<FloatSlider auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></FloatSlider>)
+                    return (<FloatSlider auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></FloatSlider>)
                 default:
-                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
+                    return (<Unknown auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
             }
         default:
             switch (item.type) {
                 case "func":
-                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, contextObject) : undefined;
                 case "string":
-                    return (<String auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></String>)
+                    return (<String auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></String>)
                 case "password":
-                    return (<Password auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Password>)
+                    return (<Password auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Password>)
                 case "int":
                 case "uint":
                 case "integer":
@@ -1498,37 +1498,37 @@ export function FieldMobile({ auth, item, value, onChange, onAfterChange, change
                 case "int32":
                 case "uint64":
                 case "uint32":
-                    return (<Integer auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Integer>)
+                    return (<Integer auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Integer>)
                 case "double":
                 case "float":
                 case "float64":
                 case "float32":
-                    return (<Float auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Float>)
+                    return (<Float auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Float>)
                 case "boolean":
                 case "bool":
-                    return (<Boolean auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Boolean>)
+                    return (<Boolean auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Boolean>)
                 case "time":
-                    return (<Time auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Time>)
+                    return (<Time auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Time>)
                 case "date":
-                    return (<Date auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Date>)
+                    return (<Date auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Date>)
                 case "datetime":
                 case "time.Time":
-                    return (<DateTime auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></DateTime>)
+                    return (<DateTime auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></DateTime>)
                 case "object":
                 case "document":
-                    return (<Obj auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></Obj>)
+                    return (<Obj auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></Obj>)
                 case "action":
-                    return (<ActionItem auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></ActionItem>)
+                    return (<ActionItem auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></ActionItem>)
                 case "file":
-                    return (<UploadItem auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></UploadItem>)
+                    return (<UploadItem auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></UploadItem>)
                 case "files":
-                    return (<UploadItems auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></UploadItems>)
+                    return (<UploadItems auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></UploadItems>)
                 // case "imageeditor":
-                //     return (<ImageEditor auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></ImageEditor>)
+                //     return (<ImageEditor auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></ImageEditor>)
                 case "image":
-                    return (<Image auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Image>)
+                    return (<Image auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Image>)
                 default:
-                    return (<Unknown auth={auth} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
+                    return (<Unknown auth={auth} contextObject={contextObject} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
             }
     }
 }
