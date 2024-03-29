@@ -175,6 +175,7 @@ function DefaultCollectionServer(props) {
         scheme,
         field,
         fieldName,
+        contextObject,
         linksCompareFunction,
 
         selection, // undefined, "radio" или "checkbox"
@@ -723,6 +724,7 @@ function DefaultCollectionServer(props) {
             linksCompareFunction: linksCompareFunction,
             // field: field,
             // fieldName: fieldName,
+            contextObject: contextObject,
             queryDetail: queryDetail,
             modelActions: modelActions,
             collectionActions: collectionActions,
@@ -768,7 +770,7 @@ function DefaultCollectionServer(props) {
     const RenderOnModelActions = React.useCallback((item, index) => {
         let defaultAction = defaultModelAction(item, index);
         if (!modelActions) return <React.Fragment></React.Fragment>;
-        let values = clean(unwrap(modelActions(item, index, { mobject, name, field, fieldName, collection, actions: defaultAction })));
+        let values = clean(unwrap(modelActions(item, index, { mobject, name, field, fieldName, contextObject, collection, actions: defaultAction })));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <DropdownAction items={values?.map((e, idx) => ({
             key: e.key || idx,
@@ -824,6 +826,7 @@ function DefaultCollectionServer(props) {
             linksCompareFunction: linksCompareFunction,
             // field: field,
             // fieldName: fieldName,
+            contextObject: contextObject,
             queryDetail: queryDetail,
             modelActions: modelActions,
             collectionActions: collectionActions,
@@ -839,7 +842,7 @@ function DefaultCollectionServer(props) {
 
         let defaultAction = defaultCollectionAction();
         if (!collectionActions) return <React.Fragment></React.Fragment>;
-        let values = clean(unwrap(collectionActions({ mobject, name, field, fieldName, collection, actions: defaultAction })));
+        let values = clean(unwrap(collectionActions({ mobject, name, field, fieldName, contextObject, collection, actions: defaultAction })));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return values?.map((e, idx) => {
             if (_.isFunction(e)) {
@@ -1045,8 +1048,8 @@ function DefaultCollectionServer(props) {
         setCollection,
         setCollectionItem,
         removeCollectionItem,
-        collectionActions: () => (collectionActions) ? clean(unwrap(collectionActions({ mobject, name, field, fieldName, collection, actions: defaultCollectionAction }))) : undefined,
-        modelActions: (item, index) => (modelActions) ? clean(unwrap(modelActions(item, index, { mobject, name, field, fieldName, collection, actions: defaultModelAction }))) : undefined,
+        collectionActions: () => (collectionActions) ? clean(unwrap(collectionActions({ mobject, name, field, fieldName, contextObject, collection, actions: defaultCollectionAction }))) : undefined,
+        modelActions: (item, index) => (modelActions) ? clean(unwrap(modelActions(item, index, { mobject, name, field, fieldName, contextObject, collection, actions: defaultModelAction }))) : undefined,
         onSelection,
         isSelected,
         lock,
@@ -1059,6 +1062,7 @@ function DefaultCollectionServer(props) {
         name,
         field,
         fieldName,
+        contextObject,
         defaultCollectionAction,
         defaultModelAction,
     }

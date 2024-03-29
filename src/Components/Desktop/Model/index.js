@@ -18,7 +18,7 @@ const { TabPane } = Tabs;
 
 function Frm(props) {
 
-    const { auth, form, name, meta, options, object, submit, funcStat, contextFilters, links, scheme, linksCompareFunction,
+    const { auth, form, name, meta, options, object, submit, funcStat, contextFilters, links, scheme, linksCompareFunction, contextObject,
         queryDetail,
         modelActions,
         collectionActions,
@@ -199,6 +199,7 @@ function Frm(props) {
                                     name={n}
                                     field={e}
                                     fieldName={f}
+                                    contextObject={object}
                                     linksCompareFunction={linksCompareFunction}
                                     contextFilters={() => (object) ? [
                                         {
@@ -251,7 +252,7 @@ function Frm(props) {
 }
 
 export function Model(props) {
-    const { auth, name, meta, options, object, form, submit, funcStat, contextFilters, links, scheme, linksCompareFunction,
+    const { auth, name, meta, options, object, form, submit, funcStat, contextFilters, links, scheme, linksCompareFunction, contextObject,
         queryDetail,
         modelActions,
         collectionActions,
@@ -279,6 +280,7 @@ export function Model(props) {
                 partialReplacement={partialReplacement}
                 
                 links={links}
+                contextObject={contextObject}
                 queryDetail={queryDetail}
                 modelActions={modelActions}
                 collectionActions={collectionActions}
