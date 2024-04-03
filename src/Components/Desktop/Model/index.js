@@ -28,8 +28,9 @@ function Frm(props) {
     const PartialReplacementFunc = useModelPartialReplacement(name, partialReplacement)
 
     const [visible, setVisible] = useState(false);
-    const [excludeFields, setExcludeFields] = useState({});
-    const [fieldsFilters, setFieldsFilters] = useState({});
+
+    // const [excludeFields, setExcludeFields] = useState({});
+    // const [fieldsFilters, setFieldsFilters] = useState({});
 
     useEffect(() => {
         form.resetFields();
@@ -37,29 +38,30 @@ function Frm(props) {
             form.setFieldsValue(object);
         }
     }, [object])
-    useEffect(() => {
-        let fldFlt = {};
-        let ctxFlt = {};
-        if (contextFilters) {
-            let ctx = contextFilters();
-            if (_.isArray(ctx)) {
-                ctx.forEach(item => {
-                    if (item.action) {
-                        ctxFlt[item.name.toLowerCase()] = item.value;
-                    } else {
-                        fldFlt[item.name.toLowerCase()] = item.value;
-                    }
-                });
-            }
-        }
-        setFieldsFilters(fldFlt);
-        setExcludeFields(ctxFlt);
-    }, [contextFilters]);
+    // useEffect(() => {
+    //     let fldFlt = {};
+    //     let ctxFlt = {};
+    //     if (contextFilters) {
+    //         let ctx = contextFilters();
+
+    //         if (_.isArray(ctx)) {
+    //             ctx.forEach(item => {
+    //                 if (item.action) {
+    //                     ctxFlt[item?.name?.toLowerCase()] = item.value;
+    //                 } else {
+    //                     fldFlt[item?.name?.toLowerCase()] = item.value;
+    //                 }
+    //             });
+    //         }
+    //     }
+    //     setFieldsFilters(fldFlt);
+    //     setExcludeFields(ctxFlt);
+    // }, [contextFilters]);
 
     const gmeta = useMetaContext();
     const filtersFromMeta = React.useCallback((name) => {
         let prop = [];
-        let p = _.get(gmeta[name.toLowerCase()], "properties");
+        let p = _.get(gmeta[name?.toLowerCase()], "properties");
         if (p) {
             prop = p?.filter(e => _.get(e, "relation.type") !== "one-many")?.map(e => ({ ...e, sort: true, filter: true, func: (e.filterType == "range") ? ["min", "max"] : undefined }))
         }
@@ -157,8 +159,9 @@ function Frm(props) {
                     {...options}
                     labelAlign={"left"}
                     layout={"vertical"}>
-                    {propertiesFiltered?.filter(e => (e.name && excludeFields[e.name.toLowerCase()]) ? false : true)?.map((item, idx) => {
-                        if (!item.name && item.type === "func" && item.render) {
+                    {/* {propertiesFiltered?.filter(e => (e.name && excludeFields[e.name?.toLowerCase()]) ? false : true)?.map((item, idx) => { */}
+                    {propertiesFiltered?.map((item, idx) => {
+                        if (!item?.name && item.type === "func" && item.render) {
                             return <div key={"func_" + idx}>
                                 {item.render(auth, item)}
                             </div>
@@ -166,21 +169,21 @@ function Frm(props) {
                         return (<Form.Item
                             preserve={(item.hidden) ? "true" : "false"}
                             hidden={item.hidden}
-                            key={item.name}
-                            name={(item.type !== "object" && item.type !== "document") ? uncapitalize(item.name) : uncapitalize(item.name) + "ID"}
+                            key={item?.name}
+                            name={(item.type !== "object" && item.type !== "document") ? uncapitalize(item?.name) : uncapitalize(item?.name) + "ID"}
                             label={(item.type !== "bool" && item.type !== "boolean") ? item.label : undefined}
                             rules={formItemRules(item)}
                         >
                             <Field
                                 mode="model"
-                                key={item.name}
+                                key={item?.name}
                                 objectName={name}
                                 contextObject={contextObject}
                                 auth={auth}
-                                filter={fieldsFilters[item.name.toLowerCase()]}
-                                item={{ ...item, filterType: undefined, func: (funcStat && funcStat[item.name.toLowerCase()]) ? funcStat[item.name.toLowerCase()] : {} }}
+                                // filter={fieldsFilters[item?.name?.toLowerCase()]}
+                                item={{ ...item, filterType: undefined, func: (funcStat && funcStat[item?.name?.toLowerCase()]) ? funcStat[item?.name?.toLowerCase()] : {} }}
 
-                                isChanged={(isChangedField) ? isChangedField((item.type !== "object" && item.type !== "document") ? uncapitalize(item.name) : uncapitalize(item.name) + "ID") : undefined}
+                                isChanged={(isChangedField) ? isChangedField((item.type !== "object" && item.type !== "document") ? uncapitalize(item?.name) : uncapitalize(item?.name) + "ID") : undefined}
                             />
                         </Form.Item>);
                     })}
@@ -205,7 +208,7 @@ function Frm(props) {
                                     linksCompareFunction={linksCompareFunction}
                                     contextFilters={() => (object) ? [
                                         {
-                                            action: true,
+                                            // action: true,
                                             // method: "eq",
                                             name: p,
                                             value: object.ID
@@ -280,7 +283,7 @@ export function Model(props) {
                 form={form}
 
                 partialReplacement={partialReplacement}
-                
+
                 links={links}
                 contextObject={contextObject}
                 queryDetail={queryDetail}
