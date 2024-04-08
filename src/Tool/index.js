@@ -1271,8 +1271,8 @@ export function typeIsNumber(type) {
  */
 export function getFormatFieldValueTableView(data, type, meta) {
     if (type === "boolean" || type === "bool") {
-        var trueValue = getObjectValueOrDefault(meta, "booleanPresenter.trueValue", "Да");
-        var falseValue = getObjectValueOrDefault(meta, "booleanPresenter.falseValue", "Нет");
+        var trueValue = getObjectValue(meta, "booleanPresenter.trueValue")||"Да";
+        var falseValue = getObjectValue(meta, "booleanPresenter.falseValue")||"Нет";
         return data ? trueValue : falseValue;
         //return data ? "<span style='font-weight: 600;'>"+trueValue+"</span>" : "<span>"+falseValue+"</span>";
     }
