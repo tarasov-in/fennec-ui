@@ -7,7 +7,7 @@ import {
     Drawer
 } from 'antd';
 import Icofont from 'react-icofont';
-import { GetMeta, GetMetaProperties, formItemRules, isRequired, validator, getObjectDisplay, uncapitalize, getObjectValue, QueryDetail, QueryOrder } from '../../../Tool';
+import { GetMeta, GetMetaProperties, formItemRules, isRequired, validator, getObjectDisplay, uncapitalize, getObjectValue, QueryDetail, QueryOrder, clean, QueryParam } from '../../../Tool';
 import { Field } from '../Field';
 import { useFormObserverContext, useMetaContext } from '../../Context';
 import { CollectionServer } from '../CollectionServer';
@@ -29,7 +29,7 @@ function Frm(props) {
 
     const [visible, setVisible] = useState(false);
 
-    // const [excludeFields, setExcludeFields] = useState({});
+    const [excludeFields, setExcludeFields] = useState({});
     // const [fieldsFilters, setFieldsFilters] = useState({});
 
     useEffect(() => {
@@ -38,25 +38,43 @@ function Frm(props) {
             form.setFieldsValue(object);
         }
     }, [object])
-    // useEffect(() => {
-    //     let fldFlt = {};
-    //     let ctxFlt = {};
-    //     if (contextFilters) {
-    //         let ctx = contextFilters();
 
-    //         if (_.isArray(ctx)) {
-    //             ctx.forEach(item => {
-    //                 if (item.action) {
-    //                     ctxFlt[item?.name?.toLowerCase()] = item.value;
-    //                 } else {
-    //                     fldFlt[item?.name?.toLowerCase()] = item.value;
-    //                 }
-    //             });
-    //         }
-    //     }
-    //     setFieldsFilters(fldFlt);
-    //     setExcludeFields(ctxFlt);
-    // }, [contextFilters]);
+    const contextFiltersToFileldFilter = (item) => {
+        if (_.isObject(item) && item?.name) {
+            return item;
+            // QueryParam("w-" + ((item.method) ? item.method + "-" : "eq-") + item.name, item.value)
+        } else if (_.isFunction(item)) {
+            return contextFiltersToFileldFilter(item());
+        } else if (_.isString(item)) {
+            let nameValue = item.split("=")
+            if (nameValue.length >= 2) {
+                let fieldNameArr = nameValue[0].split("-")
+                if (fieldNameArr.length > 0) {
+                    return {
+                        name: fieldNameArr[fieldNameArr.length - 1]?.trim(),
+                        value: nameValue[1]?.trim()
+                    }
+                }
+            }
+        }
+    }
+    useEffect(() => {
+        let ctxFlt = {};
+        if (contextFilters) {
+            let ctx = clean(contextFilters());
+            if (_.isArray(ctx)) {
+                ctx.forEach(item => {
+                    if (item) {
+                        let v = contextFiltersToFileldFilter(item);
+                        if(v?.name){
+                            ctxFlt[v?.name?.toLowerCase()] = v.value;
+                        }
+                    }
+                });
+            }
+        }
+        setExcludeFields(ctxFlt);
+    }, [contextFilters]);
 
     const gmeta = useMetaContext();
     const filtersFromMeta = React.useCallback((name) => {
@@ -159,8 +177,8 @@ function Frm(props) {
                     {...options}
                     labelAlign={"left"}
                     layout={"vertical"}>
-                    {/* {propertiesFiltered?.filter(e => (e.name && excludeFields[e.name?.toLowerCase()]) ? false : true)?.map((item, idx) => { */}
-                    {propertiesFiltered?.map((item, idx) => {
+                    {propertiesFiltered?.filter(e => (e.name && excludeFields[e.name?.toLowerCase()]) ? false : true)?.map((item, idx) => {
+                        // {propertiesFiltered?.map((item, idx) => {
                         if (!item?.name && item.type === "func" && item.render) {
                             return <div key={"func_" + idx}>
                                 {item.render(auth, item)}

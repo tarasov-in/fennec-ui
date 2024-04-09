@@ -742,9 +742,9 @@ function DefaultCollectionServer(props) {
                         let ctx = clean(contextFilters());
                         if (_.isArray(ctx)) {
                             ctx.forEach(item => {
-                                if (item.action) {
+                                //if (item.action) {
                                     ctxFlt[item.name.toLowerCase() + ((item.name && item.name.endsWith("ID")) ? "" : "ID")] = item.value;
-                                }
+                                //}
                             });
                         }
                     }
@@ -836,9 +836,9 @@ function DefaultCollectionServer(props) {
                         let ctx = clean(contextFilters());
                         if (_.isArray(ctx)) {
                             ctx.forEach(item => {
-                                if (item.action) {
+                                //if (item.action) {
                                     ctxFlt[item.name.toLowerCase() + ((item.name && item.name.endsWith("ID")) ? "" : "ID")] = item.value;
-                                }
+                                //}
                             });
                         }
                     }
