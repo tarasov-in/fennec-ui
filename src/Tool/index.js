@@ -116,23 +116,7 @@ export const QueryFunc = (func, name) => {
 export const QueryParam = (name, value) => {
     return `${name}=${value}`;
 };
-export const ObjectToQueryParam = (object, method) => {
-    let f = [];
-    let array = Object.entries(object);
-    for (let i = 0; i < array.length; i++) {
-        const element = array[i];
-        if (element) {
-            let keyName = (element[0].endsWith('ID') === true) ? element[0].slice(0, -2) + ".ID" : element[0];
-            f.push(QueryParam(`w-${keyName}`, element[1]));
-            // f.push({
-            //     method: method || "eq",
-            //     name: element[0],
-            //     value: element[1]
-            // })
-        }
-    }
-    return f
-}
+
 export const QueryOrder = (name, value) => {
     return `s-${name}=${value}`;
 };
@@ -313,6 +297,99 @@ export const equals = (obj1, obj2) => {
     return true;
 }
 //--------------------------------------------------------------
+export const contextFilterToQueryFilters = (item) => {
+    if (_.isObject(item)) {
+        let keyName = (item.name.endsWith('ID') === true) ? item.name.slice(0, -2) + ".ID" : item.name;
+        return QueryParam("w-" + ((item.method) ? item.method + "-" : "eq-") + keyName, item.value)
+    } else if (_.isFunction(item)) {
+        return item()
+    } else if (_.isString(item)) {
+        return item
+    }
+}
+export const ContextFiltersToQueryFilters = (contextFilters) => {
+    let ctxFlt = [];
+    if (contextFilters) {
+        let ctx = []
+        if (_.isFunction(contextFilters)) {
+            ctx = clean(contextFilters());
+        } else {
+            ctx = contextFilters;
+        }
+        if (_.isArray(ctx)) {
+            ctx.forEach(item => {
+                if (item) {
+                    ctxFlt.push(contextFilterToQueryFilters(item))
+                }
+            });
+        }
+    }
+    return ctxFlt
+}
+export const queryFiltersToContextFilter = (item) => {
+    if (_.isObject(item) && item?.name) {
+        return item;
+    } else if (_.isFunction(item)) {
+        return queryFiltersToContextFilter(item());
+    } else if (_.isString(item)) {
+        let nameValue = item.split("=")
+        if (nameValue.length >= 2) {
+            let fieldNameArr = nameValue[0].split("-")
+            if (fieldNameArr.length > 0) {
+                return {
+                    name: fieldNameArr[fieldNameArr.length - 1]?.trim(),
+                    value: nameValue[1]?.trim()
+                }
+            }
+        }
+    }
+}
+export const QueryFiltersToContextFilters = (queryFilters) => {
+    let ctxFlt = [];
+    if (queryFilters) {
+        let ctx = []
+        if (_.isFunction(queryFilters)) {
+            ctx = clean(queryFilters());
+        } else {
+            ctx = queryFilters;
+        }
+        if (_.isArray(ctx)) {
+            ctx.forEach(item => {
+                if (item) {
+                    ctxFlt.push(queryFiltersToContextFilter(item))
+                }
+            });
+        }
+    }
+    return ctxFlt
+}
+//--------------------------------------------------------------
+export const ObjectToQueryParam = (object, method) => {
+    let f = [];
+    let array = Object.entries(object);
+    for (let i = 0; i < array.length; i++) {
+        const element = array[i];
+        if (element) {
+            let keyName = (element[0].endsWith('ID') === true) ? element[0].slice(0, -2) + ".ID" : element[0];
+            f.push(QueryParam(`w-${keyName}`, element[1]));
+        }
+    }
+    return f
+}
+export const ObjectToContextFilters = (obj, method) => {
+    if (!obj) return "";
+    let contextFilters = [];
+    for (const key in obj) {
+        if (Object.hasOwnProperty.call(obj, key)) {
+            const value = obj[key];
+            let keyName = key;//(key.endsWith('ID') === true) ? key.slice(0, -2) + ".ID" : key;
+            if (value) {
+                contextFilters.push({ name: keyName, value: value, method: method });
+            }
+        }
+    }
+    return contextFilters;
+}
 export const queryFilterByItem = (item) => {
     if (!item) return "";
     let query = [];
@@ -961,9 +1038,9 @@ export const deleteInProperties = (properties, item) => {
     if (!properties) properties = [];
     if (!item || (!_.isArray(item) && _.isObject(item) && !item[key])) return properties;
     let i = unwrap(item);
-    if(_.isArray(i)){
-        return properties?.filter(e => And(i.map(c=>e[key] !== ((_.isObject(c))?c[key]:c))))
-    } 
+    if (_.isArray(i)) {
+        return properties?.filter(e => And(i.map(c => e[key] !== ((_.isObject(c)) ? c[key] : c))))
+    }
     return properties?.filter(e => e[key] !== item[key]);
 }
 export const triggerInProperties = (properties, item) => {
@@ -977,7 +1054,7 @@ export const triggerInProperties = (properties, item) => {
 export const foreachInProperties = (properties, func, item) => {
     if (!properties) properties = [];
     if (!item) return properties;
-    return properties.map(n => And(func(n)) ? {...n, ...((_.isFunction(item))?item(n):item)} : n )
+    return properties.map(n => And(func(n)) ? { ...n, ...((_.isFunction(item)) ? item(n) : item) } : n)
 }
 export const updatePropertiesInProperties = (properties, items) => {
     if (!properties) properties = [];
@@ -1271,8 +1348,8 @@ export function typeIsNumber(type) {
  */
 export function getFormatFieldValueTableView(data, type, meta) {
     if (type === "boolean" || type === "bool") {
-        var trueValue = getObjectValue(meta, "booleanPresenter.trueValue")||"Да";
-        var falseValue = getObjectValue(meta, "booleanPresenter.falseValue")||"Нет";
+        var trueValue = getObjectValue(meta, "booleanPresenter.trueValue") || "Да";
+        var falseValue = getObjectValue(meta, "booleanPresenter.falseValue") || "Нет";
         return data ? trueValue : falseValue;
         //return data ? "<span style='font-weight: 600;'>"+trueValue+"</span>" : "<span>"+falseValue+"</span>";
     }

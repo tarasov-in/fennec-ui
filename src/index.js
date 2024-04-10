@@ -43,6 +43,12 @@ import {
   GETWITHP,
   GETP,
   equals,
+  contextFilterToQueryFilters,
+  ContextFiltersToQueryFilters,
+  queryFiltersToContextFilter,
+  QueryFiltersToContextFilters,
+
+  ObjectToContextFilters,
   queryFilterByItem,
   filterByItem,
   FilterToQueryParameters,
@@ -259,6 +265,13 @@ export {
   GETWITHP,
   GETP,
   equals,
+  
+  contextFilterToQueryFilters,
+  ContextFiltersToQueryFilters,
+  queryFiltersToContextFilter,
+  QueryFiltersToContextFilters,
+
+  ObjectToContextFilters,
   queryFilterByItem,
   filterByItem,
   FilterToQueryParameters,

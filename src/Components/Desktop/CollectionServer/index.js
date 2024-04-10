@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Layout, Card, Button, Tooltip, Pagination, Empty, Divider, Typography, Tag, Select, List, Table, Spin, Badge, Modal } from 'antd';
 import { Action } from '../../Action'
 import { DropdownAction } from '../DropdownAction'
-import { unwrap, GET, errorCatch, Request, QueryParam, GETWITH, If, READWITH, QueryFunc, JSX, GetMetaPropertyByPath, updateInArray, deleteInArray, QueryDetail, subscribe as _subscribe, unsubscribe, clean, JSXMap, getObjectDisplay } from '../../../Tool'
+import { unwrap, GET, errorCatch, Request, QueryParam, GETWITH, If, READWITH, QueryFunc, JSX, GetMetaPropertyByPath, updateInArray, deleteInArray, QueryDetail, subscribe as _subscribe, unsubscribe, clean, JSXMap, getObjectDisplay, ContextFiltersToQueryFilters } from '../../../Tool'
 import { createUseStyles } from 'react-jss';
 import "./index.css"
 import { FilterOutlined, SortAscendingOutlined, SortDescendingOutlined } from '@ant-design/icons';
@@ -422,23 +422,25 @@ function DefaultCollectionServer(props) {
             return
         }
 
-        let ctxFlt = [];
-        if (contextFilters) {
-            let ctx = clean(contextFilters());
-            if (_.isArray(ctx)) {
-                ctx.forEach(item => {
-                    if (item) {
-                        if (_.isObject(item)) {
-                            ctxFlt.push(QueryParam("w-" + ((item.method) ? item.method + "-" : "eq-") + item.name, item.value))
-                        } else if (_.isFunction(item)) {
-                            ctxFlt.push(item())
-                        } else if (_.isString(item)) {
-                            ctxFlt.push(item)
-                        }
-                    }
-                });
-            }
-        }
+        let ctxFlt = ContextFiltersToQueryFilters(contextFilters)
+        // let ctxFlt = [];
+        // if (contextFilters) {
+        //     let ctx = clean(contextFilters());
+        //     if (_.isArray(ctx)) {
+        //         ctx.forEach(item => {
+        //             if (item) {
+        //                 if (_.isObject(item)) {
+        //                     let keyName = (item.name.endsWith('ID') === true) ? item.name.slice(0, -2) + ".ID" : item.name;
+        //                     ctxFlt.push(QueryParam("w-" + ((item.method) ? item.method + "-" : "eq-") + keyName, item.value))
+        //                 } else if (_.isFunction(item)) {
+        //                     ctxFlt.push(item())
+        //                 } else if (_.isString(item)) {
+        //                     ctxFlt.push(item)
+        //                 }
+        //             }
+        //         });
+        //     }
+        // }
 
         let flt = [];
         Object.keys(filter).forEach(key => {
@@ -694,7 +696,7 @@ function DefaultCollectionServer(props) {
     };
     const defaultModelAction = React.useCallback((item, index) => (!name) ? [] : [
         {
-            key: "change",
+            key: "update",
             title: "Изменить",
             action: {
                 method: "POST",
@@ -707,7 +709,7 @@ function DefaultCollectionServer(props) {
                         if (_.isArray(ctx)) {
                             ctx.forEach(item => {
                                 //if (item.action) {
-                                    ctxFlt[item.name.toLowerCase() + ((item.name && item.name.endsWith("ID")) ? "" : "ID")] = item.value;
+                                    ctxFlt[item?.name?.toLowerCase() + ((item?.name && item?.name.endsWith("ID")) ? "" : "ID")] = item?.value;
                                 //}
                             });
                         }
@@ -809,7 +811,7 @@ function DefaultCollectionServer(props) {
                         if (_.isArray(ctx)) {
                             ctx.forEach(item => {
                                 //if (item.action) {
-                                    ctxFlt[item.name.toLowerCase() + ((item.name && item.name.endsWith("ID")) ? "" : "ID")] = item.value;
+                                    ctxFlt[item?.name?.toLowerCase() + ((item?.name && item?.name?.endsWith("ID")) ? "" : "ID")] = item?.value;
                                 //}
                             });
                         }

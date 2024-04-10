@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Badge, List, Picker, SwipeAction, PageIndicator, Stepper, PickerView, Popup, Space, Empty as EmptyMobile, Mask, DotLoading } from 'antd-mobile';
-import { unwrap, errorCatch, Request, QueryParam, GETWITH, READWITH, updateInArray, deleteInArray, GetMetaPropertyByPath, QueryFunc, If, QueryDetail, subscribe as _subscribe, unsubscribe, clean } from '../../../Tool'
+import { unwrap, errorCatch, Request, QueryParam, GETWITH, READWITH, updateInArray, deleteInArray, GetMetaPropertyByPath, QueryFunc, If, QueryDetail, subscribe as _subscribe, unsubscribe, clean, ContextFiltersToQueryFilters } from '../../../Tool'
 import Icofont from 'react-icofont';
 import { createUseStyles } from 'react-jss';
 import { Action, ActionPickerItem } from '../../Action';
@@ -498,23 +498,25 @@ function DefaultCollectionServer(props) {
         // IN = "in"      // in
         // NIN = "nin"     // not-in
 
-        let ctxFlt = [];
-        if (contextFilters) {
-            let ctx = clean(contextFilters());
-            if (_.isArray(ctx)) {
-                ctx.forEach(item => {
-                    if (item) {
-                        if (_.isObject(item)) {
-                            ctxFlt.push(QueryParam("w-" + ((item.method) ? item.method + "-" : "eq-") + item.name, item.value))
-                        } else if (_.isFunction(item)) {
-                            ctxFlt.push(item())
-                        } else if (_.isString(item)) {
-                            ctxFlt.push(item)
-                        }
-                    }
-                });
-            }
-        }
+        let ctxFlt = ContextFiltersToQueryFilters(contextFilters)
+        // let ctxFlt = [];
+        // if (contextFilters) {
+        //     let ctx = clean(contextFilters());
+        //     if (_.isArray(ctx)) {
+        //         ctx.forEach(item => {
+        //             if (item) {
+        //                 if (_.isObject(item)) {
+        //                     let keyName = (item.name.endsWith('ID') === true) ? item.name.slice(0, -2) + ".ID" : item.name;
+        //                     ctxFlt.push(QueryParam("w-" + ((item.method) ? item.method + "-" : "eq-") + keyName, item.value))
+        //                 } else if (_.isFunction(item)) {
+        //                     ctxFlt.push(item())
+        //                 } else if (_.isString(item)) {
+        //                     ctxFlt.push(item)
+        //                 }
+        //             }
+        //         });
+        //     }
+        // }
 
         let flt = [];
         Object.keys(state.filter).forEach(key => {
@@ -730,7 +732,7 @@ function DefaultCollectionServer(props) {
     //---------------------------
     const defaultModelAction = React.useCallback((item, index) => (!name) ? [] : [
         {
-            key: "change",
+            key: "update",
             title: "Изменить",
             action: {
                 method: "POST",
