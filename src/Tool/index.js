@@ -1023,6 +1023,16 @@ export function GetMeta(meta) {
     return meta;
 };
 //-------------------------------------------------------------------
+export const updateInPropertiesUUID = (properties, item, first) => {
+    let key = "uuid"
+    if (!properties) properties = [];
+    if (!item || !item[key]) return properties;
+    if (_.findIndex(properties, { [key]: item[key] }) >= 0) {
+        return properties?.map(e => IfElse(e[key] === item[key], { ...e, ...item }, e));
+    } else {
+        return (first) ? [item, ...properties] : [...properties, item];
+    }
+}
 export const updateInProperties = (properties, item, first) => {
     let key = "name"
     if (!properties) properties = [];
@@ -1033,6 +1043,16 @@ export const updateInProperties = (properties, item, first) => {
         return (first) ? [item, ...properties] : [...properties, item];
     }
 }
+export const deleteInPropertiesUUID = (properties, item) => {
+    let key = "uuid"
+    if (!properties) properties = [];
+    if (!item || (!_.isArray(item) && _.isObject(item) && !item[key])) return properties;
+    let i = unwrap(item);
+    if (_.isArray(i)) {
+        return properties?.filter(e => And(i.map(c => e[key] !== ((_.isObject(c)) ? c[key] : c))))
+    }
+    return properties?.filter(e => e[key] !== item[key]);
+}
 export const deleteInProperties = (properties, item) => {
     let key = "name"
     if (!properties) properties = [];
@@ -1042,6 +1062,14 @@ export const deleteInProperties = (properties, item) => {
         return properties?.filter(e => And(i.map(c => e[key] !== ((_.isObject(c)) ? c[key] : c))))
     }
     return properties?.filter(e => e[key] !== item[key]);
+}
+export const triggerInPropertiesUUID = (properties, item) => {
+    let key = "uuid"
+    if (properties.find(x => x[key] === item[key]) !== undefined) {
+        return deleteInArray(properties, item);
+    } else {
+        return updateInArray(properties, item);
+    }
 }
 export const triggerInProperties = (properties, item) => {
     let key = "name"

@@ -89,6 +89,11 @@ import {
   updateInProperties,
   deleteInProperties,
   triggerInProperties,
+
+  updateInPropertiesUUID,
+  deleteInPropertiesUUID,
+  triggerInPropertiesUUID,
+
   foreachInProperties,
   updatePropertiesInProperties,
   deletePropertiesInProperties,
@@ -311,6 +316,9 @@ export {
   updateInProperties,
   deleteInProperties,
   triggerInProperties,
+  updateInPropertiesUUID,
+  deleteInPropertiesUUID,
+  triggerInPropertiesUUID,
   foreachInProperties,
   updatePropertiesInProperties,
   deletePropertiesInProperties,
