@@ -43,6 +43,7 @@ import {
   GETWITHP,
   GETP,
   equals,
+  contextFilterToObject,
   contextFilterToQueryFilters,
   ContextFiltersToQueryFilters,
   queryFiltersToContextFilter,
@@ -179,6 +180,10 @@ import {
 } from './Components/Desktop/CollectionServer'
 
 import {
+  Collection
+} from "./Components/Desktop/Collection"
+
+import {
   DropdownAction
 } from './Components/Desktop/DropdownAction'
 
@@ -271,6 +276,7 @@ export {
   GETP,
   equals,
   
+  contextFilterToObject,
   contextFilterToQueryFilters,
   ContextFiltersToQueryFilters,
   queryFiltersToContextFilter,
@@ -374,6 +380,7 @@ export {
   SortingFieldsUI,
   FiltersFieldsUI,
   CollectionServer,
+  Collection,
   DropdownAction,
   DropdownMobile,
   ModelMobile,

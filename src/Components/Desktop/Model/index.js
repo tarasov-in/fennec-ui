@@ -7,7 +7,7 @@ import {
     Drawer
 } from 'antd';
 import Icofont from 'react-icofont';
-import { GetMeta, GetMetaProperties, formItemRules, isRequired, validator, getObjectDisplay, uncapitalize, getObjectValue, QueryDetail, QueryOrder, clean, QueryParam, queryFiltersToContextFilter } from '../../../Tool';
+import { GetMeta, GetMetaProperties, formItemRules, isRequired, validator, getObjectDisplay, uncapitalize, getObjectValue, QueryDetail, QueryOrder, clean, QueryParam, queryFiltersToContextFilter, contextFilterToObject } from '../../../Tool';
 import { Field } from '../Field';
 import { useFormObserverContext, useMetaContext } from '../../Context';
 import { CollectionServer } from '../CollectionServer';
@@ -17,13 +17,13 @@ const { CheckableTag } = Tag;
 const { TabPane } = Tabs;
 
 function Frm(props) {
-
     const { auth, form, name, meta, options, object, submit, funcStat, contextFilters, links, scheme, linksCompareFunction, contextObject,
         queryDetail,
         modelActions,
         collectionActions,
         partialReplacement
     } = props;
+
 
     const PartialReplacementFunc = useModelPartialReplacement(name, partialReplacement)
 
@@ -40,20 +40,7 @@ function Frm(props) {
     }, [object])
 
     useEffect(() => {
-        let ctxFlt = {};
-        if (contextFilters) {
-            let ctx = clean(contextFilters());
-            if (_.isArray(ctx)) {
-                ctx.forEach(item => {
-                    if (item) {
-                        let v = queryFiltersToContextFilter(item);
-                        if (v?.name) {
-                            ctxFlt[v?.name?.toLowerCase()] = v.value;
-                        }
-                    }
-                });
-            }
-        }
+        let ctxFlt = contextFilterToObject(contextFilters);
         setExcludeFields(ctxFlt);
     }, [contextFilters]);
 
@@ -159,7 +146,7 @@ function Frm(props) {
                     {...options}
                     labelAlign={"left"}
                     layout={"vertical"}>
-                    {propertiesFiltered?.filter(e => (e.name && excludeFields[e.name?.toLowerCase()]) ? false : true)?.map((item, idx) => {
+                    {propertiesFiltered?.filter(e => (e.name && (excludeFields[e.name?.toLowerCase()] || excludeFields[e.name?.toLowerCase()+"ID"])) ? false : true)?.map((item, idx) => {
                         // {propertiesFiltered?.map((item, idx) => {
                         if (!item?.name && item.type === "func" && item.render) {
                             return <div key={"func_" + idx}>

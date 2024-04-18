@@ -243,6 +243,21 @@ export const GETP = (auth, url) => {
         }).catch(reject);
     });
 };
+
+//--------------
+// async function exampleFetch() {
+//     const response = await fetch('https://reqres.in/api/users/2');
+//     const json = await response.json();
+//     console.log(json);
+// }
+// exampleFetch()
+//--------------
+// async function exampleFetch(auth, url) {
+//     return await GETP(auth, url);
+// }
+// console.log(exampleFetch());
+//--------------
+
 //--------------------------------------------------------------
 export const equals = (obj1, obj2) => {
     if (obj1 === obj2)
@@ -297,6 +312,30 @@ export const equals = (obj1, obj2) => {
     return true;
 }
 //--------------------------------------------------------------
+export const contextFilterToObject = (contextFilters) => {
+    let ctxFlt = {};
+    if (contextFilters) {
+        let ctx = []
+        if (_.isFunction(contextFilters)) {
+            ctx = clean(contextFilters());
+        } else {
+            ctx = contextFilters;
+        }
+        if (_.isArray(ctx)) {
+            ctx.forEach(item => {
+                if (item) {
+                    let v = queryFiltersToContextFilter(item);
+                    if (v?.name) {
+                        ctxFlt[v?.name?.toLowerCase() + ((v?.name && v?.name?.endsWith("ID")) ? "" : "ID")] = v?.value;
+                        // ctxFlt[v?.name?.toLowerCase()] = v.value;
+                    }
+                }
+            });
+        }
+    }
+    return ctxFlt
+}
+
 export const contextFilterToQueryFilters = (item) => {
     if (_.isObject(item)) {
         let keyName = (item.name.endsWith('ID') === true) ? item.name.slice(0, -2) + ".ID" : item.name;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Badge, List, Picker, SwipeAction, PageIndicator, Stepper, PickerView, Popup, Space, Empty as EmptyMobile, Mask, DotLoading } from 'antd-mobile';
-import { unwrap, errorCatch, Request, QueryParam, GETWITH, READWITH, updateInArray, deleteInArray, GetMetaPropertyByPath, QueryFunc, If, QueryDetail, subscribe as _subscribe, unsubscribe, clean, ContextFiltersToQueryFilters } from '../../../Tool'
+import { unwrap, errorCatch, Request, QueryParam, GETWITH, READWITH, updateInArray, deleteInArray, GetMetaPropertyByPath, QueryFunc, If, QueryDetail, subscribe as _subscribe, unsubscribe, clean, ContextFiltersToQueryFilters, contextFilterToObject } from '../../../Tool'
 import Icofont from 'react-icofont';
 import { createUseStyles } from 'react-jss';
 import { Action, ActionPickerItem } from '../../Action';
@@ -499,24 +499,6 @@ function DefaultCollectionServer(props) {
         // NIN = "nin"     // not-in
 
         let ctxFlt = ContextFiltersToQueryFilters(contextFilters)
-        // let ctxFlt = [];
-        // if (contextFilters) {
-        //     let ctx = clean(contextFilters());
-        //     if (_.isArray(ctx)) {
-        //         ctx.forEach(item => {
-        //             if (item) {
-        //                 if (_.isObject(item)) {
-        //                     let keyName = (item.name.endsWith('ID') === true) ? item.name.slice(0, -2) + ".ID" : item.name;
-        //                     ctxFlt.push(QueryParam("w-" + ((item.method) ? item.method + "-" : "eq-") + keyName, item.value))
-        //                 } else if (_.isFunction(item)) {
-        //                     ctxFlt.push(item())
-        //                 } else if (_.isString(item)) {
-        //                     ctxFlt.push(item)
-        //                 }
-        //             }
-        //         });
-        //     }
-        // }
 
         let flt = [];
         Object.keys(state.filter).forEach(key => {
@@ -739,17 +721,7 @@ function DefaultCollectionServer(props) {
                 path: "/api/query-update/" + name.toLowerCase(),
                 mutation: "update",
                 onValues: (values) => {
-                    let ctxFlt = {};
-                    if (contextFilters) {
-                        let ctx = clean(contextFilters());
-                        if (_.isArray(ctx)) {
-                            ctx.forEach(item => {
-                                //if (item.action) {
-                                    ctxFlt[item.name.toLowerCase() + ((item.name && item.name.endsWith("ID")) ? "" : "ID")] = item.value;
-                                //}
-                            });
-                        }
-                    }
+                    let ctxFlt = contextFilterToObject(contextFilters);
                     return { ...values, ...ctxFlt, ID: item.ID }
                 },
                 onClose: ({ close }) => close()
@@ -833,17 +805,7 @@ function DefaultCollectionServer(props) {
                 path: "/api/query-create/" + name.toLowerCase(),
                 mutation: "update",
                 onValues: (values) => {
-                    let ctxFlt = {};
-                    if (contextFilters) {
-                        let ctx = clean(contextFilters());
-                        if (_.isArray(ctx)) {
-                            ctx.forEach(item => {
-                                //if (item.action) {
-                                    ctxFlt[item.name.toLowerCase() + ((item.name && item.name.endsWith("ID")) ? "" : "ID")] = item.value;
-                                //}
-                            });
-                        }
-                    }
+                    let ctxFlt = contextFilterToObject(contextFilters);
                     return { ...values, ...ctxFlt }
                 },
                 onClose: ({ close }) => close(),

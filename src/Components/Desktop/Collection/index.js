@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Card, Button, Tooltip, Pagination, Empty, Divider, Typography, Tag, Select, List, Table, Spin, Badge, Modal } from 'antd';
+import { Layout, Card, Button, Tooltip, Pagination, Empty, Divider, Typography, Tag, Select, List, Badge, Modal } from 'antd';
 import { Action } from '../../Action'
 import { DropdownAction } from '../DropdownAction'
-import { unwrap, GET, errorCatch, Request, QueryParam, GETWITH, If, READWITH, QueryFunc, JSX, GetMetaPropertyByPath, updateInArray, deleteInArray, QueryDetail, subscribe as _subscribe, unsubscribe, clean, JSXMap, getObjectDisplay, ContextFiltersToQueryFilters, contextFilterToObject } from '../../../Tool'
-import { createUseStyles } from 'react-jss';
-import "./index.css"
+import { unwrap, GET, errorCatch, QueryParam, GETWITH, If, READWITH, QueryFunc, JSX, GetMetaPropertyByPath, deleteInArray, QueryDetail, subscribe as _subscribe, unsubscribe, clean, JSXMap, getObjectDisplay, ContextFiltersToQueryFilters, contextFilterToObject } from '../../../Tool'
 import { FilterOutlined, SortAscendingOutlined, SortDescendingOutlined } from '@ant-design/icons';
 import { Field } from '../Field';
 import { Model } from '../Model';
@@ -19,59 +17,6 @@ const { Option } = Select;
 const { Text } = Typography;
 
 var _ = require('lodash');
-
-const useStyles = createUseStyles({
-    collapse: {
-        '& .ant-collapse-content > .ant-collapse-content-box': {
-            padding: "0px"
-        },
-        '&.ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow': {
-            top: "-3px",
-            left: "10px"
-        },
-        '&.ant-collapse > .ant-collapse-item > .ant-collapse-header': {
-            padding: "4px 10px",
-            paddingLeft: "30px"
-        }
-    },
-    cardSmall: {
-        '& .ant-card-body': {
-            padding: "0px"
-        }
-    },
-    cardSmallHeader: {
-        '& .ant-card-body': {
-            paddingLeft: "0px",
-            paddingRight: "0px"
-        }
-    },
-    smallTable: {
-        '& .ant-table .ant-table-tbody > tr > td': {
-            padding: "4px 8px",
-            fontSize: '12px'
-        },
-        '& .ant-table .ant-table-thead > tr > th': {
-            padding: "4px 8px",
-            fontSize: "13px"
-        }
-    },
-    whiteCell: {
-        '&.ant-table-cell-fix-right': {
-            backgroundColor: "white"
-        }
-    },
-    listItemClass: {
-        '&.ant-list-item': {
-            display: "flex",
-            borderBottom: "none",
-            padding: "6px 0"
-        },
-        '&.ant-list-item .ant-list-item-action': {
-            marginLeft: "0px",
-            marginTop: "8px",
-        }
-    }
-})
 
 export function SortingFieldsUI(props) {
     const { filters, value, onChange } = props;
@@ -154,8 +99,7 @@ export function FiltersFieldsUI(props) {
     )
 }
 
-function DefaultCollectionServer(props) {
-    const classes = useStyles()
+function DefaultCollection(props) {
     const {
         auth,
         name,
@@ -164,11 +108,7 @@ function DefaultCollectionServer(props) {
         title,
 
         modelActions,
-        // defaultModelActions,
-        // defaultModelActionMeta,
         collectionActions,
-        // defaultCollectionActions,
-        // defaultCollectionActionMeta,
 
         linksModelActions,
         // linksCollectionActions,
@@ -179,34 +119,22 @@ function DefaultCollectionServer(props) {
         linksCompareFunction,
 
         selection, // undefined, "radio" или "checkbox"
-        mode, // table, list
+
         render,
         customRender,
         collectionRef,
-        titleFunc,
         contextFilters,
         subscribe,
 
-        onCollectionChange,
         // Collection Only Events
         onChange,   // |
         value,      // | AntFrom Item Api
         getSelectedOnly,
 
-        // Collection and Model Events
-        onValues, // (values, context) => { }, // если без return то просто как событие, если внутри return то замена данных
-        onData,   // (values, context) => { }, // если без return то просто как событие, если внутри return то замена данных
-        onClose,   // ({unlock, close}, context) => { },
-        onError,  // (err, type, {unlock, close}) => {},
-        onDispatch, // (values, context) => {}, // если не возвращает значения то посленеё будет вызван внутренний setCollection, 
-        // если вернет функцию в качестве значения то эта функция будет вызвана вместо setCollection 
-        // и в неё будет передано значение нового состояния
-
         onChangeRequestParameters,
         partialReplacement
     } = props;
 
-    // const PartialReplacementFunc = useCollectionPartialReplacement(fieldName, partialReplacement)
     const PartialReplacementFunc = useCollectionPartialReplacement(name, partialReplacement)
 
     const defFilters = (filters) => {
@@ -242,7 +170,7 @@ function DefaultCollectionServer(props) {
     const fltrs = (props.filters) ? props.filters() : [];
     const meta = useMetaContext();
     const [loading, setLoading] = useState(false);
-    const [collection, _setCollection] = useState([]);
+    const [collection, setCollection] = useState([]);
     const [funcStat, setFuncStat] = useState();
     const [state, setState] = useState({
         filter: defFilters((props.filters) ? fltrs : []),
@@ -317,35 +245,6 @@ function DefaultCollectionServer(props) {
         }
     }, [name, meta]);
 
-    // const setDefaultFilters = React.useCallback((filters) => {
-    //     if (filters && filters.length) {
-    //         let filtr = defFilters(filters)//{ ...state.filter };
-    //         setState({ ...state, filterChanged: false, newFilter: filtr, filter: filtr });
-
-    //         let sorted = defSorting(filters)//{ name: "", order: "ASC" }
-    //         setSorting(sorted);
-
-    //         setCurrent(1);
-    //     }
-    // }, [state])
-    // useEffect(() => {
-    //     setDefaultFilters(filters)
-    // }, [filters])
-
-    const setCollection = React.useCallback((array) => {
-        _setCollection(array);
-        // console.log(array);
-        if (onCollectionChange) {
-            onCollectionChange(array);
-        }
-    }, [collection]);
-    const setCollectionItem = React.useCallback((item) => {
-        setCollection(updateInArray(collection, item));
-    }, [collection]);
-    const removeCollectionItem = React.useCallback((item) => {
-        setCollection(deleteInArray(collection, item));
-    }, [collection]);
-
     const clearFilter = React.useCallback(() => {
         setFuncStat(undefined);
         setState({ ...state, filterChanged: false, newFilter: {}, filter: {} });
@@ -395,8 +294,6 @@ function DefaultCollectionServer(props) {
     // FunctionQueue.next();
 
     const request = React.useMemo(() => (filter) => {
-        // if (!filters || !filters.length) return;
-
         // NNU = "nnu"     // not-null
         // NU = "nu"      // null
         // EQ = "eq"      // equals
@@ -423,24 +320,6 @@ function DefaultCollectionServer(props) {
         }
 
         let ctxFlt = ContextFiltersToQueryFilters(contextFilters)
-        // let ctxFlt = [];
-        // if (contextFilters) {
-        //     let ctx = clean(contextFilters());
-        //     if (_.isArray(ctx)) {
-        //         ctx.forEach(item => {
-        //             if (item) {
-        //                 if (_.isObject(item)) {
-        //                     let keyName = (item.name.endsWith('ID') === true) ? item.name.slice(0, -2) + ".ID" : item.name;
-        //                     ctxFlt.push(QueryParam("w-" + ((item.method) ? item.method + "-" : "eq-") + keyName, item.value))
-        //                 } else if (_.isFunction(item)) {
-        //                     ctxFlt.push(item())
-        //                 } else if (_.isString(item)) {
-        //                     ctxFlt.push(item)
-        //                 }
-        //             }
-        //         });
-        //     }
-        // }
 
         let flt = [];
         Object.keys(filter).forEach(key => {
@@ -611,7 +490,6 @@ function DefaultCollectionServer(props) {
     }, [request, state.filter]);
 
     useEffect(() => {
-        // console.log("request start", state.filter, sorting);
         request(state.filter);
     }, [source, name, state.filter, filters, sorting, current, contextFilters]);
 
@@ -635,8 +513,6 @@ function DefaultCollectionServer(props) {
                     msg,
                     collection,
                     setCollection,
-                    setCollectionItem,
-                    removeCollectionItem,
                     request: () => request(state.filter),
                     state,
                 });
@@ -645,7 +521,7 @@ function DefaultCollectionServer(props) {
                 unsubscribe(token);
             };
         }
-    }, [subscribe, collection, _setCollection, setCollectionItem, removeCollectionItem, request, state]);
+    }, [subscribe, collection, setCollection, request, state]);
 
     // ---- AntFrom Item Api ----
     const triggerChange = (value) => {
@@ -654,47 +530,6 @@ function DefaultCollectionServer(props) {
         }
     };
     //---------------------------
-    
-    const columns = () => {
-        var c = [];
-
-        let tmp = (props.columns) ? props.columns({
-            auth,
-            collection,
-            setCollection: setCollection,
-            request: (values, itemAction) => Request(values, itemAction, {
-                auth,
-                collection,
-                setCollection: setCollection,
-                onData: onData || ((values) => values.data),
-
-                // index,
-                lock,
-                unlock,
-                // close,
-                onValues,
-                onClose,
-                onError,
-                onDispatch
-            })
-        }) : [];
-        for (let i = 0; i < tmp.length; i++) {
-            const cx = tmp[i];
-            c.push(cx);
-        }
-        if (modelActions) {
-            c.push({
-                className: classes.whiteCell,
-                title: '',
-                dataIndex: '',
-                key: 'x',
-                fixed: 'right',
-                width: 45,
-                render: (text, record, index) => RenderOnModelActions(record, index)
-            });
-        }
-        return c;
-    };
     const defaultModelAction = React.useCallback((item, index) => (!name) ? [] : [
         {
             key: "update",
@@ -820,7 +655,6 @@ function DefaultCollectionServer(props) {
             meta: mobject,
         }
     ], [auth, collection, collectionActions, name, mobject]);
-
     const RenderOnCollectionActions = React.useCallback(() => {
 
         let defaultAction = defaultCollectionAction();
@@ -832,8 +666,6 @@ function DefaultCollectionServer(props) {
                 return (e({
                     collection,
                     setCollection,
-                    setCollectionItem,
-                    removeCollectionItem,
                     onSelection,
                     isSelected,
                     lock,
@@ -863,24 +695,7 @@ function DefaultCollectionServer(props) {
             />)
         });
     }, [auth, collection, collectionActions, name, mobject, defaultCollectionAction]);
-    const selectionConfig = (selectionType) => {
-        if (!selection) return {};
-        return {
-            rowSelection: {
-                type: selectionType,
-                selectedRowKeys,
-                onChange: (selectedRowKeys, selectedRows) => {
-                    setSelectedRowKeys(selectedRowKeys);
-                    setSelectedRows(selectedRows);
-                    if (!getSelectedOnly) {
-                        triggerChange(_.unionBy([...value], selectedRows, 'ID'));
-                    } else {
-                        triggerChange(selectedRows);
-                    }
-                },
-            }
-        }
-    };
+
     const onSelection = (item) => {
         if (!selection || !item) return;
         if (selectionType === "radio") {
@@ -925,8 +740,6 @@ function DefaultCollectionServer(props) {
             collectionRef.current = {
                 collection,
                 setCollection,
-                setCollectionItem,
-                removeCollectionItem,
                 onSelection,
                 isSelected,
                 lock,
@@ -937,8 +750,6 @@ function DefaultCollectionServer(props) {
         }
     }, [collection,
         setCollection,
-        setCollectionItem,
-        removeCollectionItem,
         loading,
         update])
 
@@ -948,8 +759,6 @@ function DefaultCollectionServer(props) {
                 return render(item, index, {
                     collection,
                     setCollection,
-                    setCollectionItem,
-                    removeCollectionItem,
                     update
                 });
             }
@@ -963,74 +772,26 @@ function DefaultCollectionServer(props) {
             }
             return {};
         };
-
-        // if (customRender) {
-        //     return customRender(items, {
-        //         collection,
-        //         setCollection,
-        //         setCollectionItem,
-        //         removeCollectionItem,
-        //         update,
-        //         //subscribe !!!!
-        //     })
-        // }
-
-        if (mode === "list") {
-            return (<div className='filtered-list'>
-                {/* <SpinLoading visible={loading} /> */}
-                {/* {loading && <Spin tip="Загрузка" />} */}
-                <List
-                    loading={loading}
-                    locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Нет данных" /> }}
-                    itemLayout="horizontal"
-                    dataSource={items}
-                    renderItem={((item, index) => (
-                        <List.Item key={index} className={classes.listItemClass} {...actions(item, index)} style={{ backgroundColor: (isSelected(item)) ? "#e6f7ff" : "transparent", alignItems: "self-start" }} onClick={() => onSelection(item, index)}>
-                            {_render(item, index)}
-                        </List.Item>
-                    ))} />
-            </div>
-            );
-        }
-        return (
-            <Table
-                scroll={{ x: "auto" }}
+        return (<div className='filtered-list'>
+            {/* <SpinLoading visible={loading} /> */}
+            {/* {loading && <Spin tip="Загрузка" />} */}
+            <List
                 loading={loading}
-                pagination={false}
-                columns={columns()}
-                rowKey={r => r.ID}
-                dataSource={(items && items.length) ? items : undefined}
-                locale={{
-                    emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={"Нет данных"}></Empty>
-                }}
-                size="small"
-                {...selectionConfig(selectionType)}
-            />
+                locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Нет данных" /> }}
+                itemLayout="horizontal"
+                dataSource={items}
+                renderItem={((item, index) => (
+                    <List.Item key={uuid() /*item?.ID || index*/} {...actions(item, index)} style={{ backgroundColor: (isSelected(item)) ? "#e6f7ff" : "transparent", alignItems: "self-start" }} onClick={() => onSelection(item, index)}>
+                        {_render(item, index)}
+                    </List.Item>
+                ))} />
+        </div>
         );
-    };
-    const titleView = () => {
-        if (title || titleFunc) {
-            if (titleFunc) {
-                return titleFunc(title)
-            } else {
-                return <div style={{
-                    color: "rgba(0, 0, 0, 0.85)",
-                    fontWeight: "500",
-                    fontSize: "16px"
-                }}>
-                    {title}
-                </div>
-                return <Divider type="horizontal" orientation="left">{title}</Divider>
-            }
-        }
-        return <React.Fragment></React.Fragment>
     };
 
     const customProps = {
         collection,
         setCollection,
-        setCollectionItem,
-        removeCollectionItem,
         collectionActions: () => (collectionActions) ? clean(unwrap(collectionActions({ mobject, name, field, fieldName, contextObject, collection, actions: defaultCollectionAction }))) : undefined,
         modelActions: (item, index) => (modelActions) ? clean(unwrap(modelActions(item, index, { mobject, name, field, fieldName, contextObject, collection, actions: defaultModelAction }))) : undefined,
         onSelection,
@@ -1064,7 +825,7 @@ function DefaultCollectionServer(props) {
                     <div style={{ flex: "auto", paddingRight: "15px", display: "flex", gap: "5px" }}>
                         {RenderOnCollectionActions()}
                     </div>
-                    {(filters && filters.length > 0 /*&& collection && collection.length > 0*/) && <div justify="end">
+                    {(filters && filters.length > 0) && <div justify="end">
                         <Tooltip title="Фильтр и сортировка">
                             <CheckableTag
                                 style={{ cursor: "pointer", margin: "0" }}
@@ -1087,14 +848,14 @@ function DefaultCollectionServer(props) {
                                 {...customProps}
                             />
                         </div>}
-                        {(!customRender && !PartialReplacementFunc) && <Card size="small" bordered={false} className={classes.cardSmall} style={{ width: "100%" }}>
+                        {(!customRender && !PartialReplacementFunc) && <Card size="small" bordered={false} style={{ width: "100%" }}>
                             <div>
-                                {titleView()}
+                                {title}
                                 {view(collection)}
                             </div>
                         </Card>}
                     </div>
-                    {((filters && filters.length > 0 /*&& collection && collection.length > 0*/) && filtered) &&
+                    {((filters && filters.length > 0) && filtered) &&
                         <Sider width={240} theme={"light"} style={{ margin: "0 0px 5px 10px" }} className="filtered-sider">
                             {JSX(() => {
                                 const fl = filters?.filter(i => i.filter);
@@ -1114,7 +875,7 @@ function DefaultCollectionServer(props) {
                             <FiltersFieldsUI auth={auth} value={state.newFilter} onChange={onFilterChange} filters={filters} funcs={funcStat} />
                         </Sider>}
                 </Layout>
-                {(!!count && !!total && totalPages && totalPages > 1) && <Card size="small" bordered={false} className={classes.cardSmall} style={{ display: "flex", justifyContent: "flex-end", paddingTop: "10px", paddingBottom: "10px" }}>
+                {(!!count && !!total && totalPages && totalPages > 1) && <Card size="small" bordered={false} style={{ display: "flex", justifyContent: "flex-end", paddingTop: "10px", paddingBottom: "10px" }}>
                     <Pagination className="filtered-pagination" size="small"
                         current={current}
                         onChange={setCurrent}
@@ -1129,7 +890,7 @@ function DefaultCollectionServer(props) {
     );
 }
 
-export function CollectionServer(props) {
+export function Collection(props) {
     const { name, fieldName, fullReplacement } = props;
     // const FullReplacementFunc = useCollectionFullReplacement(fieldName, fullReplacement)
     const FullReplacementFunc = useCollectionFullReplacement(name, fullReplacement)
@@ -1141,7 +902,7 @@ export function CollectionServer(props) {
         </div>)
     }
     return (
-        <DefaultCollectionServer
+        <DefaultCollection
             {...props}
         />
     )
