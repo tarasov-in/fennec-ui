@@ -360,16 +360,6 @@ function Frm(props) {
         );
     }
 
-    if (fullReplacementFunc) {
-        return (<div className='model full-replacement'>
-            <fullReplacementFunc
-                {...props}
-                properties={properties}
-                propertiesFiltered={propertiesFiltered}
-                propertiesOneMany={propertiesOneMany}
-            />
-        </div>)
-    }
     return (
         <div className='model default-model'>
             <div>
