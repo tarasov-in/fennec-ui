@@ -9,7 +9,7 @@ import Icofont from 'react-icofont';
 import styles from './index.less'
 import { EyeInvisibleOutline, EyeOutline } from 'antd-mobile-icons'
 import ImageEditor from '../ImageEditor';
-import { useFieldPartialReplacement, useFieldReplacement } from '../../../ComponetsReplacement';
+import { useFieldFullReplacement, useFieldPartialReplacement, useFieldReplacement } from '../../../ComponetsReplacement';
 
 var _ = require('lodash');
 
@@ -1445,6 +1445,7 @@ export function FieldMobile({ auth, item, value, onChange, onAfterChange, change
     fullReplacement, contextObject, objectName }) {
     // const FullReplacementFunc = useFieldReplacement(item?.name, fullReplacement)
      // const FullReplacementFunc = useFieldFullReplacement(item?.name, fullReplacement)
+     let type = ((item.view) ? item.view.type : undefined) || item.type;
      const FullReplacementFunc = useFieldFullReplacement(type, fullReplacement)
      if (FullReplacementFunc) {
          return (<FullReplacementFunc auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed} />)
