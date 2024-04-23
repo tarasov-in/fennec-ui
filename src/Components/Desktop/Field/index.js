@@ -748,7 +748,8 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
                 style={{
                     overflow: "hidden",
                     textOverflow: "ellipsis",
-                    whiteSpace: "nowrap"
+                    whiteSpace: "nowrap",
+                    width: "100%"
                 }}
                 allowClear={true}
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
@@ -1110,6 +1111,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed, contextOb
                 suffix={(loading) ? <Spin size="small" /> : suffix(item, itemByProperty(item, value))}
                 size={(item.size) ? item.size : "middle"}
                 allowClear={true}
+                style={{ width: "100%"}}
                 // readOnly
                 onChange={e => clear(e.target.value)}
                 value={displayString(item, itemByProperty(item, value))}
