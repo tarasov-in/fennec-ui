@@ -7,7 +7,7 @@ import {
     Drawer
 } from 'antd';
 import Icofont from 'react-icofont';
-import { GetMeta, GetMetaProperties, formItemRules, isRequired, validator, getObjectDisplay, uncapitalize, getObjectValue, QueryDetail, QueryOrder, clean, QueryParam, queryFiltersToContextFilter, contextFilterToObject } from '../../../Tool';
+import { GetMeta, GetMetaProperties, formItemRules, isRequired, validator, getObjectDisplay, uncapitalize, getObjectValue, QueryDetail, QueryOrder, clean, QueryParam, queryFiltersToContextFilter, contextFilterToObject, QueryFiltersToContextFilters } from '../../../Tool';
 import { Field } from '../Field';
 import { useFormObserverContext, useMetaContext } from '../../Context';
 import { CollectionServer } from '../CollectionServer';
@@ -206,9 +206,9 @@ function Frm(props) {
                                             name: p,
                                             value: object.ID
                                         },
-                                        ...((_.isArray(queryFilter)) ? queryFilter : [])
+                                        ...QueryFiltersToContextFilters(queryFilter)
                                     ] : [
-                                        ...((_.isArray(queryFilter)) ? queryFilter : [])
+                                        ...QueryFiltersToContextFilters(queryFilter)
                                     ]}
                                     filters={() => filtersFromMeta(n)}
                                     mode="list"

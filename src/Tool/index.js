@@ -312,6 +312,17 @@ export const equals = (obj1, obj2) => {
     return true;
 }
 //--------------------------------------------------------------
+// ctx = { meropiyatieID: 1 }
+// contextFilters = [{
+//     name: "",
+//     value: ""
+// }]
+// queryFilters = [
+//     QueryDetail()
+//     QueryOrder()
+//     QueryParam()
+// ]
+//--------------------------------------------------------------
 export const contextFilterToObject = (contextFilters) => {
     let ctxFlt = {};
     if (contextFilters) {
@@ -338,7 +349,7 @@ export const contextFilterToObject = (contextFilters) => {
 
 export const contextFilterToQueryFilters = (item) => {
     if (_.isObject(item)) {
-        let keyName = (item.name.endsWith('ID') === true) ? item.name.slice(0, -2) + ".ID" : item.name;
+        let keyName = (item.name.endsWith('ID') === true && item.name.endsWith('.ID') !== true) ? item.name.slice(0, -2) + ".ID" : item.name;
         return QueryParam("w-" + ((item.method) ? item.method + "-" : "eq-") + keyName, item.value)
     } else if (_.isFunction(item)) {
         return item()
@@ -374,7 +385,7 @@ export const queryFiltersToContextFilter = (item) => {
         let nameValue = item.split("=")
         if (nameValue.length >= 2) {
             let fieldNameArr = nameValue[0].split("-")
-            if (fieldNameArr.length > 0) {
+            if (fieldNameArr.length > 1 && fieldNameArr[0] === "w") {
                 return {
                     name: fieldNameArr[fieldNameArr.length - 1]?.trim(),
                     value: nameValue[1]?.trim()
@@ -409,7 +420,7 @@ export const ObjectToQueryParam = (object, method) => {
     for (let i = 0; i < array.length; i++) {
         const element = array[i];
         if (element) {
-            let keyName = (element[0].endsWith('ID') === true) ? element[0].slice(0, -2) + ".ID" : element[0];
+            let keyName = (element[0].endsWith('ID') === true && element[0].endsWith('.ID') !== true) ? element[0].slice(0, -2) + ".ID" : element[0];
             f.push(QueryParam(`w-${keyName}`, element[1]));
         }
     }
@@ -421,7 +432,7 @@ export const ObjectToContextFilters = (obj, method) => {
     for (const key in obj) {
         if (Object.hasOwnProperty.call(obj, key)) {
             const value = obj[key];
-            let keyName = key;//(key.endsWith('ID') === true) ? key.slice(0, -2) + ".ID" : key;
+            let keyName = key;
             if (value) {
                 contextFilters.push({ name: keyName, value: value, method: method });
             }
@@ -435,7 +446,7 @@ export const queryFilterByItem = (item) => {
     for (const key in item) {
         if (Object.hasOwnProperty.call(item, key)) {
             const value = item[key];
-            let keyName = (key.endsWith('ID') === true) ? key.slice(0, -2) + ".ID" : key;
+            let keyName = (key.endsWith('ID') === true && key.endsWith('.ID') !== true) ? key.slice(0, -2) + ".ID" : key;
             if (value) {
                 query.push("w-" + keyName + "=" + value);
             }
