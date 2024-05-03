@@ -14,6 +14,7 @@ import 'moment/locale/ru';
 import uuid from 'react-uuid';
 import { ModelMobile } from '../ModelMobile';
 import { useCollectionFullReplacement, useCollectionPartialReplacement } from '../../../ComponetsReplacement';
+import { collectionQueryParams } from '../../Desktop/CollectionServer';
 
 var _ = require('lodash');
 const Item = List.Item;
@@ -498,117 +499,118 @@ function DefaultCollectionServer(props) {
         // IN = "in"      // in
         // NIN = "nin"     // not-in
 
-        let ctxFlt = ContextFiltersToQueryFilters(contextFilters)
+        // let ctxFlt = ContextFiltersToQueryFilters(contextFilters)
 
-        let flt = [];
-        Object.keys(state.filter).forEach(key => {
-            var item = filters?.find(e => e.name == key);
-            if (item) {
-                let filterByKey = state.filter[key];
-                switch (item?.filterType) {
-                    case "group":
-                        switch (item?.type) {
-                            case "object":
-                            case "document":
-                                flt.push(QueryParam("w-in-" + key, filterByKey))
-                                break;
-                            default:
-                                flt.push(QueryParam("w-in-" + key, filterByKey))
-                                break;
-                        }
-                        break;
-                    case "range":
-                        switch (item?.type) {
-                            case "int":
-                            case "uint":
-                            case "integer":
-                            case "int64":
-                            case "int32":
-                            case "uint64":
-                            case "uint32":
-                                if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-                                    flt.push(QueryParam("w-lge-" + key, filterByKey[0]))
-                                    flt.push(QueryParam("w-lwe-" + key, filterByKey[1]))
-                                }
-                                break;
-                            case "double":
-                            case "float":
-                            case "float64":
-                            case "float32":
-                                if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-                                    flt.push(QueryParam("w-lge-" + key, filterByKey[0]))
-                                    flt.push(QueryParam("w-lwe-" + key, filterByKey[1]))
-                                }
-                                break;
-                            case "time":
-                                if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-                                    flt.push(QueryParam("w-lge-" + key, filterByKey[0].format("HH:mm:ss")))
-                                    flt.push(QueryParam("w-lwe-" + key, filterByKey[1].format("HH:mm:ss")))
-                                }
-                                break;
-                            case "date":
-                                if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-                                    flt.push(QueryParam("w-lge-" + key, filterByKey[0].format("YYYY-MM-DD")))
-                                    flt.push(QueryParam("w-lwe-" + key, filterByKey[1].format("YYYY-MM-DD")))
-                                }
-                                break;
-                            case "datetime":
-                            case "time.Time":
-                                if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-                                    flt.push(QueryParam("w-lge-" + key, filterByKey[0].format("YYYY-MM-DD HH:mm")))
-                                    flt.push(QueryParam("w-lwe-" + key, filterByKey[1].format("YYYY-MM-DD HH:mm")))
-                                }
-                                break;
-                            default:
-                                if (item?.queryComparer) {
-                                    flt.push(QueryParam(`w-${item?.queryComparer}-` + key, filterByKey))
-                                } else {
-                                    flt.push(QueryParam("w-" + key, filterByKey))
-                                }
-                                break;
-                        }
-                        break;
-                    default:
-                        switch (item?.type) {
-                            // queryComparer:"sim", // wsim, swsim
-                            case "string":
-                                flt.push(QueryParam(`w-${item?.queryComparer || "co"}-` + key, filterByKey))
-                                break;
-                            case "time":
-                                flt.push(QueryParam("w-eq-" + key, filterByKey.format("HH:mm:ss")))
-                                break;
-                            case "date":
-                                flt.push(QueryParam("w-eq-" + key, filterByKey.format("YYYY-MM-DD")))
-                                break;
-                            case "datetime":
-                            case "time.Time":
-                                flt.push(QueryParam("w-eq-" + key, filterByKey.format("YYYY-MM-DD HH:mm")))
-                                break;
-                            case "func":
-                                flt.push(QueryParam(`${item?.queryPrefix || ""}` + key, filterByKey))
-                                break;
-                            default:
-                                if (item?.queryComparer) {
-                                    flt.push(QueryParam(`w-${item?.queryComparer}-` + key, filterByKey))
-                                } else {
-                                    flt.push(QueryParam("w-" + key, filterByKey))
-                                }
-                                break;
-                        }
-                        break;
-                }
-            }
-        });
+        // let flt = [];
+        // Object.keys(state.filter).forEach(key => {
+        //     var item = filters?.find(e => e.name == key);
+        //     if (item) {
+        //         let filterByKey = state.filter[key];
+        //         switch (item?.filterType) {
+        //             case "group":
+        //                 switch (item?.type) {
+        //                     case "object":
+        //                     case "document":
+        //                         flt.push(QueryParam("w-in-" + key, filterByKey))
+        //                         break;
+        //                     default:
+        //                         flt.push(QueryParam("w-in-" + key, filterByKey))
+        //                         break;
+        //                 }
+        //                 break;
+        //             case "range":
+        //                 switch (item?.type) {
+        //                     case "int":
+        //                     case "uint":
+        //                     case "integer":
+        //                     case "int64":
+        //                     case "int32":
+        //                     case "uint64":
+        //                     case "uint32":
+        //                         if (_.isArray(filterByKey) && filterByKey.length >= 2) {
+        //                             flt.push(QueryParam("w-lge-" + key, filterByKey[0]))
+        //                             flt.push(QueryParam("w-lwe-" + key, filterByKey[1]))
+        //                         }
+        //                         break;
+        //                     case "double":
+        //                     case "float":
+        //                     case "float64":
+        //                     case "float32":
+        //                         if (_.isArray(filterByKey) && filterByKey.length >= 2) {
+        //                             flt.push(QueryParam("w-lge-" + key, filterByKey[0]))
+        //                             flt.push(QueryParam("w-lwe-" + key, filterByKey[1]))
+        //                         }
+        //                         break;
+        //                     case "time":
+        //                         if (_.isArray(filterByKey) && filterByKey.length >= 2) {
+        //                             flt.push(QueryParam("w-lge-" + key, filterByKey[0].format("HH:mm:ss")))
+        //                             flt.push(QueryParam("w-lwe-" + key, filterByKey[1].format("HH:mm:ss")))
+        //                         }
+        //                         break;
+        //                     case "date":
+        //                         if (_.isArray(filterByKey) && filterByKey.length >= 2) {
+        //                             flt.push(QueryParam("w-lge-" + key, filterByKey[0].format("YYYY-MM-DD")))
+        //                             flt.push(QueryParam("w-lwe-" + key, filterByKey[1].format("YYYY-MM-DD")))
+        //                         }
+        //                         break;
+        //                     case "datetime":
+        //                     case "time.Time":
+        //                         if (_.isArray(filterByKey) && filterByKey.length >= 2) {
+        //                             flt.push(QueryParam("w-lge-" + key, filterByKey[0].format("YYYY-MM-DD HH:mm")))
+        //                             flt.push(QueryParam("w-lwe-" + key, filterByKey[1].format("YYYY-MM-DD HH:mm")))
+        //                         }
+        //                         break;
+        //                     default:
+        //                         if (item?.queryComparer) {
+        //                             flt.push(QueryParam(`w-${item?.queryComparer}-` + key, filterByKey))
+        //                         } else {
+        //                             flt.push(QueryParam("w-" + key, filterByKey))
+        //                         }
+        //                         break;
+        //                 }
+        //                 break;
+        //             default:
+        //                 switch (item?.type) {
+        //                     // queryComparer:"sim", // wsim, swsim
+        //                     case "string":
+        //                         flt.push(QueryParam(`w-${item?.queryComparer || "co"}-` + key, filterByKey))
+        //                         break;
+        //                     case "time":
+        //                         flt.push(QueryParam("w-eq-" + key, filterByKey.format("HH:mm:ss")))
+        //                         break;
+        //                     case "date":
+        //                         flt.push(QueryParam("w-eq-" + key, filterByKey.format("YYYY-MM-DD")))
+        //                         break;
+        //                     case "datetime":
+        //                     case "time.Time":
+        //                         flt.push(QueryParam("w-eq-" + key, filterByKey.format("YYYY-MM-DD HH:mm")))
+        //                         break;
+        //                     case "func":
+        //                         flt.push(QueryParam(`${item?.queryPrefix || ""}` + key, filterByKey))
+        //                         break;
+        //                     default:
+        //                         if (item?.queryComparer) {
+        //                             flt.push(QueryParam(`w-${item?.queryComparer}-` + key, filterByKey))
+        //                         } else {
+        //                             flt.push(QueryParam("w-" + key, filterByKey))
+        //                         }
+        //                         break;
+        //                 }
+        //                 break;
+        //         }
+        //     }
+        // });
 
-        let func = [];
-        filters?.forEach(item => {
-            if (item.func && _.isArray(item.func)) {
-                item.func.forEach(fu => {
-                    func.push(QueryFunc(fu, item.name))
-                });
-            }
-        });
+        // let func = [];
+        // filters?.forEach(item => {
+        //     if (item.func && _.isArray(item.func)) {
+        //         item.func.forEach(fu => {
+        //             func.push(QueryFunc(fu, item.name))
+        //         });
+        //     }
+        // });
 
+        let queryParams = collectionQueryParams(filters, contextFilters, state.filter, state.sorting, state.current, count, queryDetail);
         if (source && _.isFunction(source)) {
             // lock();
             source({
@@ -632,15 +634,7 @@ function DefaultCollectionServer(props) {
             });
         } else if (source && !_.isFunction(source)) {
             lock();
-            GETWITH(auth, source, [
-                QueryDetail(queryDetail || "model"),
-                QueryParam(`page`, state.current),
-                QueryParam(`count`, count),
-                If(state.sorting.name, QueryParam(`s-${state.sorting.name}`, state.sorting.order)),
-                ...flt,
-                ...func,
-                ...ctxFlt
-            ], ({ data }) => {
+            GETWITH(auth, source, queryParams, ({ data }) => {
                 if (!funcStat) {
                     setFuncStat(data?.stat);
                 }
@@ -651,15 +645,7 @@ function DefaultCollectionServer(props) {
             }, (err) => errorCatch(err, unlock));
         } else {
             lock();
-            READWITH(auth, name, [
-                QueryDetail(queryDetail || "model"),
-                QueryParam(`page`, state.current),
-                QueryParam(`count`, count),
-                If(state.sorting.name, QueryParam(`s-${state.sorting.name}`, state.sorting.order)),
-                ...flt,
-                ...func,
-                ...ctxFlt
-            ], ({ data }) => {
+            READWITH(auth, name, queryParams, ({ data }) => {
                 if (!funcStat) {
                     setFuncStat(data?.stat);
                 }

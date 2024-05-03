@@ -427,7 +427,7 @@ export const ObjectToQueryParam = (object, method) => {
     return f
 }
 export const ObjectToContextFilters = (obj, method) => {
-    if (!obj) return "";
+    if (!obj) return [];
     let contextFilters = [];
     for (const key in obj) {
         if (Object.hasOwnProperty.call(obj, key)) {
@@ -441,7 +441,7 @@ export const ObjectToContextFilters = (obj, method) => {
     return contextFilters;
 }
 export const queryFilterByItem = (item) => {
-    if (!item) return "";
+    if (!item) return [];
     let query = [];
     for (const key in item) {
         if (Object.hasOwnProperty.call(item, key)) {
@@ -874,6 +874,8 @@ export const Request = (values, item, props) => {
         auth,
         collection,
         setCollection,
+        collectionRef,
+        updateCollection,
         contextFilters,
         property,
         label,
@@ -897,6 +899,8 @@ export const Request = (values, item, props) => {
             index,
             collection,
             setCollection,
+            collectionRef,
+            updateCollection,
             contextFilters,
             property,
             label,

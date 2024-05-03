@@ -364,6 +364,8 @@ export function Action(props) {
             {
                 auth: props.auth,
                 collection: props.collection || [],
+                collectionRef: props?.collectionRef,
+                updateCollection: props?.updateCollection,
                 setCollection: props.setCollection || (() => { }),
                 contextFilters,
                 property: props.property || (() => { }),
@@ -376,7 +378,7 @@ export function Action(props) {
                 close,
             }
         );
-    }, [modify, form, isFormData, callback, props.action, props.document, props.collection, props.setCollection, props.contextFilters, props.auth]);
+    }, [modify, form, isFormData, callback, props.action, props.document, props.collection, props.collectionRef, props.updateCollection, props.setCollection, props.contextFilters, props.auth]);
     // ---------------------------------
     const prev = React.useCallback(() => {
         if (currentStep > 0) {
