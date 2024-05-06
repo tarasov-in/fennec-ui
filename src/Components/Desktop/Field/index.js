@@ -332,7 +332,7 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed, context
                 return item.relation.displayString(value)
             } else {
                 let labeldisplay = label(item, value);
-                if(_.isString(labeldisplay)){
+                if (_.isString(labeldisplay)) {
                     return labeldisplay;
                 }
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
@@ -348,8 +348,8 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed, context
                 return item.display(value)
             } else if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
                 return item.relation.display(value)
-            } else if(PartialReplacementFunc){
-                return PartialReplacementFunc({item, value, changed, contextObject, objectName})
+            } else if (PartialReplacementFunc) {
+                return PartialReplacementFunc({ item, value, changed, contextObject, objectName })
             } else {
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
                 let _display = ((item?.relation?.display?.fields) ? item?.relation?.display : undefined) || ((fieldMeta?.display?.fields) ? fieldMeta?.display : undefined)
@@ -616,7 +616,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
                 return item.relation.displayString(value)
             } else {
                 let labeldisplay = label(item, value);
-                if(_.isString(labeldisplay)){
+                if (_.isString(labeldisplay)) {
                     return labeldisplay;
                 }
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
@@ -632,8 +632,8 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
                 return item.display(value)
             } else if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
                 return item.relation.display(value)
-            } else if(PartialReplacementFunc){
-                return PartialReplacementFunc({item, value, changed, contextObject, objectName})
+            } else if (PartialReplacementFunc) {
+                return PartialReplacementFunc({ item, value, changed, contextObject, objectName })
             } else {
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
                 let _display = ((item?.relation?.display?.fields) ? item?.relation?.display : undefined) || ((fieldMeta?.display?.fields) ? fieldMeta?.display : undefined)
@@ -881,8 +881,8 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed, contextOb
                 return item.display(value)
             } else if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
                 return item.relation.display(value)
-            } else if(PartialReplacementFunc){
-                return PartialReplacementFunc({item, value, changed, contextObject, objectName})
+            } else if (PartialReplacementFunc) {
+                return PartialReplacementFunc({ item, value, changed, contextObject, objectName })
             } else {
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
                 let _display = ((item?.relation?.display?.fields) ? item?.relation?.display : undefined) || ((fieldMeta?.display?.fields) ? fieldMeta?.display : undefined)
@@ -899,7 +899,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed, contextOb
                 return item.relation.displayString(value)
             } else {
                 let labeldisplay = display(item, value);
-                if(_.isString(labeldisplay)){
+                if (_.isString(labeldisplay)) {
                     return labeldisplay;
                 }
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
@@ -992,23 +992,22 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed, contextOb
                 loading,
                 update
             }) => {
+                // console.log(value, items);
                 return (
                     <div>
-                        {(value && value.filter(e => !!e).length > 0) && <div>
+                        {(value && value.filter(e => !!e && items.filter(c => c.ID === e.ID) <= 0).length > 0) && <div>
                             <div style={{ fontWeight: "lighter" }}>Сейчас выбрано</div>
                             {JSXMap(value, (i, idx) => <div key={idx}>{display(item, i)}</div>)}
+                            <div style={{ fontWeight: "lighter", paddingTop: "10px" }}>Можно выбрать из</div>
                         </div>}
-                        <div style={{ paddingTop: "10px" }}>
-                            <div style={{ fontWeight: "lighter" }}>Можно выбрать из</div>
-                            <div style={{ display: "flex", flexDirection: "column" }}>
-                                <Spin spinning={loading} style={{ paddingTop: "15px", paddingBottom: "15px" }} />
-                                {JSXMap(items, (o, oidx) => {
-                                    return (<div key={oidx} onClick={(e) => { e.stopPropagation(); onSelection(o); }}
-                                        className={`bg ${(isSelected(o)) ? "bg-blue dark-3" : "bg-grey-hover light"} pointer`} style={{ textAlign: "left" }}>
-                                        {display(item, o)}
-                                    </div>)
-                                })}
-                            </div>
+                        <div style={{ display: "flex", flexDirection: "column" }}>
+                            <Spin spinning={loading} style={{ paddingTop: "15px", paddingBottom: "15px" }} />
+                            {JSXMap(items, (o, oidx) => {
+                                return (<div key={oidx} onClick={(e) => { e.stopPropagation(); onSelection(o); }}
+                                    className={`bg ${(isSelected(o)) ? "bg-blue dark-3" : "bg-grey-hover light"} pointer`} style={{ textAlign: "left" }}>
+                                    {display(item, o)}
+                                </div>)
+                            })}
                         </div>
                     </div>
                 )
@@ -1111,7 +1110,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed, contextOb
                 suffix={(loading) ? <Spin size="small" /> : suffix(item, itemByProperty(item, value))}
                 size={(item.size) ? item.size : "middle"}
                 allowClear={true}
-                style={{ width: "100%"}}
+                style={{ width: "100%" }}
                 // readOnly
                 onChange={e => clear(e.target.value)}
                 value={displayString(item, itemByProperty(item, value))}
@@ -1246,7 +1245,7 @@ export function Field(props) {
     const { auth, item, value, onChange, onAfterChange, changed, isChanged, partialReplacement,
         fullReplacement, contextObject, objectName } = props;
     let type = ((item.view) ? item.view.type : undefined) || item.type;
-    
+
     // const FullReplacementFunc = useFieldFullReplacement(item?.name, fullReplacement)
     const FullReplacementFunc = useFieldFullReplacement(type, fullReplacement)
     if (FullReplacementFunc) {
