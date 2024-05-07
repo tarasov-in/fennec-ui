@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
     Form,
     Tooltip,
@@ -7,7 +7,7 @@ import {
     Drawer
 } from 'antd';
 import Icofont from 'react-icofont';
-import { GetMeta, GetMetaProperties, formItemRules, isRequired, validator, getObjectDisplay, uncapitalize, getObjectValue, QueryDetail, QueryOrder, clean, QueryParam, queryFiltersToContextFilter, contextFilterToObject, QueryFiltersToContextFilters } from '../../../Tool';
+import { GetMeta, GetMetaProperties, formItemRules, isRequired, validator, getObjectDisplay, uncapitalize, getObjectValue, QueryDetail, QueryOrder, clean, QueryParam, queryFiltersToContextFilter, contextFilterToObject, QueryFiltersToContextFilters, getDisplay } from '../../../Tool';
 import { Field } from '../Field';
 import { useFormObserverContext, useMetaContext } from '../../Context';
 import { CollectionServer } from '../CollectionServer';
@@ -47,7 +47,8 @@ function Frm(props) {
     const gmeta = useMetaContext();
     const filtersFromMeta = React.useCallback((name) => {
         let prop = [];
-        let p = _.get(gmeta[name?.toLowerCase()], "properties");
+        let p = _.get(gmeta[name], "properties");
+        //console.log(name, gmeta[name?.toLowerCase()], p);
         if (p) {
             prop = p?.filter(e => _.get(e, "relation.type") !== "one-many")?.map(e => ({ ...e, sort: true, filter: true, func: (e.filterType == "range") ? ["min", "max"] : undefined }))
         }
@@ -102,6 +103,24 @@ function Frm(props) {
 
     const [isChangedForm, isChangedField, onValuesChange] = useFormObserverContext()
     const [clipboardVisible, setClipboardVisible] = useState(false)
+
+    // const PartialReplacementFunc = useFieldPartialReplacement(_.get(item, "relation.reference.object"), partialReplacement)
+    const display = useCallback((item, value) => {
+        if (item && value) {
+            if (item.display && _.isFunction(item.display)) {
+                return item.display(value)
+            } else if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
+                return item.relation.display(value)
+            // } else if (PartialReplacementFunc) {
+            //     return PartialReplacementFunc({ item, value, changed, contextObject, objectName })
+            } else {
+                let fieldMeta = gmeta[getObjectValue(item, "relation.reference.object")];
+                let _display = ((item?.relation?.display?.fields) ? item?.relation?.display : undefined) || ((fieldMeta?.display?.fields) ? fieldMeta?.display : undefined)
+                return getDisplay(value, _display, fieldMeta, gmeta)
+            }
+        }
+        return "";
+    }, [gmeta]);
 
     if(!excludeFields) return (<React.Fragment></React.Fragment>)
     return (
@@ -184,6 +203,7 @@ function Frm(props) {
                             let n = getObjectValue(e, "relation.reference.object");
                             let f = getObjectValue(e, "name");
 
+                            var uif = _.get(e, "relation.uiFilter");
                             let queryFilter = e?.queryFilter || _.get(e, "relation.reference.queryFilter") || _.get(e, "relation.reference.filter");
                             let count = e?.count || _.get(e, "relation.reference.count");
                             let url = e?.source || getObjectValue(e, "relation.reference.url") || getObjectValue(e, "relation.reference.source");
@@ -210,14 +230,15 @@ function Frm(props) {
                                     ] : [
                                         ...QueryFiltersToContextFilters(queryFilter)
                                     ]}
-                                    filters={() => filtersFromMeta(n)}
+                                    filters={() => (uif)?uif():filtersFromMeta(n)}
                                     mode="list"
-                                    render={(item, idx) => (
-                                        <div style={{ padding: "0px 5px" }}>
-                                            <div>{getObjectDisplay(item, n, gmeta)}</div>
-                                            <div style={{ color: "#6a6a6a" }}></div>
-                                        </div>
-                                    )}
+                                    render={(o, idx) => {
+                                        return display(e, o)
+                                        // <div style={{ padding: "0px 5px" }}>
+                                        //     <div>{getObjectDisplay(item, n, gmeta)}</div>
+                                        //     <div style={{ color: "#6a6a6a" }}></div>
+                                        // </div>
+                                    }}
 
                                     linksModelActions={links}
                                     scheme={tailScheme}

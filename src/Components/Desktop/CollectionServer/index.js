@@ -142,7 +142,7 @@ export function FiltersFieldsUI(props) {
                                 mode="filter"
                                 key={item.name}
                                 auth={auth}
-                                item={{ ...item, func: (funcs && funcs[item.name.toLowerCase()]) ? funcs[item.name.toLowerCase()] : {} }}
+                                item={{ ...item, func: (funcs && funcs[item?.name?.toLowerCase()]) ? funcs[item.name.toLowerCase()] : {} }}
                                 value={value[item.name]}
                                 onChange={(value) => _onFilterChange(value, item)}
                             />
