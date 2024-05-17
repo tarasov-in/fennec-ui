@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Badge, List, Picker, SwipeAction, PageIndicator, Stepper, PickerView, Popup, Space, Empty as EmptyMobile, Mask, DotLoading } from 'antd-mobile';
-import { unwrap, errorCatch, Request, QueryParam, GETWITH, READWITH, updateInArray, deleteInArray, GetMetaPropertyByPath, QueryFunc, If, QueryDetail, subscribe as _subscribe, unsubscribe, clean, ContextFiltersToQueryFilters, contextFilterToObject } from '../../../Tool'
+import { unwrap, errorCatch, Request, QueryParam, GETWITH, READWITH, updateInArray, deleteInArray, GetMetaPropertyByPath, QueryFunc, If, QueryDetail, subscribe as _subscribe, unsubscribe, clean, ContextFiltersToQueryFilters, contextFilterToObject, getLocator } from '../../../Tool'
 import Icofont from 'react-icofont';
 import { createUseStyles } from 'react-jss';
 import { Action, ActionPickerItem } from '../../Action';
@@ -151,7 +151,7 @@ export function SortingFieldsUIMobile(props) {
         return s?.find(e => e.value === value.name)?.label;
     }, [value])
     return (<React.Fragment>
-        <div>
+        <div data-locator={getLocator(props?.locator || "sorting", props?.object)}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px", paddingRight: "10px" }}>
                 <div style={{
                     fontFamily: "-apple-system, BlinkMacSystemFont, Roboto, 'Open Sans', 'Helvetica Neue', 'Noto Sans Armenian', 'Noto Sans Bengali', 'Noto Sans Cherokee', 'Noto Sans Devanagari', 'Noto Sans Ethiopic', 'Noto Sans Georgian', 'Noto Sans Hebrew', 'Noto Sans Kannada', 'Noto Sans Khmer', 'Noto Sans Lao', 'Noto Sans Osmanya', 'Noto Sans Tamil', 'Noto Sans Telugu', 'Noto Sans Thai', sans-serif",
@@ -179,6 +179,7 @@ export function SortingFieldsUIMobile(props) {
                         padding: "2px 6px"
                     }}>
                         <Picker
+                            data-locator={getLocator(props?.locator || "sortingselect", props?.object)}
                             columns={[s]}
                             visible={visible}
                             onClose={() => {
@@ -192,6 +193,7 @@ export function SortingFieldsUIMobile(props) {
                         {current}
                     </div>
                     <div
+                        data-locator={getLocator(props?.locator || "sortingorder", props?.object)}
                         onClick={sortingOrder}
                         style={{
                             flex: "1",
@@ -243,7 +245,9 @@ export function FiltersFieldsUIMobile(props) {
     }, [value]);
     return (<React.Fragment>
         <React.Fragment>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px", paddingRight: "10px" }}>
+            <div
+                data-locator={getLocator(props?.locator || "filters", props?.object)}
+                style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px", paddingRight: "10px" }}>
                 <div style={{
                     fontFamily: "-apple-system, BlinkMacSystemFont, Roboto, 'Open Sans', 'Helvetica Neue', 'Noto Sans Armenian', 'Noto Sans Bengali', 'Noto Sans Cherokee', 'Noto Sans Devanagari', 'Noto Sans Ethiopic', 'Noto Sans Georgian', 'Noto Sans Hebrew', 'Noto Sans Kannada', 'Noto Sans Khmer', 'Noto Sans Lao', 'Noto Sans Osmanya', 'Noto Sans Tamil', 'Noto Sans Telugu', 'Noto Sans Thai', sans-serif",
                     fontWeight: "600",
@@ -255,7 +259,9 @@ export function FiltersFieldsUIMobile(props) {
                 <div style={{ flex: "auto", margin: "10px 10px", height: "1px", backgroundColor: "#f0f0f0" }}></div>
             </div>
             <div className={classes.FilterList} style={{ margin: "10px" }}>
-                <List style={{ backgroundColor: 'white' }} className="picker-list">
+                <List
+                    data-locator={getLocator(props?.locator || "filtersfield", props?.object)}
+                    style={{ backgroundColor: 'white' }} className="picker-list">
                     {f}
                 </List>
             </div>
@@ -759,6 +765,7 @@ function DefaultCollectionServer(props) {
             items={values?.map((e, idx) => ({
                 key: e.key || idx,
                 auth: auth,
+                locator: props?.locator || name || fieldName,
                 object: item,
                 collection: collection,
                 setCollection: setCollection,
@@ -776,7 +783,9 @@ function DefaultCollectionServer(props) {
                 ...e
             }))}
             trigger={(click) => (
-                <div onClick={click} style={{ fontSize: "13px" }}>
+                <div
+                    data-locator={getLocator(props?.locator || name + "-trigger" || "trigger", props?.object)}
+                    onClick={click} style={{ fontSize: "13px" }}>
                     {trigger && trigger()}
                 </div>
             )} />
@@ -838,6 +847,7 @@ function DefaultCollectionServer(props) {
                     key={idx}
                     auth={auth}
                     mode={"button"}
+                    locator={props?.locator || name || fieldName}
                     collection={collection}
                     setCollection={setCollection}
                     contextFilters={contextFilters}
@@ -1071,7 +1081,8 @@ function DefaultCollectionServer(props) {
             </div>}
 
             {(!!filters?.length) &&
-                <div className="filtered" style={{ position: "relative", height: "100%", paddingTop: "5px" }}>
+                <div
+                    data-locator={getLocator(props?.locator || ("collection-" + name) || ("collection-" + fieldName) || "collection", props?.object)} className="filtered" style={{ position: "relative", height: "100%", paddingTop: "5px" }}>
                     <div className={"filtered-header"} style={{
                         height: "43px",
                         display: "flex",
@@ -1089,6 +1100,7 @@ function DefaultCollectionServer(props) {
                                 auth={auth}
                                 action={act}
                                 object={state}
+                                locator={props?.locator || ("collection-filter-" + name) || ("collection-filter-" + fieldName) || "collection-filter"}
                                 okText={"Применить"}
                                 dismissText={"Очистить"}
                                 footer={footer}
@@ -1141,7 +1153,9 @@ function DefaultCollectionServer(props) {
                     </List>}
                     <div style={{ padding: "15px 0px" }}>
                         {(total > 1) &&
-                            <div style={{ display: "flex", justifyContent: "center" }}>
+                            <div
+                                data-locator={getLocator(props?.locator || "filtered-pagination-" + name || "filtered-pagination-" + fieldName || "filtered-pagination", props?.object)}
+                                style={{ display: "flex", justifyContent: "center" }}>
                                 <div>
                                     <Button size='small' onClick={PaginatorLeft} disabled={(state.current <= 1)}>
                                         <Space>

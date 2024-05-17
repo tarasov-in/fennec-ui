@@ -7,7 +7,7 @@ import {
     Drawer
 } from 'antd';
 import Icofont from 'react-icofont';
-import { GetMeta, GetMetaProperties, formItemRules, isRequired, validator, getObjectDisplay, uncapitalize, getObjectValue, QueryDetail, QueryOrder, clean, QueryParam, queryFiltersToContextFilter, contextFilterToObject, QueryFiltersToContextFilters, getDisplay } from '../../../Tool';
+import { GetMeta, GetMetaProperties, formItemRules, isRequired, validator, getObjectDisplay, uncapitalize, getObjectValue, QueryDetail, QueryOrder, clean, QueryParam, queryFiltersToContextFilter, contextFilterToObject, QueryFiltersToContextFilters, getDisplay, getLocator } from '../../../Tool';
 import { Field } from '../Field';
 import { useFormObserverContext, useMetaContext } from '../../Context';
 import { CollectionServer } from '../CollectionServer';
@@ -17,7 +17,7 @@ const { CheckableTag } = Tag;
 const { TabPane } = Tabs;
 
 function Frm(props) {
-    const { auth, form, name, meta, options, object, submit, funcStat, contextFilters, links, scheme, linksCompareFunction, contextObject,
+    const { auth, form, name, meta, options, object, locator, submit, funcStat, contextFilters, links, scheme, linksCompareFunction, contextObject,
         queryDetail,
         modelActions,
         collectionActions,
@@ -124,7 +124,7 @@ function Frm(props) {
 
     if(!excludeFields) return (<React.Fragment></React.Fragment>)
     return (
-        <div className='model default-model'>
+        <div data-locator={getLocator(props?.locator || name || "model", props?.object)} className='model default-model'>
             {(object && links && links !== "inline" && propertiesOneMany && propertiesOneMany.length > 0) &&
                 <div className='bg bg-grey' style={{ textAlign: "left", marginBottom: "5px", padding: "3px 5px", display: "flex", justifyContent: "space-between", gap: "5px" }}>
                     <div style={{ flex: "1 1 auto" }}>
@@ -179,6 +179,7 @@ function Frm(props) {
                             name={(item.type !== "object" && item.type !== "document") ? uncapitalize(item?.name) : uncapitalize(item?.name) + "ID"}
                             label={(item.type !== "bool" && item.type !== "boolean") ? item.label : undefined}
                             rules={formItemRules(item)}
+                            data-locator={getLocator(props?.locator || name || "model", props?.object)}
                         >
                             <Field
                                 mode="model"
@@ -209,10 +210,11 @@ function Frm(props) {
                             let url = e?.source || getObjectValue(e, "relation.reference.url") || getObjectValue(e, "relation.reference.source");
 
                             if (!n) return;
-                            return (<TabPane tab={e.label} key={idx}>
+                            return (<TabPane data-locator={getLocator(props?.locator || "model-collection"+name || "model-collection", props?.object)} tab={e.label} key={idx}>
                                 <CollectionServer
                                     auth={auth}
                                     name={n}
+                                    // locator={n}
                                     source={url}
                                     count={()=>(count || 20)}
                                     field={e}
@@ -274,7 +276,7 @@ function Frm(props) {
 }
 
 export function Model(props) {
-    const { auth, name, meta, options, object, form, submit, funcStat, contextFilters, links, scheme, linksCompareFunction, contextObject,
+    const { auth, name, meta, options, object, locator, form, submit, funcStat, contextFilters, links, scheme, linksCompareFunction, contextObject,
         queryDetail,
         modelActions,
         collectionActions,
@@ -314,6 +316,7 @@ export function Model(props) {
                 meta={meta}
                 options={options}
                 object={object}
+                locator={locator}
                 funcStat={funcStat}></Frm>}
         </React.Fragment>
     )

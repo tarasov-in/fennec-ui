@@ -14,7 +14,7 @@ import {
     Space,
     Spin,
 } from 'antd';
-import { clean, deleteInArray, errorCatch, getDisplay, getObjectValue, GETWITH, JSXMap, pushStateHistoryModal, QueryDetail, QueryOrder, QueryParam, READWITH, unwrap, updateInArray, useHover } from '../../../Tool';
+import { clean, deleteInArray, errorCatch, getDisplay, getLocator, getObjectValue, GETWITH, JSXMap, pushStateHistoryModal, QueryDetail, QueryOrder, QueryParam, READWITH, unwrap, updateInArray, useHover } from '../../../Tool';
 import Icofont from 'react-icofont';
 import { useMetaContext } from '../../Context';
 import { InboxOutlined } from '@ant-design/icons';
@@ -76,8 +76,9 @@ function UploadItems({ auth, item, value, onChange, changed }) {
     };
     return (<Upload
         {...uploadingProps}
+        data-locator={getLocator(item?.name)}
     >
-        {!item.trigger && <Button icon={<UploadOutlined />}>Загрузить файлы</Button>}
+        {!item.trigger && <Button data-locator={getLocator(item?.name, "upload")} icon={<UploadOutlined />}>Загрузить файлы</Button>}
         {item?.trigger && item?.trigger()}
     </Upload>)
 }
@@ -129,7 +130,7 @@ function UploadItem({ auth, item, value, onChange, changed }) {
         </div>
     );
     return (
-        <Dragger {...uploadingProps}>
+        <Dragger {...uploadingProps} data-locator={getLocator(item?.name)}>
             {(item.trigger) && <div ref={hoverRef}>
                 {item.trigger()}
                 {(!item.nocontent) && <div
@@ -212,10 +213,10 @@ function Image({ auth, item, value, onChange, changed }) {
                     />
                 </div>
                 <div style={{ display: "flex", gap: "5px" }}>
-                    <Button onClick={onOpenChange} size="small" fill='none'>
+                    <Button data-locator={getLocator(item?.name,"edit")} onClick={onOpenChange} size="small" fill='none'>
                         <Icofont key="1" icon="ui-edit" />
                     </Button>
-                    <Button fill='none' size='small' onClick={(v) => {
+                    <Button fill='none' size='small' data-locator={getLocator(item?.name,"clean")} onClick={(v) => {
                         onChange(null);
                     }}>
                         <Icofont icon="close" />
@@ -362,18 +363,19 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed, context
         if (item.dependence?.mode !== "server" && item.dependence) {
             if (item.dependence.field && by(item)) {
                 return data?.filter(e => _.get(e, item.dependence.field) === by(item))?.map(i => (
-                    <Option key={property(item, i)} value={property(item, i)} label={labelString(item, i)}>{label(item, i)}</Option>
+                    <Option data-locator={getLocator(item?.name || objectName, i)} key={property(item, i)} value={property(item, i)} label={labelString(item, i)}>{label(item, i)}</Option>
                 ));
             }
         } else {
             return data?.map(i => (
-                <Option key={property(item, i)} value={property(item, i)} label={labelString(item, i)}>{label(item, i)}</Option>
+                <Option data-locator={getLocator(item?.name || objectName, i)} key={property(item, i)} value={property(item, i)} label={labelString(item, i)}>{label(item, i)}</Option>
             ));
         }
     }, [value, changed]);
 
     return (
         <Select
+            data-locator={getLocator(item?.name || objectName, itemByProperty(item, value))}
             size={(item.size) ? item.size : "middle"}
             mode="multiple"
             showSearch
@@ -404,7 +406,7 @@ function RangeTime({ item, value, onChange, onAfterChange }) {
         return []
     }, [value])
     return (
-        <TimePicker.RangePicker changeOnBlur={true} value={a} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }} />
+        <TimePicker.RangePicker data-locator={getLocator(item?.name)} changeOnBlur={true} value={a} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }} />
     )
 }
 function RangeDate({ item, value, onChange, onAfterChange }) {
@@ -416,7 +418,7 @@ function RangeDate({ item, value, onChange, onAfterChange }) {
         return []
     }, [value])
     return (
-        <DatePicker.RangePicker changeOnBlur={true} value={a} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }} />
+        <DatePicker.RangePicker data-locator={getLocator(item?.name)} changeOnBlur={true} value={a} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }} />
     )
 }
 function RangeDateTime({ item, value, onChange, onAfterChange }) {
@@ -428,7 +430,7 @@ function RangeDateTime({ item, value, onChange, onAfterChange }) {
         return []
     }, [value])
     return (
-        <DatePicker.RangePicker changeOnBlur={true} showTime={{ format: 'HH:mm' }} value={a} onChange={onChange} format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }} />
+        <DatePicker.RangePicker data-locator={getLocator(item?.name)} changeOnBlur={true} showTime={{ format: 'HH:mm' }} value={a} onChange={onChange} format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }} />
     )
 }
 function RangeFloat({ item, value, onChange, onAfterChange }) {
@@ -442,7 +444,9 @@ function RangeFloat({ item, value, onChange, onAfterChange }) {
     const xmax = item.max + xstep || item.func.max + xstep || 100000;
     const def = [(xmin - (xmin % xstep)), (xmax + (xstep - xmax % xstep))];
     return (
-        <Slider range
+        <Slider 
+        data-locator={getLocator(item?.name)}
+        range
             defaultValue={def}
             min={(xmin - (xmin % xstep))}
             max={(xmax + (xstep - xmax % xstep))}
@@ -464,6 +468,7 @@ function FloatSlider({ item, value, onChange, onAfterChange }) {
     const xmax = item?.max || item?.func?.max || 100000;
     return (
         <Slider
+        data-locator={getLocator(item?.name)}
             disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
             min={xmin}
             max={xmax}
@@ -484,7 +489,9 @@ function RangeInteger({ item, value, onChange, onAfterChange }) {
     const xmax = item.max + xstep || item.func.max + xstep || 100000;
     const def = [(xmin - (xmin % xstep)), (xmax + (xstep - xmax % xstep))];
     return (
-        <Slider range
+        <Slider
+            data-locator={getLocator(item?.name)}
+            range
             defaultValue={def}
             min={(xmin - (xmin % xstep))}
             max={(xmax + (xstep - xmax % xstep))}
@@ -507,6 +514,7 @@ function IntegerSlider({ item, value, onChange, onAfterChange }) {
 
     return (
         <Slider
+            data-locator={getLocator(item?.name)}
             disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
             min={xmin}
             max={xmax}
@@ -647,12 +655,12 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
         if (item.dependence?.mode !== "server" && item.dependence) {
             if (item.dependence.field && by(item)) {
                 return data?.filter(e => _.get(e, item.dependence.field) === by(item))?.map(i => (
-                    <Option key={property(item, i)} value={property(item, i)} label={labelString(item, i)}>{label(item, i)}</Option>
+                    <Option data-locator={getLocator(item?.name || objectName, i)} key={property(item, i)} value={property(item, i)} label={labelString(item, i)}>{label(item, i)}</Option>
                 ));
             }
         } else {
             return data?.map(i => (
-                <Option key={property(item, i)} value={property(item, i)} label={labelString(item, i)}>{label(item, i)}</Option>
+                <Option data-locator={getLocator(item?.name || objectName, i)} key={property(item, i)} value={property(item, i)} label={labelString(item, i)}>{label(item, i)}</Option>
             ));
         }
     }, [value, changed]);
@@ -688,6 +696,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
                 mode={"button"}
                 disabled={loading || (item && item.view && item.view.disabled) ? item.view.disabled : false}
                 item={item}
+                locator={item?.name || objectName}
                 object={e.object || itemByProperty(item, value)}
                 objectName={objectName}
                 contextObject={contextObject}
@@ -716,12 +725,15 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
                 {/* <i className="fa fa-bars"></i> */}
                 {/* <i className="fa fa-caret-square-o-down"></i> */}
             </Button>)}
+            locator={item?.name || objectName}
+            object={itemByProperty(item, value)}
             items={values?.map((e, idx) => ({
                 key: e.key || idx,
                 auth: auth,
                 mode: "MenuItem",
                 disabled: loading || (item && item.view && item.view.disabled) ? item.view.disabled : false,
                 item: item,
+                locator: item?.name || objectName,
                 object: e.object || itemByProperty(item, value),
                 objectName: objectName,
                 contextObject: contextObject,
@@ -742,6 +754,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
             }}
         >
             <Select showSearch
+                data-locator={getLocator(item?.name || objectName, itemByProperty(item, value))}
                 size={(item.size) ? item.size : "middle"}
                 value={value}
                 onChange={e => onChange(e, item, itemByProperty(item, e))}
@@ -1053,6 +1066,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed, contextOb
                 mode={"button"}
                 disabled={loading || (item && item.view && item.view.disabled) ? item.view.disabled : false}
                 item={item}
+                locator={item?.name || objectName}
                 object={e.object || itemByProperty(item, value)}
                 objectName={objectName}
                 contextObject={contextObject}
@@ -1081,12 +1095,15 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed, contextOb
                 {/* <i className="fa fa-bars"></i> */}
                 {/* <i className="fa fa-caret-square-o-down"></i> */}
             </Button>)}
+            locator={item?.name || objectName}
+            object={itemByProperty(item, value)}
             items={values?.map((e, idx) => ({
                 key: e.key || idx,
                 auth: auth,
                 mode: "MenuItem",
                 disabled: loading || (item && item.view && item.view.disabled) ? item.view.disabled : false,
                 item: item,
+                locator: item?.name || objectName,
                 object: e.object || itemByProperty(item, value),
                 objectName: objectName,
                 contextObject: contextObject,
@@ -1107,6 +1124,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed, contextOb
             }}
         >
             <Input
+                data-locator={getLocator(item?.name || objectName, itemByProperty(item, value))}
                 suffix={(loading) ? <Spin size="small" /> : suffix(item, itemByProperty(item, value))}
                 size={(item.size) ? item.size : "middle"}
                 allowClear={true}
@@ -1125,6 +1143,7 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed, contextOb
                 auth={auth}
                 action={cAction}
                 okText="Выбрать"
+                locator={item?.name || objectName}
                 object={{ selected: [itemByProperty(item, value)] }}
                 modal={(item.modal) ? item.modal : { width: "600px" }}
                 form={Model}
@@ -1149,7 +1168,9 @@ function BigObj({ auth, item, value, onChange, onAfterChange, changed, contextOb
 function DateTime({ item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (
-        <DatePicker changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} showTime format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }}
+        <DatePicker
+            data-locator={getLocator(item?.name)}
+            changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} showTime format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }}
             disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
         />
     )
@@ -1157,7 +1178,9 @@ function DateTime({ item, value, onChange, onAfterChange }) {
 function Date({ item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (
-        <DatePicker changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }}
+        <DatePicker
+            data-locator={getLocator(item?.name)}
+            changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }}
             disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
         />
     )
@@ -1165,7 +1188,9 @@ function Date({ item, value, onChange, onAfterChange }) {
 function Time({ item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (
-        <DatePicker changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }}
+        <DatePicker
+            data-locator={getLocator(item?.name)}
+            changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }}
             disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
         />
     )
@@ -1176,7 +1201,9 @@ function Boolean({ item, value, onChange, onAfterChange }) {
         onChange(e.target.checked);
     }
     return (
-        <Checkbox checked={value} onChange={change}
+        <Checkbox
+            data-locator={getLocator(item?.name)}
+            checked={value} onChange={change}
             disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
         >
             {item.label}
@@ -1186,7 +1213,9 @@ function Boolean({ item, value, onChange, onAfterChange }) {
 function Float({ item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (
-        <InputNumber value={value} onChange={onChange} style={{ width: "100%" }} min={item?.min} max={item?.max}
+        <InputNumber
+            data-locator={getLocator(item?.name)}
+            value={value} onChange={onChange} style={{ width: "100%" }} min={item?.min} max={item?.max}
             disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
         />
     )
@@ -1194,7 +1223,9 @@ function Float({ item, value, onChange, onAfterChange }) {
 function Integer({ item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (
-        <InputNumber value={value} onChange={onChange} style={{ width: "100%" }} min={item?.min} max={item?.max}
+        <InputNumber
+            data-locator={getLocator(item?.name)}
+            value={value} onChange={onChange} style={{ width: "100%" }} min={item?.min} max={item?.max}
             disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
         />
     )
@@ -1202,7 +1233,9 @@ function Integer({ item, value, onChange, onAfterChange }) {
 function String({ item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (
-        <Input size={(item.size) ? item.size : "middle"} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
+        <Input
+            data-locator={getLocator(item?.name)}
+            size={(item.size) ? item.size : "middle"} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
             disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
         />
     )
@@ -1210,7 +1243,9 @@ function String({ item, value, onChange, onAfterChange }) {
 function Password({ item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (
-        <Input.Password allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
+        <Input.Password
+            data-locator={getLocator(item?.name)}
+            allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
             iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
             disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
         />
@@ -1219,7 +1254,9 @@ function Password({ item, value, onChange, onAfterChange }) {
 function MultilineText({ item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (
-        <TextArea rows={6} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
+        <TextArea
+            data-locator={getLocator(item?.name)}
+            rows={6} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
             disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
         />
     )

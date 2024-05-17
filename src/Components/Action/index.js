@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import ScrollLocker from 'rc-util/lib/Dom/scrollLocker';
 import { Form, Input } from 'antd';
 import { useMediaQuery } from 'react-responsive'
-import { IfElse, Request, messageError, makeFormData, eventExecution, unpackFormFields, pushStateHistoryModal, preventDefault, unsubscribe, subscribe } from '../../Tool';
+import { IfElse, Request, messageError, makeFormData, eventExecution, unpackFormFields, pushStateHistoryModal, preventDefault, unsubscribe, subscribe, getLocator } from '../../Tool';
 import useStyles from '../Styles';
 
 import { Spin, Button, Tooltip, Tag, Modal } from 'antd';
@@ -145,11 +145,13 @@ export function ActionPickerItem({ auth, item, mode, value, onChange }) {
         />
     </React.Fragment>);
 }
-export const FooterButton = ({ key, name, callback, options, isDesktopOrLaptop }) => {
+export const FooterButton = ({ key, name, callback, options, isDesktopOrLaptop, locator, object }) => {
     if (isDesktopOrLaptop) {
-        return (<Button key={key} onClick={callback} {...options}>{name}</Button>);
+        return (<Button
+            data-locator={getLocator(locator || key, object)}
+            key={key} onClick={callback} {...options}>{name}</Button>);
     } else {
-        const btn = { text: name, onPress: callback, options };
+        const btn = { text: name, onPress: callback, options: { ...options, ...getLocator(locator || key, object) } };
         return (btn);
     }
 }
@@ -209,13 +211,13 @@ export function Action(props) {
         setValues(object);
     }, [object]);
     const isChangedField = React.useCallback((name) => {
-        return (_.get(values,name) !== _.get(object,name))
+        return (_.get(values, name) !== _.get(object, name))
     }, [values, object]);
     const isChangedForm = React.useMemo(() => {
         // return !_.isEqual({ ...object, ...values }, object)
         let f = false;
         for (const key in values) {
-            if (_.get(values,key) !== _.get(object,key)) {
+            if (_.get(values, key) !== _.get(object, key)) {
                 f = true;
                 break
             }
@@ -573,39 +575,50 @@ export function Action(props) {
                 if (props.tooltip) {
                     if (props.color) {
                         return (<Tooltip title={props.tooltip}>
-                            <Tag color={props.color} disabled={disabled} closable={props.closable} {...triggerOptions} style={triggerStyle} onClose={(e) => { click(); preventDefault(e); }}>{props.title}</Tag>
+                            <Tag
+                                data-locator={getLocator(props?.locator || "actiontrigger", props?.object)}
+                                color={props.color} disabled={disabled} closable={props.closable} {...triggerOptions} style={triggerStyle} onClose={(e) => { click(); preventDefault(e); }}>{props.title}</Tag>
                         </Tooltip>);
                     } else {
                         return (<Tooltip title={props.tooltip}>
-                            <Tag closable={props.closable} disabled={disabled} {...triggerOptions} style={triggerStyle} onClose={(e) => { click(); preventDefault(e); }}>{props.title}</Tag>
+                            <Tag
+                                data-locator={getLocator(props?.locator || "actiontrigger", props?.object)}
+                                closable={props.closable} disabled={disabled} {...triggerOptions} style={triggerStyle} onClose={(e) => { click(); preventDefault(e); }}>{props.title}</Tag>
                         </Tooltip>);
                     }
                 } else {
                     if (props.color) {
-                        return (<Tag color={props.color} disabled={disabled} closable={props.closable} {...triggerOptions} style={triggerStyle} onClose={(e) => { click(); preventDefault(e); }}>{props.title}</Tag>);
+                        return (<Tag
+                            data-locator={getLocator(props?.locator || "actiontrigger", props?.object)}
+                            color={props.color} disabled={disabled} closable={props.closable} {...triggerOptions} style={triggerStyle} onClose={(e) => { click(); preventDefault(e); }}>{props.title}</Tag>);
                     } else {
-                        return (<Tag closable={props.closable} disabled={disabled} {...triggerOptions} style={triggerStyle} onClose={(e) => { click(); preventDefault(e); }}>{props.title}</Tag>);
+                        return (<Tag
+                            data-locator={getLocator(props?.locator || "actiontrigger", props?.object)}
+                            closable={props.closable} disabled={disabled} {...triggerOptions} style={triggerStyle} onClose={(e) => { click(); preventDefault(e); }}>{props.title}</Tag>);
                     }
                 }
             } else if (mode == "input") {
                 return (<div>
                     <Input.Group compact style={{ display: "flex" }}>
                         <Input
+                            data-locator={getLocator(props?.locator || "actiontriggerinput", props?.object)}
                             value={(brief) ? brief : (!brief && placeholder) ? placeholder : ""}
                             disabled
                             allowClear
                             className={classes.input} />
-                        <Button style={{ padding: "4px 8px" }} onClick={click}>
+                        <Button
+                            data-locator={getLocator(props?.locator || "actiontrigger", props?.object)}
+                            style={{ padding: "4px 8px" }} onClick={click}>
                             <EllipsisOutlined style={{ paddingTop: "7px", fontSize: '16px' }} />
                         </Button>
                     </Input.Group>
                 </div>);
             } else if (mode == "link") {
-                return (<div><Button type="link" size="small" style={triggerStyle} {...triggerOptions} onClick={click}>{props.title}</Button></div>);
+                return (<div><Button data-locator={getLocator(props?.locator || "actiontrigger", props?.object)} type="link" size="small" style={triggerStyle} {...triggerOptions} onClick={click}>{props.title}</Button></div>);
             } else if (mode == "text") {
-                return (<div><Button type="text" size="small" style={triggerStyle} {...triggerOptions} onClick={click}>{props.title}</Button></div>);
+                return (<div><Button data-locator={getLocator(props?.locator || "actiontrigger", props?.object)} type="text" size="small" style={triggerStyle} {...triggerOptions} onClick={click}>{props.title}</Button></div>);
             } else {
-                return (<div className="buttons" loading={loading.toString()}><Button onClick={click} disabled={disabled} {...triggerOptions} style={{ textAlign: "left", ...triggerStyle }}>{props.title}</Button></div>);
+                return (<div className="buttons" loading={loading.toString()}><Button data-locator={getLocator(props?.locator || "actiontrigger", props?.object)} onClick={click} disabled={disabled} {...triggerOptions} style={{ textAlign: "left", ...triggerStyle }}>{props.title}</Button></div>);
             }
         } else {
             if (mode == "func") {
@@ -617,6 +630,7 @@ export function Action(props) {
                 }
                 let view = (<React.Fragment>
                     <MobileList.Item
+                        data-locator={getLocator(props?.locator || "actiontrigger", props?.object)}
                         // className={classes.Obj}
                         disabled={disabled}
                         {...triggerOptions}
@@ -648,7 +662,7 @@ export function Action(props) {
             const width = (props.modal) ? props.modal.width : undefined;
             const title = (props.modal && props.modal.title) ? props.modal.title : props.title;
             if (mode == "inline") {
-                return (<div style={{ width: "100%", height: "100%", resize: "none" }} className='action-content'>
+                return (<div data-locator={getLocator(props?.locator || "actioncontent", props?.object)} style={{ width: "100%", height: "100%", resize: "none" }} className='action-content'>
                     <Spin spinning={loading}>
                         {steps && <React.Fragment>
                             <CurrentForm
@@ -707,6 +721,7 @@ export function Action(props) {
                             <Spin spinning={loading}>
                                 {steps && <React.Fragment>
                                     <CurrentForm
+                                        data-locator={getLocator(props?.locator || "actionform", stepObject)}
                                         setSubmit={setSubmit}
                                         auth={props.auth}
                                         current={currentStep}
@@ -724,6 +739,7 @@ export function Action(props) {
                                 {(!steps && props.form) &&
                                     <ContentForm
                                         {...props}
+                                        data-locator={getLocator(props?.locator || "actionform", props?.object)}
                                         subheader={(titles && titles.subheader) ? titles.subheader : ""}
                                         submit={action}
                                         form={form}
@@ -752,6 +768,7 @@ export function Action(props) {
                                     current={currentStep}
                                     steps={steps}
                                     object={stepObject}
+                                    data-locator={getLocator(props?.locator || "actionform", stepObject)}
                                     action={(values) => {
                                         let o = {
                                             ...stepObject,
@@ -764,6 +781,7 @@ export function Action(props) {
                             {(!steps && props.form) &&
                                 <ContentForm
                                     {...props}
+                                    data-locator={getLocator(props?.locator || "actionform", props?.object)}
                                     subheader={(titles && titles.subheader) ? titles.subheader : ""}
                                     submit={action}
                                     form={form}
@@ -820,6 +838,7 @@ export function Action(props) {
                                             current={currentStep}
                                             steps={steps}
                                             object={stepObject}
+                                            data-locator={getLocator(props?.locator || "actionform", stepObject)}
                                             action={(values) => {
                                                 let o = {
                                                     ...stepObject,
@@ -832,6 +851,7 @@ export function Action(props) {
                                     {(!steps && props.form) &&
                                         <ContentForm
                                             {...props}
+                                            data-locator={getLocator(props?.locator || "actionform", props?.object)}
                                             subheader={(titles && titles.subheader) ? titles.subheader : ""}
                                             submit={action}
                                             form={form}

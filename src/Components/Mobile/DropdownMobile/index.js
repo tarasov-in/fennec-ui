@@ -5,7 +5,7 @@ import {
 } from '@ant-design/icons';
 import './index.css'
 import { Action } from '../../Action'
-import { JSXMap, unwrap } from '../../../Tool';
+import { JSXMap, getLocator, unwrap } from '../../../Tool';
 import uuid from 'react-uuid';
 var _ = require('lodash');
 
@@ -21,6 +21,7 @@ export function DropdownMobile(props) {
         return item.title || ((item.titles) ? item.titles.header : "");
     }
 
+    
     return (
         <React.Fragment>
             <Action
@@ -43,7 +44,7 @@ export function DropdownMobile(props) {
                                     // object={e}
                                     {...e}
                                     trigger={(click) => (
-                                        <List.Item key={idx} /*arrow="horizontal"*/ multipleLine wrap onClick={click} style={{fontSize:"13px"}}>
+                                        <List.Item data-locator={getLocator(props?.locator || "dropdownitem", props?.object || {ID: idx})} key={idx} /*arrow="horizontal"*/ multipleLine wrap onClick={click} style={{fontSize:"13px"}}>
                                             {getTitle(e)}
                                         </List.Item>
                                     )}
@@ -53,7 +54,7 @@ export function DropdownMobile(props) {
                     )
                 }}
                 trigger={trigger || ((click) => (
-                    <Button className="dropdown" size={"small"} style={{ padding: "2px 6px", ...buttonStyle }} type="default" onClick={click}>
+                    <Button  data-locator={getLocator(props?.locator || "dropdown", props?.object)} className="dropdown" size={"small"} style={{ padding: "2px 6px", ...buttonStyle }} type="default" onClick={click}>
                         {(icon) ? icon : <MenuOutlined />}
                     </Button>
                 ))}

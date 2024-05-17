@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Layout, Card, Button, Tooltip, Pagination, Empty, Divider, Typography, Tag, Select, List, Table, Spin, Badge, Modal } from 'antd';
 import { Action } from '../../Action'
 import { DropdownAction } from '../DropdownAction'
-import { unwrap, GET, errorCatch, Request, QueryParam, GETWITH, If, READWITH, QueryFunc, JSX, GetMetaPropertyByPath, updateInArray, deleteInArray, QueryDetail, subscribe as _subscribe, unsubscribe, clean, JSXMap, getObjectDisplay, ContextFiltersToQueryFilters, contextFilterToObject } from '../../../Tool'
+import { unwrap, GET, errorCatch, Request, QueryParam, GETWITH, If, READWITH, QueryFunc, JSX, GetMetaPropertyByPath, updateInArray, deleteInArray, QueryDetail, subscribe as _subscribe, unsubscribe, clean, JSXMap, getObjectDisplay, ContextFiltersToQueryFilters, contextFilterToObject, getLocator } from '../../../Tool'
 import { createUseStyles } from 'react-jss';
 import "./index.css"
 import { FilterOutlined, SortAscendingOutlined, SortDescendingOutlined } from '@ant-design/icons';
@@ -82,9 +82,10 @@ export function SortingFieldsUI(props) {
                 style={{ margin: "12px 0", fontSize: "13px", fontWeight: "600", padding: "0px 15px 0px 0px" }} >
                 Сортировка
             </Divider>
-            <div style={{}}>
+            <div data-locator={getLocator(props?.locator || "sorting", props?.object)} style={{}}>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <Select
+                        data-locator={getLocator(props?.locator || "sortingselect", props?.object)}
                         allowClear={true}
                         value={value.name}
                         onChange={(v) => onChange({ name: v, order: value.order })}
@@ -95,15 +96,15 @@ export function SortingFieldsUI(props) {
                         style={{ width: "100%", maxWidth: "203px", marginRight: "5px" }}
                     >
                         {JSXMap(filters?.filter(f => f.sort), (item, idx) => (
-                            <Option key={idx} value={item.name}>{item.label}</Option>
+                            <Option data-locator={getLocator(props?.locator || "sortingitem", props?.object || idx)} key={idx} value={item.name}>{item.label}</Option>
                         ))}
                     </Select>
                     <div>
                         {value.order === "ASC" && <Tooltip title="Восходящий">
-                            <Button icon={<SortAscendingOutlined />} onClick={() => onChange({ name: value.name, order: (value.order === "ASC") ? "DESC" : "ASC" })} />
+                            <Button icon={<SortAscendingOutlined />} data-locator={getLocator(props?.locator || "sortingasc", props?.object || idx)} onClick={() => onChange({ name: value.name, order: (value.order === "ASC") ? "DESC" : "ASC" })} />
                         </Tooltip>}
                         {value.order === "DESC" && <Tooltip title="Нисходящий">
-                            <Button icon={<SortDescendingOutlined />} onClick={() => onChange({ name: value.name, order: (value.order === "ASC") ? "DESC" : "ASC" })} />
+                            <Button icon={<SortDescendingOutlined />} data-locator={getLocator(props?.locator || "sortingdesc", props?.object || idx)} onClick={() => onChange({ name: value.name, order: (value.order === "ASC") ? "DESC" : "ASC" })} />
                         </Tooltip>}
                     </div>
                 </div>
@@ -133,10 +134,10 @@ export function FiltersFieldsUI(props) {
                 style={{ margin: "12px 0", fontSize: "13px", fontWeight: "600", padding: "0px 15px 0px 0px" }} >
                 Фильтры
             </Divider>
-            <div style={{}}>
+            <div data-locator={getLocator(props?.locator || "filters", props?.object)} style={{}}>
                 <div>
                     {JSXMap(filters?.filter(i => i.filter), (item, idx) => (
-                        <div key={item.name} style={{ marginBottom: "10px" }}>
+                        <div data-locator={getLocator(props?.locator || "filtersfield", props?.object)} key={item.name} style={{ marginBottom: "10px" }}>
                             {item.filter && (item.type !== "bool" && item.type !== "boolean") && <Text>{item.label}</Text>}
                             <Field
                                 mode="filter"
@@ -887,6 +888,7 @@ function DefaultCollectionServer(props) {
             key: e.key || idx,
             auth: auth,
             mode: "MenuItem",
+            locator: props?.locator || name || fieldName,
             object: item,
             collection: collection,
             setCollection: setCollection,
@@ -969,6 +971,7 @@ function DefaultCollectionServer(props) {
                 auth={auth}
                 mode={"button"}
 
+                locator={props?.locator || name || fieldName}
                 collection={collection}
                 setCollection={setCollection}
                 collectionRef={collectionRef}
@@ -1116,12 +1119,15 @@ function DefaultCollectionServer(props) {
                 {/* <SpinLoading visible={loading} /> */}
                 {/* {loading && <Spin tip="Загрузка" />} */}
                 <List
+                    data-locator={getLocator(props?.locator || "filtered-list-" + name || "filtered-list-" + fieldName || "filtered-list", props?.object)}
                     loading={loading}
                     locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Нет данных" /> }}
                     itemLayout="horizontal"
                     dataSource={items}
                     renderItem={((item, index) => (
-                        <List.Item key={index} className={classes.listItemClass} {...actions(item, index)} style={{ backgroundColor: (isSelected(item)) ? "#e6f7ff" : "transparent", alignItems: "self-start" }} onClick={() => onSelection(item, index)}>
+                        <List.Item
+                            data-locator={getLocator(props?.locator || "filtered-item-" + name || "filtered-item-" + fieldName || "filtered-item", item)}
+                            key={index} className={classes.listItemClass} {...actions(item, index)} style={{ backgroundColor: (isSelected(item)) ? "#e6f7ff" : "transparent", alignItems: "self-start" }} onClick={() => onSelection(item, index)}>
                             {_render(item, index)}
                         </List.Item>
                     ))} />
@@ -1130,6 +1136,7 @@ function DefaultCollectionServer(props) {
         }
         return (
             <Table
+                data-locator={getLocator(props?.locator || "filtered-table-" + name || "filtered-table-" + fieldName || "filtered-table", props?.object)}
                 scroll={{ x: "auto" }}
                 loading={loading}
                 pagination={false}
@@ -1191,7 +1198,7 @@ function DefaultCollectionServer(props) {
     return (
         <React.Fragment>
             {/* <NearestCollectionContext.Provider value={collectionRef}> */}
-            <div className="collection default-collection filtered">
+            <div data-locator={getLocator(props?.locator || ("collection-" + name) || ("collection-" + fieldName) || "collection", props?.object)} className="collection default-collection filtered">
                 <div className="filtered-header"
                     style={{
                         display: "flex",
@@ -1205,6 +1212,7 @@ function DefaultCollectionServer(props) {
                     {(filters && filters.length > 0 /*&& collection && collection.length > 0*/) && <div justify="end">
                         <Tooltip title="Фильтр и сортировка">
                             <CheckableTag
+                                data-locator={getLocator(props?.locator || "collectionfilter-" + name || "collectionfilter-" + fieldName || "collectionfilter", props?.object)}
                                 style={{ cursor: "pointer", margin: "0" }}
                                 checked={filtered}
                                 onChange={checked => setFiltered(checked)}
@@ -1239,10 +1247,14 @@ function DefaultCollectionServer(props) {
                                 if (filtered && fl.length > 0) {
                                     return (<React.Fragment>
                                         <div style={{}}>
-                                            <Button style={{ width: "100%" }} disabled={!state.filterChanged} type="primary" onClick={applyFilter}>Применить</Button>
+                                            <Button
+                                                data-locator={getLocator(props?.locator || "collectionfilterapply-" + name || "collectionfilterapply-" + fieldName || "collectionfilterapply", props?.object)}
+                                                style={{ width: "100%" }} disabled={!state.filterChanged} type="primary" onClick={applyFilter}>Применить</Button>
                                         </div>
                                         <div style={{ marginTop: "5px" }}>
-                                            <Button style={{ width: "100%" }} disabled={_.isEmpty(state.filter)} onClick={clearFilter}>Очистить</Button>
+                                            <Button
+                                                data-locator={getLocator(props?.locator || "collectionfilterclear-" + name || "collectionfilterclear-" + fieldName || "collectionfilterclear", props?.object)}
+                                                style={{ width: "100%" }} disabled={_.isEmpty(state.filter)} onClick={clearFilter}>Очистить</Button>
                                         </div>
                                     </React.Fragment>)
                                 }
@@ -1254,6 +1266,7 @@ function DefaultCollectionServer(props) {
                 </Layout>
                 {(!!count && !!total && totalPages && totalPages > 1) && <Card size="small" bordered={false} className={classes.cardSmall} style={{ display: "flex", justifyContent: "flex-end", paddingTop: "10px", paddingBottom: "10px" }}>
                     <Pagination className="filtered-pagination" size="small"
+                        data-locator={getLocator(props?.locator || "filtered-pagination-" + name || "filtered-pagination-" + fieldName || "filtered-pagination", props?.object)}
                         current={current}
                         onChange={setCurrent}
                         pageSize={count}

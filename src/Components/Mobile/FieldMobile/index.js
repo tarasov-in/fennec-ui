@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import 'moment/locale/ru';
-import { errorCatch, getDisplay, getObjectValue, GETWITH, IfElse, JSXMap, pushStateHistoryModal, QueryDetail, QueryOrder, QueryParam, READWITH } from '../../../Tool';
+import { errorCatch, getDisplay, getLocator, getObjectValue, GETWITH, IfElse, JSXMap, pushStateHistoryModal, QueryDetail, QueryOrder, QueryParam, READWITH } from '../../../Tool';
 import moment from 'moment';
 import { Checkbox, Input, TextArea, Slider, DatePicker, Button, ImageUploader, Popup, CheckList, SearchBar, Image as AntImage } from 'antd-mobile';
 import { useMetaContext } from '../../Context';
@@ -54,7 +54,7 @@ function UploadItems({ auth, item, value, onChange, changed }) {
         }
     }
     return (
-        <div className='bg bg-grey' style={{
+        <div data-locator={getLocator(item?.name)} className='bg bg-grey' style={{
             backgroundColor: "rgb(235 235 235 / 20%)",
             padding: "5px 0px",
             display: "flex",
@@ -126,7 +126,7 @@ function UploadItem({ auth, item, value, onChange, changed }) {
         }
     }
     return (
-        <div className='bg bg-grey' style={{
+        <div data-locator={getLocator(item?.name)} className='bg bg-grey' style={{
             backgroundColor: "rgb(235 235 235 / 20%)",
             padding: "5px 0px",
             display: "flex",
@@ -193,7 +193,7 @@ function Image({ auth, item, value, onChange, changed }) {
     }
 
     return (
-        <div style={{ padding: "5px 0px" }}>
+        <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
             {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
@@ -202,7 +202,9 @@ function Image({ auth, item, value, onChange, changed }) {
                 justifyContent: "space-between"
             }}>
                 <div>{item.label}</div>
-                <Button fill='none' size='mini' onClick={(v) => {
+                <Button fill='none' size='mini' 
+                data-locator={getLocator(item?.name, "clear")}
+                onClick={(v) => {
                     onChange(null);
                 }}>
                     <Icofont icon="close" />
@@ -222,7 +224,9 @@ function Image({ auth, item, value, onChange, changed }) {
                         src={toUrl(value)}
                     />
                 </div>
-                <Button onClick={onOpenChange} size="small" fill='none'>
+                <Button 
+                data-locator={getLocator(item?.name, "edit")}
+                onClick={onOpenChange} size="small" fill='none'>
                     <Icofont key="1" icon="ui-edit" />
                 </Button>
                 <ImageEditor
@@ -240,6 +244,7 @@ function Image({ auth, item, value, onChange, changed }) {
 function ActionItem({ auth, item, value, onChange, onAfterChange, changed }) {
     return (<React.Fragment>
         <ActionPickerItem
+        data-locator={getLocator(item?.name)}
             auth={auth}
             mode="input"
             item={item}
@@ -263,7 +268,7 @@ function RangeDate({ item, value, onChange, onAfterChange }) {
         }
     }, [value]);
     return (
-        <div style={{ padding: "5px 0px" }}>
+        <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
             {(item && item.header !== false) && <div className='bg bg-grey'
                 style={{
                     textAlign: "left",
@@ -273,14 +278,18 @@ function RangeDate({ item, value, onChange, onAfterChange }) {
                     justifyContent: "space-between"
                 }}>
                 <div>{item.label}</div>
-                <Button fill='none' size='mini' onClick={(v) => {
+                <Button fill='none' size='mini' 
+                data-locator={getLocator(item?.name, "clear")}
+                onClick={(v) => {
                     onChange();
                 }}>
                     <Icofont icon="close" />
                 </Button>
             </div>}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
-                <div onClick={() => {
+                <div 
+                data-locator={getLocator(item?.name,"visible1")}
+                onClick={() => {
                     setVisible1(true)
                 }} style={{
                     flex: "1",
@@ -290,6 +299,7 @@ function RangeDate({ item, value, onChange, onAfterChange }) {
                     padding: "2px 6px"
                 }}>
                     <DatePicker
+                    data-locator={getLocator(item?.name, "input1")}
                         style={{
                             "--item-font-size": "13px"
                         }}
@@ -312,7 +322,9 @@ function RangeDate({ item, value, onChange, onAfterChange }) {
                         }
                     </DatePicker>
                 </div>
-                <div onClick={() => {
+                <div 
+                data-locator={getLocator(item?.name,"visible2")}
+                onClick={() => {
                     setVisible2(true)
                 }} style={{
                     flex: "1",
@@ -322,6 +334,7 @@ function RangeDate({ item, value, onChange, onAfterChange }) {
                     padding: "2px 6px"
                 }}>
                     <DatePicker
+                    data-locator={getLocator(item?.name,"input2")}
                         style={{
                             "--item-font-size": "13px"
                         }}
@@ -367,7 +380,7 @@ function RangeFloat({ item, value, onChange, onAfterChange }) {
         }
     };
     return (
-        <div style={{ padding: "5px 0px" }}>
+        <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
             {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
@@ -376,7 +389,9 @@ function RangeFloat({ item, value, onChange, onAfterChange }) {
                 justifyContent: "space-between"
             }}>
                 <div>{item.label}</div>
-                <Button fill='none' size='mini' onClick={(v) => {
+                <Button fill='none' size='mini' 
+                data-locator={getLocator(item?.name,"clear")}
+                onClick={(v) => {
                     onChange();
                 }}>
                     <Icofont icon="close" />
@@ -391,6 +406,7 @@ function RangeFloat({ item, value, onChange, onAfterChange }) {
                     padding: "2px 6px"
                 }}>
                     <Input
+                    data-locator={getLocator(item?.name,"left")}
                         type={"number"}
                         onChange={onChangeLeft}
                         value={(val && val.length > 1) ? val[0] : def[0]}
@@ -404,6 +420,7 @@ function RangeFloat({ item, value, onChange, onAfterChange }) {
                     padding: "2px 6px"
                 }}>
                     <Input
+                    data-locator={getLocator(item?.name,"right")}
                         type={"number"}
                         onChange={onChangeRight}
                         value={(val && val.length > 1) ? val[1] : def[1]}
@@ -412,6 +429,7 @@ function RangeFloat({ item, value, onChange, onAfterChange }) {
             </div>
             <div>
                 <Slider
+                data-locator={getLocator(item?.name,"input")}
                     range
                     defaultValue={def}
                     min={(xmin - (xmin % xstep))}
@@ -435,7 +453,7 @@ function FloatSlider({ item, value, onChange, onAfterChange }) {
     const xmax = item?.max || item?.func?.max || 100000;
 
     return (
-        <div style={{ padding: "5px 0px" }}>
+        <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
             {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
@@ -446,7 +464,9 @@ function FloatSlider({ item, value, onChange, onAfterChange }) {
                 <div>{item.label}</div>
                 <Button
                     disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
-                    fill='none' size='mini' onClick={(v) => {
+                    fill='none' size='mini' 
+                    data-locator={getLocator(item?.name,"clear")}
+                    onClick={(v) => {
                         onChange();
                     }}>
                     <Icofont icon="close" />
@@ -454,6 +474,7 @@ function FloatSlider({ item, value, onChange, onAfterChange }) {
             </div>}
             <div>
                 <Slider
+                data-locator={getLocator(item?.name,"input")}
                     disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
                     range
                     min={xmin}
@@ -487,7 +508,7 @@ function RangeInteger({ item, value, onChange, onAfterChange }) {
         }
     };
     return (
-        <div style={{ padding: "5px 0px" }}>
+        <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
             {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
@@ -496,7 +517,9 @@ function RangeInteger({ item, value, onChange, onAfterChange }) {
                 justifyContent: "space-between"
             }}>
                 <div>{item.label}</div>
-                <Button fill='none' size='mini' onClick={(v) => {
+                <Button fill='none' size='mini'
+                data-locator={getLocator(item?.name,"clear")}
+                 onClick={(v) => {
                     onChange();
                 }}>
                     <Icofont icon="close" />
@@ -511,6 +534,7 @@ function RangeInteger({ item, value, onChange, onAfterChange }) {
                     padding: "2px 6px"
                 }}>
                     <Input
+                    data-locator={getLocator(item?.name, "left")}
                         type={"number"}
                         onChange={onChangeLeft}
                         value={(val && val.length > 1) ? val[0] : def[0]}
@@ -524,6 +548,7 @@ function RangeInteger({ item, value, onChange, onAfterChange }) {
                     padding: "2px 6px"
                 }}>
                     <Input
+                    data-locator={getLocator(item?.name, "right")}
                         type={"number"}
                         onChange={onChangeRight}
                         value={(val && val.length > 1) ? val[1] : def[1]}
@@ -531,6 +556,7 @@ function RangeInteger({ item, value, onChange, onAfterChange }) {
                 </div>
             </div>
             <Slider
+            data-locator={getLocator(item?.name, "input")}
                 // style={{ marginLeft: 15, marginRight: 15, height: "22px" }}
                 range
                 defaultValue={def}
@@ -555,7 +581,7 @@ function IntegerSlider({ item, value, onChange, onAfterChange }) {
     const xmax = item?.max || item?.func?.max || 100000;
 
     return (
-        <div style={{ padding: "5px 0px" }}>
+        <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
             {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
@@ -566,13 +592,16 @@ function IntegerSlider({ item, value, onChange, onAfterChange }) {
                 <div>{item.label}</div>
                 <Button
                     disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
-                    fill='none' size='mini' onClick={(v) => {
+                    fill='none' size='mini' 
+                    data-locator={getLocator(item?.name, "clear")}
+                    onClick={(v) => {
                         onChange();
                     }}>
                     <Icofont icon="close" />
                 </Button>
             </div>}
             <Slider
+            data-locator={getLocator(item?.name, "input")}
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
                 min={xmin}
                 max={xmax}
@@ -686,7 +715,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
                 return item.relation.displayString(value)
             } else {
                 let labeldisplay = label(item, value);
-                if(_.isString(labeldisplay)){
+                if (_.isString(labeldisplay)) {
                     return labeldisplay;
                 }
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
@@ -702,8 +731,8 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
                 return item.display(value)
             } else if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
                 return item.relation.display(value)
-            } else if(PartialReplacementFunc){
-                return PartialReplacementFunc({item, value, changed, contextObject, objectName})
+            } else if (PartialReplacementFunc) {
+                return PartialReplacementFunc({ item, value, changed, contextObject, objectName })
             } else {
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
                 let _display = ((item?.relation?.display?.fields) ? item?.relation?.display : undefined) || ((fieldMeta?.display?.fields) ? fieldMeta?.display : undefined)
@@ -731,12 +760,16 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
         if (item.dependence?.mode !== "server" && item.dependence) {
             if (item.dependence.field && by(item)) {
                 return data?.filter(e => _.get(e, item.dependence.field) === by(item))?.map(i => (
-                    <CheckList.Item key={property(item, i)} value={property(item, i)} label={labelString(item, i)}>{label(item, i)}</CheckList.Item>
+                    <CheckList.Item
+                        data-locator={getLocator(item?.name || objectName, itemByProperty(item, i))}
+                        key={property(item, i)} value={property(item, i)} label={labelString(item, i)}>{label(item, i)}</CheckList.Item>
                 ));
             }
         } else {
             return data?.map(i => (
-                <CheckList.Item key={property(item, i)} value={property(item, i)} label={labelString(item, i)}>{label(item, i)}</CheckList.Item>
+                <CheckList.Item
+                    data-locator={getLocator(item?.name || objectName, itemByProperty(item, i))}
+                    key={property(item, i)} value={property(item, i)} label={labelString(item, i)}>{label(item, i)}</CheckList.Item>
             ));
         }
     }, [value, changed]);
@@ -787,6 +820,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
                             </div>
                             <div style={{ flex: "0", padding: "0 10px" }}>
                                 <SearchBar
+                                    data-locator={getLocator(item?.name || objectName, "search")}
                                     value={searchText}
                                     onChange={v => {
                                         setSearchText(v)
@@ -796,6 +830,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
                             <div style={{ overflowY: 'scroll', flex: "1", height: "100%" }}>
                                 <div style={{ height: "100%", padding: "0px 15px 15px 15px" }}>
                                     <CheckList /*multiple*/ defaultValue={[value]}
+                                        data-locator={getLocator(item?.name || objectName, "list")}
                                         onChange={e => {
                                             // onChange(e, item, itemsByProperty(item, e))
                                             onChange(_.head(e), item, itemByProperty(item, _.head(e)));
@@ -924,7 +959,7 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed, context
                 return item.relation.displayString(value)
             } else {
                 let labeldisplay = label(item, value);
-                if(_.isString(labeldisplay)){
+                if (_.isString(labeldisplay)) {
                     return labeldisplay;
                 }
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
@@ -940,8 +975,8 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed, context
                 return item.display(value)
             } else if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
                 return item.relation.display(value)
-            } else if(PartialReplacementFunc){
-                return PartialReplacementFunc({item, value, changed, contextObject, objectName})
+            } else if (PartialReplacementFunc) {
+                return PartialReplacementFunc({ item, value, changed, contextObject, objectName })
             } else {
                 let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
                 let _display = ((item?.relation?.display?.fields) ? item?.relation?.display : undefined) || ((fieldMeta?.display?.fields) ? fieldMeta?.display : undefined)
@@ -967,12 +1002,16 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed, context
         if (item.dependence?.mode !== "server" && item.dependence) {
             if (item.dependence.field && by(item)) {
                 return data?.filter(e => _.get(e, item.dependence.field) === by(item))?.map(i => (
-                    <CheckList.Item key={property(item, i)} value={property(item, i)} label={labelString(item, i)}>{label(item, i)}</CheckList.Item>
+                    <CheckList.Item
+                        data-locator={getLocator(item?.name || objectName, itemByProperty(item, i))}
+                        key={property(item, i)} value={property(item, i)} label={labelString(item, i)}>{label(item, i)}</CheckList.Item>
                 ));
             }
         } else {
             return data?.map(i => (
-                <CheckList.Item key={property(item, i)} value={property(item, i)} label={labelString(item, i)}>{label(item, i)}</CheckList.Item>
+                <CheckList.Item
+                    data-locator={getLocator(item?.name || objectName, itemByProperty(item, i))}
+                    key={property(item, i)} value={property(item, i)} label={labelString(item, i)}>{label(item, i)}</CheckList.Item>
             ));
         }
     }, [value, changed]);
@@ -1023,6 +1062,7 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed, context
                             </div>
                             <div style={{ flex: "0", padding: "0 10px" }}>
                                 <SearchBar
+                                    data-locator={getLocator(item?.name || objectName, "search")}
                                     value={searchText}
                                     onChange={v => {
                                         setSearchText(v)
@@ -1032,6 +1072,7 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed, context
                             <div style={{ overflowY: 'scroll', flex: "1", height: "100%" }}>
                                 <div style={{ height: "100%", padding: "0px 15px 15px 15px" }}>
                                     <CheckList multiple defaultValue={value}
+                                        data-locator={getLocator(item?.name || objectName, "list")}
                                         onChange={e => {
                                             onChange(e, item, itemsByProperty(item, e))
                                             // onChange(_.head(e), item, _.head(itemsByProperty(item, e)));
@@ -1070,7 +1111,7 @@ function Date({ item, value, onChange, onAfterChange }) {
         }
     }, [value]);
     return (
-        <div style={{ padding: "5px 0px" }}>
+        <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
             {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
@@ -1079,14 +1120,14 @@ function Date({ item, value, onChange, onAfterChange }) {
                 justifyContent: "space-between"
             }}>
                 <div>{item.label}</div>
-                <Button fill='none' size='mini' onClick={(v) => {
+                <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
                     <Icofont icon="close" />
                 </Button>
             </div>}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
-                <div onClick={() => {
+                <div data-locator={getLocator(item?.name, "visible")} onClick={() => {
                     setVisible(true)
                 }} style={{
                     flex: "1",
@@ -1096,6 +1137,7 @@ function Date({ item, value, onChange, onAfterChange }) {
                     padding: "2px 6px"
                 }}>
                     <DatePicker
+                        data-locator={getLocator(item?.name, "input")}
                         style={{
                             "--item-font-size": "13px"
                         }}
@@ -1132,7 +1174,7 @@ function DateTime({ item, value, onChange, onAfterChange }) {
         }
     }, [value]);
     return (
-        <div style={{ padding: "5px 0px" }}>
+        <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
             {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
@@ -1141,14 +1183,14 @@ function DateTime({ item, value, onChange, onAfterChange }) {
                 justifyContent: "space-between"
             }}>
                 <div>{item.label}</div>
-                <Button fill='none' size='mini' onClick={(v) => {
+                <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
                     <Icofont icon="close" />
                 </Button>
             </div>}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
-                <div onClick={() => {
+                <div data-locator={getLocator(item?.name, "visible")} onClick={() => {
                     setVisible(true)
                 }} style={{
                     flex: "1",
@@ -1158,6 +1200,7 @@ function DateTime({ item, value, onChange, onAfterChange }) {
                     padding: "2px 6px"
                 }}>
                     <DatePicker
+                        data-locator={getLocator(item?.name, "input")}
                         style={{
                             "--item-font-size": "13px"
                         }}
@@ -1194,7 +1237,7 @@ function Time({ item, value, onChange, onAfterChange }) {
         }
     }, [value]);
     return (
-        <div style={{ padding: "5px 0px" }}>
+        <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
             {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
@@ -1203,7 +1246,7 @@ function Time({ item, value, onChange, onAfterChange }) {
                 justifyContent: "space-between"
             }}>
                 <div>{item.label}</div>
-                <Button fill='none' size='mini' onClick={(v) => {
+                <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
                     <Icofont icon="close" />
@@ -1220,6 +1263,7 @@ function Time({ item, value, onChange, onAfterChange }) {
                     padding: "2px 6px"
                 }}>
                     <DatePicker
+                        data-locator={getLocator(item?.name, "input")}
                         style={{
                             "--item-font-size": "13px"
                         }}
@@ -1248,6 +1292,7 @@ function Time({ item, value, onChange, onAfterChange }) {
 function Boolean({ item, value, onChange, onAfterChange }) {
     return (
         <Checkbox
+            data-locator={getLocator(item?.name)}
             disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
             onChange={onChange}
             checked={value}
@@ -1258,7 +1303,7 @@ function Boolean({ item, value, onChange, onAfterChange }) {
 }
 function Float({ item, value, onChange, onAfterChange }) {
     return (
-        <div style={{ padding: "5px 0px" }}>
+        <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
             {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
@@ -1267,7 +1312,7 @@ function Float({ item, value, onChange, onAfterChange }) {
                 justifyContent: "space-between"
             }}>
                 <div>{item.label}</div>
-                <Button fill='none' size='mini' onClick={(v) => {
+                <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
                     <Icofont icon="close" />
@@ -1282,6 +1327,7 @@ function Float({ item, value, onChange, onAfterChange }) {
                     padding: "2px 6px"
                 }}>
                     <Input
+                        data-locator={getLocator(item?.name, "input")}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
                         placeholder={item.placeholder || ("введите " + ((item.label) ? item.label.toLowerCase() : "значение"))}
                         // clearable
@@ -1299,7 +1345,7 @@ function Float({ item, value, onChange, onAfterChange }) {
 }
 function Integer({ item, value, onChange, onAfterChange }) {
     return (
-        <div style={{ padding: "5px 0px" }}>
+        <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
             {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
@@ -1308,7 +1354,7 @@ function Integer({ item, value, onChange, onAfterChange }) {
                 justifyContent: "space-between"
             }}>
                 <div>{item.label}</div>
-                <Button fill='none' size='mini' onClick={(v) => {
+                <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
                     <Icofont icon="close" />
@@ -1323,6 +1369,7 @@ function Integer({ item, value, onChange, onAfterChange }) {
                     padding: "2px 6px"
                 }}>
                     <Input
+                        data-locator={getLocator(item?.name, "input")}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
                         placeholder={item.placeholder || ("введите " + ((item.label) ? item.label.toLowerCase() : "значение"))}
                         // clearable
@@ -1340,7 +1387,7 @@ function Integer({ item, value, onChange, onAfterChange }) {
 }
 function String({ item, value, onChange, onAfterChange }) {
     return (
-        <div style={{ padding: "5px 0px" }}>
+        <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
             {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
@@ -1349,7 +1396,7 @@ function String({ item, value, onChange, onAfterChange }) {
                 justifyContent: "space-between"
             }}>
                 <div>{item.label}</div>
-                <Button fill='none' size='mini' onClick={(v) => {
+                <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clean")} onClick={(v) => {
                     onChange();
                 }}>
                     <Icofont icon="close" />
@@ -1364,6 +1411,7 @@ function String({ item, value, onChange, onAfterChange }) {
                     padding: "2px 6px"
                 }}>
                     <TextArea
+                        data-locator={getLocator(item?.name, "input")}
                         style={{
                             "--font-size": "14px"
                         }}
@@ -1381,7 +1429,7 @@ function String({ item, value, onChange, onAfterChange }) {
 function Password({ item, value, onChange, onAfterChange }) {
     const [visible, setVisible] = useState(false)
     return (
-        <div style={{ padding: "5px 0px" }}>
+        <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
             {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
@@ -1390,7 +1438,7 @@ function Password({ item, value, onChange, onAfterChange }) {
                 justifyContent: "space-between"
             }}>
                 <div>{item.label}</div>
-                <Button fill='none' size='mini' onClick={(v) => {
+                <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
                     <Icofont icon="close" />
@@ -1406,6 +1454,7 @@ function Password({ item, value, onChange, onAfterChange }) {
                 }}>
                     <div className={styles.password}>
                         <Input
+                            data-locator={getLocator(item?.name, "input")}
                             value={value}
                             onChange={onChange}
                             className={styles.input}
@@ -1414,9 +1463,9 @@ function Password({ item, value, onChange, onAfterChange }) {
                         />
                         <div className={styles.eye}>
                             {!visible ? (
-                                <EyeInvisibleOutline onClick={() => setVisible(true)} />
+                                <EyeInvisibleOutline data-locator={getLocator(item?.name, "visible")} onClick={() => setVisible(true)} />
                             ) : (
-                                <EyeOutline onClick={() => setVisible(false)} />
+                                <EyeOutline data-locator={getLocator(item?.name, "unvisible")} onClick={() => setVisible(false)} />
                             )}
                         </div>
                     </div>
@@ -1444,12 +1493,12 @@ function Unknown({ item }) {
 export function FieldMobile({ auth, item, value, onChange, onAfterChange, changed, isChanged, partialReplacement,
     fullReplacement, contextObject, objectName }) {
     // const FullReplacementFunc = useFieldReplacement(item?.name, fullReplacement)
-     // const FullReplacementFunc = useFieldFullReplacement(item?.name, fullReplacement)
-     let type = ((item.view) ? item.view.type : undefined) || item.type;
-     const FullReplacementFunc = useFieldFullReplacement(type, fullReplacement)
-     if (FullReplacementFunc) {
-         return (<FullReplacementFunc auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed} />)
-     }
+    // const FullReplacementFunc = useFieldFullReplacement(item?.name, fullReplacement)
+    let type = ((item.view) ? item.view.type : undefined) || item.type;
+    const FullReplacementFunc = useFieldFullReplacement(type, fullReplacement)
+    if (FullReplacementFunc) {
+        return (<FullReplacementFunc auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed} />)
+    }
     switch (item.filterType) {
         case "group":
             switch (item.type) {

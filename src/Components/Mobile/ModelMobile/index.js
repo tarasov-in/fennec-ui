@@ -7,7 +7,7 @@ import 'react-virtualized/styles.css';
 import {
     Typography,
 } from 'antd';
-import { uncapitalize, GetMeta, GetMetaProperties, formItemRules, isRequired, validator } from '../../../Tool';
+import { uncapitalize, GetMeta, GetMetaProperties, formItemRules, isRequired, validator, getLocator } from '../../../Tool';
 import { FieldMobile } from '../FieldMobile';
 import { useFormObserverContext } from '../../Context';
 import { useModelFullReplacement, useModelPartialReplacement } from '../../../ComponetsReplacement';
@@ -233,7 +233,7 @@ const useStyles = createUseStyles({
 })
 
 function Frm(props) {
-    const { auth, form, name, meta, options, submit, object, virtualized, search, partialReplacement } = props;
+    const { auth, form, name, meta, options, locator, submit, object, virtualized, search, partialReplacement } = props;
 
     const PartialReplacementFunc = useModelPartialReplacement(name, partialReplacement)
 
@@ -354,14 +354,14 @@ function Frm(props) {
         style,
     }) => {
         return (
-            <div key={key} style={style}>
+            <div key={key} style={style} data-locator={getLocator(props?.locator || name || "model-field", propertiesVirtualized[index])}>
                 {virtualizedItem(propertiesVirtualized[index], index)}
             </div>
         );
     }
 
     return (
-        <div className='model default-model'>
+        <div data-locator={getLocator(props?.locator || name || "model", props?.object)} className='model default-model'>
             <div>
                 {PartialReplacementFunc && <div className='partial-replacement'>
                     <PartialReplacementFunc
@@ -406,7 +406,7 @@ function Frm(props) {
 }
 
 export function ModelMobile(props) {
-    const { auth, name, meta, options, form, submit, object, virtualized, search, steps, partialReplacement, fullReplacement } = props;
+    const { auth, name, meta, options, form, submit, object, locator, virtualized, search, steps, partialReplacement, fullReplacement } = props;
     const classes = useStyles()
     const FullReplacementFunc = useModelFullReplacement(name, fullReplacement)
     if (FullReplacementFunc) {
@@ -422,7 +422,7 @@ export function ModelMobile(props) {
         <React.Fragment>
             {<Frm className={classes.Frm}
                 partialReplacement={partialReplacement}
-                auth={auth} form={form} name={name} meta={meta} options={options} submit={submit} object={object} virtualized={virtualized} search={search} steps={steps}></Frm>}
+                auth={auth} form={form} name={name} meta={meta} options={options} submit={submit} object={object} virtualized={virtualized} search={search} steps={steps} locator={locator}></Frm>}
         </React.Fragment>
     )
 };

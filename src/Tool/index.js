@@ -7,6 +7,21 @@ import dayjs from 'dayjs'
 import 'dayjs/locale/ru'
 var _ = require('lodash');
 //--------------------------------------------------------------
+// style={props?.style} className={props?.className }
+// data-locator={getLocator(props?.locator, props?.object)}
+// data-locator={getLocator(props?.locator || "item", props?.object || {ID: idx})}
+export function getLocator(locator, obj) {
+    if (_.isObject(obj)) {
+        let id = (obj?.ID) ? `ID${obj?.ID}` : "";
+        let uuid = (obj?.uuid) ? `UUID${obj?.uuid}` : "";
+        let key = (obj?.key) ? `KEY${obj?.key}` : "";
+        let ID = id || uuid || key;
+        return (locator||"") + ID
+    } else if (obj) {
+        return (locator||"") + obj
+    } else return (locator||"")
+}
+//--------------------------------------------------------------
 export const publish = (msg, data) => {
     PubSub.publish(msg, data);
 };

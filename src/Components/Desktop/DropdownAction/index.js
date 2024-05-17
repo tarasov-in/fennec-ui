@@ -4,7 +4,7 @@ import { Button, Menu, Dropdown } from 'antd';
 import {
     MenuOutlined,
 } from '@ant-design/icons';
-import { JSXMap, publish } from '../../../Tool';
+import { JSXMap, getLocator, publish } from '../../../Tool';
 import { useAuth } from '../../../Auth';
 import { Action } from '../../Action'
 
@@ -24,14 +24,14 @@ export function DropdownAction(props) {
         if (button) {
             return button();
         } else {
-            return (<Button size={"small"} style={{ padding: "0 6px" }} type="default">
+            return (<Button size={"small"} style={{ padding: "0 6px" }} type="default" data-locator={getLocator(props?.locator || "menu", props?.object)}>
                 <MenuOutlined />
             </Button>);
         }
     };
 
     return (
-        <div onClick={(e) => {
+        <div data-locator={getLocator(props?.locator || "dropdownaction", props?.object)} onClick={(e) => {
             // e.preventDefault();
         }} style={style}>
             {JSXMap(actions?.filter(e => (!!e.action || !!e.document)), (e, idx) => (<div key={idx}>
