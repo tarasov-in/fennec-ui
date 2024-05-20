@@ -101,10 +101,10 @@ export function SortingFieldsUI(props) {
                     </Select>
                     <div>
                         {value.order === "ASC" && <Tooltip title="Восходящий">
-                            <Button icon={<SortAscendingOutlined />} data-locator={getLocator(props?.locator || "sortingasc", props?.object || idx)} onClick={() => onChange({ name: value.name, order: (value.order === "ASC") ? "DESC" : "ASC" })} />
+                            <Button icon={<SortAscendingOutlined />} data-locator={getLocator(props?.locator || "sortingasc", props?.object)} onClick={() => onChange({ name: value.name, order: (value.order === "ASC") ? "DESC" : "ASC" })} />
                         </Tooltip>}
                         {value.order === "DESC" && <Tooltip title="Нисходящий">
-                            <Button icon={<SortDescendingOutlined />} data-locator={getLocator(props?.locator || "sortingdesc", props?.object || idx)} onClick={() => onChange({ name: value.name, order: (value.order === "ASC") ? "DESC" : "ASC" })} />
+                            <Button icon={<SortDescendingOutlined />} data-locator={getLocator(props?.locator || "sortingdesc", props?.object)} onClick={() => onChange({ name: value.name, order: (value.order === "ASC") ? "DESC" : "ASC" })} />
                         </Tooltip>}
                     </div>
                 </div>
