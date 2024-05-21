@@ -1146,7 +1146,7 @@ function DefaultCollectionServer(props) {
                     })}
                     {!customRender && <List className="my-list filtered-list">
                         {(collection && collection.length > 0) && collection?.map((item, index) => (
-                            <Item key={index} multipleLine align="top" wrap style={{ paddingLeft: "0px" }}>
+                            <Item data-locator={getItemLocator(item,index)} key={index} multipleLine align="top" wrap style={{ paddingLeft: "0px" }}>
                                 {RenderOnModelActions(item, index, () => _render(item, index), (modelActionsTitle) ? modelActionsTitle(item) : undefined)}
                             </Item>
                         ))}
