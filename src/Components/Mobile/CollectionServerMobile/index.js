@@ -335,6 +335,8 @@ function DefaultCollectionServer(props) {
         contextFilters,
         subscribe,
 
+        onItemLocator,
+
         onCollectionChange,
         // Collection Only Events
         onChange,   // |
@@ -1042,6 +1044,13 @@ function DefaultCollectionServer(props) {
         defaultCollectionAction,
         defaultModelAction,
     }
+    const getItemLocator = useCallback((item, index) => {
+        if (onItemLocator) {
+            return onItemLocator(item,index)
+        } else {
+            return getLocator(props?.locator || "filtered-item-" + name || "filtered-item-" + fieldName || "filtered-item", item)
+        }
+    },[onItemLocator, props?.locator, name, fieldName])
     return (
         <React.Fragment>
             {/* <NearestCollectionContext.Provider value={collectionRef}> */}
@@ -1062,7 +1071,7 @@ function DefaultCollectionServer(props) {
                     {(collection && collection.length > 0) && <div>
                         <List className="my-list">
                             {collection?.map((item, index) => (
-                                <Item key={index} multipleLine align="top" wrap style={{ paddingLeft: "0px" }}>
+                                <Item data-locator={getItemLocator(item,index)} key={index} multipleLine align="top" wrap style={{ paddingLeft: "0px" }}>
                                     {RenderOnModelActions(item, index, () => _render(item, index), (modelActionsTitle) ? modelActionsTitle(item) : undefined)}
                                 </Item>
                             ))}
