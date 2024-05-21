@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Layout, Card, Button, Tooltip, Pagination, Empty, Divider, Typography, Tag, Select, List, Table, Spin, Badge, Modal } from 'antd';
 import { Action } from '../../Action'
 import { DropdownAction } from '../DropdownAction'
@@ -304,6 +304,8 @@ function DefaultCollectionServer(props) {
         titleFunc,
         contextFilters,
         subscribe,
+
+        onItemLocator,
 
         onCollectionChange,
         // Collection Only Events
@@ -1079,6 +1081,14 @@ function DefaultCollectionServer(props) {
         current,
         count])
 
+    const getItemLocator = useCallback((item, index) => {
+        if (onItemLocator) {
+            return onItemLocator(item,index)
+        } else {
+            return getLocator(props?.locator || "filtered-item-" + name || "filtered-item-" + fieldName || "filtered-item", item)
+        }
+    },[onItemLocator, props?.locator, name, fieldName])
+
     const view = (items) => {
         const _render = (item, index) => {
             if (render) {
@@ -1103,17 +1113,6 @@ function DefaultCollectionServer(props) {
             return {};
         };
 
-        // if (customRender) {
-        //     return customRender(items, {
-        //         collection,
-        //         setCollection,
-        //         setCollectionItem,
-        //         removeCollectionItem,
-        //         update,
-        //         //subscribe !!!!
-        //     })
-        // }
-
         if (mode === "list") {
             return (<div className='filtered-list'>
                 {/* <SpinLoading visible={loading} /> */}
@@ -1126,7 +1125,7 @@ function DefaultCollectionServer(props) {
                     dataSource={items}
                     renderItem={((item, index) => (
                         <List.Item
-                            data-locator={getLocator(props?.locator || "filtered-item-" + name || "filtered-item-" + fieldName || "filtered-item", item)}
+                            data-locator={getItemLocator(item,index)}
                             key={index} className={classes.listItemClass} {...actions(item, index)} style={{ backgroundColor: (isSelected(item)) ? "#e6f7ff" : "transparent", alignItems: "self-start" }} onClick={() => onSelection(item, index)}>
                             {_render(item, index)}
                         </List.Item>
@@ -1142,6 +1141,12 @@ function DefaultCollectionServer(props) {
                 pagination={false}
                 columns={columns()}
                 rowKey={r => r.ID}
+                onRow={(record, rowIndex) => {
+                    return {
+                        'data-locator': getItemLocator(record, rowIndex)
+                        //   onClick: (event) => {}, // click row
+                    };
+                }}
                 dataSource={(items && items.length) ? items : undefined}
                 locale={{
                     emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={"Нет данных"}></Empty>
