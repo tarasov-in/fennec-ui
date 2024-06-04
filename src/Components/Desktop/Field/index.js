@@ -390,9 +390,10 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed, context
             filterOption={(input, option) => {
                 return option?.label?.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }}
-            filterSort={(optionA, optionB) =>
-                optionA?.label?.toLowerCase().localeCompare(optionB?.label?.toLowerCase())
-            }>
+            // filterSort={(optionA, optionB) =>
+            //     optionA?.label?.toLowerCase().localeCompare(optionB?.label?.toLowerCase())
+            // }
+            >
             {elements(data)}
         </Select>
     )
@@ -769,9 +770,9 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
                 filterOption={(input, option) => {
                     return option?.label?.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }}
-                filterSort={(optionA, optionB) =>
-                    optionA?.label?.toLowerCase().localeCompare(optionB?.label?.toLowerCase())
-                }
+                // filterSort={(optionA, optionB) =>
+                //     optionA?.label?.toLowerCase().localeCompare(optionB?.label?.toLowerCase())
+                // }
             // filterOption={(input, element) =>
             //     element.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             // }
