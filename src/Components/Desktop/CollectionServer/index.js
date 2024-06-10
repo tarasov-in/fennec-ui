@@ -317,7 +317,7 @@ function DefaultCollectionServer(props) {
         onValues, // (values, context) => { }, // если без return то просто как событие, если внутри return то замена данных
         onData,   // (values, context) => { }, // если без return то просто как событие, если внутри return то замена данных
         onClose,   // ({unlock, close}, context) => { },
-        onError,  // (err, type, {unlock, close}) => {},
+        onError,  // (err, {unlock, close}) => {},
         onDispatch, // (values, context) => {}, // если не возвращает значения то посленеё будет вызван внутренний setCollection, 
         // если вернет функцию в качестве значения то эта функция будет вызвана вместо setCollection 
         // и в неё будет передано значение нового состояния

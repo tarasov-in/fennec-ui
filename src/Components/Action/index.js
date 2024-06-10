@@ -356,7 +356,7 @@ export function Action(props) {
                         path: `/api/` + props.document,
                         onClose: ({ unlock, close }, context) => close(),
                         onDispatch: (values, context) => () => callback, // callback(response, values, unlock, close, properties),
-                        onError: (err, type, { unlock, close }) => {
+                        onError: (err, { unlock, close }) => {
                             unlock();
                             messageError(err);
                         },
