@@ -1612,14 +1612,15 @@ export function formItemRules(item) {
                 }
             }
         } else if (_.isObject(item.validators)) {
+            // console.log(item?.validators?.max, item?.validators);
             if (isRequired(item) === true) {
                 res.push({ required: true, message: 'Укажите ' + item.label.toLowerCase() + '!' });
             }
-            if (item?.validators?.max) {
-                res.push({ max: item?.validators?.max, message: `Значение должно быть не больше ${item?.validators?.max} символов!` });
+            if (item?.validators?.max !== undefined && item?.validators?.max !== null) {
+                res.push({ type: (item?.type=="string" || item?.type=="text")?"string":"number", max: item?.validators?.max, message: `Значение должно быть не больше ${item?.validators?.max}${(item?.type=="string")?" символов":""}!` });
             }
-            if (item?.validators?.min) {
-                res.push({ min: item?.validators?.min, message: `Значение должно быть не меньше ${item?.validators?.max} символов!` });
+            if (item?.validators?.min !== undefined && item?.validators?.min !== null) {
+                res.push({ type: (item?.type=="string" || item?.type=="text")?"string":"number", min: item?.validators?.min, message: `Значение должно быть не меньше ${item?.validators?.mix}${(item?.type=="string")?" символов":""}!` });
             }
             if (item?.validators?.pattern) {
                 res.push({ pattern: item?.validators?.pattern, message: `Значение должно соответствовать шаблону ${item?.validators?.pattern}!` });

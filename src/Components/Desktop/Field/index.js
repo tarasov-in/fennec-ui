@@ -1216,7 +1216,7 @@ function Float({ item, value, onChange, onAfterChange }) {
     return (
         <InputNumber
             data-locator={getLocator(item?.name)}
-            value={value} onChange={onChange} style={{ width: "100%" }} min={item?.min} max={item?.max}
+            value={value} onChange={onChange} style={{ width: "100%" }} min={item?.min || item?.validators?.min} max={item?.max || item?.validators?.max}
             disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
         />
     )
@@ -1226,7 +1226,7 @@ function Integer({ item, value, onChange, onAfterChange }) {
     return (
         <InputNumber
             data-locator={getLocator(item?.name)}
-            value={value} onChange={onChange} style={{ width: "100%" }} min={item?.min} max={item?.max}
+            value={value} onChange={onChange} style={{ width: "100%" }} min={item?.min || item?.validators?.min} max={item?.max || item?.validators?.max}
             disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
         />
     )
@@ -1396,7 +1396,7 @@ export function Field(props) {
                 case "image":
                     return (<Image auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Image>)
                 default:
-                    return (<Unknown auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
+                    return (<Unknown auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>);
             }
 
     }
