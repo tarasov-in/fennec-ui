@@ -111,8 +111,8 @@ function Frm(props) {
                 return item.display(value)
             } else if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
                 return item.relation.display(value)
-            // } else if (PartialReplacementFunc) {
-            //     return PartialReplacementFunc({ item, value, changed, contextObject, objectName })
+                // } else if (PartialReplacementFunc) {
+                //     return PartialReplacementFunc({ item, value, changed, contextObject, objectName })
             } else {
                 let fieldMeta = gmeta[getObjectValue(item, "relation.reference.object")];
                 let _display = ((item?.relation?.display?.fields) ? item?.relation?.display : undefined) || ((fieldMeta?.display?.fields) ? fieldMeta?.display : undefined)
@@ -122,7 +122,7 @@ function Frm(props) {
         return "";
     }, [gmeta]);
 
-    if(!excludeFields) return (<React.Fragment></React.Fragment>)
+    if (!excludeFields) return (<React.Fragment></React.Fragment>)
     return (
         <div data-locator={getLocator(props?.locator || name || "model", props?.object)} className='model default-model'>
             {(object && links && links !== "inline" && propertiesOneMany && propertiesOneMany.length > 0) &&
@@ -165,7 +165,7 @@ function Frm(props) {
                     {...options}
                     labelAlign={"left"}
                     layout={"vertical"}>
-                    {propertiesFiltered?.filter(e => (e.name && (excludeFields[e.name?.toLowerCase()] || excludeFields[e.name?.toLowerCase()+"ID"])) ? false : true)?.map((item, idx) => {
+                    {propertiesFiltered?.filter(e => (e.name && (excludeFields[e.name?.toLowerCase()] || excludeFields[e.name?.toLowerCase() + "ID"])) ? false : true)?.map((item, idx) => {
                         // {propertiesFiltered?.map((item, idx) => {
                         if (!item?.name && item.type === "func" && item.render) {
                             return <div key={"func_" + idx}>
@@ -187,6 +187,7 @@ function Frm(props) {
                                 objectName={name}
                                 contextObject={contextObject}
                                 auth={auth}
+                                formItem={true}
                                 // filter={fieldsFilters[item?.name?.toLowerCase()]}
                                 item={{ ...item, filterType: undefined, func: (funcStat && funcStat[item?.name?.toLowerCase()]) ? funcStat[item?.name?.toLowerCase()] : {} }}
 
@@ -210,13 +211,13 @@ function Frm(props) {
                             let url = e?.source || getObjectValue(e, "relation.reference.url") || getObjectValue(e, "relation.reference.source");
 
                             if (!n) return;
-                            return (<TabPane data-locator={getLocator(props?.locator || "model-collection"+name || "model-collection", props?.object)} tab={e.label} key={idx}>
+                            return (<TabPane data-locator={getLocator(props?.locator || "model-collection" + name || "model-collection", props?.object)} tab={e.label} key={idx}>
                                 <CollectionServer
                                     auth={auth}
                                     name={n}
                                     // locator={n}
                                     source={url}
-                                    count={()=>(count || 20)}
+                                    count={() => (count || 20)}
                                     field={e}
                                     fieldName={f}
                                     contextObject={object}
@@ -232,7 +233,7 @@ function Frm(props) {
                                     ] : [
                                         ...QueryFiltersToContextFilters(queryFilter)
                                     ]}
-                                    filters={() => (uif)?uif():filtersFromMeta(n)}
+                                    filters={() => (uif) ? uif() : filtersFromMeta(n)}
                                     mode="list"
                                     render={(o, idx) => {
                                         return display(e, o)
