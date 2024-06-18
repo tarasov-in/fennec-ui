@@ -224,6 +224,7 @@ export function FiltersFieldsUIMobile(props) {
                 <div key={idx} style={{ marginBottom: "10px" }}>
                     <FieldMobile
                         key={idx}
+                        formItem={true}
                         auth={auth}
                         item={{ ...item, func: (funcStat && funcStat[item.name.toLowerCase()]) ? funcStat[item.name.toLowerCase()] : {} }}
                         value={value[item.name]}

@@ -141,6 +141,7 @@ export function FiltersFieldsUI(props) {
                             {item.filter && (item.type !== "bool" && item.type !== "boolean") && <Text>{item.label}</Text>}
                             <Field
                                 mode="filter"
+                                formItem={true}
                                 key={item.name}
                                 auth={auth}
                                 item={{ ...item, func: (funcs && funcs[item?.name?.toLowerCase()]) ? funcs[item.name.toLowerCase()] : {} }}
