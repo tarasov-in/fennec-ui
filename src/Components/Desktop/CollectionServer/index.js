@@ -325,7 +325,8 @@ function DefaultCollectionServer(props) {
 
         onChangeRequestParameters,
         partialReplacement,
-        onApplyFilter
+        onApplyFilter,
+        floatingFilter
     } = props;
 
     // const PartialReplacementFunc = useCollectionPartialReplacement(fieldName, partialReplacement)
@@ -360,6 +361,9 @@ function DefaultCollectionServer(props) {
         }
         return sorted;
     }
+
+    const floatingFilterLayoutStyle = (floatingFilter)?{ position:"relative" }:{} 
+    const floatingFilterSiderStyle = (floatingFilter)?{ padding:"10px", margin:"0px", position:"absolute", right: "0", top: "0", zIndex:"1000", borderRadius:"4px", border:"1px solid lightgrey" }:{} 
 
     const fltrs = (props.filters) ? props.filters() : [];
     const meta = useMetaContext();
@@ -1230,7 +1234,7 @@ function DefaultCollectionServer(props) {
                         </Tooltip>
                     </div>}
                 </div>
-                <Layout style={{ backgroundColor: "transparent" }} className="filtered-body">
+                <Layout style={{ backgroundColor: "transparent", ...floatingFilterLayoutStyle }} className="filtered-body">
                     <div style={{ width: "100%", marginBottom: "0px" }}>
                         {customRender && customRender(collection, customProps)}
                         {(!customRender && PartialReplacementFunc) && <div className='partial-replacement'>
@@ -1247,7 +1251,7 @@ function DefaultCollectionServer(props) {
                         </Card>}
                     </div>
                     {((filters && filters.length > 0 /*&& collection && collection.length > 0*/) && filtered) &&
-                        <Sider width={240} theme={"light"} style={{ margin: "0 0px 5px 10px" }} className="filtered-sider">
+                        <Sider width={240} theme={"light"} style={{ margin: "0 0px 5px 10px", ...floatingFilterSiderStyle }} className="filtered-sider">
                             {JSX(() => {
                                 const fl = filters?.filter(i => i.filter);
                                 if (filtered && fl.length > 0) {
