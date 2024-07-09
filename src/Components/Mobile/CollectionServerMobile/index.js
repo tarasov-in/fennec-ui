@@ -397,6 +397,7 @@ function DefaultCollectionServer(props) {
     const [loading, setLoading] = useState(false);
     const [collection, _setCollection] = useState([]);
     const [funcStat, setFuncStat] = useState();
+    const [lastFuncStat, setLastFuncStat] = useState();
     const [state, setState] = useState({
         current: (props.page) ? props.page() : 1,
         sorting: defSorting((props.filters) ? fltrs : []),
@@ -467,6 +468,7 @@ function DefaultCollectionServer(props) {
 
     // const clearFilter = React.useCallback(() => {
     //     setFuncStat(undefined);
+    // setLastFuncStat(undefined);
     //     setState({ ...state, filterChanged: false, filter: {} });
     //     setCurrent(1);
     // }, [current]);
@@ -632,6 +634,9 @@ function DefaultCollectionServer(props) {
                 filter: state.filter,
                 // {stat, totalPages, size, totalElements, content}
                 apply: (data) => {
+                    if (data?.stat) {
+                        setLastFuncStat(data?.stat);
+                    }
                     if (!funcStat) {
                         setFuncStat(data?.stat);
                     }
@@ -644,6 +649,9 @@ function DefaultCollectionServer(props) {
         } else if (source && !_.isFunction(source)) {
             lock();
             GETWITH(auth, source, queryParams, ({ data }) => {
+                if (data?.stat) {
+                    setLastFuncStat(data?.stat);
+                }
                 if (!funcStat) {
                     setFuncStat(data?.stat);
                 }
@@ -655,6 +663,9 @@ function DefaultCollectionServer(props) {
         } else {
             lock();
             READWITH(auth, name, queryParams, ({ data }) => {
+                if (data?.stat) {
+                    setLastFuncStat(data?.stat);
+                }
                 if (!funcStat) {
                     setFuncStat(data?.stat);
                 }
@@ -920,7 +931,9 @@ function DefaultCollectionServer(props) {
                 lock,
                 unlock,
                 loading,
-                update: request
+                update: request,
+                funcStat,
+                lastFuncStat
             });
         }
         return "" + item
@@ -1044,14 +1057,16 @@ function DefaultCollectionServer(props) {
         contextObject,
         defaultCollectionAction,
         defaultModelAction,
+        funcStat,
+        lastFuncStat
     }
     const getItemLocator = useCallback((item, index) => {
         if (onItemLocator) {
-            return onItemLocator(item,index)
+            return onItemLocator(item, index)
         } else {
             return getLocator(props?.locator || "filtered-item-" + name || "filtered-item-" + fieldName || "filtered-item", item)
         }
-    },[onItemLocator, props?.locator, name, fieldName])
+    }, [onItemLocator, props?.locator, name, fieldName])
     return (
         <React.Fragment>
             {/* <NearestCollectionContext.Provider value={collectionRef}> */}
@@ -1072,7 +1087,7 @@ function DefaultCollectionServer(props) {
                     {(collection && collection.length > 0) && <div>
                         <List className="my-list">
                             {collection?.map((item, index) => (
-                                <Item data-locator={getItemLocator(item,index)} key={index} multipleLine align="top" wrap style={{ paddingLeft: "0px" }}>
+                                <Item data-locator={getItemLocator(item, index)} key={index} multipleLine align="top" wrap style={{ paddingLeft: "0px" }}>
                                     {RenderOnModelActions(item, index, () => _render(item, index), (modelActionsTitle) ? modelActionsTitle(item) : undefined)}
                                 </Item>
                             ))}
@@ -1144,10 +1159,12 @@ function DefaultCollectionServer(props) {
                         fieldName,
                         defaultCollectionAction,
                         defaultModelAction,
+                        funcStat,
+                        lastFuncStat
                     })}
                     {!customRender && <List className="my-list filtered-list">
                         {(collection && collection.length > 0) && collection?.map((item, index) => (
-                            <Item data-locator={getItemLocator(item,index)} key={index} multipleLine align="top" wrap style={{ paddingLeft: "0px" }}>
+                            <Item data-locator={getItemLocator(item, index)} key={index} multipleLine align="top" wrap style={{ paddingLeft: "0px" }}>
                                 {RenderOnModelActions(item, index, () => _render(item, index), (modelActionsTitle) ? modelActionsTitle(item) : undefined)}
                             </Item>
                         ))}

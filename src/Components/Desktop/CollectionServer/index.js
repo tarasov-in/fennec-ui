@@ -362,14 +362,15 @@ function DefaultCollectionServer(props) {
         return sorted;
     }
 
-    const floatingFilterLayoutStyle = (floatingFilter)?{ position:"relative" }:{} 
-    const floatingFilterSiderStyle = (floatingFilter)?{ padding:"10px", margin:"0px", position:"absolute", right: "0", top: "0", zIndex:"1000", borderRadius:"4px", border:"1px solid lightgrey" }:{} 
+    const floatingFilterLayoutStyle = (floatingFilter) ? { position: "relative" } : {}
+    const floatingFilterSiderStyle = (floatingFilter) ? { padding: "10px", margin: "0px", position: "absolute", right: "0", top: "0", zIndex: "1000", borderRadius: "4px", border: "1px solid lightgrey" } : {}
 
     const fltrs = (props.filters) ? props.filters() : [];
     const meta = useMetaContext();
     const [loading, setLoading] = useState(false);
     const [collection, _setCollection] = useState([]);
     const [funcStat, setFuncStat] = useState();
+    const [lastFuncStat, setLastFuncStat] = useState();
     const [state, setState] = useState({
         filter: defFilters((props.filters) ? fltrs : []),
         newFilter: defFilters((props.filters) ? fltrs : []),
@@ -478,6 +479,7 @@ function DefaultCollectionServer(props) {
 
     const clearFilter = React.useCallback(() => {
         setFuncStat(undefined);
+        setLastFuncStat(undefined);
         setState({ ...state, filterChanged: false, newFilter: {}, filter: {} });
         setCurrent(1);
         if (onApplyFilter) {
@@ -691,6 +693,9 @@ function DefaultCollectionServer(props) {
                 filter,
                 // {stat, totalPages, size, totalElements, content}
                 apply: (data) => {
+                    if (data?.stat) {
+                        setLastFuncStat(data?.stat);
+                    }
                     if (!funcStat) {
                         setFuncStat(data?.stat);
                     }
@@ -704,6 +709,9 @@ function DefaultCollectionServer(props) {
         } else if (source && !_.isFunction(source)) {
             lock();
             GETWITH(auth, source, queryParams, ({ data }) => {
+                if (data?.stat) {
+                    setLastFuncStat(data?.stat);
+                }
                 if (!funcStat) {
                     setFuncStat(data?.stat);
                 }
@@ -716,6 +724,9 @@ function DefaultCollectionServer(props) {
         } else {
             lock();
             READWITH(auth, name, queryParams, ({ data }) => {
+                if (data?.stat) {
+                    setLastFuncStat(data?.stat);
+                }
                 if (!funcStat) {
                     setFuncStat(data?.stat);
                 }
@@ -1088,11 +1099,11 @@ function DefaultCollectionServer(props) {
 
     const getItemLocator = useCallback((item, index) => {
         if (onItemLocator) {
-            return onItemLocator(item,index)
+            return onItemLocator(item, index)
         } else {
             return getLocator(props?.locator || "filtered-item-" + name || "filtered-item-" + fieldName || "filtered-item", item)
         }
-    },[onItemLocator, props?.locator, name, fieldName])
+    }, [onItemLocator, props?.locator, name, fieldName])
 
     const view = (items) => {
         const _render = (item, index) => {
@@ -1104,7 +1115,9 @@ function DefaultCollectionServer(props) {
                     updateCollection: update,
                     setCollectionItem,
                     removeCollectionItem,
-                    update
+                    update,
+                    funcStat,
+                    lastFuncStat
                 });
             }
             return "" + item
@@ -1130,7 +1143,7 @@ function DefaultCollectionServer(props) {
                     dataSource={items}
                     renderItem={((item, index) => (
                         <List.Item
-                            data-locator={getItemLocator(item,index)}
+                            data-locator={getItemLocator(item, index)}
                             key={index} className={classes.listItemClass} {...actions(item, index)} style={{ backgroundColor: (isSelected(item)) ? "#e6f7ff" : "transparent", alignItems: "self-start" }} onClick={() => onSelection(item, index)}>
                             {_render(item, index)}
                         </List.Item>
@@ -1203,6 +1216,9 @@ function DefaultCollectionServer(props) {
         contextObject,
         defaultCollectionAction,
         defaultModelAction,
+
+        funcStat,
+        lastFuncStat
     }
 
     return (
