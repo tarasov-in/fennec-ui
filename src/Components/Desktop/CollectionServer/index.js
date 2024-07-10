@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Layout, Card, Button, Tooltip, Pagination, Empty, Divider, Typography, Tag, Select, List, Table, Spin, Badge, Modal } from 'antd';
+import { Layout, Card, Button, Tooltip, Pagination, Empty, Divider, Typography, Tag, Select, List, Table, Spin, Badge, Modal, Popover } from 'antd';
 import { Action } from '../../Action'
 import { DropdownAction } from '../DropdownAction'
 import { unwrap, GET, errorCatch, Request, QueryParam, GETWITH, If, READWITH, QueryFunc, JSX, GetMetaPropertyByPath, updateInArray, deleteInArray, QueryDetail, subscribe as _subscribe, unsubscribe, clean, JSXMap, getObjectDisplay, ContextFiltersToQueryFilters, contextFilterToObject, getLocator } from '../../../Tool'
@@ -362,8 +362,8 @@ function DefaultCollectionServer(props) {
         return sorted;
     }
 
-    const floatingFilterLayoutStyle = (floatingFilter) ? { position: "relative" } : {}
-    const floatingFilterSiderStyle = (floatingFilter) ? { padding: "10px", margin: "0px", position: "absolute", right: "0", top: "0", zIndex: "1000", borderRadius: "4px", border: "1px solid lightgrey" } : {}
+    // const floatingFilterLayoutStyle = (floatingFilter) ? { position: "relative" } : {}
+    // const floatingFilterSiderStyle = (floatingFilter) ? { padding: "10px", margin: "0px", position: "absolute", right: "0", top: "0", zIndex: "1000", borderRadius: "4px", border: "1px solid lightgrey" } : {}
 
     const fltrs = (props.filters) ? props.filters() : [];
     const meta = useMetaContext();
@@ -1237,7 +1237,50 @@ function DefaultCollectionServer(props) {
                     </div>
                     {(filters && filters.length > 0 /*&& collection && collection.length > 0*/) && <div justify="end">
                         <Tooltip title="Фильтр и сортировка">
-                            <CheckableTag
+                            {floatingFilter && <Popover
+                                placement="bottomRight"
+                                content={<div>
+                                    {((filters && filters.length > 0) && filtered) &&
+                                        <div>
+                                            {JSX(() => {
+                                                const fl = filters?.filter(i => i.filter);
+                                                if (filtered && fl.length > 0) {
+                                                    return (<React.Fragment>
+                                                        <div style={{}}>
+                                                            <Button
+                                                                data-locator={getLocator(props?.locator || "collectionfilterapply-" + name || "collectionfilterapply-" + fieldName || "collectionfilterapply", props?.object)}
+                                                                style={{ width: "100%" }} disabled={!state.filterChanged} type="primary" onClick={applyFilter}>Применить</Button>
+                                                        </div>
+                                                        <div style={{ marginTop: "5px" }}>
+                                                            <Button
+                                                                data-locator={getLocator(props?.locator || "collectionfilterclear-" + name || "collectionfilterclear-" + fieldName || "collectionfilterclear", props?.object)}
+                                                                style={{ width: "100%" }} disabled={_.isEmpty(state.filter)} onClick={clearFilter}>Очистить</Button>
+                                                        </div>
+                                                    </React.Fragment>)
+                                                }
+                                                return (<React.Fragment></React.Fragment>)
+                                            })}
+                                            <SortingFieldsUI value={sorting} onChange={setSorting} filters={filters} />
+                                            <FiltersFieldsUI auth={auth} value={state.newFilter} onChange={_onFilterChange} filters={filters} funcs={funcStat} />
+                                        </div>}
+                                </div>}
+                                title="Фильтр и сортировка"
+                                trigger="click"
+                                open={filtered}
+                                onOpenChange={setFiltered}
+                            >
+                                <CheckableTag
+                                    data-locator={getLocator(props?.locator || "collectionfilter-" + name || "collectionfilter-" + fieldName || "collectionfilter", props?.object)}
+                                    style={{ cursor: "pointer", margin: "0" }}
+                                    checked={filtered}
+                                    onChange={checked => setFiltered(checked)}
+                                >
+                                    <Badge dot={(state && state.filter && Object.keys(state.filter)?.length > 0) ? true : false}>
+                                        <FilterOutlined style={{ color: (filtered) ? "white" : "black" }} />
+                                    </Badge>
+                                </CheckableTag>
+                            </Popover>}
+                            {!floatingFilter && <CheckableTag
                                 data-locator={getLocator(props?.locator || "collectionfilter-" + name || "collectionfilter-" + fieldName || "collectionfilter", props?.object)}
                                 style={{ cursor: "pointer", margin: "0" }}
                                 checked={filtered}
@@ -1246,11 +1289,11 @@ function DefaultCollectionServer(props) {
                                 <Badge dot={(state && state.filter && Object.keys(state.filter)?.length > 0) ? true : false}>
                                     <FilterOutlined style={{ color: (filtered) ? "white" : "black" }} />
                                 </Badge>
-                            </CheckableTag>
+                            </CheckableTag>}
                         </Tooltip>
                     </div>}
                 </div>
-                <Layout style={{ backgroundColor: "transparent", ...floatingFilterLayoutStyle }} className="filtered-body">
+                <Layout style={{ backgroundColor: "transparent" }} className="filtered-body">
                     <div style={{ width: "100%", marginBottom: "0px" }}>
                         {customRender && customRender(collection, customProps)}
                         {(!customRender && PartialReplacementFunc) && <div className='partial-replacement'>
@@ -1266,8 +1309,8 @@ function DefaultCollectionServer(props) {
                             </div>
                         </Card>}
                     </div>
-                    {((filters && filters.length > 0 /*&& collection && collection.length > 0*/) && filtered) &&
-                        <Sider width={240} theme={"light"} style={{ margin: "0 0px 5px 10px", ...floatingFilterSiderStyle }} className="filtered-sider">
+                    {((!floatingFilter && filters && filters.length > 0) && filtered) &&
+                        <Sider width={240} theme={"light"} style={{ margin: "0 0px 5px 10px" }} className="filtered-sider">
                             {JSX(() => {
                                 const fl = filters?.filter(i => i.filter);
                                 if (filtered && fl.length > 0) {
