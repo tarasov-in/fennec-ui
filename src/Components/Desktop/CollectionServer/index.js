@@ -1275,6 +1275,7 @@ function DefaultCollectionServer(props) {
                         <Tooltip title="Фильтр и сортировка">
                             {floatingFilter && <Popover
                                 placement="bottomRight"
+                                autoAdjustOverflow={false}
                                 content={<div>
                                     {((filters && filters.length > 0) && filtered) &&
                                     <FilterContent 
@@ -1415,6 +1416,7 @@ function DefaultCollectionServer(props) {
                         pageSize={count}
                         total={total}
                         showSizeChanger={false}
+                        // onShowSizeChange={onShowSizeChange}
                     />
                 </Card>}
             </div>
