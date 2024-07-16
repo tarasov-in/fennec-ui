@@ -93,7 +93,7 @@ export function SortingFieldsUI(props) {
                         filterOption={(input, option) =>
                             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
-                        style={{ width: "100%", maxWidth: "203px", marginRight: "5px" }}
+                        style={{ width: "100%", /*maxWidth: "203px",*/ marginRight: "5px" }}
                     >
                         {JSXMap(filters?.filter(f => f.sort), (item, idx) => (
                             <Option data-locator={getLocator(props?.locator || "sortingitem", props?.object || idx)} key={idx} value={item.name}>{item.label}</Option>
@@ -362,7 +362,13 @@ function DefaultCollectionServer(props) {
         onChangeRequestParameters,
         partialReplacement,
         onApplyFilter,
-        floatingFilter
+        floatingFilter,
+        disableScrollTo,
+        style,
+        headerStyle,
+        bodyStyle,
+        footerStyle,
+        filterPopoverPlacement  
     } = props;
 
     // const PartialReplacementFunc = useCollectionPartialReplacement(fieldName, partialReplacement)
@@ -438,7 +444,9 @@ function DefaultCollectionServer(props) {
 
     const setCurrent = (value) => {
         _setCurrent(value);
-        window.scrollTo(0, 0);
+        if(!disableScrollTo){
+            window.scrollTo(0, 0);
+        }
     }
     const lock = () => {
         setLoading(true);
@@ -1260,21 +1268,22 @@ function DefaultCollectionServer(props) {
     return (
         <React.Fragment>
             {/* <NearestCollectionContext.Provider value={collectionRef}> */}
-            <div data-locator={getLocator(props?.locator || ("collection-" + name) || ("collection-" + fieldName) || "collection", props?.object)} className="collection default-collection filtered">
+            <div style={(style)?style:{}} data-locator={getLocator(props?.locator || ("collection-" + name) || ("collection-" + fieldName) || "collection", props?.object)} className="collection default-collection filtered">
                 <div className="filtered-header"
                     style={{
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
-                        paddingBottom: "10px"
+                        paddingBottom: "10px",
+                        ...(headerStyle)?headerStyle:{}
                     }}>
-                    <div style={{ flex: "auto", paddingRight: "15px", display: "flex", gap: "5px" }}>
+                    <div style={{ flex: "1 1 auto", paddingRight: "15px", display: "flex", gap: "5px" }}>
                         {RenderOnCollectionActions()}
                     </div>
-                    {(filters && filters.length > 0 /*&& collection && collection.length > 0*/) && <div justify="end">
+                    {(filters && filters.length > 0 /*&& collection && collection.length > 0*/) && <div style={{flex:"0 0 auto"}}>
                         <Tooltip title="Фильтр и сортировка">
                             {floatingFilter && <Popover
-                                placement="bottomRight"
+                                placement={(filterPopoverPlacement)?filterPopoverPlacement:"bottomRight"}
                                 autoAdjustOverflow={false}
                                 content={<div>
                                     {((filters && filters.length > 0) && filtered) &&
@@ -1351,7 +1360,7 @@ function DefaultCollectionServer(props) {
                         </Tooltip>
                     </div>}
                 </div>
-                <Layout style={{ backgroundColor: "transparent" }} className="filtered-body">
+                <Layout style={{ backgroundColor: "transparent",  ...(bodyStyle)?bodyStyle:{} }} className="filtered-body">
                     <div style={{ width: "100%", marginBottom: "0px" }}>
                         {customRender && customRender(collection, customProps)}
                         {(!customRender && PartialReplacementFunc) && <div className='partial-replacement'>
@@ -1408,7 +1417,9 @@ function DefaultCollectionServer(props) {
                         </Sider>
                         }
                 </Layout>
-                {(!!count && !!total && totalPages && totalPages > 1) && <Card size="small" bordered={false} className={classes.cardSmall} style={{ display: "flex", justifyContent: "flex-end", paddingTop: "10px", paddingBottom: "10px" }}>
+                {(!!count && !!total && totalPages && totalPages > 1) && 
+                // <Card size="small" bordered={false} className={classes.cardSmall} style={{ display: "flex", justifyContent: "flex-end", paddingTop: "10px", paddingBottom: "10px" }}>
+                    <div className="filtered-footer" style={{display: "flex", justifyContent: "flex-end", padding:"10px 0", ...(footerStyle)?footerStyle:{}}}>
                     <Pagination className="filtered-pagination" size="small"
                         data-locator={getLocator(props?.locator || "filtered-pagination-" + name || "filtered-pagination-" + fieldName || "filtered-pagination", props?.object)}
                         current={current}
@@ -1418,7 +1429,9 @@ function DefaultCollectionServer(props) {
                         showSizeChanger={false}
                         // onShowSizeChange={onShowSizeChange}
                     />
-                </Card>}
+                    </div>
+                // </Card>
+                }
             </div>
             {/* </NearestCollectionContext.Provider> */}
         </React.Fragment>
