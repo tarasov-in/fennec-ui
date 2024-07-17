@@ -285,7 +285,7 @@ function FilterButton({ filtered, setFiltered, state, locator, object, name, fie
         </Badge>
     </CheckableTag>)
 }
-function FilterContent({auth, filters, sorting, setSorting, state, funcStat, filtered, locator, object, name, fieldName, _onFilterChange, applyFilter, clearFilter}) {
+function FilterContent({ auth, filters, sorting, setSorting, state, funcStat, filtered, locator, object, name, fieldName, _onFilterChange, applyFilter, clearFilter }) {
     return (<React.Fragment>
         {JSX(() => {
             const fl = filters?.filter(i => i.filter);
@@ -368,7 +368,8 @@ function DefaultCollectionServer(props) {
         headerStyle,
         bodyStyle,
         footerStyle,
-        filterPopoverPlacement  
+        filterPopoverStyle,
+        filterPopoverPlacement
     } = props;
 
     // const PartialReplacementFunc = useCollectionPartialReplacement(fieldName, partialReplacement)
@@ -444,7 +445,7 @@ function DefaultCollectionServer(props) {
 
     const setCurrent = (value) => {
         _setCurrent(value);
-        if(!disableScrollTo){
+        if (!disableScrollTo) {
             window.scrollTo(0, 0);
         }
     }
@@ -1268,40 +1269,43 @@ function DefaultCollectionServer(props) {
     return (
         <React.Fragment>
             {/* <NearestCollectionContext.Provider value={collectionRef}> */}
-            <div style={(style)?style:{}} data-locator={getLocator(props?.locator || ("collection-" + name) || ("collection-" + fieldName) || "collection", props?.object)} className="collection default-collection filtered">
+            <div style={(style) ? style : {}} data-locator={getLocator(props?.locator || ("collection-" + name) || ("collection-" + fieldName) || "collection", props?.object)} className="collection default-collection filtered">
                 <div className="filtered-header"
                     style={{
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
                         paddingBottom: "10px",
-                        ...(headerStyle)?headerStyle:{}
+                        ...(headerStyle) ? headerStyle : {}
                     }}>
                     <div style={{ flex: "1 1 auto", paddingRight: "15px", display: "flex", gap: "5px" }}>
                         {RenderOnCollectionActions()}
                     </div>
-                    {(filters && filters.length > 0 /*&& collection && collection.length > 0*/) && <div style={{flex:"0 0 auto"}}>
+                    {(filters && filters.length > 0 /*&& collection && collection.length > 0*/) && <div style={{ flex: "0 0 auto" }}>
                         <Tooltip title="Фильтр и сортировка">
                             {floatingFilter && <Popover
-                                placement={(filterPopoverPlacement)?filterPopoverPlacement:"bottomRight"}
+                                placement={(filterPopoverPlacement) ? filterPopoverPlacement : "bottomRight"}
                                 autoAdjustOverflow={false}
-                                content={<div>
+                                content={<div style={{ 
+                                    maxWidth: "425px",  
+                                    ...(filterPopoverStyle) ? filterPopoverStyle : {}
+                                    }}>
                                     {((filters && filters.length > 0) && filtered) &&
-                                    <FilterContent 
-                                        auth={auth}
-                                        filters={filters}
-                                        sorting={sorting}
-                                        setSorting={setSorting}
-                                        state={state}
-                                        funcStat={funcStat}
-                                        filtered={filtered}
-                                        locator={props?.locator}
-                                        object={props?.object}
-                                        name={name}
-                                        fieldName={fieldName}
-                                        _onFilterChange={_onFilterChange}
-                                        applyFilter={applyFilter}
-                                        clearFilter ={clearFilter}
+                                        <FilterContent
+                                            auth={auth}
+                                            filters={filters}
+                                            sorting={sorting}
+                                            setSorting={setSorting}
+                                            state={state}
+                                            funcStat={funcStat}
+                                            filtered={filtered}
+                                            locator={props?.locator}
+                                            object={props?.object}
+                                            name={name}
+                                            fieldName={fieldName}
+                                            _onFilterChange={_onFilterChange}
+                                            applyFilter={applyFilter}
+                                            clearFilter={clearFilter}
                                         />
                                         // <div>
                                         //     {JSX(() => {
@@ -1325,7 +1329,7 @@ function DefaultCollectionServer(props) {
                                         //     <SortingFieldsUI value={sorting} onChange={setSorting} filters={filters} />
                                         //     <FiltersFieldsUI auth={auth} value={state.newFilter} onChange={_onFilterChange} filters={filters} funcs={funcStat} />
                                         // </div>
-                                        }
+                                    }
                                 </div>}
                                 title="Фильтр и сортировка"
                                 trigger="click"
@@ -1360,7 +1364,7 @@ function DefaultCollectionServer(props) {
                         </Tooltip>
                     </div>}
                 </div>
-                <Layout style={{ backgroundColor: "transparent",  ...(bodyStyle)?bodyStyle:{} }} className="filtered-body">
+                <Layout style={{ backgroundColor: "transparent", ...(bodyStyle) ? bodyStyle : {} }} className="filtered-body">
                     <div style={{ width: "100%", marginBottom: "0px" }}>
                         {customRender && customRender(collection, customProps)}
                         {(!customRender && PartialReplacementFunc) && <div className='partial-replacement'>
@@ -1378,22 +1382,22 @@ function DefaultCollectionServer(props) {
                     </div>
                     {((!floatingFilter && filters && filters.length > 0) && filtered) &&
                         <Sider width={240} theme={"light"} style={{ margin: "0 0px 5px 10px" }} className="filtered-sider">
-                            <FilterContent 
-                                        auth={auth}
-                                        filters={filters}
-                                        sorting={sorting}
-                                        setSorting={setSorting}
-                                        state={state}
-                                        funcStat={funcStat}
-                                        filtered={filtered}
-                                        locator={props?.locator}
-                                        object={props?.object}
-                                        name={name}
-                                        fieldName={fieldName}
-                                        _onFilterChange={_onFilterChange}
-                                        applyFilter={applyFilter}
-                                        clearFilter ={clearFilter}
-                                        />
+                            <FilterContent
+                                auth={auth}
+                                filters={filters}
+                                sorting={sorting}
+                                setSorting={setSorting}
+                                state={state}
+                                funcStat={funcStat}
+                                filtered={filtered}
+                                locator={props?.locator}
+                                object={props?.object}
+                                name={name}
+                                fieldName={fieldName}
+                                _onFilterChange={_onFilterChange}
+                                applyFilter={applyFilter}
+                                clearFilter={clearFilter}
+                            />
                             {/* {JSX(() => {
                                 const fl = filters?.filter(i => i.filter);
                                 if (filtered && fl.length > 0) {
@@ -1415,26 +1419,26 @@ function DefaultCollectionServer(props) {
                             <SortingFieldsUI value={sorting} onChange={setSorting} filters={filters} />
                             <FiltersFieldsUI auth={auth} value={state.newFilter} onChange={_onFilterChange} filters={filters} funcs={funcStat} /> */}
                         </Sider>
-                        }
+                    }
                 </Layout>
-                {(!!count && !!total && totalPages && totalPages > 1) && 
-                // <Card size="small" bordered={false} className={classes.cardSmall} style={{ display: "flex", justifyContent: "flex-end", paddingTop: "10px", paddingBottom: "10px" }}>
-                    <div className="filtered-footer" style={{display: "flex", justifyContent: "flex-end", padding:"10px 0", ...(footerStyle)?footerStyle:{}}}>
-                    <Pagination className="filtered-pagination" size="small"
-                        data-locator={getLocator(props?.locator || "filtered-pagination-" + name || "filtered-pagination-" + fieldName || "filtered-pagination", props?.object)}
-                        current={current}
-                        onChange={setCurrent}
-                        pageSize={count}
-                        total={total}
-                        showSizeChanger={false}
+                {(!!count && !!total && totalPages && totalPages > 1) &&
+                    // <Card size="small" bordered={false} className={classes.cardSmall} style={{ display: "flex", justifyContent: "flex-end", paddingTop: "10px", paddingBottom: "10px" }}>
+                    <div className="filtered-footer" style={{ display: "flex", justifyContent: "flex-end", padding: "10px 0", ...(footerStyle) ? footerStyle : {} }}>
+                        <Pagination className="filtered-pagination" size="small"
+                            data-locator={getLocator(props?.locator || "filtered-pagination-" + name || "filtered-pagination-" + fieldName || "filtered-pagination", props?.object)}
+                            current={current}
+                            onChange={setCurrent}
+                            pageSize={count}
+                            total={total}
+                            showSizeChanger={false}
                         // onShowSizeChange={onShowSizeChange}
-                    />
+                        />
                     </div>
-                // </Card>
+                    // </Card>
                 }
             </div>
             {/* </NearestCollectionContext.Provider> */}
-        </React.Fragment>
+        </React.Fragment >
     );
 }
 
