@@ -888,7 +888,8 @@ export function Action(props) {
                 loading
             }
         }
-    }, [opened,
+    }, [actionRef,
+        opened,
         visible,
         loading])
     return (<React.Fragment>

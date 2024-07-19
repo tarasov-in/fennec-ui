@@ -210,6 +210,8 @@ import {
 import {
   CalendarItem
 } from './Components/Mobile/CalendarItem'
+
+import { Overlay } from './Components/Overlay'
 import {
   FieldPartialReplacement,
   FieldFullReplacement,
@@ -391,7 +393,8 @@ export {
   FilteringUIMobile,
   CollectionServerMobile,
   BlockHeaderMobile,
-  CalendarItem
+  CalendarItem,
+  Overlay
 }
 
 export {

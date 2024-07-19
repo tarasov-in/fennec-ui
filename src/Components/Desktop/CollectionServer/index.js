@@ -8,10 +8,12 @@ import "./index.css"
 import { FilterOutlined, SortAscendingOutlined, SortDescendingOutlined } from '@ant-design/icons';
 import { Field } from '../Field';
 import { Model } from '../Model';
-import { useMetaContext } from '../../Context';
+import { useActionRef, useMetaContext } from '../../Context';
 import uuid from 'react-uuid';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons';
 import { useCollectionFullReplacement, useCollectionPartialReplacement } from '../../../ComponetsReplacement';
+import { useAuth } from '../../../Auth';
+import { Overlay } from '../../Overlay';
 
 const { CheckableTag } = Tag;
 const { Sider } = Layout;
@@ -367,9 +369,14 @@ function DefaultCollectionServer(props) {
         style,
         headerStyle,
         bodyStyle,
+        contentStyle,
         footerStyle,
         filterPopoverStyle,
-        filterPopoverPlacement
+        filterPopoverPlacement,
+        allowFullscreen,
+        // isFullscreen,
+        // openFullscreen,
+        // closeFullscreen
     } = props;
 
     // const PartialReplacementFunc = useCollectionPartialReplacement(fieldName, partialReplacement)
@@ -420,6 +427,7 @@ function DefaultCollectionServer(props) {
         filterChanged: false
     })
     const [filtered, setFiltered] = useState(false);
+    // const [fullscreen, setFullscreen] = useState(false);
     const [filters, setFilters] = useState();
     const [mobject, setMObject] = useState();
     const [sorting, setSorting] = useState(defSorting((props.filters) ? fltrs : []));
@@ -1266,8 +1274,15 @@ function DefaultCollectionServer(props) {
         lastFuncStat
     }
 
+    const [openOverlay, setOpenOverlay] = useState(false)
+    const isFullscreen = openOverlay;
+    const openFullscreen = () => { setOpenOverlay(true) }
+    const closeFullscreen = () => { setOpenOverlay(false) }
     return (
-        <React.Fragment>
+        <Overlay
+            open={openOverlay}
+            setOpen={setOpenOverlay}
+        >
             {/* <NearestCollectionContext.Provider value={collectionRef}> */}
             <div style={(style) ? style : {}} data-locator={getLocator(props?.locator || ("collection-" + name) || ("collection-" + fieldName) || "collection", props?.object)} className="collection default-collection filtered">
                 <div className="filtered-header"
@@ -1281,91 +1296,86 @@ function DefaultCollectionServer(props) {
                     <div style={{ flex: "1 1 auto", paddingRight: "15px", display: "flex", gap: "5px" }}>
                         {RenderOnCollectionActions()}
                     </div>
-                    {(filters && filters.length > 0 /*&& collection && collection.length > 0*/) && <div style={{ flex: "0 0 auto" }}>
-                        <Tooltip title="Фильтр и сортировка">
-                            {floatingFilter && <Popover
-                                placement={(filterPopoverPlacement) ? filterPopoverPlacement : "bottomRight"}
-                                autoAdjustOverflow={false}
-                                content={<div style={{ 
-                                    maxWidth: "425px",  
-                                    ...(filterPopoverStyle) ? filterPopoverStyle : {}
-                                    }}>
-                                    {((filters && filters.length > 0) && filtered) &&
-                                        <FilterContent
-                                            auth={auth}
-                                            filters={filters}
-                                            sorting={sorting}
-                                            setSorting={setSorting}
-                                            state={state}
-                                            funcStat={funcStat}
-                                            filtered={filtered}
-                                            locator={props?.locator}
-                                            object={props?.object}
-                                            name={name}
-                                            fieldName={fieldName}
-                                            _onFilterChange={_onFilterChange}
-                                            applyFilter={applyFilter}
-                                            clearFilter={clearFilter}
-                                        />
-                                        // <div>
-                                        //     {JSX(() => {
-                                        //         const fl = filters?.filter(i => i.filter);
-                                        //         if (filtered && fl.length > 0) {
-                                        //             return (<React.Fragment>
-                                        //                 <div style={{}}>
-                                        //                     <Button
-                                        //                         data-locator={getLocator(props?.locator || "collectionfilterapply-" + name || "collectionfilterapply-" + fieldName || "collectionfilterapply", props?.object)}
-                                        //                         style={{ width: "100%" }} disabled={!state.filterChanged} type="primary" onClick={applyFilter}>Применить</Button>
-                                        //                 </div>
-                                        //                 <div style={{ marginTop: "5px" }}>
-                                        //                     <Button
-                                        //                         data-locator={getLocator(props?.locator || "collectionfilterclear-" + name || "collectionfilterclear-" + fieldName || "collectionfilterclear", props?.object)}
-                                        //                         style={{ width: "100%" }} disabled={_.isEmpty(state.filter)} onClick={clearFilter}>Очистить</Button>
-                                        //                 </div>
-                                        //             </React.Fragment>)
-                                        //         }
-                                        //         return (<React.Fragment></React.Fragment>)
-                                        //     })}
-                                        //     <SortingFieldsUI value={sorting} onChange={setSorting} filters={filters} />
-                                        //     <FiltersFieldsUI auth={auth} value={state.newFilter} onChange={_onFilterChange} filters={filters} funcs={funcStat} />
-                                        // </div>
-                                    }
-                                </div>}
-                                title="Фильтр и сортировка"
-                                trigger="click"
-                                open={filtered}
-                                onOpenChange={setFiltered}
+                    {(filters && filters.length > 0 /*&& collection && collection.length > 0*/) && <div style={{ flex: "0 0 auto", display: "flex", justifyContent: "flex-start", gap:"5px" }}>
+                        {allowFullscreen && <div>
+                            <CheckableTag
+                                data-locator={getLocator(props?.locator || "collectionfullscreen-" + name || "collectionfullscreen-" + fieldName || "collectionfullscreen", props?.object)}
+                                style={{ cursor: "pointer", margin: "0" }}
+                                checked={isFullscreen}
+                                // onChange={checked => setFullscreen(checked)}
+                                onChange={(checked) => { (isFullscreen) ? closeFullscreen() : openFullscreen() }}
                             >
-                                {/* <CheckableTag
-                                    data-locator={getLocator(props?.locator || "collectionfilter-" + name || "collectionfilter-" + fieldName || "collectionfilter", props?.object)}
-                                    style={{ cursor: "pointer", margin: "0" }}
-                                    checked={filtered}
-                                    onChange={checked => setFiltered(checked)}
+                                {/* <FullscreenOutlined style={{ color: (fullscreen) ? "white" : "black" }} /> */}
+                                {(!isFullscreen) && <FullscreenOutlined style={{ color: (isFullscreen) ? "white" : "black" }} />}
+                                {(isFullscreen) && <FullscreenExitOutlined style={{ color: (isFullscreen) ? "white" : "black" }} />}
+                            </CheckableTag>
+                        </div>}
+                        <div>
+                            <Tooltip title="Фильтр и сортировка">
+                                {(floatingFilter && !isFullscreen) && <Popover
+                                    placement={(filterPopoverPlacement) ? filterPopoverPlacement : "bottomRight"}
+                                    autoAdjustOverflow={false}
+                                    content={<div style={{
+                                        maxWidth: "425px",
+                                        ...(filterPopoverStyle) ? filterPopoverStyle : {}
+                                    }}>
+                                        {((filters && filters.length > 0) && filtered) &&
+                                            <FilterContent
+                                                auth={auth}
+                                                filters={filters}
+                                                sorting={sorting}
+                                                setSorting={setSorting}
+                                                state={state}
+                                                funcStat={funcStat}
+                                                filtered={filtered}
+                                                locator={props?.locator}
+                                                object={props?.object}
+                                                name={name}
+                                                fieldName={fieldName}
+                                                _onFilterChange={_onFilterChange}
+                                                applyFilter={applyFilter}
+                                                clearFilter={clearFilter}
+                                            />
+                                            // <div>
+                                            //     {JSX(() => {
+                                            //         const fl = filters?.filter(i => i.filter);
+                                            //         if (filtered && fl.length > 0) {
+                                            //             return (<React.Fragment>
+                                            //                 <div style={{}}>
+                                            //                     <Button
+                                            //                         data-locator={getLocator(props?.locator || "collectionfilterapply-" + name || "collectionfilterapply-" + fieldName || "collectionfilterapply", props?.object)}
+                                            //                         style={{ width: "100%" }} disabled={!state.filterChanged} type="primary" onClick={applyFilter}>Применить</Button>
+                                            //                 </div>
+                                            //                 <div style={{ marginTop: "5px" }}>
+                                            //                     <Button
+                                            //                         data-locator={getLocator(props?.locator || "collectionfilterclear-" + name || "collectionfilterclear-" + fieldName || "collectionfilterclear", props?.object)}
+                                            //                         style={{ width: "100%" }} disabled={_.isEmpty(state.filter)} onClick={clearFilter}>Очистить</Button>
+                                            //                 </div>
+                                            //             </React.Fragment>)
+                                            //         }
+                                            //         return (<React.Fragment></React.Fragment>)
+                                            //     })}
+                                            //     <SortingFieldsUI value={sorting} onChange={setSorting} filters={filters} />
+                                            //     <FiltersFieldsUI auth={auth} value={state.newFilter} onChange={_onFilterChange} filters={filters} funcs={funcStat} />
+                                            // </div>
+                                        }
+                                    </div>}
+                                    title="Фильтр и сортировка"
+                                    trigger="click"
+                                    open={filtered}
+                                    onOpenChange={setFiltered}
                                 >
-                                    <Badge dot={(state && state.filter && Object.keys(state.filter)?.length > 0) ? true : false}>
-                                        <FilterOutlined style={{ color: (filtered) ? "white" : "black" }} />
-                                    </Badge>
-                                </CheckableTag> */}
-                                <FilterButton filtered={filtered} setFiltered={setFiltered} state={state} locator={props?.locator} object={props?.object} name={name} fieldName={fieldName} />
-                            </Popover>}
-                            {!floatingFilter &&
-                                // <CheckableTag
-                                //     data-locator={getLocator(props?.locator || "collectionfilter-" + name || "collectionfilter-" + fieldName || "collectionfilter", props?.object)}
-                                //     style={{ cursor: "pointer", margin: "0" }}
-                                //     checked={filtered}
-                                //     onChange={checked => setFiltered(checked)}
-                                // >
-                                //     <Badge dot={(state && state.filter && Object.keys(state.filter)?.length > 0) ? true : false}>
-                                //         <FilterOutlined style={{ color: (filtered) ? "white" : "black" }} />
-                                //     </Badge>
-                                // </CheckableTag>
-                                <FilterButton filtered={filtered} setFiltered={setFiltered} state={state} locator={props?.locator} object={props?.object} name={name} fieldName={fieldName} />
-                            }
-                        </Tooltip>
+                                    <FilterButton filtered={filtered} setFiltered={setFiltered} state={state} locator={props?.locator} object={props?.object} name={name} fieldName={fieldName} />
+                                </Popover>}
+                                {(!floatingFilter || isFullscreen) &&
+                                    <FilterButton filtered={filtered} setFiltered={setFiltered} state={state} locator={props?.locator} object={props?.object} name={name} fieldName={fieldName} />
+                                }
+                            </Tooltip>
+                        </div>
                     </div>}
                 </div>
                 <Layout style={{ backgroundColor: "transparent", ...(bodyStyle) ? bodyStyle : {} }} className="filtered-body">
-                    <div style={{ width: "100%", marginBottom: "0px" }}>
+                    <div style={{ width: "100%", marginBottom: "0px", ...(isFullscreen)?{ overflow: "auto" }:{} , ...(contentStyle) ? contentStyle : {} }}>
                         {customRender && customRender(collection, customProps)}
                         {(!customRender && PartialReplacementFunc) && <div className='partial-replacement'>
                             <PartialReplacementFunc
@@ -1380,7 +1390,7 @@ function DefaultCollectionServer(props) {
                             </div>
                         </Card>}
                     </div>
-                    {((!floatingFilter && filters && filters.length > 0) && filtered) &&
+                    {(((!floatingFilter || isFullscreen) && filters && filters.length > 0) && filtered) &&
                         <Sider width={240} theme={"light"} style={{ margin: "0 0px 5px 10px" }} className="filtered-sider">
                             <FilterContent
                                 auth={auth}
@@ -1422,7 +1432,6 @@ function DefaultCollectionServer(props) {
                     }
                 </Layout>
                 {(!!count && !!total && totalPages && totalPages > 1) &&
-                    // <Card size="small" bordered={false} className={classes.cardSmall} style={{ display: "flex", justifyContent: "flex-end", paddingTop: "10px", paddingBottom: "10px" }}>
                     <div className="filtered-footer" style={{ display: "flex", justifyContent: "flex-end", padding: "10px 0", ...(footerStyle) ? footerStyle : {} }}>
                         <Pagination className="filtered-pagination" size="small"
                             data-locator={getLocator(props?.locator || "filtered-pagination-" + name || "filtered-pagination-" + fieldName || "filtered-pagination", props?.object)}
@@ -1434,17 +1443,17 @@ function DefaultCollectionServer(props) {
                         // onShowSizeChange={onShowSizeChange}
                         />
                     </div>
-                    // </Card>
                 }
             </div>
             {/* </NearestCollectionContext.Provider> */}
-        </React.Fragment >
+        </Overlay>
     );
 }
 
 export function CollectionServer(props) {
-    const { name, fieldName, fullReplacement } = props;
-    // const FullReplacementFunc = useCollectionFullReplacement(fieldName, fullReplacement)
+    const { name, fieldName, allowFullscreen, fullReplacement } = props;
+    const auth = useAuth();
+
     const FullReplacementFunc = useCollectionFullReplacement(name, fullReplacement)
     if (FullReplacementFunc) {
         return (<div className='collection full-replacement'>
@@ -1453,9 +1462,11 @@ export function CollectionServer(props) {
             />
         </div>)
     }
-    return (
+
+    return (<React.Fragment>
         <DefaultCollectionServer
             {...props}
         />
+    </React.Fragment>
     )
 };
