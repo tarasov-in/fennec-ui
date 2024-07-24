@@ -310,9 +310,10 @@ export function Overlay(props) {
                         // ref: (node) => {
                         //     return (elements.current[index] = node)
                         // }
-                        isFullscreen: opened,
-                        openFullscreen: () => { setOpen(true) },
-                        closeFullscreen: () => { setOpen(false) }
+                        
+                        // isFullscreen: opened,
+                        // openFullscreen: () => { setOpen(true) },
+                        // closeFullscreen: () => { setOpen(false) }
                     })}
                 </div>
             }
