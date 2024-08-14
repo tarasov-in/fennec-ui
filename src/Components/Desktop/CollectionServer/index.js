@@ -165,6 +165,13 @@ export function collectionQueryParams(filters, contextFilters, filter, sorting, 
         var item = filters?.find(e => e.name == key);
         var akey = item?.alias || key;
 
+        if(item?.additionalFilter){
+            let additionalFlt = ContextFiltersToQueryFilters(item?.additionalFilter)
+            // flt = _.merge(flt, additionalFlt)
+            // flt = [...flt,...additionalFlt]
+            flt.push(...additionalFlt)
+        }
+
         if (item) {
             let filterByKey = filter[key];
             switch (item?.filterType) {
