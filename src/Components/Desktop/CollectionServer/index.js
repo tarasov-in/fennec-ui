@@ -1,22 +1,20 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Layout, Card, Button, Tooltip, Pagination, Empty, Divider, Typography, Tag, Select, List, Table, Spin, Badge, Modal, Popover } from 'antd';
+import { Layout, Card, Button, Tooltip, Pagination, Empty, Divider, Typography, Tag, Select, List, Table, Badge, Modal } from 'antd';
 import { Action } from '../../Action'
 import { DropdownAction } from '../DropdownAction'
-import { unwrap, GET, errorCatch, Request, QueryParam, GETWITH, If, READWITH, QueryFunc, JSX, GetMetaPropertyByPath, updateInArray, deleteInArray, QueryDetail, subscribe as _subscribe, unsubscribe, clean, JSXMap, getObjectDisplay, ContextFiltersToQueryFilters, contextFilterToObject, getLocator } from '../../../Tool'
+import { unwrap, GET, errorCatch, Request, QueryParam, GETWITH, READWITH, QueryFunc, JSX, GetMetaPropertyByPath, updateInArray, deleteInArray, QueryDetail, subscribe as _subscribe, unsubscribe, clean, JSXMap, getObjectDisplay, ContextFiltersToQueryFilters, contextFilterToObject, getLocator } from '../../../Tool'
 import { createUseStyles } from 'react-jss';
-import "./index.css"
 import { FilterOutlined, SortAscendingOutlined, SortDescendingOutlined } from '@ant-design/icons';
 import { Field } from '../Field';
 import { Model } from '../Model';
-import { useActionRef, useMetaContext } from '../../Context';
-import uuid from 'react-uuid';
+import { useMetaContext } from '../../Context';
 import { ExclamationCircleOutlined, FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons';
 import { useCollectionFullReplacement, useCollectionPartialReplacement } from '../../../ComponetsReplacement';
 import { useAuth } from '../../../Auth';
 import { Overlay } from '../../Overlay';
 import { PopoverModal } from '../../PopoverModal';
+import "./index.css"
 
-const { CheckableTag } = Tag;
 const { Sider } = Layout;
 const { Option } = Select;
 const { Text } = Typography;
@@ -165,6 +163,7 @@ export function collectionQueryParams(filters, contextFilters, filter, sorting, 
     let flt = [];
     Object.keys(filter).forEach(key => {
         var item = filters?.find(e => e.name == key);
+        var akey = item?.alias || key;
 
         if (item) {
             let filterByKey = filter[key];
@@ -173,10 +172,10 @@ export function collectionQueryParams(filters, contextFilters, filter, sorting, 
                     switch (item?.type) {
                         case "object":
                         case "document":
-                            flt.push(QueryParam("w-in-" + key, filterByKey))
+                            flt.push(QueryParam("w-in-" + akey, filterByKey))
                             break;
                         default:
-                            flt.push(QueryParam("w-in-" + key, filterByKey))
+                            flt.push(QueryParam("w-in-" + akey, filterByKey))
                             break;
                     }
                     break;
@@ -190,8 +189,8 @@ export function collectionQueryParams(filters, contextFilters, filter, sorting, 
                         case "uint64":
                         case "uint32":
                             if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-                                flt.push(QueryParam("w-lge-" + key, filterByKey[0]))
-                                flt.push(QueryParam("w-lwe-" + key, filterByKey[1]))
+                                flt.push(QueryParam("w-lge-" + akey, filterByKey[0]))
+                                flt.push(QueryParam("w-lwe-" + akey, filterByKey[1]))
                             }
                             break;
                         case "double":
@@ -199,34 +198,38 @@ export function collectionQueryParams(filters, contextFilters, filter, sorting, 
                         case "float64":
                         case "float32":
                             if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-                                flt.push(QueryParam("w-lge-" + key, filterByKey[0]))
-                                flt.push(QueryParam("w-lwe-" + key, filterByKey[1]))
+                                flt.push(QueryParam("w-lge-" + akey, filterByKey[0]))
+                                flt.push(QueryParam("w-lwe-" + akey, filterByKey[1]))
                             }
                             break;
                         case "time":
                             if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-                                flt.push(QueryParam("w-lge-" + key, filterByKey[0].format("HH:mm:ss")))
-                                flt.push(QueryParam("w-lwe-" + key, filterByKey[1].format("HH:mm:ss")))
+                                flt.push(QueryParam("w-lge-" + akey, filterByKey[0].format("HH:mm:ss")))
+                                flt.push(QueryParam("w-lwe-" + akey, filterByKey[1].format("HH:mm:ss")))
                             }
                             break;
                         case "date":
                             if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-                                flt.push(QueryParam("w-lge-" + key, filterByKey[0].format("YYYY-MM-DD")))
-                                flt.push(QueryParam("w-lwe-" + key, filterByKey[1].format("YYYY-MM-DD")))
+                                flt.push(QueryParam("w-lge-" + akey, filterByKey[0].format("YYYY-MM-DD")))
+                                flt.push(QueryParam("w-lwe-" + akey, filterByKey[1].format("YYYY-MM-DD")))
                             }
                             break;
                         case "datetime":
                         case "time.Time":
                             if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-                                flt.push(QueryParam("w-lge-" + key, filterByKey[0].format("YYYY-MM-DD HH:mm")))
-                                flt.push(QueryParam("w-lwe-" + key, filterByKey[1].format("YYYY-MM-DD HH:mm")))
+                                flt.push(QueryParam("w-lge-" + akey, filterByKey[0].format("YYYY-MM-DD HH:mm")))
+                                flt.push(QueryParam("w-lwe-" + akey, filterByKey[1].format("YYYY-MM-DD HH:mm")))
                             }
                             break;
                         default:
                             if (item?.queryComparer) {
-                                flt.push(QueryParam(`w-${item?.queryComparer}-` + key, filterByKey))
+                                if (_.isFunction(item?.queryComparer)) {
+                                    flt.push(QueryParam(`w-${item?.queryComparer(filterByKey, item)}-` + akey, filterByKey))
+                                } else {
+                                    flt.push(QueryParam(`w-${item?.queryComparer}-` + akey, filterByKey))
+                                }
                             } else {
-                                flt.push(QueryParam("w-" + key, filterByKey))
+                                flt.push(QueryParam("w-" + akey, filterByKey))
                             }
                             break;
                     }
@@ -235,16 +238,30 @@ export function collectionQueryParams(filters, contextFilters, filter, sorting, 
                     switch (item?.type) {
                         case "string":
                             // queryComparer:"sim", // wsim, swsim
-                            flt.push(QueryParam(`w-${item?.queryComparer || "co"}-` + key, filterByKey))
+                            // flt.push(QueryParam(`w-${item?.queryComparer || "co"}-` + akey, filterByKey))
+                            if (_.isFunction(item?.queryComparer)) {
+                                flt.push(QueryParam(`w-${item?.queryComparer(filterByKey, item) || "co"}-` + akey, filterByKey))
+                            } else {
+                                flt.push(QueryParam(`w-${item?.queryComparer || "co"}-` + akey, filterByKey))
+                            }
                             break;
                         case "func":
-                            flt.push(QueryParam(`${item?.queryPrefix || ""}` + key, filterByKey))
+                            // flt.push(QueryParam(`${item?.queryPrefix || ""}` + akey, filterByKey))
+                            if (_.isFunction(item?.queryPrefix)) {
+                                flt.push(QueryParam(`${item?.queryPrefix(filterByKey, item) || ""}` + akey, filterByKey))
+                            } else {
+                                flt.push(QueryParam(`${item?.queryPrefix || ""}` + akey, filterByKey))
+                            }
                             break;
                         default:
                             if (item?.queryComparer) {
-                                flt.push(QueryParam(`w-${item?.queryComparer}-` + key, filterByKey))
+                                if (_.isFunction(item?.queryComparer)) {
+                                    flt.push(QueryParam(`w-${item?.queryComparer(filterByKey, item)}-` + akey, filterByKey))
+                                } else {
+                                    flt.push(QueryParam(`w-${item?.queryComparer}-` + akey, filterByKey))
+                                }
                             } else {
-                                flt.push(QueryParam("w-" + key, filterByKey))
+                                flt.push(QueryParam("w-" + akey, filterByKey))
                             }
                             break;
                     }
@@ -279,18 +296,22 @@ export function collectionQueryParams(filters, contextFilters, filter, sorting, 
 function FilterButton(props) {
     const ref = useRef(null)
     const { setBounding, filtered, setFiltered, state, locator, object, name, fieldName } = props;
-
     useEffect(() => {
         if (ref.current) {
             if (setBounding) {
-                console.log(ref.current.getBoundingClientRect());
+                // console.log(ref.current.getBoundingClientRect());
                 setBounding(ref.current.getBoundingClientRect())
             }
         }
     }, [ref])
     return (<div
-        className={`bg bg-grey pointer`}
-        style={{ minWidth: "28px", fontSize:"14px", lineHeight: "22px", backgroundColor:(filtered)?"#1677FF":"rgba(190, 190, 190, 0.2)" }}
+        className={`bg ${(filtered) ? "bg-altblue" : "bg-grey"} pointer`}
+        style={{
+            minWidth: "28px",
+            fontSize: "14px",
+            lineHeight: "22px",
+            // backgroundColor: (filtered) ? "#1677FF" : "rgba(190, 190, 190, 0.2)"
+        }}
         ref={ref}
         data-locator={getLocator(locator || "collectionfilter-" + name || "collectionfilter-" + fieldName || "collectionfilter", object)}
         onClick={e => setFiltered(o => !o)}
@@ -1311,18 +1332,22 @@ function DefaultCollectionServer(props) {
                     </div>
                     {(filters && filters.length > 0 /*&& collection && collection.length > 0*/) && <div style={{ flex: "0 0 auto", display: "flex", justifyContent: "flex-start", gap: "5px" }}>
                         {allowFullscreen && <div
-                            className={`bg bg-grey pointer`}
-                            style={{ minWidth: "28px", fontSize:"14px", lineHeight: "22px", backgroundColor:(isFullscreen)?"#1677FF":"rgba(190, 190, 190, 0.2)" }}
+                            // className={fullscreenButtonClass}
+                            // style={fullscreenButtonStyle}
+                            className={`bg ${(isFullscreen) ? "bg-altblue" : "bg-grey"} pointer`}
+                            style={{
+                                minWidth: "28px",
+                                fontSize: "14px",
+                                lineHeight: "22px",
+                                color: (isFullscreen) ? "white" : "black",
+                                // backgroundColor: (isFullscreen) ? "#1677FF" : "rgba(190, 190, 190, 0.2)"
+                            }}
                             data-locator={getLocator(props?.locator || "collectionfullscreen-" + name || "collectionfullscreen-" + fieldName || "collectionfullscreen", props?.object)}
-                            // style={{ cursor: "pointer", margin: "0" }}
-                            // checked={isFullscreen}
-                            // onChange={(checked) => { (isFullscreen) ? closeFullscreen() : openFullscreen() }}
                             onClick={(e) => { (isFullscreen) ? closeFullscreen() : openFullscreen() }}
                         >
-                            {/* <FullscreenOutlined style={{ color: (fullscreen) ? "white" : "black" }} /> */}
                             {/* <i className="fa fa-arrows-alt"></i> */}
-                            {(!isFullscreen) && <FullscreenOutlined style={{ color: (isFullscreen) ? "white" : "black" }} />}
-                            {(isFullscreen) && <FullscreenExitOutlined style={{ color: (isFullscreen) ? "white" : "black" }} />}
+                            {(!isFullscreen) && <FullscreenOutlined />}
+                            {(isFullscreen) && <FullscreenExitOutlined />}
                         </div>}
                         <div>
                             <Tooltip title="Фильтр и сортировка">
@@ -1462,7 +1487,16 @@ function DefaultCollectionServer(props) {
                     }
                 </Layout>
                 {(!!count && !!total && totalPages && totalPages > 1) &&
-                    <div className="filtered-footer" style={{ display: "flex", justifyContent: "flex-end", padding: "10px 0", ...(footerStyle) ? footerStyle : {} }}>
+                    <div className="filtered-footer" style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", ...(footerStyle) ? footerStyle : {} }}>
+                        <div style={{
+                            // fontStyle: "italic",
+                            fontSize: "14px",
+                            lineHeight: "24px",
+                            // fontWeight: "lighter",
+                            // color: "#818181"
+                        }}>
+                            Элементов: {collection?.length} из {total}
+                        </div>
                         <Pagination className="filtered-pagination" size="small"
                             data-locator={getLocator(props?.locator || "filtered-pagination-" + name || "filtered-pagination-" + fieldName || "filtered-pagination", props?.object)}
                             current={current}
