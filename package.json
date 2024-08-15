@@ -1,6 +1,6 @@
 {
   "name": "fennec-ui",
-  "version": "1.1.256",
+  "version": "1.1.257",
   "description": "UI package for Fennec Toolkit",
   "author": "tarasovin",
   "license": "MIT",
@@ -12,9 +12,9 @@
     "node": ">=10"
   },
   "scripts": {
-    "build": "microbundle-crl -o ./dist --no-compress --format modern,cjs",
+    "build": "microbundle-crl -o ./dist --no-css-modules --no-compress --format modern,cjs",
     "prestart": "mkdir -p ../fennec-ui-dev && cp -r ./package.json ../fennec-ui-dev/",
-    "start": "microbundle-crl watch -o ../fennec-ui-dev/dist --no-compress --format modern,cjs",
+    "start": "microbundle-crl watch -o ../fennec-ui-dev/dist --no-css-modules --no-compress --format modern,cjs",
     "buildorigin": "microbundle-crl --no-compress --format modern,cjs",
     "startorigin": "microbundle-crl watch --no-compress --format modern,cjs",
     "prepare": "run-s build",
