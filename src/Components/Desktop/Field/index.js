@@ -43,7 +43,7 @@ const { Dragger } = Upload;
 const { TextArea } = Input;
 const { Option } = Select;
 
-function FieldLayout({ formItem, item, children }) {
+function FieldLayout({ formItem, item, children, style }) {
     return (<div style={style}>
         <div>
             {(item?.label && !formItem) && <div style={{}}>{item?.label}</div>}
