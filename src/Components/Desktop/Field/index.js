@@ -44,7 +44,7 @@ const { TextArea } = Input;
 const { Option } = Select;
 
 function FieldLayout({ formItem, item, children }) {
-    return (<div>
+    return (<div style={{ width: "100%" }}>
         <div>
             {(item?.label && !formItem) && <div style={{}}>{item?.label}</div>}
             {(item?.description && item?.description !== item?.label) && <div style={{ color: "rgb(140, 152, 164)", fontSize: "12px" }}>
