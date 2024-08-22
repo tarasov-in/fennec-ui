@@ -261,6 +261,13 @@ export function collectionQueryParams(filters, contextFilters, filter, sorting, 
                             }
                             break;
                         default:
+                            if (item?.queryRaw) {
+                                if (_.isFunction(item?.queryRaw)) {
+                                    flt.push(item?.queryRaw(filterByKey, item, akey))
+                                } else {
+                                    flt.push(item?.queryRaw)
+                                }
+                            } else
                             if (item?.queryComparer) {
                                 if (_.isFunction(item?.queryComparer)) {
                                     flt.push(QueryParam(`w-${item?.queryComparer(filterByKey, item)}-` + akey, filterByKey))
