@@ -1383,7 +1383,7 @@ export function metaGetFieldByName(metaObject, meta, fieldName) {
                 //Если текущая часть является объектом
                 var subObjectName = getObjectValue(metaObject, "properties[" + tag + "].relation.reference.object");
                 if (subObjectName) {
-                    return metaGetFieldByName(meta[subObjectName], fieldName.slice(1));
+                    return metaGetFieldByName(meta[subObjectName], meta, fieldName.slice(1));
                 } else {
                     console.error("metaGetFieldByName. Не удалось найти " + fieldName + " в объекте " + metaObject.name, metaObject);
                     return;
@@ -1418,7 +1418,7 @@ export function getSortingDisplayFields(display, metaObject, meta, parent, resul
         }
 
         var name_field = field.value.split(".")?.map((e) => uncapitalize(e)).join(".");
-        var metaField = metaGetFieldByName(metaObject, name_field);
+        var metaField = metaGetFieldByName(metaObject, meta, name_field);
 
         if (parent) {
             name_field = parent + "." + name_field;
