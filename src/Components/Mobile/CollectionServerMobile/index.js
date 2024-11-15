@@ -771,7 +771,26 @@ function DefaultCollectionServer(props) {
         let defaultAction = defaultModelAction(item, index);
 
         if (!modelActions) return <React.Fragment>{trigger && trigger()}</React.Fragment>;
-        let values = clean(unwrap(modelActions(item, index, { mobject, name, field, fieldName, contextObject, collection, actions: defaultAction })));
+        let values = clean(unwrap(modelActions(item, index, { 
+            mobject, 
+            name, 
+            field, 
+            fieldName, 
+            contextObject, 
+            // collection, 
+            actions: defaultAction,
+
+            collection,
+            setCollection,
+            setCollectionItem,
+            removeCollectionItem,
+            onSelection,
+            isSelected,
+            lock,
+            unlock,
+            loading,
+            update: request
+         })));
         if (!values || !values.length) return <React.Fragment>{trigger && trigger()}</React.Fragment>;
         return <DropdownMobile
             auth={auth}
@@ -839,7 +858,26 @@ function DefaultCollectionServer(props) {
     const RenderOnCollectionActions = React.useCallback(() => {
         let defaultAction = defaultCollectionAction();
         if (!collectionActions) return <React.Fragment></React.Fragment>;
-        let values = clean(unwrap(collectionActions({ mobject, name, field, fieldName, contextObject, collection, actions: defaultAction })));
+        let values = clean(unwrap(collectionActions({ 
+            mobject, 
+            name, 
+            field, 
+            fieldName, 
+            contextObject, 
+            // collection, 
+            actions: defaultAction,
+
+            collection,
+            setCollection,
+            setCollectionItem,
+            removeCollectionItem,
+            onSelection,
+            isSelected,
+            lock,
+            unlock,
+            loading,
+            update: request
+         })));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <div>
             {values?.map((e, idx) => {

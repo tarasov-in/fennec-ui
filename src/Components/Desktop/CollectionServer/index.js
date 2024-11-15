@@ -165,7 +165,7 @@ export function collectionQueryParams(filters, contextFilters, filter, sorting, 
         var item = filters?.find(e => e.name == key);
         var akey = item?.alias || key;
 
-        if(item?.additionalFilter){
+        if (item?.additionalFilter) {
             let additionalFlt = ContextFiltersToQueryFilters(item?.additionalFilter)
             // flt = _.merge(flt, additionalFlt)
             // flt = [...flt,...additionalFlt]
@@ -268,15 +268,15 @@ export function collectionQueryParams(filters, contextFilters, filter, sorting, 
                                     flt.push(item?.queryRaw)
                                 }
                             } else
-                            if (item?.queryComparer) {
-                                if (_.isFunction(item?.queryComparer)) {
-                                    flt.push(QueryParam(`w-${item?.queryComparer(filterByKey, item)}-` + akey, filterByKey))
+                                if (item?.queryComparer) {
+                                    if (_.isFunction(item?.queryComparer)) {
+                                        flt.push(QueryParam(`w-${item?.queryComparer(filterByKey, item)}-` + akey, filterByKey))
+                                    } else {
+                                        flt.push(QueryParam(`w-${item?.queryComparer}-` + akey, filterByKey))
+                                    }
                                 } else {
-                                    flt.push(QueryParam(`w-${item?.queryComparer}-` + akey, filterByKey))
+                                    flt.push(QueryParam("w-" + akey, filterByKey))
                                 }
-                            } else {
-                                flt.push(QueryParam("w-" + akey, filterByKey))
-                            }
                             break;
                     }
                     break;
@@ -1001,7 +1001,28 @@ function DefaultCollectionServer(props) {
     const RenderOnModelActions = React.useCallback((item, index) => {
         let defaultAction = defaultModelAction(item, index);
         if (!modelActions) return <React.Fragment></React.Fragment>;
-        let values = clean(unwrap(modelActions(item, index, { mobject, name, field, fieldName, contextObject, collection, actions: defaultAction })));
+        let values = clean(unwrap(modelActions(item, index, {
+            mobject,
+            name,
+            field,
+            fieldName,
+            contextObject,
+            // collection,
+            actions: defaultAction,
+
+            collection,
+            setCollection,
+            collectionRef,
+            updateCollection: update,
+            setCollectionItem,
+            removeCollectionItem,
+            onSelection,
+            isSelected,
+            lock,
+            unlock,
+            loading,
+            update
+        })));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <DropdownAction items={values?.map((e, idx) => ({
             key: e.key || idx,
@@ -1066,7 +1087,28 @@ function DefaultCollectionServer(props) {
 
         let defaultAction = defaultCollectionAction();
         if (!collectionActions) return <React.Fragment></React.Fragment>;
-        let values = clean(unwrap(collectionActions({ mobject, name, field, fieldName, contextObject, collection, actions: defaultAction })));
+        let values = clean(unwrap(collectionActions({
+            mobject,
+            name,
+            field,
+            fieldName,
+            contextObject,
+            // collection,
+            actions: defaultAction,
+
+            collection,
+            setCollection,
+            collectionRef,
+            updateCollection: update,
+            setCollectionItem,
+            removeCollectionItem,
+            onSelection,
+            isSelected,
+            lock,
+            unlock,
+            loading,
+            update
+        })));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return values?.map((e, idx) => {
             if (_.isFunction(e)) {
