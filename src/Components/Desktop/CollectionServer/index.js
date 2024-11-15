@@ -65,11 +65,14 @@ const useStyles = createUseStyles({
         '&.ant-list-item': {
             display: "flex",
             borderBottom: "none",
-            padding: "6px 0"
+            padding: "4px 0"
         },
         '&.ant-list-item .ant-list-item-action': {
             marginLeft: "0px",
-            marginTop: "8px",
+            // marginTop: "8px",
+        },
+        '&.ant-list-item .ant-list-item-action>li': {
+            padding: "0 4px"
         }
     }
 })
