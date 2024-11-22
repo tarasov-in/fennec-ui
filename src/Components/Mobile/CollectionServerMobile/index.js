@@ -169,11 +169,11 @@ export function SortingFieldsUIMobile(props) {
                 <div className='bg bg-grey' style={{ textAlign: "left", paddingLeft: "5px", marginBottom: "5px" }}>
                     Сортировать по
                 </div>
-                <div style={{ paddingBottom: "10px", display: "flex", justifyContent: "space-between", gap: "5px" }}>
+                <div style={{ paddingBottom: "10px", display: "flex", gap: "5px" }}>
                     <div onClick={() => {
                         setVisible(true)
                     }} style={{
-                        flex: "1",
+                        flex: "1 1 auto",
                         border: "1px solid #e5e5e5",
                         borderRadius: "4px",
                         padding: "2px 6px"
@@ -196,17 +196,17 @@ export function SortingFieldsUIMobile(props) {
                         data-locator={getLocator(props?.locator || "sortingorder", props?.object)}
                         onClick={sortingOrder}
                         style={{
-                            flex: "1",
+                            flex: "0 0 35px",
                             border: "1px solid #e5e5e5",
                             borderRadius: "4px",
                             padding: "2px 6px",
                             // fontSize:"14px"
                         }}>
                         {value.order === "ASC" &&
-                            <span><SortDescendingOutlined /> Возростанию</span>
+                            <span><SortDescendingOutlined /></span>
                         }
                         {value.order === "DESC" &&
-                            <span><SortAscendingOutlined /> Убыванию</span>
+                            <span><SortAscendingOutlined /></span>
                         }
                     </div>
                 </div>
