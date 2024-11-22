@@ -400,7 +400,7 @@ function DefaultCollectionServer(props) {
     const [funcStat, setFuncStat] = useState();
     const [lastFuncStat, setLastFuncStat] = useState();
     const [state, setState] = useState({
-        current: (props.page) ? props.page() : 1,
+        current: (props.page) ? parseInt(props.page()) || 1 : 1,
         sorting: defSorting((props.filters) ? fltrs : []),
         filter: defFilters((props.filters) ? fltrs : [])
     })
@@ -417,7 +417,7 @@ function DefaultCollectionServer(props) {
             onChangeRequestParameters({
                 filter: state.filter,
                 sorting: state.sorting,
-                page: state.current,
+                page: (parseInt(state.current) || 1),
                 count
             })
         }
@@ -629,7 +629,7 @@ function DefaultCollectionServer(props) {
                 lock,
                 unlock,
 
-                page: state.current,
+                page: (parseInt(state.current) || 1),
                 count: count,
                 sorting: state.sorting,
                 filter: state.filter,
@@ -1047,12 +1047,16 @@ function DefaultCollectionServer(props) {
         document.querySelector(".page").scrollTo(0, 0);
     }, [state]);
     const PaginatorRight = React.useCallback(() => {
-        setState(o => ({ ...o, current: state.current + 1 }));
+        setState(o => {
+            console.log(o);
+            
+            return ({ ...o, current: (parseInt(state.current) || 1) + 1 })
+        });
         // window.scrollTo(0, 0);
         document.querySelector(".page").scrollTo(0, 0)
     }, [state]);
     const PaginatorLeft = React.useCallback(() => {
-        setState(o => ({ ...o, current: state.current - 1 }));
+        setState(o => ({ ...o, current: (parseInt(state.current) || 1) - 1 }));
         // window.scrollTo(0, 0);
         document.querySelector(".page").scrollTo(0, 0)
     }, [state]);

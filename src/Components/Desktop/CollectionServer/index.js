@@ -483,8 +483,8 @@ function DefaultCollectionServer(props) {
     const [filters, setFilters] = useState();
     const [mobject, setMObject] = useState();
     const [sorting, setSorting] = useState(defSorting((props.filters) ? fltrs : []));
-    const [current, _setCurrent] = useState((props.page) ? props.page() : 1);
-    const [count, setCount] = useState((props.count) ? props.count() : 20);
+    const [current, _setCurrent] = useState((props.page) ? (parseInt(props.page()) || 1) : 1);
+    const [count, setCount] = useState((props.count) ? (parseInt(props.count()) || 20) : 20);
     const [total, setTotal] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
