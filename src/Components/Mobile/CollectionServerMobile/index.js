@@ -635,7 +635,7 @@ function DefaultCollectionServer(props) {
                 filter: state.filter,
                 // {stat, totalPages, size, totalElements, content}
                 apply: (data) => {
-                    setResponse(data);
+                    // setResponse(data);
                     if (data?.stat) {
                         setLastFuncStat(data?.stat);
                     }
@@ -650,8 +650,9 @@ function DefaultCollectionServer(props) {
             });
         } else if (source && !_.isFunction(source)) {
             lock();
-            GETWITH(auth, source, queryParams, ({ data }) => {
-                setResponse(data);
+            GETWITH(auth, source, queryParams, (resp) => {
+                let { data } = resp
+                setResponse(resp);
                 if (data?.stat) {
                     setLastFuncStat(data?.stat);
                 }
@@ -665,8 +666,9 @@ function DefaultCollectionServer(props) {
             }, (err) => errorCatch(err, unlock));
         } else {
             lock();
-            READWITH(auth, name, queryParams, ({ data }) => {
-                setResponse(data);
+            READWITH(auth, name, queryParams, (resp) => {
+                let { data } = resp
+                setResponse(resp);
                 if (data?.stat) {
                     setLastFuncStat(data?.stat);
                 }
