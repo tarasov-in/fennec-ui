@@ -470,6 +470,7 @@ function DefaultCollectionServer(props) {
     const meta = useMetaContext();
     const [loading, setLoading] = useState(false);
     const [collection, _setCollection] = useState([]);
+    const [response, setResponse] = useState();
     const [funcStat, setFuncStat] = useState();
     const [lastFuncStat, setLastFuncStat] = useState();
     const [state, setState] = useState({
@@ -797,6 +798,7 @@ function DefaultCollectionServer(props) {
                 filter,
                 // {stat, totalPages, size, totalElements, content}
                 apply: (data) => {
+                    setResponse(data);
                     if (data?.stat) {
                         setLastFuncStat(data?.stat);
                     }
@@ -813,6 +815,7 @@ function DefaultCollectionServer(props) {
         } else if (source && !_.isFunction(source)) {
             lock();
             GETWITH(auth, source, queryParams, ({ data }) => {
+                setResponse(data);
                 if (data?.stat) {
                     setLastFuncStat(data?.stat);
                 }
@@ -828,6 +831,7 @@ function DefaultCollectionServer(props) {
         } else {
             lock();
             READWITH(auth, name, queryParams, ({ data }) => {
+                setResponse(data);
                 if (data?.stat) {
                     setLastFuncStat(data?.stat);
                 }
@@ -1263,7 +1267,8 @@ function DefaultCollectionServer(props) {
                     removeCollectionItem,
                     update,
                     funcStat,
-                    lastFuncStat
+                    lastFuncStat,
+                    response
                 });
             }
             return "" + item
@@ -1364,7 +1369,8 @@ function DefaultCollectionServer(props) {
         defaultModelAction,
 
         funcStat,
-        lastFuncStat
+        lastFuncStat,
+        response
     }
 
     const [openOverlay, setOpenOverlay] = useState(false)

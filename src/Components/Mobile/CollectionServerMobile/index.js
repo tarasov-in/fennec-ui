@@ -396,6 +396,7 @@ function DefaultCollectionServer(props) {
     // const [opened, setOpened] = useState(false);
     const [loading, setLoading] = useState(false);
     const [collection, _setCollection] = useState([]);
+    const [response, setResponse] = useState();
     const [funcStat, setFuncStat] = useState();
     const [lastFuncStat, setLastFuncStat] = useState();
     const [state, setState] = useState({
@@ -634,6 +635,7 @@ function DefaultCollectionServer(props) {
                 filter: state.filter,
                 // {stat, totalPages, size, totalElements, content}
                 apply: (data) => {
+                    setResponse(data);
                     if (data?.stat) {
                         setLastFuncStat(data?.stat);
                     }
@@ -649,6 +651,7 @@ function DefaultCollectionServer(props) {
         } else if (source && !_.isFunction(source)) {
             lock();
             GETWITH(auth, source, queryParams, ({ data }) => {
+                setResponse(data);
                 if (data?.stat) {
                     setLastFuncStat(data?.stat);
                 }
@@ -663,6 +666,7 @@ function DefaultCollectionServer(props) {
         } else {
             lock();
             READWITH(auth, name, queryParams, ({ data }) => {
+                setResponse(data);
                 if (data?.stat) {
                     setLastFuncStat(data?.stat);
                 }
@@ -971,7 +975,8 @@ function DefaultCollectionServer(props) {
                 loading,
                 update: request,
                 funcStat,
-                lastFuncStat
+                lastFuncStat,
+                response
             });
         }
         return "" + item
@@ -1096,7 +1101,8 @@ function DefaultCollectionServer(props) {
         defaultCollectionAction,
         defaultModelAction,
         funcStat,
-        lastFuncStat
+        lastFuncStat,
+        response
     }
     const getItemLocator = useCallback((item, index) => {
         if (onItemLocator) {
@@ -1198,7 +1204,8 @@ function DefaultCollectionServer(props) {
                         defaultCollectionAction,
                         defaultModelAction,
                         funcStat,
-                        lastFuncStat
+                        lastFuncStat,
+                        response
                     })}
                     {!customRender && <List className="my-list filtered-list">
                         {(collection && collection.length > 0) && collection?.map((item, index) => (
