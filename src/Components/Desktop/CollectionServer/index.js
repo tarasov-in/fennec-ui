@@ -492,7 +492,7 @@ function DefaultCollectionServer(props) {
         if (onChangeRequestParameters) {
             onChangeRequestParameters({
                 filters,
-                page: current,
+                page: (parseInt(current) || 1),
                 count,
                 queryDetail,
                 contextFilters,

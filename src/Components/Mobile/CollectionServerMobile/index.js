@@ -412,17 +412,30 @@ function DefaultCollectionServer(props) {
     const [count, setCount] = useState((props.count) ? props.count() : 20);
     const [total, setTotal] = useState(1);
 
+    // useEffect(() => {
+    //     if (onChangeRequestParameters) {
+    //         onChangeRequestParameters({
+    //             filter: state.filter,
+    //             sorting: state.sorting,
+    //             page: (parseInt(state.current) || 1),
+    //             count
+    //         })
+    //     }
+    // }, [state.filter, state.sorting, state.current, count])
     useEffect(() => {
         if (onChangeRequestParameters) {
             onChangeRequestParameters({
-                filter: state.filter,
-                sorting: state.sorting,
+                filters,
                 page: (parseInt(state.current) || 1),
-                count
+                count,
+                queryDetail,
+                contextFilters,
+                sorting: state.sorting,
+                filter: state.filter,
+                queryParams: collectionQueryParams(filters, contextFilters, state.filter, state.sorting, state.current, count, queryDetail)
             })
         }
-    }, [state.filter, state.sorting, state.current, count])
-
+    }, [filters, contextFilters, state.filter, state.sorting, state.current, count, queryDetail])
 
     // console.log(loading);
     const lock = () => {
