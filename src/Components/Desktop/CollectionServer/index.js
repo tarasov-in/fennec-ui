@@ -397,6 +397,7 @@ function DefaultCollectionServer(props) {
 
         onItemLocator,
 
+        onSetCollection,
         onCollectionChange,
         // Collection Only Events
         onChange,   // |
@@ -428,6 +429,7 @@ function DefaultCollectionServer(props) {
         // isFullscreen,
         // openFullscreen,
         // closeFullscreen
+        pagination,
     } = props;
 
     // const PartialReplacementFunc = useCollectionPartialReplacement(fieldName, partialReplacement)
@@ -569,10 +571,17 @@ function DefaultCollectionServer(props) {
     // }, [filters])
 
     const setCollection = React.useCallback((array) => {
-        _setCollection(array);
-        // console.log(array);
-        if (onCollectionChange) {
-            onCollectionChange(array);
+        if (onSetCollection){
+            let collection = onSetCollection(array);
+            _setCollection(collection);
+            if (onCollectionChange) {
+                onCollectionChange(collection);
+            }
+        } else{
+            _setCollection(array);
+            if (onCollectionChange) {
+                onCollectionChange(array);
+            }
         }
     }, [collection]);
     const setCollectionItem = React.useCallback((item) => {
@@ -1564,7 +1573,19 @@ function DefaultCollectionServer(props) {
                         }}>
                             Элементов: {collection?.length} из {total}
                         </div>
-                        <Pagination className="filtered-pagination" size="small"
+                        {pagination && pagination({
+                            current: current,
+                            setCurrent: setCurrent,
+                            count: count,
+                            setCount: setCount,
+                            total: total,
+                            setTotal: setTotal,
+                            totalPages: totalPages,
+                            setTotalPages: setTotalPages,
+                            collection,
+                            setCollection: setCollection
+                        })}
+                        {!pagination && <Pagination className="filtered-pagination" size="small"
                             data-locator={getLocator(props?.locator || "filtered-pagination-" + name || "filtered-pagination-" + fieldName || "filtered-pagination", props?.object)}
                             current={current}
                             onChange={setCurrent}
@@ -1572,7 +1593,7 @@ function DefaultCollectionServer(props) {
                             total={total}
                             showSizeChanger={false}
                         // onShowSizeChange={onShowSizeChange}
-                        />
+                        />}
                     </div>
                 }
             </div>

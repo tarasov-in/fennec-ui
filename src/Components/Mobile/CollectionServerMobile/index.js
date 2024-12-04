@@ -338,6 +338,7 @@ function DefaultCollectionServer(props) {
 
         onItemLocator,
 
+        onSetCollection,
         onCollectionChange,
         // Collection Only Events
         onChange,   // |
@@ -354,7 +355,8 @@ function DefaultCollectionServer(props) {
         // и в неё будет передано значение нового состояния
 
         onChangeRequestParameters,
-        partialReplacement
+        partialReplacement,
+        pagination
     } = props;
 
     // const PartialReplacementFunc = useCollectionPartialReplacement(fieldName, partialReplacement)
@@ -468,9 +470,17 @@ function DefaultCollectionServer(props) {
         }
     }, [name, meta]);
     const setCollection = React.useCallback((array) => {
-        _setCollection(array);
-        if (onCollectionChange) {
-            onCollectionChange(array);
+        if (onSetCollection){
+            let collection = onSetCollection(array);
+            _setCollection(collection);
+            if (onCollectionChange) {
+                onCollectionChange(collection);
+            }
+        } else{
+            _setCollection(array);
+            if (onCollectionChange) {
+                onCollectionChange(array);
+            }
         }
     }, [collection]);
     const setCollectionItem = React.useCallback((item) => {
@@ -1242,7 +1252,19 @@ function DefaultCollectionServer(props) {
                             <div>Нет данных</div>
                         </div>}
                     </List>}
-                    <div style={{ padding: "15px 0px" }}>
+                    {pagination && pagination({
+                            current: state.current,
+                            setCurrent: (current)=>{setState(o => ({ ...o, current: parseInt(current)}))},
+                            count: count,
+                            setCount: setCount,
+                            // total: total,
+                            // setTotal: setTotal,
+                            totalPages: total,
+                            setTotalPages: setTotal,
+                            collection,
+                            setCollection: setCollection
+                        })}
+                    {!pagination && <div style={{ padding: "15px 0px" }}>
                         {(total > 1) &&
                             <div
                                 data-locator={getLocator(props?.locator || "filtered-pagination-" + name || "filtered-pagination-" + fieldName || "filtered-pagination", props?.object)}
@@ -1270,7 +1292,7 @@ function DefaultCollectionServer(props) {
                                 </div>
                             </div>
                         }
-                    </div>
+                    </div>}
                 </div>
             }
             {/* </NearestCollectionContext.Provider> */}
