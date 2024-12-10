@@ -470,13 +470,13 @@ function DefaultCollectionServer(props) {
         }
     }, [name, meta]);
     const setCollection = React.useCallback((array) => {
-        if (onSetCollection){
+        if (onSetCollection) {
             let collection = onSetCollection(array);
             _setCollection(collection);
             if (onCollectionChange) {
                 onCollectionChange(collection);
             }
-        } else{
+        } else {
             _setCollection(array);
             if (onCollectionChange) {
                 onCollectionChange(array);
@@ -800,12 +800,12 @@ function DefaultCollectionServer(props) {
         let defaultAction = defaultModelAction(item, index);
 
         if (!modelActions) return <React.Fragment>{trigger && trigger()}</React.Fragment>;
-        let values = clean(unwrap(modelActions(item, index, { 
-            mobject, 
-            name, 
-            field, 
-            fieldName, 
-            contextObject, 
+        let values = clean(unwrap(modelActions(item, index, {
+            mobject,
+            name,
+            field,
+            fieldName,
+            contextObject,
             // collection, 
             actions: defaultAction,
 
@@ -819,7 +819,7 @@ function DefaultCollectionServer(props) {
             unlock,
             loading,
             update: request
-         })));
+        })));
         if (!values || !values.length) return <React.Fragment>{trigger && trigger()}</React.Fragment>;
         return <DropdownMobile
             auth={auth}
@@ -887,12 +887,12 @@ function DefaultCollectionServer(props) {
     const RenderOnCollectionActions = React.useCallback(() => {
         let defaultAction = defaultCollectionAction();
         if (!collectionActions) return <React.Fragment></React.Fragment>;
-        let values = clean(unwrap(collectionActions({ 
-            mobject, 
-            name, 
-            field, 
-            fieldName, 
-            contextObject, 
+        let values = clean(unwrap(collectionActions({
+            mobject,
+            name,
+            field,
+            fieldName,
+            contextObject,
             // collection, 
             actions: defaultAction,
 
@@ -906,7 +906,7 @@ function DefaultCollectionServer(props) {
             unlock,
             loading,
             update: request
-         })));
+        })));
         if (!values || !values.length) return <React.Fragment></React.Fragment>;
         return <div>
             {values?.map((e, idx) => {
@@ -1072,7 +1072,7 @@ function DefaultCollectionServer(props) {
     const PaginatorRight = React.useCallback(() => {
         setState(o => {
             console.log(o);
-            
+
             return ({ ...o, current: (parseInt(state.current) || 1) + 1 })
         });
         // window.scrollTo(0, 0);
@@ -1176,12 +1176,53 @@ function DefaultCollectionServer(props) {
                         <div>Нет данных</div>
                     </div>}
                 </div>}
+                {pagination && pagination({
+                    current: state.current,
+                    setCurrent: (current) => { setState(o => ({ ...o, current: parseInt(current) })) },
+                    count: count,
+                    setCount: setCount,
+                    // total: total,
+                    // setTotal: setTotal,
+                    totalPages: total,
+                    setTotalPages: setTotal,
+                    collection,
+                    setCollection: setCollection
+                })}
+                {!pagination && <div style={{ padding: "15px 0px" }}>
+                    {(total > 1) &&
+                        <div
+                            data-locator={getLocator(props?.locator || "filtered-pagination-" + name || "filtered-pagination-" + fieldName || "filtered-pagination", props?.object)}
+                            style={{ display: "flex", justifyContent: "center" }}>
+                            <div>
+                                <Button size='small' onClick={PaginatorLeft} disabled={(state.current <= 1)}>
+                                    <Space>
+                                        <Icofont icon="rounded-left" />
+                                    </Space>
+                                </Button>
+                            </div>
+                            <div style={{ minWidth: "75px", fontSize: "14px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                                <div>{state.current}/{total}</div>
+                                <PageIndicator
+                                    total={3}
+                                    current={(state.current <= 1) ? 0 : (state.current >= total) ? 2 : 1}
+                                />
+                            </div>
+                            <div>
+                                <Button size='small' onClick={PaginatorRight} disabled={(state.current >= total)}>
+                                    <Space>
+                                        <Icofont icon="rounded-right" />
+                                    </Space>
+                                </Button>
+                            </div>
+                        </div>
+                    }
+                </div>}
             </div>}
 
-            {/* {(!!filters?.length) && */}
+            {(!!filters?.length) &&
                 <div
                     data-locator={getLocator(props?.locator || ("collection-" + name) || ("collection-" + fieldName) || "collection", props?.object)} className="filtered" style={{ position: "relative", height: "100%", paddingTop: "5px" }}>
-                    {(!!filters?.length) && <div className={"filtered-header"} style={{
+                    <div className={"filtered-header"} style={{
                         height: "43px",
                         display: "flex",
                         justifyContent: "space-between",
@@ -1209,7 +1250,7 @@ function DefaultCollectionServer(props) {
                                 trigger={trigger}
                             />
                         </div>
-                    </div>}
+                    </div>
                     <MaskWithLoading visible={loading} />
                     {customRender && customRender(collection, {
                         collection,
@@ -1253,17 +1294,17 @@ function DefaultCollectionServer(props) {
                         </div>}
                     </List>}
                     {pagination && pagination({
-                            current: state.current,
-                            setCurrent: (current)=>{setState(o => ({ ...o, current: parseInt(current)}))},
-                            count: count,
-                            setCount: setCount,
-                            // total: total,
-                            // setTotal: setTotal,
-                            totalPages: total,
-                            setTotalPages: setTotal,
-                            collection,
-                            setCollection: setCollection
-                        })}
+                        current: state.current,
+                        setCurrent: (current) => { setState(o => ({ ...o, current: parseInt(current) })) },
+                        count: count,
+                        setCount: setCount,
+                        // total: total,
+                        // setTotal: setTotal,
+                        totalPages: total,
+                        setTotalPages: setTotal,
+                        collection,
+                        setCollection: setCollection
+                    })}
                     {!pagination && <div style={{ padding: "15px 0px" }}>
                         {(total > 1) &&
                             <div
@@ -1294,7 +1335,7 @@ function DefaultCollectionServer(props) {
                         }
                     </div>}
                 </div>
-            {/* } */}
+            }
             {/* </NearestCollectionContext.Provider> */}
         </React.Fragment>
     );
