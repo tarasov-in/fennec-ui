@@ -1178,10 +1178,10 @@ function DefaultCollectionServer(props) {
                 </div>}
             </div>}
 
-            {(!!filters?.length) &&
+            {/* {(!!filters?.length) && */}
                 <div
                     data-locator={getLocator(props?.locator || ("collection-" + name) || ("collection-" + fieldName) || "collection", props?.object)} className="filtered" style={{ position: "relative", height: "100%", paddingTop: "5px" }}>
-                    <div className={"filtered-header"} style={{
+                    {(!!filters?.length) && <div className={"filtered-header"} style={{
                         height: "43px",
                         display: "flex",
                         justifyContent: "space-between",
@@ -1209,7 +1209,7 @@ function DefaultCollectionServer(props) {
                                 trigger={trigger}
                             />
                         </div>
-                    </div>
+                    </div>}
                     <MaskWithLoading visible={loading} />
                     {customRender && customRender(collection, {
                         collection,
@@ -1294,7 +1294,7 @@ function DefaultCollectionServer(props) {
                         }
                     </div>}
                 </div>
-            }
+            {/* } */}
             {/* </NearestCollectionContext.Provider> */}
         </React.Fragment>
     );
