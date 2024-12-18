@@ -17,7 +17,7 @@ const { CheckableTag } = Tag;
 const { TabPane } = Tabs;
 
 function Frm(props) {
-    const { auth, form, name, meta, options, object, locator, submit, funcStat, contextFilters, links, scheme, linksCompareFunction, contextObject,
+    const { auth, form, name, meta, options, object, data, locator, submit, funcStat, contextFilters, links, scheme, linksCompareFunction, contextObject,
         queryDetail,
         modelActions,
         collectionActions,
@@ -169,7 +169,7 @@ function Frm(props) {
                         // {propertiesFiltered?.map((item, idx) => {
                         if (!item?.name && item.type === "func" && item.render) {
                             return <div key={"func_" + idx}>
-                                {item.render(auth, item, { object, contextObject, funcStat })}
+                                {item.render(auth, item, { data, object, contextObject, funcStat })}
                             </div>
                         }
                         return (<Form.Item
@@ -277,7 +277,7 @@ function Frm(props) {
 }
 
 export function Model(props) {
-    const { auth, name, meta, options, object, locator, form, submit, funcStat, contextFilters, links, scheme, linksCompareFunction, contextObject,
+    const { auth, name, meta, options, object, data, locator, form, submit, funcStat, contextFilters, links, scheme, linksCompareFunction, contextObject,
         queryDetail,
         modelActions,
         collectionActions,
@@ -317,6 +317,7 @@ export function Model(props) {
                 meta={meta}
                 options={options}
                 object={object}
+                data={data}
                 locator={locator}
                 funcStat={funcStat}></Frm>}
         </React.Fragment>
