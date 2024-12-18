@@ -321,7 +321,7 @@ function Frm(props) {
     const virtualizedItem = (item, idx) => {
         if (!item.name && item.type === "func" && item.render) {
             return <div key={"func_" + idx}>
-                {item.render(auth, item)}
+                {item.render(auth, item, { object })}
             </div>
         }
         if (item && !item.view || (item && item.view && item.view.unvisible === false)) {

@@ -169,7 +169,7 @@ function Frm(props) {
                         // {propertiesFiltered?.map((item, idx) => {
                         if (!item?.name && item.type === "func" && item.render) {
                             return <div key={"func_" + idx}>
-                                {item.render(auth, item)}
+                                {item.render(auth, item, { object, contextObject, funcStat })}
                             </div>
                         }
                         return (<Form.Item
