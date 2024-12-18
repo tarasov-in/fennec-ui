@@ -233,7 +233,7 @@ const useStyles = createUseStyles({
 })
 
 function Frm(props) {
-    const { auth, form, name, meta, options, locator, submit, object, virtualized, search, partialReplacement } = props;
+    const { auth, form, name, meta, options, locator, submit, object, data, virtualized, search, partialReplacement } = props;
 
     const PartialReplacementFunc = useModelPartialReplacement(name, partialReplacement)
 
@@ -321,7 +321,7 @@ function Frm(props) {
     const virtualizedItem = (item, idx) => {
         if (!item.name && item.type === "func" && item.render) {
             return <div key={"func_" + idx}>
-                {item.render(auth, item, { object })}
+                {item.render(auth, item, { data, object })}
             </div>
         }
         if (item && !item.view || (item && item.view && item.view.unvisible === false)) {
@@ -406,7 +406,7 @@ function Frm(props) {
 }
 
 export function ModelMobile(props) {
-    const { auth, name, meta, options, form, submit, object, locator, virtualized, search, steps, partialReplacement, fullReplacement } = props;
+    const { auth, name, meta, options, form, submit, object, data, locator, virtualized, search, steps, partialReplacement, fullReplacement } = props;
     const classes = useStyles()
     const FullReplacementFunc = useModelFullReplacement(name, fullReplacement)
     if (FullReplacementFunc) {
@@ -422,7 +422,7 @@ export function ModelMobile(props) {
         <React.Fragment>
             {<Frm className={classes.Frm}
                 partialReplacement={partialReplacement}
-                auth={auth} form={form} name={name} meta={meta} options={options} submit={submit} object={object} virtualized={virtualized} search={search} steps={steps} locator={locator}></Frm>}
+                auth={auth} form={form} name={name} meta={meta} options={options} submit={submit} object={object} data={data} virtualized={virtualized} search={search} steps={steps} locator={locator}></Frm>}
         </React.Fragment>
     )
 };
