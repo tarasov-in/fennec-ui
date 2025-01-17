@@ -899,6 +899,8 @@ export const Request = (values, item, props) => {
         index,
         lock,
         unlock,
+        plock,
+        punlock,
         close,
         onValues,
         onData,
@@ -920,6 +922,10 @@ export const Request = (values, item, props) => {
             label,
             itemByProperty,
             apply,
+            plock,
+            punlock,
+            lock,
+            unlock,
         };
         if (_.isFunction(item.action)) {
             // Свойство action может быть функцией или объектом

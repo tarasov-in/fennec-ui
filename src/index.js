@@ -180,6 +180,10 @@ import {
   CollectionServer
 } from './Components/Desktop/CollectionServer'
 
+import { 
+  CollectionByProperty
+} from './Components/Desktop/CollectionByProperty'
+
 import {
   DropdownAction
 } from './Components/Desktop/DropdownAction'
@@ -380,6 +384,7 @@ export {
   SortingFieldsUI,
   FiltersFieldsUI,
   CollectionServer,
+  CollectionByProperty,
   DropdownAction,
   DropdownMobile,
   ModelMobile,

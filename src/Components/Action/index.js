@@ -301,6 +301,9 @@ export function Action(props) {
         submitCache[current] = submit;
     };
     // ---------------------------------
+    const lock = React.useCallback(() => {
+        setLoading(true);
+    }, []);
     const unlock = React.useCallback(() => {
         setLoading(false);
     }, []);
@@ -373,8 +376,11 @@ export function Action(props) {
                 label: props.label || (() => { }),
                 itemByProperty: props.itemByProperty || (() => { }),
                 apply: props.apply || (() => { }),
+                plock: props?.lock || (() => { }),
+                punlock: props?.unlock || (() => { }),
 
                 onData: (values, context) => values.data,
+                lock,
                 unlock,
                 close,
             }
@@ -533,6 +539,7 @@ export function Action(props) {
             // OkButtons: FooterOkButtons, 
             form,
             object,
+            lock,
             unlock,
             close,
             mode,

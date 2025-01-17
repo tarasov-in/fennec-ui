@@ -42,7 +42,7 @@ const { Dragger } = Upload;
 const { TextArea } = Input;
 const { Option } = Select;
 
-function FieldLayout({ formItem, item, children, style }) {
+function FieldLayout({ formItem, auth, item, children, style }) {
     return (<div style={style}>
         <div>
             {(item?.label && !formItem) && <div style={{}}>{item?.label}</div>}
@@ -52,6 +52,176 @@ function FieldLayout({ formItem, item, children, style }) {
         </div>
         {children}
     </div>)
+}
+function ActionsSpace(props) {
+    const { children, item, data, setData, objectName, auth, contextObject, value, onChange, loading, setLoading,
+        partialReplacement,
+        property: _property,
+        label: _label,
+        itemByProperty: _itemByProperty
+    } = props;
+    const meta = useMetaContext();
+    const PartialReplacementFunc = useFieldPartialReplacement(item?.type, partialReplacement)
+
+    const property = _property || ((item, value) => {
+        if (item?.type == "object" || item?.type == "document") {
+            if (item && _.get(item, "relation.reference.property") && value) {
+                return value[item.relation.reference.property];
+            }
+            if (value) {
+                return value.ID;
+            }
+        } else {
+            return value;
+        }
+        return undefined;
+    });
+    const itemByProperty = _itemByProperty || ((item, value) => {
+        if (item?.type == "object" || item?.type == "document") {
+            if (_.get(item, "relation.reference.property")) {
+                return data.find(e => e[item.relation.reference.property] === value);
+            }
+            if (data?.length) {
+                return data.find(e => e.ID === value);
+            }
+        } else {
+            return value;
+        }
+    });
+    const label = _label || ((item, value) => {
+        if (item && value) {
+            if (item.display && _.isFunction(item.display)) {
+                return item.display(value)
+            } else if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
+                return item.relation.display(value)
+            } else if (PartialReplacementFunc) {
+                return PartialReplacementFunc({ item, value, changed, contextObject, objectName })
+            } else if (item?.type == "object" || item?.type == "document") {
+                let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
+                let _display = ((item?.relation?.display?.fields) ? item?.relation?.display : undefined) || ((fieldMeta?.display?.fields) ? fieldMeta?.display : undefined)
+                return getDisplay(value, _display, fieldMeta, meta)
+            } else {
+                return "" + value;
+            }
+        }
+        return "";
+    });
+    const labelString = (item, value) => {
+        if (item && value) {
+            if (item.displayString && _.isFunction(item.displayString)) {
+                return item.displayString(value)
+            } else if (item.relation && item.relation.displayString && _.isFunction(item.relation.displayString)) {
+                return item.relation.displayString(value)
+            } else if (item?.type == "object" || item?.type == "document") {
+                let labeldisplay = label(item, value);
+                if (_.isString(labeldisplay)) {
+                    return labeldisplay;
+                }
+                let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
+                let _display = ((item?.relation?.display?.fields) ? item?.relation?.display : undefined) || ((fieldMeta?.display?.fields) ? fieldMeta?.display : undefined)
+                return getDisplay(value, _display, fieldMeta, meta)
+            } else {
+                return "" + value;
+            }
+        }
+        return "";
+    };
+
+    const RendeActions = React.useCallback(() => {
+        if (!item?.actions) return <React.Fragment></React.Fragment>;
+        let values = clean(unwrap(item?.actions(value, item, meta)));
+        if (!values || !values.length) return <React.Fragment></React.Fragment>;
+        return values?.map((e, idx) => {
+            if (_.isFunction(e)) {
+                return (e({
+                    collection: data,
+                    setCollection: setData,
+                    objectName: objectName,
+                    contextObject: contextObject,
+                    setCollectionItem: (item, first) => (!setData) ? undefined : setData(o => updateInArray(o, item, first)),
+                    removeCollectionItem: (item) => (!setData) ? undefined : setData(o => deleteInArray(o, item)),
+                    // onSelection,
+                    // isSelected,
+                    lock: () => (!setLoading) ? undefined : setLoading(true),
+                    unlock: () => (!setLoading) ? undefined : setLoading(false),
+                    loading,
+                    property: (obj) => property(item, obj),
+                    label: (obj) => label(item, obj),
+                    itemByProperty: (value) => itemByProperty(item, value),
+                    apply: (obj) => onChange(value, item, itemByProperty(item, value)),
+                    // update
+                }, idx))
+            }
+            return (<Action
+                key={e.key || idx}
+                auth={auth}
+                mode={"button"}
+                disabled={loading || (item && item.view && item.view.disabled) ? item.view.disabled : false}
+                item={item}
+                locator={item?.name || objectName}
+                object={e.object || itemByProperty(item, value)}
+                objectName={objectName}
+                contextObject={contextObject}
+                collection={data}
+                setCollection={setData}
+                property={(obj) => property(item, obj)}
+                label={(obj) => label(item, obj)}
+                itemByProperty={(value) => itemByProperty(item, value)}
+                apply={(obj) => onChange(property(item, obj), item, obj)}
+                lock={() => (!setLoading) ? undefined : setLoading(true)}
+                unlock={() => (!setLoading) ? undefined : setLoading(false)}
+                {...e}
+            />)
+        });
+    }, [item, data, loading, value, meta, contextObject, objectName]);
+
+    const RenderDropdownActions = React.useCallback(() => {
+        if (!item?.dropdownActions) return <React.Fragment></React.Fragment>;
+        let values = clean(unwrap(item?.dropdownActions(value, item, meta)));
+        if (!values || !values.length) return <React.Fragment></React.Fragment>;
+        return <DropdownAction
+            button={() => (<Button type="default">
+                <i className="fa fa-ellipsis-v"></i>
+                {/* <i className="fa fa-ellipsis-h"></i> */}
+                {/* <i className="fa fa-angle-down"></i> */}
+                {/* <i className="fa fa-chevron-down"></i> */}
+                {/* <i className="fa fa-caret-down"></i> */}
+                {/* <i className="fa fa-bars"></i> */}
+                {/* <i className="fa fa-caret-square-o-down"></i> */}
+            </Button>)}
+            locator={item?.name || objectName}
+            object={itemByProperty(item, value)}
+            items={values?.map((e, idx) => ({
+                key: e.key || idx,
+                auth: auth,
+                mode: "MenuItem",
+                disabled: loading || (item && item.view && item.view.disabled) ? item.view.disabled : false,
+                item: item,
+                locator: item?.name || objectName,
+                object: e.object || itemByProperty(item, value),
+                objectName: objectName,
+                contextObject: contextObject,
+                collection: data,
+                setCollection: setData,
+                property: (obj) => property(item, obj),
+                label: (obj) => label(item, obj),
+                itemByProperty: (value) => itemByProperty(item, value),
+                apply: (obj) => onChange(property(item, obj), item, obj),
+                lock: () => (!setLoading) ? undefined : setLoading(true),
+                unlock: () => (!setLoading) ? undefined : setLoading(false),
+                ...e
+            }))} />
+    }, [item, data, loading, value, meta, contextObject, objectName]);
+
+    return (<Space.Compact style={{ width: '100%' }}>
+        {children}
+        {item?.actions && <React.Fragment>
+            {RendeActions()}
+        </React.Fragment>}
+        {item?.dropdownActions && <React.Fragment>
+            {RenderDropdownActions()}
+        </React.Fragment>}
+    </Space.Compact>)
 }
 function UploadItems({ formItem, auth, item, value, onChange, changed }) {
     const [loading, setLoading] = useState(false);
@@ -409,7 +579,7 @@ function GroupObj({ formItem, auth, item, value, onChange, onAfterChange, change
     </FieldLayout>
     )
 }
-function RangeTime({ formItem, item, value, onChange, onAfterChange }) {
+function RangeTime({ formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     const a = useMemo(() => {
         if (value && value[0] && value[1]) {
@@ -421,7 +591,7 @@ function RangeTime({ formItem, item, value, onChange, onAfterChange }) {
         <TimePicker.RangePicker data-locator={getLocator(item?.name)} changeOnBlur={true} value={a} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }} />
     </FieldLayout>)
 }
-function RangeDate({ formItem, item, value, onChange, onAfterChange }) {
+function RangeDate({ formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     const a = useMemo(() => {
         if (value && value[0] && value[1]) {
@@ -433,7 +603,7 @@ function RangeDate({ formItem, item, value, onChange, onAfterChange }) {
         <DatePicker.RangePicker data-locator={getLocator(item?.name)} changeOnBlur={true} value={a} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }} />
     </FieldLayout>)
 }
-function RangeDateTime({ formItem, item, value, onChange, onAfterChange }) {
+function RangeDateTime({ formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     const a = useMemo(() => {
         if (value && value[0] && value[1]) {
@@ -445,7 +615,7 @@ function RangeDateTime({ formItem, item, value, onChange, onAfterChange }) {
         <DatePicker.RangePicker data-locator={getLocator(item?.name)} changeOnBlur={true} showTime={{ format: 'HH:mm' }} value={a} onChange={onChange} format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }} />
     </FieldLayout>)
 }
-function RangeFloat({ formItem, item, value, onChange, onAfterChange }) {
+function RangeFloat({ formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     const [val, setVal] = useState();
     useEffect(() => {
@@ -470,7 +640,7 @@ function RangeFloat({ formItem, item, value, onChange, onAfterChange }) {
     </FieldLayout>
     )
 }
-function FloatSlider({ formItem, item, value, onChange, onAfterChange }) {
+function FloatSlider({ formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     const [val, setVal] = useState();
     useEffect(() => {
@@ -492,7 +662,7 @@ function FloatSlider({ formItem, item, value, onChange, onAfterChange }) {
     </FieldLayout>
     )
 }
-function RangeInteger({ formItem, item, value, onChange, onAfterChange }) {
+function RangeInteger({ formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     const [val, setVal] = useState();
     useEffect(() => {
@@ -518,7 +688,7 @@ function RangeInteger({ formItem, item, value, onChange, onAfterChange }) {
     </FieldLayout>
     )
 }
-function IntegerSlider({ formItem, item, value, onChange, onAfterChange }) {
+function IntegerSlider({ formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     const [val, setVal] = useState();
     useEffect(() => {
@@ -547,7 +717,6 @@ function Obj({ formItem, auth, item, value, onChange, onAfterChange, changed, co
     const meta = useMetaContext();
 
     const PartialReplacementFunc = useFieldPartialReplacement(_.get(item, "relation.reference.object"), partialReplacement)
-
     const dataOrContent = (data) => {
         return (data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data
     }
@@ -632,7 +801,6 @@ function Obj({ formItem, auth, item, value, onChange, onAfterChange, changed, co
         }
         return data.find(e => e.ID === value);
     };
-
     const labelString = (item, value) => {
         if (item && value) {
             if (item.displayString && _.isFunction(item.displayString)) {
@@ -1184,40 +1352,46 @@ function BigObj({ formItem, auth, item, value, onChange, onAfterChange, changed,
     </FieldLayout>
     )
 }
-function DateTime({ formItem, item, value, onChange, onAfterChange }) {
+function DateTime({ formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
-        <DatePicker
-            data-locator={getLocator(item?.name)}
-            changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} showTime format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }}
-            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
-        />
+        <ActionsSpace auth={auth} item={item} value={value} onChange={onChange} loading={loading} setLoading={setLoading}>
+            <DatePicker
+                data-locator={getLocator(item?.name)}
+                changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} showTime format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }}
+                disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+            />
+        </ActionsSpace>
     </FieldLayout>
     )
 }
-function Date({ formItem, item, value, onChange, onAfterChange }) {
+function Date({ formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
-        <DatePicker
-            data-locator={getLocator(item?.name)}
-            changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }}
-            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
-        />
+        <ActionsSpace auth={auth} item={item} value={value} onChange={onChange} loading={loading} setLoading={setLoading}>
+            <DatePicker
+                data-locator={getLocator(item?.name)}
+                changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }}
+                disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+            />
+        </ActionsSpace>
     </FieldLayout>
     )
 }
-function Time({ formItem, item, value, onChange, onAfterChange }) {
+function Time({ formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
-        <DatePicker
-            data-locator={getLocator(item?.name)}
-            changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }}
-            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
-        />
+        <ActionsSpace auth={auth} item={item} value={value} onChange={onChange} loading={loading} setLoading={setLoading}>
+            <DatePicker
+                data-locator={getLocator(item?.name)}
+                changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }}
+                disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+            />
+        </ActionsSpace>
     </FieldLayout>
     )
 }
-function Boolean({ formItem, item, value, onChange, onAfterChange }) {
+function Boolean({ formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     const change = (e) => {
         onChange(e.target.checked);
@@ -1233,59 +1407,69 @@ function Boolean({ formItem, item, value, onChange, onAfterChange }) {
     </FieldLayout>
     )
 }
-function Float({ formItem, item, value, onChange, onAfterChange }) {
+function Float({ formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
-        <InputNumber
-            data-locator={getLocator(item?.name)}
-            value={value} onChange={onChange} style={{ width: "100%" }} min={item?.min || item?.validators?.min} max={item?.max || item?.validators?.max}
-            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
-        />
+        <ActionsSpace auth={auth} item={item} value={value} onChange={onChange} loading={loading} setLoading={setLoading}>
+            <InputNumber
+                data-locator={getLocator(item?.name)}
+                value={value} onChange={onChange} style={{ width: "100%" }} min={item?.min || item?.validators?.min} max={item?.max || item?.validators?.max}
+                disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+            />
+        </ActionsSpace>
     </FieldLayout>
     )
 }
-function Integer({ formItem, item, value, onChange, onAfterChange }) {
+function Integer({ formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
-        <InputNumber
-            data-locator={getLocator(item?.name)}
-            value={value} onChange={onChange} style={{ width: "100%" }} min={item?.min || item?.validators?.min} max={item?.max || item?.validators?.max}
-            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
-        />
+        <ActionsSpace auth={auth} item={item} value={value} onChange={onChange} loading={loading} setLoading={setLoading}>
+            <InputNumber
+                data-locator={getLocator(item?.name)}
+                value={value} onChange={onChange} style={{ width: "100%" }} min={item?.min || item?.validators?.min} max={item?.max || item?.validators?.max}
+                disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+            />
+        </ActionsSpace>
     </FieldLayout>
     )
 }
-function String({ formItem, item, value, onChange, onAfterChange }) {
+function String({ formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
-        <Input
-            data-locator={getLocator(item?.name)}
-            size={(item.size) ? item.size : "middle"} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
-            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
-        />
+        <ActionsSpace auth={auth} item={item} value={value} onChange={onChange} loading={loading} setLoading={setLoading}>
+            <Input
+                data-locator={getLocator(item?.name)}
+                size={(item.size) ? item.size : "middle"} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
+                disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+            />
+        </ActionsSpace>
     </FieldLayout>
     )
 }
-function Password({ formItem, item, value, onChange, onAfterChange }) {
+function Password({ formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
-        <Input.Password
-            data-locator={getLocator(item?.name)}
-            allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
-            iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
-        />
+        <ActionsSpace auth={auth} item={item} value={value} onChange={onChange} loading={loading} setLoading={setLoading}>
+            <Input.Password
+                data-locator={getLocator(item?.name)}
+                allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
+                iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+                disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+            />
+        </ActionsSpace>
     </FieldLayout>
     )
 }
-function MultilineText({ formItem, item, value, onChange, onAfterChange }) {
+function MultilineText({ formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
-        <TextArea
-            data-locator={getLocator(item?.name)}
-            rows={6} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
-            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
-        />
+        <ActionsSpace auth={auth} item={item} value={value} onChange={onChange} loading={loading} setLoading={setLoading}>
+            <TextArea
+                data-locator={getLocator(item?.name)}
+                rows={6} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
+                disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+            />
+        </ActionsSpace>
     </FieldLayout>
     )
 }

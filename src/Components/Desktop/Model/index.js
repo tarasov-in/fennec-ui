@@ -11,6 +11,7 @@ import { Field } from '../Field';
 import { useFormObserverContext, useMetaContext } from '../../Context';
 import { CollectionServer } from '../CollectionServer';
 import { useModelFullReplacement, useModelPartialReplacement } from '../../../ComponetsReplacement';
+import { CollectionByProperty } from '../CollectionByProperty';
 var _ = require('lodash');
 const { CheckableTag } = Tag;
 const { TabPane } = Tabs;
@@ -37,23 +38,23 @@ function Frm(props) {
             form.setFieldsValue(object);
         }
     }, [object])
-    
+
     useEffect(() => {
         let ctxFlt = contextFilterToObject(contextFilters);
         setExcludeFields(ctxFlt);
     }, [contextFilters]);
 
     const gmeta = useMetaContext();
-    const filtersFromMeta = React.useCallback((name) => {
-        let prop = [];
-        let p = _.get(gmeta[name], "properties");
-        //console.log(name, gmeta[name?.toLowerCase()], p);
-        if (p) {
-            prop = p?.filter(e => _.get(e, "relation.type") !== "one-many")?.map(e => ({ ...e, sort: true, filter: true, func: (e.filterType == "range") ? ["min", "max"] : undefined }))
-        }
-        return prop;
-    }, [gmeta]);
-    
+    // const filtersFromMeta = React.useCallback((name) => {
+    //     let prop = [];
+    //     let p = _.get(gmeta[name], "properties");
+    //     //console.log(name, gmeta[name?.toLowerCase()], p);
+    //     if (p) {
+    //         prop = p?.filter(e => _.get(e, "relation.type") !== "one-many")?.map(e => ({ ...e, sort: true, filter: true, func: (e.filterType == "range") ? ["min", "max"] : undefined }))
+    //     }
+    //     return prop;
+    // }, [gmeta]);
+
     var properties = GetMetaProperties(meta);
     if (!properties) return <React.Fragment></React.Fragment>;
     const propertiesFiltered = properties?.filter(e => (!e.name || (e.name && e.name.toUpperCase() !== "ID")))?.filter(e => (!e.relation || (e.relation && e.relation.type !== "one-many")));
@@ -104,25 +105,25 @@ function Frm(props) {
     const [clipboardVisible, setClipboardVisible] = useState(false)
 
     // const PartialReplacementFunc = useFieldPartialReplacement(_.get(item, "relation.reference.object"), partialReplacement)
-    const display = useCallback((item, value) => {
-        if (item && value) {
-            if (item.display && _.isFunction(item.display)) {
-                return item.display(value)
-            } else if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
-                return item.relation.display(value)
-                // } else if (PartialReplacementFunc) {
-                //     return PartialReplacementFunc({ item, value, changed, contextObject, objectName })
-            } else {
-                let fieldMeta = gmeta[getObjectValue(item, "relation.reference.object")];
-                let _display = ((item?.relation?.display?.fields) ? item?.relation?.display : undefined) || ((fieldMeta?.display?.fields) ? fieldMeta?.display : undefined)
-                return getDisplay(value, _display, fieldMeta, gmeta)
-            }
-        }
-        return "";
-    }, [gmeta]);
-    
+    // const display = useCallback((item, value) => {
+    //     if (item && value) {
+    //         if (item.display && _.isFunction(item.display)) {
+    //             return item.display(value)
+    //         } else if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
+    //             return item.relation.display(value)
+    //             // } else if (PartialReplacementFunc) {
+    //             //     return PartialReplacementFunc({ item, value, changed, contextObject, objectName })
+    //         } else {
+    //             let fieldMeta = gmeta[getObjectValue(item, "relation.reference.object")];
+    //             let _display = ((item?.relation?.display?.fields) ? item?.relation?.display : undefined) || ((fieldMeta?.display?.fields) ? fieldMeta?.display : undefined)
+    //             return getDisplay(value, _display, fieldMeta, gmeta)
+    //         }
+    //     }
+    //     return "";
+    // }, [gmeta]);
+
     if (!excludeFields) return (<React.Fragment></React.Fragment>)
-        
+
     return (
         <div data-locator={getLocator(props?.locator || name || "model", props?.object)} className='model default-model'>
             {(object && links && links !== "inline" && propertiesOneMany && propertiesOneMany.length > 0) &&
@@ -201,18 +202,28 @@ function Frm(props) {
                 {(object && object?.ID && propertiesOneMany && propertiesOneMany?.length > 0 && links) && <div style={{ display: (visible || links === "inline") ? "block" : "none" }}>
                     <Tabs>
                         {propertiesOneMany.map((e, idx) => {
-                            let p = getObjectValue(e, "relation.reference.property");
                             let n = getObjectValue(e, "relation.reference.object");
-                            let f = getObjectValue(e, "name");
 
-                            var uif = _.get(e, "relation.uiFilter");
-                            let queryFilter = e?.queryFilter || _.get(e, "relation.reference.queryFilter") || _.get(e, "relation.reference.filter");
-                            let count = e?.count || _.get(e, "relation.reference.count");
-                            let url = e?.source || getObjectValue(e, "relation.reference.url") || getObjectValue(e, "relation.reference.source");
+                            // let p = getObjectValue(e, "relation.reference.property");
+                            // let f = getObjectValue(e, "name");
+                            // var uif = _.get(e, "relation.uiFilter");
+                            // let queryFilter = e?.queryFilter || _.get(e, "relation.reference.queryFilter") || _.get(e, "relation.reference.filter");
+                            // let count = e?.count || _.get(e, "relation.reference.count");
+                            // let url = e?.source || getObjectValue(e, "relation.reference.url") || getObjectValue(e, "relation.reference.source");
 
                             if (!n) return;
-                            return (<TabPane data-locator={getLocator(props?.locator || "model-collection" + name || "model-collection", props?.object)} tab={e.label} key={idx}>
-                                <CollectionServer
+                            return (<TabPane data-locator={getLocator(locator || "model-collection" + name || "model-collection", object)} tab={e.label} key={idx}>
+                                <CollectionByProperty auth={auth} item={e} object={object}
+                                    // objectName={name}
+                                    linksCompareFunction={linksCompareFunction}
+                                    linksModelActions={links}
+                                    scheme={scheme}
+                                    queryDetail={queryDetail}
+                                    modelActions={modelActions}
+                                    collectionActions={collectionActions}
+                                />
+
+                                {/* <CollectionServer
                                     auth={auth}
                                     name={n}
                                     // locator={n}
@@ -248,30 +259,13 @@ function Frm(props) {
                                     queryDetail={queryDetail}
                                     modelActions={modelActions}
                                     collectionActions={collectionActions}
-                                />
+                                /> */}
                             </TabPane>
                             )
                         })}
                     </Tabs>
                 </div>}
-
             </div>
-            {/* <i className="fa fa-clone"></i>
-            <i className="fa fa-clipboard"></i>
-            <i className="fa fa-bookmark"></i>
-            <i className="fa fa-bookmark-o"></i> */}
-            {/* <Drawer
-                title="Буфер обмена"
-                placement="right"
-                closable={false}
-                onClose={() => { setClipboardVisible(false) }}
-                open={clipboardVisible}
-                getContainer={false}
-            >
-                <div>
-                    <i className="fa fa-clipboard"></i>
-                </div>
-            </Drawer> */}
         </div>
     )
 }
