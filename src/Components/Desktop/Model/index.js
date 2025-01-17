@@ -6,7 +6,6 @@ import {
     Tabs,
     Drawer
 } from 'antd';
-import Icofont from 'react-icofont';
 import { GetMeta, GetMetaProperties, formItemRules, isRequired, validator, getObjectDisplay, uncapitalize, getObjectValue, QueryDetail, QueryOrder, clean, QueryParam, queryFiltersToContextFilter, contextFilterToObject, QueryFiltersToContextFilters, getDisplay, getLocator } from '../../../Tool';
 import { Field } from '../Field';
 import { useFormObserverContext, useMetaContext } from '../../Context';
@@ -38,7 +37,7 @@ function Frm(props) {
             form.setFieldsValue(object);
         }
     }, [object])
-
+    
     useEffect(() => {
         let ctxFlt = contextFilterToObject(contextFilters);
         setExcludeFields(ctxFlt);
@@ -54,7 +53,7 @@ function Frm(props) {
         }
         return prop;
     }, [gmeta]);
-
+    
     var properties = GetMetaProperties(meta);
     if (!properties) return <React.Fragment></React.Fragment>;
     const propertiesFiltered = properties?.filter(e => (!e.name || (e.name && e.name.toUpperCase() !== "ID")))?.filter(e => (!e.relation || (e.relation && e.relation.type !== "one-many")));
@@ -121,8 +120,9 @@ function Frm(props) {
         }
         return "";
     }, [gmeta]);
-
+    
     if (!excludeFields) return (<React.Fragment></React.Fragment>)
+        
     return (
         <div data-locator={getLocator(props?.locator || name || "model", props?.object)} className='model default-model'>
             {(object && links && links !== "inline" && propertiesOneMany && propertiesOneMany.length > 0) &&
@@ -141,7 +141,7 @@ function Frm(props) {
                                 checked={visible}
                                 onChange={checked => setVisible(checked)}
                             >
-                                <Icofont icon="icofont-link-alt" />
+                                <i className="fa fa-link"></i>
                             </CheckableTag>
                         </Tooltip>
                     </div>
@@ -166,7 +166,6 @@ function Frm(props) {
                     labelAlign={"left"}
                     layout={"vertical"}>
                     {propertiesFiltered?.filter(e => (e.name && (excludeFields[e.name?.toLowerCase()] || excludeFields[e.name?.toLowerCase() + "ID"])) ? false : true)?.map((item, idx) => {
-                        // {propertiesFiltered?.map((item, idx) => {
                         if (!item?.name && item.type === "func" && item.render) {
                             return <div key={"func_" + idx}>
                                 {item.render(auth, item, { data, object, contextObject, funcStat })}
@@ -188,6 +187,7 @@ function Frm(props) {
                                 contextObject={contextObject}
                                 auth={auth}
                                 formItem={true}
+                                data={data}
                                 // filter={fieldsFilters[item?.name?.toLowerCase()]}
                                 item={{ ...item, filterType: undefined, func: (funcStat && funcStat[item?.name?.toLowerCase()]) ? funcStat[item?.name?.toLowerCase()] : {} }}
 

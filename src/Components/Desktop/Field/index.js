@@ -15,7 +15,6 @@ import {
     Spin,
 } from 'antd';
 import { clean, deleteInArray, errorCatch, getDisplay, getLocator, getObjectValue, GETWITH, JSXMap, pushStateHistoryModal, QueryDetail, QueryOrder, QueryParam, READWITH, unwrap, updateInArray, useHover } from '../../../Tool';
-import Icofont from 'react-icofont';
 import { useMetaContext } from '../../Context';
 import { InboxOutlined } from '@ant-design/icons';
 import { EyeInvisibleOutlined, EyeTwoTone, UploadOutlined } from '@ant-design/icons';
@@ -225,12 +224,12 @@ function Image({ formItem, auth, item, value, onChange, changed }) {
                 </div>
                 <div style={{ display: "flex", gap: "5px" }}>
                     <Button data-locator={getLocator(item?.name, "edit")} onClick={onOpenChange} size="small" fill='none'>
-                        <Icofont key="1" icon="ui-edit" />
+                        <i className="fa fa-pencil-square-o"></i>
                     </Button>
                     <Button fill='none' size='small' data-locator={getLocator(item?.name, "clean")} onClick={(v) => {
                         onChange(null);
                     }}>
-                        <Icofont icon="close" />
+                        <i className="fa fa-times"></i>
                     </Button>
                 </div>
                 <ImageEditor
@@ -384,7 +383,7 @@ function GroupObj({ formItem, auth, item, value, onChange, onAfterChange, change
         }
     }, [value, changed]);
 
-    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle)?item.fieldLayoutStyle:{ width: "100%" }}>
+    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <Select
             data-locator={getLocator(item?.name || objectName, itemByProperty(item, value))}
             size={(item.size) ? item.size : "middle"}
@@ -407,7 +406,7 @@ function GroupObj({ formItem, auth, item, value, onChange, onAfterChange, change
         >
             {elements(data)}
         </Select>
-        </FieldLayout>
+    </FieldLayout>
     )
 }
 function RangeTime({ formItem, item, value, onChange, onAfterChange }) {
@@ -418,7 +417,7 @@ function RangeTime({ formItem, item, value, onChange, onAfterChange }) {
         }
         return []
     }, [value])
-    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle)?item.fieldLayoutStyle:{ width: "100%" }}>
+    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <TimePicker.RangePicker data-locator={getLocator(item?.name)} changeOnBlur={true} value={a} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }} />
     </FieldLayout>)
 }
@@ -430,7 +429,7 @@ function RangeDate({ formItem, item, value, onChange, onAfterChange }) {
         }
         return []
     }, [value])
-    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle)?item.fieldLayoutStyle:{ width: "100%" }}>
+    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <DatePicker.RangePicker data-locator={getLocator(item?.name)} changeOnBlur={true} value={a} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }} />
     </FieldLayout>)
 }
@@ -442,7 +441,7 @@ function RangeDateTime({ formItem, item, value, onChange, onAfterChange }) {
         }
         return []
     }, [value])
-    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle)?item.fieldLayoutStyle:{ width: "100%" }}>
+    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <DatePicker.RangePicker data-locator={getLocator(item?.name)} changeOnBlur={true} showTime={{ format: 'HH:mm' }} value={a} onChange={onChange} format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }} />
     </FieldLayout>)
 }
@@ -456,7 +455,7 @@ function RangeFloat({ formItem, item, value, onChange, onAfterChange }) {
     const xmin = item.min || item.func.min || 0;
     const xmax = item.max + xstep || item.func.max + xstep || 100000;
     const def = [(xmin - (xmin % xstep)), (xmax + (xstep - xmax % xstep))];
-    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle)?item.fieldLayoutStyle:{ width: "100%" }}>
+    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <Slider
             data-locator={getLocator(item?.name)}
             range
@@ -468,7 +467,7 @@ function RangeFloat({ formItem, item, value, onChange, onAfterChange }) {
             value={val || def}
             onChange={setVal}
             onAfterChange={(item.realtime) ? onAfterChange : onChange} />
-            </FieldLayout>
+    </FieldLayout>
     )
 }
 function FloatSlider({ formItem, item, value, onChange, onAfterChange }) {
@@ -480,7 +479,7 @@ function FloatSlider({ formItem, item, value, onChange, onAfterChange }) {
     const xstep = item?.step || 1;
     const xmin = item?.min || item?.func?.min || 0;
     const xmax = item?.max || item?.func?.max || 100000;
-    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle)?item.fieldLayoutStyle:{ width: "100%" }}>
+    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <Slider
             data-locator={getLocator(item?.name)}
             disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
@@ -490,7 +489,7 @@ function FloatSlider({ formItem, item, value, onChange, onAfterChange }) {
             value={(item.realtime) ? value : val}
             onChange={(item.realtime) ? onChange : setVal}
             onAfterChange={(item.realtime) ? onAfterChange : onChange} />
-            </FieldLayout>
+    </FieldLayout>
     )
 }
 function RangeInteger({ formItem, item, value, onChange, onAfterChange }) {
@@ -499,11 +498,11 @@ function RangeInteger({ formItem, item, value, onChange, onAfterChange }) {
     useEffect(() => {
         setVal(value);
     }, [value]);
-    const xstep = item.step || 1;
-    const xmin = item.min || item.func.min || 0;
-    const xmax = item.max + xstep || item.func.max + xstep || 100000;
+    const xstep = item?.step || 1;
+    const xmin = item?.min || item?.func?.min || 0;
+    const xmax = item?.max + xstep || item?.func?.max + xstep || 100000;
     const def = [(xmin - (xmin % xstep)), (xmax + (xstep - xmax % xstep))];
-    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle)?item.fieldLayoutStyle:{ width: "100%" }}>
+    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <Slider
             data-locator={getLocator(item?.name)}
             range
@@ -513,9 +512,10 @@ function RangeInteger({ formItem, item, value, onChange, onAfterChange }) {
             step={xstep}
             value={val}
             included={true}
-            onChange={setVal}
+            // onChange={setVal}
+            onChange={(item.realtime) ? onChange : setVal}
             onAfterChange={(item.realtime) ? onAfterChange : onChange} />
-            </FieldLayout>
+    </FieldLayout>
     )
 }
 function IntegerSlider({ formItem, item, value, onChange, onAfterChange }) {
@@ -528,7 +528,7 @@ function IntegerSlider({ formItem, item, value, onChange, onAfterChange }) {
     const xmin = item?.min || item?.func?.min || 0;
     const xmax = item?.max || item?.func?.max || 100000;
 
-    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle)?item.fieldLayoutStyle:{ width: "100%" }}>
+    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <Slider
             data-locator={getLocator(item?.name)}
             disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
@@ -538,7 +538,7 @@ function IntegerSlider({ formItem, item, value, onChange, onAfterChange }) {
             value={(item.realtime) ? value : val}
             onChange={(item.realtime) ? onChange : setVal}
             onAfterChange={(item.realtime) ? onAfterChange : onChange} />
-            </FieldLayout>
+    </FieldLayout>
     )
 }
 function Obj({ formItem, auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
@@ -764,7 +764,7 @@ function Obj({ formItem, auth, item, value, onChange, onAfterChange, changed, co
             }))} />
     }, [item, data, loading, value, meta, contextObject, objectName]);
 
-    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle)?item.fieldLayoutStyle:{ width: "100%" }}>
+    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <Space.Compact
             style={{
                 width: '100%',
@@ -802,7 +802,7 @@ function Obj({ formItem, auth, item, value, onChange, onAfterChange, changed, co
                 {RenderDropdownActions()}
             </React.Fragment>}
         </Space.Compact>
-        </FieldLayout>
+    </FieldLayout>
     )
 }
 function BigObj({ formItem, auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
@@ -1135,7 +1135,7 @@ function BigObj({ formItem, auth, item, value, onChange, onAfterChange, changed,
             }))} />
     }, [item, data, loading, value, meta, contextObject, objectName]);
 
-    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle)?item.fieldLayoutStyle:{ width: "100%" }}>
+    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <Space.Compact
             style={{
                 width: '100%',
@@ -1186,7 +1186,7 @@ function BigObj({ formItem, auth, item, value, onChange, onAfterChange, changed,
 }
 function DateTime({ formItem, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
-    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle)?item.fieldLayoutStyle:{ width: "100%" }}>
+    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <DatePicker
             data-locator={getLocator(item?.name)}
             changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} showTime format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }}
@@ -1197,7 +1197,7 @@ function DateTime({ formItem, item, value, onChange, onAfterChange }) {
 }
 function Date({ formItem, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
-    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle)?item.fieldLayoutStyle:{ width: "100%" }}>
+    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <DatePicker
             data-locator={getLocator(item?.name)}
             changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }}
@@ -1208,7 +1208,7 @@ function Date({ formItem, item, value, onChange, onAfterChange }) {
 }
 function Time({ formItem, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
-    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle)?item.fieldLayoutStyle:{ width: "100%" }}>
+    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <DatePicker
             data-locator={getLocator(item?.name)}
             changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }}
@@ -1235,7 +1235,7 @@ function Boolean({ formItem, item, value, onChange, onAfterChange }) {
 }
 function Float({ formItem, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
-    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle)?item.fieldLayoutStyle:{ width: "100%" }}>
+    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <InputNumber
             data-locator={getLocator(item?.name)}
             value={value} onChange={onChange} style={{ width: "100%" }} min={item?.min || item?.validators?.min} max={item?.max || item?.validators?.max}
@@ -1246,7 +1246,7 @@ function Float({ formItem, item, value, onChange, onAfterChange }) {
 }
 function Integer({ formItem, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
-    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle)?item.fieldLayoutStyle:{ width: "100%" }}>
+    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <InputNumber
             data-locator={getLocator(item?.name)}
             value={value} onChange={onChange} style={{ width: "100%" }} min={item?.min || item?.validators?.min} max={item?.max || item?.validators?.max}
@@ -1257,7 +1257,7 @@ function Integer({ formItem, item, value, onChange, onAfterChange }) {
 }
 function String({ formItem, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
-    return (<FieldLayout formItem={formItem} item={item} style={{ width: "100%" }}>
+    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <Input
             data-locator={getLocator(item?.name)}
             size={(item.size) ? item.size : "middle"} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
@@ -1268,7 +1268,7 @@ function String({ formItem, item, value, onChange, onAfterChange }) {
 }
 function Password({ formItem, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
-    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle)?item.fieldLayoutStyle:{ width: "100%" }}>
+    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <Input.Password
             data-locator={getLocator(item?.name)}
             allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
@@ -1280,7 +1280,7 @@ function Password({ formItem, item, value, onChange, onAfterChange }) {
 }
 function MultilineText({ formItem, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
-    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle)?item.fieldLayoutStyle:{ width: "100%" }}>
+    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <TextArea
             data-locator={getLocator(item?.name)}
             rows={6} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
@@ -1290,7 +1290,7 @@ function MultilineText({ formItem, item, value, onChange, onAfterChange }) {
     )
 }
 function Unknown({ formItem, item }) {
-    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle)?item.fieldLayoutStyle:{ width: "100%" }}>
+    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <div key={item.name}>
             <div>{item.label} - {item.name}</div>
             <div>{item.uuid}</div>
@@ -1309,20 +1309,20 @@ function Unknown({ formItem, item }) {
 
 export function Field(props) {
     const { auth, item, value, onChange, onAfterChange, changed, isChanged, partialReplacement,
-        fullReplacement, contextObject, objectName, formItem } = props;
+        fullReplacement, contextObject, objectName, formItem, data } = props;
     let type = ((item.view) ? item.view.type : undefined) || item.type;
 
     // const FullReplacementFunc = useFieldFullReplacement(item?.name, fullReplacement)
     const FullReplacementFunc = useFieldFullReplacement(type, fullReplacement)
     if (FullReplacementFunc) {
-        return (<FullReplacementFunc auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed} />)
+        return (<FullReplacementFunc data={data} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed} />)
     }
 
     switch (item.filterType) {
         case "group":
             switch (type) {
                 case "func":
-                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, partialReplacement, contextObject, objectName, formItem) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, { partialReplacement, contextObject, objectName, formItem, data }) : undefined;
                 case "object":
                 case "document":
                     return (<GroupObj auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></GroupObj>)
@@ -1332,7 +1332,7 @@ export function Field(props) {
         case "range":
             switch (type) {
                 case "func":
-                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, partialReplacement, contextObject, objectName, formItem) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, { partialReplacement, contextObject, objectName, formItem, data }) : undefined;
                 case "int":
                 case "uint":
                 case "integer":
@@ -1359,7 +1359,7 @@ export function Field(props) {
         case "slider":
             switch (type) {
                 case "func":
-                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, partialReplacement, contextObject, objectName, formItem) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, { partialReplacement, contextObject, objectName, formItem, data }) : undefined;
                 case "int":
                 case "uint":
                 case "integer":
@@ -1379,7 +1379,7 @@ export function Field(props) {
         default:
             switch (type) {
                 case "func":
-                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, partialReplacement, contextObject, objectName) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, partialReplacement, contextObject, objectName, data) : undefined;
                 case "text":
                     return (<MultilineText auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></MultilineText>)
                 case "string":

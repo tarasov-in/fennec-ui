@@ -340,7 +340,7 @@ function Frm(props) {
                         auth={auth}
                         item={item}
                         objectName={name}
-                        
+                        data={data}
                         onChange={onFieldChange}
                         changed={changed}
                         isChanged={(isChangedField) ? isChangedField(uncapitalize(item.name)) : undefined} />

@@ -5,7 +5,8 @@ import moment from 'moment';
 import { Checkbox, Input, TextArea, Slider, DatePicker, Button, ImageUploader, Popup, CheckList, SearchBar, Image as AntImage } from 'antd-mobile';
 import { useMetaContext } from '../../Context';
 import { ActionPickerItem } from '../../Action';
-import Icofont from 'react-icofont';
+
+
 import styles from './index.less'
 import { EyeInvisibleOutline, EyeOutline } from 'antd-mobile-icons'
 import ImageEditor from '../ImageEditor';
@@ -207,7 +208,7 @@ function Image({ auth, item, value, onChange, changed }) {
                 onClick={(v) => {
                     onChange(null);
                 }}>
-                    <Icofont icon="close" />
+                    <i className="fa fa-times"></i>
                 </Button>
             </div>}
             <div className='bg bg-grey' style={{
@@ -227,7 +228,7 @@ function Image({ auth, item, value, onChange, changed }) {
                 <Button 
                 data-locator={getLocator(item?.name, "edit")}
                 onClick={onOpenChange} size="small" fill='none'>
-                    <Icofont key="1" icon="ui-edit" />
+                    <i className="fa fa-pencil-square-o"></i>
                 </Button>
                 <ImageEditor
                     auth={auth}
@@ -283,7 +284,7 @@ function RangeDate({ item, value, onChange, onAfterChange }) {
                 onClick={(v) => {
                     onChange();
                 }}>
-                    <Icofont icon="close" />
+                    <i className="fa fa-times"></i>
                 </Button>
             </div>}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
@@ -394,7 +395,7 @@ function RangeFloat({ item, value, onChange, onAfterChange }) {
                 onClick={(v) => {
                     onChange();
                 }}>
-                    <Icofont icon="close" />
+                    <i className="fa fa-times"></i>
                 </Button>
             </div>}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
@@ -469,7 +470,7 @@ function FloatSlider({ item, value, onChange, onAfterChange }) {
                     onClick={(v) => {
                         onChange();
                     }}>
-                    <Icofont icon="close" />
+                    <i className="fa fa-times"></i>
                 </Button>
             </div>}
             <div>
@@ -522,7 +523,7 @@ function RangeInteger({ item, value, onChange, onAfterChange }) {
                  onClick={(v) => {
                     onChange();
                 }}>
-                    <Icofont icon="close" />
+                    <i className="fa fa-times"></i>
                 </Button>
             </div>}
             <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -597,7 +598,7 @@ function IntegerSlider({ item, value, onChange, onAfterChange }) {
                     onClick={(v) => {
                         onChange();
                     }}>
-                    <Icofont icon="close" />
+                    <i className="fa fa-times"></i>
                 </Button>
             </div>}
             <Slider
@@ -791,7 +792,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
                 <Button fill='none' size='mini' onClick={(v) => {
                     onChange(undefined, item, undefined);
                 }}>
-                    <Icofont icon="close" />
+                    <i className="fa fa-times"></i>
                 </Button>
             </div>}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
@@ -1033,7 +1034,7 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed, context
                 <Button fill='none' size='mini' onClick={(v) => {
                     onChange(undefined, item, undefined);
                 }}>
-                    <Icofont icon="close" />
+                    <i className="fa fa-times"></i>
                 </Button>
             </div>}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
@@ -1123,7 +1124,7 @@ function Date({ item, value, onChange, onAfterChange }) {
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
-                    <Icofont icon="close" />
+                    <i className="fa fa-times"></i>
                 </Button>
             </div>}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
@@ -1186,7 +1187,7 @@ function DateTime({ item, value, onChange, onAfterChange }) {
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
-                    <Icofont icon="close" />
+                    <i className="fa fa-times"></i>
                 </Button>
             </div>}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
@@ -1249,7 +1250,7 @@ function Time({ item, value, onChange, onAfterChange }) {
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
-                    <Icofont icon="close" />
+                    <i className="fa fa-times"></i>
                 </Button>
             </div>}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
@@ -1315,7 +1316,7 @@ function Float({ item, value, onChange, onAfterChange }) {
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
-                    <Icofont icon="close" />
+                    <i className="fa fa-times"></i>
                 </Button>
             </div>}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
@@ -1357,7 +1358,7 @@ function Integer({ item, value, onChange, onAfterChange }) {
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
-                    <Icofont icon="close" />
+                    <i className="fa fa-times"></i>
                 </Button>
             </div>}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
@@ -1399,7 +1400,7 @@ function String({ item, value, onChange, onAfterChange }) {
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clean")} onClick={(v) => {
                     onChange();
                 }}>
-                    <Icofont icon="close" />
+                    <i className="fa fa-times"></i>
                 </Button>
             </div>}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
@@ -1441,7 +1442,7 @@ function Password({ item, value, onChange, onAfterChange }) {
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
-                    <Icofont icon="close" />
+                    <i className="fa fa-times"></i>
                 </Button>
             </div>}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
@@ -1491,19 +1492,19 @@ function Unknown({ item }) {
 // }
 
 export function FieldMobile({ auth, item, value, onChange, onAfterChange, changed, isChanged, partialReplacement,
-    fullReplacement, contextObject, objectName }) {
+    fullReplacement, contextObject, objectName, data }) {
     // const FullReplacementFunc = useFieldReplacement(item?.name, fullReplacement)
     // const FullReplacementFunc = useFieldFullReplacement(item?.name, fullReplacement)
     let type = ((item.view) ? item.view.type : undefined) || item.type;
     const FullReplacementFunc = useFieldFullReplacement(type, fullReplacement)
     if (FullReplacementFunc) {
-        return (<FullReplacementFunc auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed} />)
+        return (<FullReplacementFunc data={data} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed} />)
     }
     switch (item.filterType) {
         case "group":
             switch (item.type) {
                 case "func":
-                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, partialReplacement, contextObject, objectName) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, { partialReplacement, contextObject, objectName, data }) : undefined;
                 case "object":
                 case "document":
                     return (<GroupObj auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></GroupObj>)
@@ -1513,7 +1514,7 @@ export function FieldMobile({ auth, item, value, onChange, onAfterChange, change
         case "range":
             switch (item.type) {
                 case "func":
-                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, partialReplacement, contextObject, objectName) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, { partialReplacement, contextObject, objectName, data }) : undefined;
                 case "int":
                 case "uint":
                 case "integer":
@@ -1538,7 +1539,7 @@ export function FieldMobile({ auth, item, value, onChange, onAfterChange, change
         case "slider":
             switch (item.type) {
                 case "func":
-                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, partialReplacement, contextObject, objectName) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, { partialReplacement, contextObject, objectName, data }) : undefined;
                 case "int":
                 case "uint":
                 case "integer":
@@ -1558,7 +1559,7 @@ export function FieldMobile({ auth, item, value, onChange, onAfterChange, change
         default:
             switch (item.type) {
                 case "func":
-                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, partialReplacement, contextObject, objectName) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, { partialReplacement, contextObject, objectName, data }) : undefined;
                 case "string":
                     return (<String auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></String>)
                 case "password":

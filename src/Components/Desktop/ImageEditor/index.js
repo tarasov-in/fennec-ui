@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { fabric } from 'fabric';
 import { Button, Modal } from 'antd';
 import { Field, useAuth, useUserContext } from 'fennec-ui';
-import Icofont from 'react-icofont';
 import { SwapOutlined } from '@ant-design/icons';
 import { UserAddOutline } from 'antd-mobile-icons'
 
@@ -283,8 +282,8 @@ export default function ImageEditor(props) {
                                 </div>
                                 <div style={{ flex: "1 1 auto" }}>
                                     <div style={{ paddingBottom: "15px", display: "flex", gap: "5px" }}>
-                                        <Button size="small" onClick={() => zoomIn(photo)}><Icofont icon="ui-zoom-in" /></Button>
-                                        <Button size="small" onClick={() => zoomOut(photo)}><Icofont icon="ui-zoom-out" /></Button>
+                                        <Button size="small" onClick={() => zoomIn(photo)}><i className="fa fa-search-plus"></i></Button>
+                                        <Button size="small" onClick={() => zoomOut(photo)}><i className="fa fa-search-minus"></i></Button>
                                         <Button size="small" onClick={() => flipX(photo)}><SwapOutlined /></Button>
                                         <Button size="small" onClick={() => flipY(photo)}><SwapOutlined className="icofont-rotate-90" /></Button>
                                     </div>
@@ -293,7 +292,7 @@ export default function ImageEditor(props) {
                                             <div style={{ width: "100%", display: "flex", alignItems: "center" }}>
                                                 <div style={{ flex: "0" }}>
                                                     <Button type="text" size='small' style={{ padding: "0px" }} onClick={v => setObject(o => ({ ...o, angle: 0 }))}>
-                                                        <Icofont icon="rotation" />
+                                                    <i className="fa fa-repeat"></i>
                                                     </Button>
                                                 </div>
                                                 <div style={{ flex: "1" }}>

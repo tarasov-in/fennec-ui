@@ -14,7 +14,6 @@ import {
     SpinLoading
 } from 'antd-mobile';
 import RenderToLayer from '../RenderToLayer'
-import Icofont from 'react-icofont';
 import { EllipsisOutlined } from '@ant-design/icons';
 import { DeviceUUID } from "device-uuid"
 import { FormObserverContext } from '../Context';
@@ -97,7 +96,7 @@ export function ActionPickerItem({ auth, item, mode, value, onChange }) {
     const swipe = React.useMemo(() => [
         {
             key: 'danger',
-            text: (<Icofont icon="close" />),
+            text: (<i className="fa fa-times"></i>),
             onClick: () => {
                 if (onChange) {
                     onChange(undefined, item, undefined);

@@ -181,10 +181,6 @@ import {
 } from './Components/Desktop/CollectionServer'
 
 import {
-  Collection
-} from "./Components/Desktop/Collection"
-
-import {
   DropdownAction
 } from './Components/Desktop/DropdownAction'
 
@@ -384,7 +380,6 @@ export {
   SortingFieldsUI,
   FiltersFieldsUI,
   CollectionServer,
-  Collection,
   DropdownAction,
   DropdownMobile,
   ModelMobile,

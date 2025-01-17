@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Form, Button, Badge, List, Picker, SwipeAction, PageIndicator, Stepper, PickerView, Popup, Space, Empty as EmptyMobile, Mask, DotLoading } from 'antd-mobile';
 import { unwrap, errorCatch, Request, QueryParam, GETWITH, READWITH, updateInArray, deleteInArray, GetMetaPropertyByPath, QueryFunc, If, QueryDetail, subscribe as _subscribe, unsubscribe, clean, ContextFiltersToQueryFilters, contextFilterToObject, getLocator } from '../../../Tool'
-import Icofont from 'react-icofont';
+
 import { createUseStyles } from 'react-jss';
 import { Action, ActionPickerItem } from '../../Action';
 import { SortAscendingOutlined, SortDescendingOutlined } from '@ant-design/icons';
@@ -1059,9 +1059,9 @@ function DefaultCollectionServer(props) {
     const trigger = React.useCallback((click) => (
         <div onClick={click} style={{ cursor: "pointer", padding: "5px" }}>
             {!_.isEmpty(state.filter) && <Badge content={Badge.dot}>
-                <Icofont icon="filter" />
+            <i className="fa fa-filter"></i>
             </Badge>}
-            {_.isEmpty(state.filter) && <Icofont icon="filter" />}
+            {_.isEmpty(state.filter) && <i className="fa fa-filter"></i>}
         </div>
     ), [state.filter])
     const PaginatorChange = React.useCallback((v) => {
@@ -1196,7 +1196,7 @@ function DefaultCollectionServer(props) {
                             <div>
                                 <Button size='small' onClick={PaginatorLeft} disabled={(state.current <= 1)}>
                                     <Space>
-                                        <Icofont icon="rounded-left" />
+                                        <i className="fa fa-chevron-left" />
                                     </Space>
                                 </Button>
                             </div>
@@ -1210,7 +1210,7 @@ function DefaultCollectionServer(props) {
                             <div>
                                 <Button size='small' onClick={PaginatorRight} disabled={(state.current >= total)}>
                                     <Space>
-                                        <Icofont icon="rounded-right" />
+                                        <i className="fa fa-chevron-right" />
                                     </Space>
                                 </Button>
                             </div>
@@ -1313,7 +1313,7 @@ function DefaultCollectionServer(props) {
                                 <div>
                                     <Button size='small' onClick={PaginatorLeft} disabled={(state.current <= 1)}>
                                         <Space>
-                                            <Icofont icon="rounded-left" />
+                                        <i className="fa fa-chevron-left" />
                                         </Space>
                                     </Button>
                                 </div>
@@ -1327,7 +1327,7 @@ function DefaultCollectionServer(props) {
                                 <div>
                                     <Button size='small' onClick={PaginatorRight} disabled={(state.current >= total)}>
                                         <Space>
-                                            <Icofont icon="rounded-right" />
+                                            <i className="fa fa-chevron-right" />
                                         </Space>
                                     </Button>
                                 </div>

@@ -1,5 +1,4 @@
 import { message } from "antd";
-import numeral from 'numeral';
 import React, { useEffect, useRef, useState } from 'react';
 import PubSub from 'pubsub-js'
 import uuid from 'react-uuid';
@@ -1509,14 +1508,15 @@ export function priceFormat(price, precision) {
         precision = 0;
     }
 
-    var format = "0,0";
-    for (var i = 0; i < precision; i++) {
-        if (i === 0) {
-            format += ".";
-        }
-        format += "0";
-    }
-    return numeral(price).format(format);
+    // var format = "0,0";
+    // for (var i = 0; i < precision; i++) {
+    //     if (i === 0) {
+    //         format += ".";
+    //     }
+    //     format += "0";
+    // }
+    
+    return Number(price.toFixed(precision)).toLocaleString('ru', { minimumFractionDigits: precision })
 }
 
 // MetaColumns(metaObj.properties, meta, ArrayOfActionObjects)

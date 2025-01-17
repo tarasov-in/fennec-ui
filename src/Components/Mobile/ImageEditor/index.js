@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { fabric } from 'fabric';
 import { errorCatch, FieldMobile, GET, JSX, useAuth, useUserContext, ycStorage, pushStateHistoryModal, useNavigation } from 'fennec-ui';
-import Icofont from 'react-icofont';
+
 import { SwapOutlined } from '@ant-design/icons';
 
 import { Button, Popup } from 'antd-mobile';
@@ -429,14 +429,14 @@ export default function ImageEditor(props) {
                                             />
                                         </div>
                                         <div style={{ padding: "5px 0px", display: "flex", gap: "5px", flexWrap: "wrap" }}>
-                                            <Button size="small" onClick={() => zoomIn(photo)}><Icofont icon="ui-zoom-in" /></Button>
-                                            <Button size="small" onClick={() => zoomOut(photo)}><Icofont icon="ui-zoom-out" /></Button>
+                                            <Button size="small" onClick={() => zoomIn(photo)}><i className="fa fa-search-plus"></i></Button>
+                                            <Button size="small" onClick={() => zoomOut(photo)}><i className="fa fa-search-minus"></i></Button>
                                             <Button size="small" onClick={() => flipX(photo)}><SwapOutlined /></Button>
                                             <Button size="small" onClick={() => flipY(photo)}><SwapOutlined className="icofont-rotate-90" /></Button>
-                                            <Button size="small" onClick={() => toLeft(photo)}><Icofont icon="long-arrow-left" /></Button>
-                                            <Button size="small" onClick={() => toRight(photo)}><Icofont icon="long-arrow-right" /></Button>
-                                            <Button size="small" onClick={() => toUp(photo)}><Icofont icon="long-arrow-up" /></Button>
-                                            <Button size="small" onClick={() => toDown(photo)}><Icofont icon="long-arrow-down" /></Button>
+                                            <Button size="small" onClick={() => toLeft(photo)}><i className="fa fa-long-arrow-left"></i></Button>
+                                            <Button size="small" onClick={() => toRight(photo)}><i className="long-arrow-right" /></Button>
+                                            <Button size="small" onClick={() => toUp(photo)}><i className="long-arrow-up" /></Button>
+                                            <Button size="small" onClick={() => toDown(photo)}><i className="long-arrow-down" /></Button>
                                         </div>
                                     </div>
                                     <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
@@ -444,7 +444,7 @@ export default function ImageEditor(props) {
                                             <div style={{ width: "100%", display: "flex", alignItems: "center" }}>
                                                 <div style={{ flex: "0" }}>
                                                     <Button type="text" size='small' style={{ padding: "2px 5px" }} onClick={v => setObject(o => ({ ...o, angle: 0 }))}>
-                                                        <Icofont icon="rotation" />
+                                                    <i className="fa fa-repeat"></i>
                                                     </Button>
                                                 </div>
                                                 <div style={{ flex: "1" }}>
