@@ -17,6 +17,7 @@ import RenderToLayer from '../RenderToLayer'
 import { EllipsisOutlined } from '@ant-design/icons';
 import { DeviceUUID } from "device-uuid"
 import { FormObserverContext } from '../Context';
+import fuuid from 'react-uuid';
 
 var _ = require('lodash');
 
@@ -201,7 +202,8 @@ export function Action(props) {
         uuid,
         actionRef,
         disabledOkOnUncahngedForm,
-        contextFilters
+        contextFilters,
+
     } = props;
 
     //----FormObserver-----------------
@@ -324,29 +326,13 @@ export function Action(props) {
         }
     }, [mode, fire, fireClose, props.onClose]);
     // ---------------------------------
-    const click = React.useCallback((e) => {
-        if (excludeKeyPressed && excludeKeyPressed(e)) {
-            return;
-        }
-        if ((!steps && ContentForm) || steps) {
-            if (available == true) {
-                pushStateHistoryModal(setOpened, getStack);
-                setOpened(true);
-            };
-        } else {
-            action({});
-        }
-        if (hideMenu) {
-            hideMenu();
-        }
-    }, [steps, excludeKeyPressed, hideMenu, props.collection])
     const action = React.useCallback((_values) => {
 
         let values = eventExecution(modify, _values, {});
 
         values = IfElse(form, unpackFormFields(form, values), values);
         values = IfElse(isFormData, makeFormData(values), values);
-
+        
         setLoading(true);
         Request(values,
             IfElse(
@@ -386,6 +372,24 @@ export function Action(props) {
             }
         );
     }, [modify, form, isFormData, callback, props.action, props.document, props.collection, props.collectionRef, props.updateCollection, props.setCollection, props.contextFilters, props.auth]);
+    
+    const click = React.useCallback((e) => {
+        if (excludeKeyPressed && excludeKeyPressed(e)) {
+            return;
+        }
+        if ((!steps && ContentForm) || steps) {
+            if (available == true) {
+                pushStateHistoryModal(setOpened, getStack);
+                setOpened(true);
+            };
+        } else {
+            action({});
+        }
+        if (hideMenu) {
+            hideMenu();
+        }
+    }, [action, steps, excludeKeyPressed, hideMenu, props.collection])
+
     // ---------------------------------
     const prev = React.useCallback(() => {
         if (currentStep > 0) {
@@ -394,8 +398,6 @@ export function Action(props) {
             closePopup();
         }
     }, [currentStep, closePopup]);
-
-
 
     const next = React.useCallback((values, item, currentStep) => {
         if (currentStep < steps.length - 1) {
@@ -568,6 +570,7 @@ export function Action(props) {
             ...FooterOkButtons()
         ]
     }, [isChangedForm, props.footer, isDesktopOrLaptop, currentStep, form, object, unlock, close, mode, readonly, loading]);
+    
     const trigger = React.useCallback(() => {
         if (fire) return <React.Fragment></React.Fragment>;
         if (isDesktopOrLaptop || !isMobile) {
@@ -885,7 +888,7 @@ export function Action(props) {
                 </React.Fragment>);
             }
         }
-    }, [isChangedForm, isChangedField, onValuesChange, mode, steps, stepObject, currentStep, stepObject, props.auth, loading, titles, opened, fire, visible, formWraperStyle, next, action, form]);
+    }, [isChangedForm, isChangedField, onValuesChange, props.action, mode, steps, stepObject, currentStep, stepObject, props.auth, loading, titles, opened, fire, visible, formWraperStyle, next, action, form]);
     React.useEffect(() => {
         if (actionRef) {
             actionRef.current = {

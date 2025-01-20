@@ -34,7 +34,8 @@ export function DropdownAction(props) {
         <div data-locator={getLocator(props?.locator || "dropdownaction", props?.object)} onClick={(e) => {
             // e.preventDefault();
         }} style={style}>
-            {JSXMap(actions?.filter(e => (!!e.action || !!e.document)), (e, idx) => (<div key={idx}>
+            {JSXMap(actions?.filter(e => (!!e.action || !!e.document)), (e, idx) => {                
+                return (<div key={idx}>
                 <Action
                     key={e.key || idx}
                     auth={auth}
@@ -42,7 +43,7 @@ export function DropdownAction(props) {
                     object={e}
                     {...e}
                 />
-            </div>))}
+            </div>)})}
             <Dropdown placement="bottomRight" trigger={['click']} {...props} overlay={
                 <Menu
                     {...menuOptions}

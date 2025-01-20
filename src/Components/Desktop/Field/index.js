@@ -29,6 +29,7 @@ import { Action } from '../../Action';
 import { CollectionServer } from '../CollectionServer';
 import { DropdownAction } from '../DropdownAction';
 import { useFieldFullReplacement, useFieldPartialReplacement } from '../../../ComponetsReplacement';
+import uuid from 'react-uuid';
 var utc = require('dayjs/plugin/utc')
 var timezone = require('dayjs/plugin/timezone') // dependent on utc plugin
 dayjs.extend(utc)
@@ -152,8 +153,10 @@ function ActionsSpace(props) {
                     // update
                 }, idx))
             }
+
             return (<Action
                 key={e.key || idx}
+                // key={e.uid || idx}
                 auth={auth}
                 mode={"button"}
                 disabled={loading || (item && item.view && item.view.disabled) ? item.view.disabled : false}
@@ -170,6 +173,7 @@ function ActionsSpace(props) {
                 apply={(obj) => onChange(property(item, obj), item, obj)}
                 lock={() => (!setLoading) ? undefined : setLoading(true)}
                 unlock={() => (!setLoading) ? undefined : setLoading(false)}
+                
                 {...e}
             />)
         });
