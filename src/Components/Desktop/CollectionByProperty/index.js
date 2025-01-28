@@ -89,6 +89,7 @@ export function CollectionByProperty(props) {
         contextObject={object}
         contextFilters={FilterFromContextFilter}
         filters={() => (uif) ? uif() : filtersFromMeta(n)}
+        floatingFilter={item?.floatingFilter}
         mode="list"
         render={(o, idx) => {
             return display(item, o)
