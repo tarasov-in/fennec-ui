@@ -75,7 +75,8 @@ export function CollectionByProperty(props) {
             value: object.ID
         } : {}),
         ...queryFiltersToContextFilters
-    ], [object, p]);
+
+    ], [object, p, queryFiltersToContextFilters]);
 
     if (!n) return;
     return (<CollectionServer
@@ -96,7 +97,7 @@ export function CollectionByProperty(props) {
         linksCompareFunction={linksCompareFunction}
         linksModelActions={links}
         scheme={schemeProcessing(scheme)}
-        queryDetail={queryDetail}
+        queryDetail={queryDetail || item?.queryDetail}
         modelActions={modelActions}
         collectionActions={collectionActions}
     />)

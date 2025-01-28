@@ -372,11 +372,7 @@ function DefaultCollectionServer(props) {
         title,
 
         modelActions,
-        // defaultModelActions,
-        // defaultModelActionMeta,
         collectionActions,
-        // defaultCollectionActions,
-        // defaultCollectionActionMeta,
 
         linksModelActions,
         // linksCollectionActions,
@@ -555,21 +551,6 @@ function DefaultCollectionServer(props) {
         }
     }, [name, meta]);
 
-    // const setDefaultFilters = React.useCallback((filters) => {
-    //     if (filters && filters.length) {
-    //         let filtr = defFilters(filters)//{ ...state.filter };
-    //         setState({ ...state, filterChanged: false, newFilter: filtr, filter: filtr });
-
-    //         let sorted = defSorting(filters)//{ name: "", order: "ASC" }
-    //         setSorting(sorted);
-
-    //         setCurrent(1);
-    //     }
-    // }, [state])
-    // useEffect(() => {
-    //     setDefaultFilters(filters)
-    // }, [filters])
-
     const setCollection = React.useCallback((array) => {
         if (onSetCollection){
             let collection = onSetCollection(array);
@@ -693,107 +674,6 @@ function DefaultCollectionServer(props) {
             return
         }
 
-        // let ctxFlt = ContextFiltersToQueryFilters(contextFilters)
-
-        // let flt = [];
-        // Object.keys(filter).forEach(key => {
-        //     var item = filters?.find(e => e.name == key);
-
-        //     if (item) {
-        //         let filterByKey = filter[key];
-        //         switch (item?.filterType) {
-        //             case "group":
-        //                 switch (item?.type) {
-        //                     case "object":
-        //                     case "document":
-        //                         flt.push(QueryParam("w-in-" + key, filterByKey))
-        //                         break;
-        //                     default:
-        //                         flt.push(QueryParam("w-in-" + key, filterByKey))
-        //                         break;
-        //                 }
-        //                 break;
-        //             case "range":
-        //                 switch (item?.type) {
-        //                     case "int":
-        //                     case "uint":
-        //                     case "integer":
-        //                     case "int64":
-        //                     case "int32":
-        //                     case "uint64":
-        //                     case "uint32":
-        //                         if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-        //                             flt.push(QueryParam("w-lge-" + key, filterByKey[0]))
-        //                             flt.push(QueryParam("w-lwe-" + key, filterByKey[1]))
-        //                         }
-        //                         break;
-        //                     case "double":
-        //                     case "float":
-        //                     case "float64":
-        //                     case "float32":
-        //                         if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-        //                             flt.push(QueryParam("w-lge-" + key, filterByKey[0]))
-        //                             flt.push(QueryParam("w-lwe-" + key, filterByKey[1]))
-        //                         }
-        //                         break;
-        //                     case "time":
-        //                         if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-        //                             flt.push(QueryParam("w-lge-" + key, filterByKey[0].format("HH:mm:ss")))
-        //                             flt.push(QueryParam("w-lwe-" + key, filterByKey[1].format("HH:mm:ss")))
-        //                         }
-        //                         break;
-        //                     case "date":
-        //                         if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-        //                             flt.push(QueryParam("w-lge-" + key, filterByKey[0].format("YYYY-MM-DD")))
-        //                             flt.push(QueryParam("w-lwe-" + key, filterByKey[1].format("YYYY-MM-DD")))
-        //                         }
-        //                         break;
-        //                     case "datetime":
-        //                     case "time.Time":
-        //                         if (_.isArray(filterByKey) && filterByKey.length >= 2) {
-        //                             flt.push(QueryParam("w-lge-" + key, filterByKey[0].format("YYYY-MM-DD HH:mm")))
-        //                             flt.push(QueryParam("w-lwe-" + key, filterByKey[1].format("YYYY-MM-DD HH:mm")))
-        //                         }
-        //                         break;
-        //                     default:
-        //                         if (item?.queryComparer) {
-        //                             flt.push(QueryParam(`w-${item?.queryComparer}-` + key, filterByKey))
-        //                         } else {
-        //                             flt.push(QueryParam("w-" + key, filterByKey))
-        //                         }
-        //                         break;
-        //                 }
-        //                 break;
-        //             default:
-        //                 switch (item?.type) {
-        //                     case "string":
-        //                         // queryComparer:"sim", // wsim, swsim
-        //                         flt.push(QueryParam(`w-${item?.queryComparer || "co"}-` + key, filterByKey))
-        //                         break;
-        //                     case "func":
-        //                         flt.push(QueryParam(`${item?.queryPrefix || ""}` + key, filterByKey))
-        //                         break;
-        //                     default:
-        //                         if (item?.queryComparer) {
-        //                             flt.push(QueryParam(`w-${item?.queryComparer}-` + key, filterByKey))
-        //                         } else {
-        //                             flt.push(QueryParam("w-" + key, filterByKey))
-        //                         }
-        //                         break;
-        //                 }
-        //                 break;
-        //         }
-        //     }
-        // });
-
-        // let func = [];
-        // filters?.forEach(item => {
-        //     if (item.func && _.isArray(item.func)) {
-        //         item.func.forEach(fu => {
-        //             func.push(QueryFunc(fu, item.name))
-        //         });
-        //     }
-        // });
         let queryParams = collectionQueryParams(filters, contextFilters, filter, sorting, current, count, queryDetail);
         if (source && _.isFunction(source)) {
             // lock();
@@ -1025,6 +905,7 @@ function DefaultCollectionServer(props) {
             field,
             fieldName,
             contextObject,
+            contextFilters,
             // collection,
             actions: defaultAction,
 
@@ -1111,6 +992,7 @@ function DefaultCollectionServer(props) {
             field,
             fieldName,
             contextObject,
+            contextFilters,
             // collection,
             actions: defaultAction,
 

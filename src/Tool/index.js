@@ -383,7 +383,10 @@ export const ContextFiltersToQueryFilters = (contextFilters) => {
         if (_.isArray(ctx)) {
             ctx.forEach(item => {
                 if (item) {
-                    ctxFlt.push(contextFilterToQueryFilters(item))
+                    let v = contextFilterToQueryFilters(item);
+                    if(v){ 
+                        ctxFlt.push(v)
+                    }
                 }
             });
         }
@@ -420,7 +423,10 @@ export const QueryFiltersToContextFilters = (queryFilters) => {
         if (_.isArray(ctx)) {
             ctx.forEach(item => {
                 if (item) {
-                    ctxFlt.push(queryFiltersToContextFilter(item))
+                    let v = queryFiltersToContextFilter(item);
+                    if(v){ 
+                        ctxFlt.push(v)
+                    }
                 }
             });
         }
