@@ -13,7 +13,9 @@ export function CollectionByProperty(props) {
     const f = useMemo(() => getObjectValue(item, "name"), [item]);
     const p = useMemo(() => getObjectValue(item, "relation.reference.property"), [item]);
     const queryFilter = useMemo(() => item?.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter"), [item]);
-
+    
+    const floatingFilter = useMemo(() => item?.floatingFilter || _.get(item, "relation.floatingFilter"), [item]);
+    
     const gmeta = useMetaContext();
     const filtersFromMeta = React.useCallback((name) => {
         let prop = [];
@@ -89,7 +91,7 @@ export function CollectionByProperty(props) {
         contextObject={object}
         contextFilters={FilterFromContextFilter}
         filters={() => (uif) ? uif() : filtersFromMeta(n)}
-        floatingFilter={item?.floatingFilter}
+        floatingFilter={floatingFilter}
         mode="list"
         render={(o, idx) => {
             return display(item, o)
