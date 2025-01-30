@@ -24,11 +24,8 @@ function Frm(props) {
         partialReplacement
     } = props;
 
-
     const PartialReplacementFunc = useModelPartialReplacement(name, partialReplacement)
-
     const [visible, setVisible] = useState(false);
-
     const [excludeFields, setExcludeFields] = useState();
     // const [fieldsFilters, setFieldsFilters] = useState({});
 

@@ -981,7 +981,6 @@ function DefaultCollectionServer(props) {
             meta: mobject,
         }
     ], [auth, collection, collectionActions, name, mobject]);
-
     const RenderOnCollectionActions = React.useCallback(() => {
 
         let defaultAction = defaultCollectionAction();
@@ -1051,6 +1050,7 @@ function DefaultCollectionServer(props) {
             />)
         });
     }, [auth, collection, collectionActions, name, mobject, defaultCollectionAction]);
+   
     const selectionConfig = (selectionType) => {
         if (!selection) return {};
         return {
@@ -1243,8 +1243,8 @@ function DefaultCollectionServer(props) {
         updateCollection: update,
         setCollectionItem,
         removeCollectionItem,
-        collectionActions: () => (collectionActions) ? clean(unwrap(collectionActions({ mobject, name, field, fieldName, contextObject, collection, actions: defaultCollectionAction }))) : undefined,
-        modelActions: (item, index) => (modelActions) ? clean(unwrap(modelActions(item, index, { mobject, name, field, fieldName, contextObject, collection, actions: defaultModelAction }))) : undefined,
+        collectionActions: () => (collectionActions) ? clean(unwrap(collectionActions({ mobject, name, field, fieldName, contextObject, collection, setCollection, actions: defaultCollectionAction }))) : undefined,
+        modelActions: (item, index) => (modelActions) ? clean(unwrap(modelActions(item, index, { mobject, name, field, fieldName, contextObject, collection, setCollection, actions: defaultModelAction }))) : undefined,
         onSelection,
         isSelected,
         lock,
