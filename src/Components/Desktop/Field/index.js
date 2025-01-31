@@ -1167,8 +1167,11 @@ function BigObj({ formItem, auth, item, value, onChange, onAfterChange, changed,
     }, [meta, item]);
 
     const cRender = (auth, _item, value, onChange) => {
+        console.log(item);
+        
         return (<CollectionServer
             count={_item?.count}
+            floatingFilter={item?.floatingFilter || item?.relation?.floatingFilter}
             selection={"radio"}
             value={value}
             onChange={onChange}
