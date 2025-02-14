@@ -202,7 +202,7 @@ function Image({ auth, item, value, onChange, changed }) {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item.label}</div>
+                <div>{item?.label}</div>
                 <Button fill='none' size='mini' 
                 data-locator={getLocator(item?.name, "clear")}
                 onClick={(v) => {
@@ -278,7 +278,7 @@ function RangeDate({ item, value, onChange, onAfterChange }) {
                     display: "flex",
                     justifyContent: "space-between"
                 }}>
-                <div>{item.label}</div>
+                <div>{item?.label}</div>
                 <Button fill='none' size='mini' 
                 data-locator={getLocator(item?.name, "clear")}
                 onClick={(v) => {
@@ -308,7 +308,7 @@ function RangeDate({ item, value, onChange, onAfterChange }) {
                         max={val[1]}
                         min={moment().subtract(100, "years").toDate()}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
-                        title={item.label}
+                        title={item?.label}
                         confirmText={item.okText || "Выбрать"}
                         cancelText={item.dismissText || "Отмена"}
                         visible={visible1}
@@ -319,7 +319,7 @@ function RangeDate({ item, value, onChange, onAfterChange }) {
                         value={val[0] || null}
                     >
                         {value =>
-                            value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item.label) ? item.label.toLowerCase() : "значение"}`)}</span>
+                            value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item?.label) ? item?.label?.toLowerCase() : "значение"}`)}</span>
                         }
                     </DatePicker>
                 </div>
@@ -342,7 +342,7 @@ function RangeDate({ item, value, onChange, onAfterChange }) {
                         precision='day'
                         min={val[0]}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
-                        title={item.label}
+                        title={item?.label}
                         confirmText={item.okText || "Выбрать"}
                         cancelText={item.dismissText || "Отмена"}
                         visible={visible2}
@@ -353,7 +353,7 @@ function RangeDate({ item, value, onChange, onAfterChange }) {
                         value={val[1] || null}
                     >
                         {value =>
-                            value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item.label) ? item.label.toLowerCase() : "значение"}`)}</span>
+                            value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item?.label) ? item?.label?.toLowerCase() : "значение"}`)}</span>
                         }
                     </DatePicker>
                 </div>
@@ -389,7 +389,7 @@ function RangeFloat({ item, value, onChange, onAfterChange }) {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item.label}</div>
+                <div>{item?.label}</div>
                 <Button fill='none' size='mini' 
                 data-locator={getLocator(item?.name,"clear")}
                 onClick={(v) => {
@@ -462,7 +462,7 @@ function FloatSlider({ item, value, onChange, onAfterChange }) {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item.label}</div>
+                <div>{item?.label}</div>
                 <Button
                     disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
                     fill='none' size='mini' 
@@ -517,7 +517,7 @@ function RangeInteger({ item, value, onChange, onAfterChange }) {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item.label}</div>
+                <div>{item?.label}</div>
                 <Button fill='none' size='mini'
                 data-locator={getLocator(item?.name,"clear")}
                  onClick={(v) => {
@@ -590,7 +590,7 @@ function IntegerSlider({ item, value, onChange, onAfterChange }) {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item.label}</div>
+                <div>{item?.label}</div>
                 <Button
                     disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
                     fill='none' size='mini' 
@@ -788,7 +788,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item.label}</div>
+                <div>{item?.label}</div>
                 <Button fill='none' size='mini' onClick={(v) => {
                     onChange(undefined, item, undefined);
                 }}>
@@ -816,7 +816,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
                         <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
                             <div style={{ flex: "0", padding: "0 10px" }}>
                                 <div style={{ display: "flex", justifyContent: "center", padding: "10px 30px 10px 15px", fontSize: "16px" }}>
-                                    <div>{item.label}</div>
+                                    <div>{item?.label}</div>
                                 </div>
                             </div>
                             <div style={{ flex: "0", padding: "0 10px" }}>
@@ -853,7 +853,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
                         {JSXMap(current, (i, idx) => (
                             <span key={idx}>{label(item, i)}{(idx < current.length - 1) ? ", " : ""}</span>
                         ))}
-                    </span> : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item.label) ? item.label.toLowerCase() : "значение"}`)}</span>}
+                    </span> : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item?.label) ? item?.label?.toLowerCase() : "значение"}`)}</span>}
                 </div>
             </div >
         </div >
@@ -1030,7 +1030,7 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed, context
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item.label}</div>
+                <div>{item?.label}</div>
                 <Button fill='none' size='mini' onClick={(v) => {
                     onChange(undefined, item, undefined);
                 }}>
@@ -1058,7 +1058,7 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed, context
                         <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
                             <div style={{ flex: "0", padding: "0 10px" }}>
                                 <div style={{ display: "flex", justifyContent: "center", padding: "10px 30px 10px 15px", fontSize: "16px" }}>
-                                    <div>{item.label}</div>
+                                    <div>{item?.label}</div>
                                 </div>
                             </div>
                             <div style={{ flex: "0", padding: "0 10px" }}>
@@ -1095,7 +1095,7 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed, context
                         {JSXMap(current, (i, idx) => (
                             <span key={idx}>{label(item, i)}{(idx < current.length - 1) ? ", " : ""}</span>
                         ))}
-                    </span> : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item.label) ? item.label.toLowerCase() : "значение"}`)}</span>}
+                    </span> : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item?.label) ? item?.label?.toLowerCase() : "значение"}`)}</span>}
                 </div>
             </div >
         </div >
@@ -1120,7 +1120,7 @@ function Date({ item, value, onChange, onAfterChange }) {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item.label}</div>
+                <div>{item?.label}</div>
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
@@ -1145,7 +1145,7 @@ function Date({ item, value, onChange, onAfterChange }) {
                         precision='day'
                         min={moment().subtract(100, "years").toDate()}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
-                        title={item.label}
+                        title={item?.label}
                         confirmText={item.okText || "Выбрать"}
                         cancelText={item.dismissText || "Отмена"}
                         visible={visible}
@@ -1156,7 +1156,7 @@ function Date({ item, value, onChange, onAfterChange }) {
                         value={val || null}
                     >
                         {value =>
-                            value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item.label) ? item.label.toLowerCase() : "значение"}`)}</span>
+                            value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item?.label) ? item?.label?.toLowerCase() : "значение"}`)}</span>
                         }
                     </DatePicker>
                 </div>
@@ -1183,7 +1183,7 @@ function DateTime({ item, value, onChange, onAfterChange }) {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item.label}</div>
+                <div>{item?.label}</div>
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
@@ -1208,7 +1208,7 @@ function DateTime({ item, value, onChange, onAfterChange }) {
                         precision='minute'
                         min={moment().subtract(100, "years").toDate()}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
-                        title={item.label}
+                        title={item?.label}
                         confirmText={item.okText || "Выбрать"}
                         cancelText={item.dismissText || "Отмена"}
                         visible={visible}
@@ -1219,7 +1219,7 @@ function DateTime({ item, value, onChange, onAfterChange }) {
                         value={val || null}
                     >
                         {value =>
-                            value ? moment(value).format('YYYY-MM-DD HH:mm:ss') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item.label) ? item.label.toLowerCase() : "значение"}`)}</span>
+                            value ? moment(value).format('YYYY-MM-DD HH:mm:ss') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item?.label) ? item?.label?.toLowerCase() : "значение"}`)}</span>
                         }
                     </DatePicker>
                 </div>
@@ -1246,7 +1246,7 @@ function Time({ item, value, onChange, onAfterChange }) {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item.label}</div>
+                <div>{item?.label}</div>
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
@@ -1271,7 +1271,7 @@ function Time({ item, value, onChange, onAfterChange }) {
                         precision='second'
                         min={moment().subtract(100, "years").toDate()}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
-                        title={item.label}
+                        title={item?.label}
                         confirmText={item.okText || "Выбрать"}
                         cancelText={item.dismissText || "Отмена"}
                         visible={visible}
@@ -1282,7 +1282,7 @@ function Time({ item, value, onChange, onAfterChange }) {
                         value={val || null}
                     >
                         {value =>
-                            value ? moment(value).format('HH:mm:ss') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item.label) ? item.label.toLowerCase() : "значение"}`)}</span>
+                            value ? moment(value).format('HH:mm:ss') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item?.label) ? item?.label?.toLowerCase() : "значение"}`)}</span>
                         }
                     </DatePicker>
                 </div>
@@ -1298,7 +1298,7 @@ function Boolean({ item, value, onChange, onAfterChange }) {
             onChange={onChange}
             checked={value}
         >
-            {item.label}
+            {item?.label}
         </Checkbox>
     )
 }
@@ -1312,7 +1312,7 @@ function Float({ item, value, onChange, onAfterChange }) {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item.label}</div>
+                <div>{item?.label}</div>
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
@@ -1330,7 +1330,7 @@ function Float({ item, value, onChange, onAfterChange }) {
                     <Input
                         data-locator={getLocator(item?.name, "input")}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
-                        placeholder={item.placeholder || ("введите " + ((item.label) ? item.label.toLowerCase() : "значение"))}
+                        placeholder={item.placeholder || ("введите " + ((item?.label) ? item?.label?.toLowerCase() : "значение"))}
                         // clearable
                         onChange={v => {
                             if (!isNaN(v)) {
@@ -1354,7 +1354,7 @@ function Integer({ item, value, onChange, onAfterChange }) {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item.label}</div>
+                <div>{item?.label}</div>
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
@@ -1372,7 +1372,7 @@ function Integer({ item, value, onChange, onAfterChange }) {
                     <Input
                         data-locator={getLocator(item?.name, "input")}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
-                        placeholder={item.placeholder || ("введите " + ((item.label) ? item.label.toLowerCase() : "значение"))}
+                        placeholder={item.placeholder || ("введите " + ((item?.label) ? item?.label?.toLowerCase() : "значение"))}
                         // clearable
                         onChange={v => {
                             if (!isNaN(v) && _.isInteger(+v)) {
@@ -1396,7 +1396,7 @@ function String({ item, value, onChange, onAfterChange }) {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item.label}</div>
+                <div>{item?.label}</div>
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clean")} onClick={(v) => {
                     onChange();
                 }}>
@@ -1420,7 +1420,7 @@ function String({ item, value, onChange, onAfterChange }) {
                         autoSize={{ minRows: 2, maxRows: 5 }}
                         onChange={onChange}
                         value={value || ""}
-                        placeholder={item.placeholder || ("введите " + ((item.label) ? item.label.toLowerCase() : "значение"))}
+                        placeholder={item.placeholder || ("введите " + ((item?.label) ? item?.label?.toLowerCase() : "значение"))}
                     />
                 </div>
             </div>
@@ -1438,7 +1438,7 @@ function Password({ item, value, onChange, onAfterChange }) {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item.label}</div>
+                <div>{item?.label}</div>
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
@@ -1459,7 +1459,7 @@ function Password({ item, value, onChange, onAfterChange }) {
                             value={value}
                             onChange={onChange}
                             className={styles.input}
-                            placeholder={item.placeholder || ("введите " + ((item.label) ? item.label.toLowerCase() : "значение"))}
+                            placeholder={item.placeholder || ("введите " + ((item?.label) ? item?.label?.toLowerCase() : "значение"))}
                             type={visible ? 'text' : 'password'}
                         />
                         <div className={styles.eye}>
@@ -1478,7 +1478,7 @@ function Password({ item, value, onChange, onAfterChange }) {
 function Unknown({ item }) {
     return (
         <div key={item.name}>
-            {item.label} - {item.name}
+            {item?.label} - {item.name}
         </div>
     )
 }

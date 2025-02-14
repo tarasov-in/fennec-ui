@@ -1067,21 +1067,20 @@ function DefaultCollectionServer(props) {
     const PaginatorChange = React.useCallback((v) => {
         setState(o => ({ ...o, current: v }));
         // window.scrollTo(0, 0);
-        document.querySelector(".page").scrollTo(0, 0);
+        document.querySelector(".page")?.scrollTo(0, 0);
     }, [state]);
     const PaginatorRight = React.useCallback(() => {
         setState(o => {
-            console.log(o);
-
+            // console.log(o);
             return ({ ...o, current: (parseInt(state.current) || 1) + 1 })
         });
         // window.scrollTo(0, 0);
-        document.querySelector(".page").scrollTo(0, 0)
+        document.querySelector(".page")?.scrollTo(0, 0)
     }, [state]);
     const PaginatorLeft = React.useCallback(() => {
         setState(o => ({ ...o, current: (parseInt(state.current) || 1) - 1 }));
         // window.scrollTo(0, 0);
-        document.querySelector(".page").scrollTo(0, 0)
+        document.querySelector(".page")?.scrollTo(0, 0)
     }, [state]);
 
     React.useEffect(() => {

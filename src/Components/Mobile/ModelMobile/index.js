@@ -4,15 +4,12 @@ import 'moment/locale/ru';
 import { Form } from 'antd-mobile';
 import { AutoSizer, List as ListVirt } from 'react-virtualized';
 import 'react-virtualized/styles.css';
-import {
-    Typography,
-} from 'antd';
-import { uncapitalize, GetMeta, GetMetaProperties, formItemRules, isRequired, validator, getLocator } from '../../../Tool';
+
+import { uncapitalize, GetMeta, GetMetaProperties, formItemRules, getLocator } from '../../../Tool';
 import { FieldMobile } from '../FieldMobile';
 import { useFormObserverContext } from '../../Context';
 import { useModelFullReplacement, useModelPartialReplacement } from '../../../ComponetsReplacement';
 var _ = require('lodash');
-const { Text, Link } = Typography;
 const isIPhone = new RegExp('\\biPhone\\b|\\biPod\\b', 'i').test(window.navigator.userAgent);
 let moneyKeyboardWrapProps;
 if (isIPhone) {

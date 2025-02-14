@@ -151,7 +151,7 @@ export const FooterButton = ({ key, name, callback, options, isDesktopOrLaptop, 
             data-locator={getLocator(locator || key, object)}
             key={key} onClick={callback} {...options}>{name}</Button>);
     } else {
-        const btn = { text: name, onPress: callback, options: { ...options, ...getLocator(locator || key, object) } };
+        const btn = { key: key, text: name, onPress: callback, options: { ...options, key: getLocator(locator || key, object) } };
         return (btn);
     }
 }
@@ -332,7 +332,7 @@ export function Action(props) {
 
         values = IfElse(form, unpackFormFields(form, values), values);
         values = IfElse(isFormData, makeFormData(values), values);
-        
+
         setLoading(true);
         Request(values,
             IfElse(
@@ -372,7 +372,7 @@ export function Action(props) {
             }
         );
     }, [modify, form, isFormData, callback, props.action, props.document, props.collection, props.collectionRef, props.updateCollection, props.setCollection, props.contextFilters, props.auth]);
-    
+
     const click = React.useCallback((e) => {
         if (excludeKeyPressed && excludeKeyPressed(e)) {
             return;
@@ -570,7 +570,7 @@ export function Action(props) {
             ...FooterOkButtons()
         ]
     }, [isChangedForm, props.footer, isDesktopOrLaptop, currentStep, form, object, unlock, close, mode, readonly, loading]);
-    
+
     const trigger = React.useCallback(() => {
         if (fire) return <React.Fragment></React.Fragment>;
         if (isDesktopOrLaptop || !isMobile) {
@@ -815,7 +815,9 @@ export function Action(props) {
                             backgroundColor: "white"
                         }}>
                             <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                {footer()?.map((e, idx) => <Button key={idx} style={{ flex: "auto" }} type="ghost" {...e.options} onClick={e.onPress}>{e.text}</Button>)}
+                                {footer()?.map((e, idx) => {
+                                    return (<Button key={idx} style={{ flex: "auto" }} type="ghost" {...e.options} onClick={e.onPress}>{e.text}</Button>)
+                                })}
                             </div>
                         </div>
                     </div>
@@ -878,7 +880,7 @@ export function Action(props) {
                             </div>
                             <div style={{ flex: "0" }}>
                                 <div style={{ display: "flex", justifyContent: "space-between", gap: "10px", padding: "10px" }}>
-                                    {footer()?.map((e, idx) => <Button key={idx} style={{ flex: "auto" }} type="ghost" {...e.options} onClick={e.onPress}>{e.text}</Button>)}
+                                    {footer()?.map((e, idx) => <Button style={{ flex: "auto" }} type="ghost" {...e.options} key={idx} onClick={e.onPress}>{e.text}</Button>)}
                                 </div>
                             </div>
                         </div>
