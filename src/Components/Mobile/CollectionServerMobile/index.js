@@ -1148,7 +1148,7 @@ function DefaultCollectionServer(props) {
             />}
             {(!filters?.length) && <div>
                 <div className={"filtered-header"} style={{
-                        height: "43px",
+                        // height: "43px",
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
@@ -1159,7 +1159,7 @@ function DefaultCollectionServer(props) {
                         <div style={{ flex: "auto", paddingRight: "15px" }}>
                             {RenderOnCollectionActions()}
                         </div>
-                    </div>
+                </div>
                 <MaskWithLoading visible={loading} />
                 {customRender && customRender(collection, customProps)}
                 {(!customRender && PartialReplacementFunc) && <div className='partial-replacement'>
