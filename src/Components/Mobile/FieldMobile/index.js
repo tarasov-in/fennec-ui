@@ -202,7 +202,7 @@ function Image({ auth, item, value, onChange, changed }) {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item?.label}</div>
+                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
                 <Button fill='none' size='mini' 
                 data-locator={getLocator(item?.name, "clear")}
                 onClick={(v) => {
@@ -278,7 +278,7 @@ function RangeDate({ item, value, onChange, onAfterChange }) {
                     display: "flex",
                     justifyContent: "space-between"
                 }}>
-                <div>{item?.label}</div>
+                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
                 <Button fill='none' size='mini' 
                 data-locator={getLocator(item?.name, "clear")}
                 onClick={(v) => {
@@ -389,7 +389,7 @@ function RangeFloat({ item, value, onChange, onAfterChange }) {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item?.label}</div>
+                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
                 <Button fill='none' size='mini' 
                 data-locator={getLocator(item?.name,"clear")}
                 onClick={(v) => {
@@ -462,7 +462,7 @@ function FloatSlider({ item, value, onChange, onAfterChange }) {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item?.label}</div>
+                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
                 <Button
                     disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
                     fill='none' size='mini' 
@@ -517,7 +517,7 @@ function RangeInteger({ item, value, onChange, onAfterChange }) {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item?.label}</div>
+                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
                 <Button fill='none' size='mini'
                 data-locator={getLocator(item?.name,"clear")}
                  onClick={(v) => {
@@ -590,7 +590,7 @@ function IntegerSlider({ item, value, onChange, onAfterChange }) {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item?.label}</div>
+                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
                 <Button
                     disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
                     fill='none' size='mini' 
@@ -788,7 +788,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item?.label}</div>
+                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
                 <Button fill='none' size='mini' onClick={(v) => {
                     onChange(undefined, item, undefined);
                 }}>
@@ -816,7 +816,7 @@ function Obj({ auth, item, value, onChange, onAfterChange, changed, contextObjec
                         <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
                             <div style={{ flex: "0", padding: "0 10px" }}>
                                 <div style={{ display: "flex", justifyContent: "center", padding: "10px 30px 10px 15px", fontSize: "16px" }}>
-                                    <div>{item?.label}</div>
+                                    <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
                                 </div>
                             </div>
                             <div style={{ flex: "0", padding: "0 10px" }}>
@@ -1030,7 +1030,7 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed, context
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item?.label}</div>
+                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
                 <Button fill='none' size='mini' onClick={(v) => {
                     onChange(undefined, item, undefined);
                 }}>
@@ -1058,7 +1058,7 @@ function GroupObj({ auth, item, value, onChange, onAfterChange, changed, context
                         <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
                             <div style={{ flex: "0", padding: "0 10px" }}>
                                 <div style={{ display: "flex", justifyContent: "center", padding: "10px 30px 10px 15px", fontSize: "16px" }}>
-                                    <div>{item?.label}</div>
+                                    <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
                                 </div>
                             </div>
                             <div style={{ flex: "0", padding: "0 10px" }}>
@@ -1120,7 +1120,7 @@ function Date({ item, value, onChange, onAfterChange }) {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item?.label}</div>
+                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
@@ -1183,7 +1183,7 @@ function DateTime({ item, value, onChange, onAfterChange }) {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item?.label}</div>
+                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
@@ -1246,7 +1246,7 @@ function Time({ item, value, onChange, onAfterChange }) {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item?.label}</div>
+                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
@@ -1312,7 +1312,7 @@ function Float({ item, value, onChange, onAfterChange }) {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item?.label}</div>
+                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
@@ -1354,7 +1354,7 @@ function Integer({ item, value, onChange, onAfterChange }) {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item?.label}</div>
+                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
@@ -1396,7 +1396,7 @@ function String({ item, value, onChange, onAfterChange }) {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item?.label}</div>
+                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clean")} onClick={(v) => {
                     onChange();
                 }}>
@@ -1427,6 +1427,7 @@ function String({ item, value, onChange, onAfterChange }) {
         </div>
     )
 }
+
 function Password({ item, value, onChange, onAfterChange }) {
     const [visible, setVisible] = useState(false)
     return (
@@ -1438,7 +1439,7 @@ function Password({ item, value, onChange, onAfterChange }) {
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div>{item?.label}</div>
+                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>

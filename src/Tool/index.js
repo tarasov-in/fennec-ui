@@ -1609,7 +1609,17 @@ export function validator(func, message) {
         }
     }
 };
+
 export function formItemRules(item) {
+    // validators: {
+    //     "required": true,
+    //     "min": null,
+    //     "max": null,
+    //     "email": false,
+    //     "url": false,
+    //     "len": null,
+    //     "pattern": null
+    // }
     let res = [];
     if (item && item.validators) {
         if (_.isArray(item.validators)) {
@@ -1628,6 +1638,14 @@ export function formItemRules(item) {
             if (isRequired(item) === true) {
                 res.push({ required: true, message: 'Укажите ' + item.label.toLowerCase() + '!' });
             }
+
+            if (item?.validators?.email !== undefined && item?.validators?.email !== null && item?.validators?.email === true) {
+                res.push({ type: "email", message: `Значение должно быть адресом электронной почты!` });
+            }
+            if (item?.validators?.url !== undefined && item?.validators?.url !== null && item?.validators?.url === true) {
+                res.push({ type: "url", message: `Значение должно URL адресом (начинается с http:// или https:// )!` });
+            }
+
             if (item?.validators?.max !== undefined && item?.validators?.max !== null) {
                 res.push({ type: (item?.type=="string" || item?.type=="text")?"string":"number", max: item?.validators?.max, message: `Значение должно быть не больше ${item?.validators?.max}${(item?.type=="string")?" символов":""}!` });
             }
