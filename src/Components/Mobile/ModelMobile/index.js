@@ -315,13 +315,13 @@ function Frm(props) {
     const propertiesVirtualized = propertiesFiltered?.filter(e => !!e);
     const [isChangedForm, isChangedField, onValuesChange] = useFormObserverContext()
 
-    const virtualizedItem = (item, idx) => {
+    const virtualizedItem = (item, idx) => {       
         if (!item.name && item.type === "func" && item.render) {
             return <div key={"func_" + idx}>
                 {item.render(auth, item, { data, object })}
             </div>
         }
-        if (item && !item.view || (item && item.view && item.view.unvisible === false)) {
+        if (item && !item.view || (item && item.view && !item.view.unvisible)) {
             return (
                 <Form.Item
                     preserve={(item.hidden) ? "true" : "false"}

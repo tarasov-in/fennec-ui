@@ -1147,6 +1147,19 @@ function DefaultCollectionServer(props) {
                 extra={titleExtra()}
             />}
             {(!filters?.length) && <div>
+                <div className={"filtered-header"} style={{
+                        height: "43px",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        // border: "1px solid #f0f0f0",
+                        // padding: "7px",
+                        // borderRadius: "3px",
+                    }}>
+                        <div style={{ flex: "auto", paddingRight: "15px" }}>
+                            {RenderOnCollectionActions()}
+                        </div>
+                    </div>
                 <MaskWithLoading visible={loading} />
                 {customRender && customRender(collection, customProps)}
                 {(!customRender && PartialReplacementFunc) && <div className='partial-replacement'>
