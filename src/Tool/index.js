@@ -715,10 +715,10 @@ export const errorCatch = (err, callback) => {
 export const errorAlert = (err, callback) => {
     const messageError = (err) => {
         const alertInstance = alert('Ошибка', err, [
-            { text: 'OK', onPress: () => alertInstance.close() },
+            { text: 'OK', onPress: () => alertInstance?.close() },
         ]);
         setTimeout(() => {
-            alertInstance.close();
+            alertInstance?.close();
         }, 5000);
     };
     if (err) {
@@ -728,10 +728,10 @@ export const errorAlert = (err, callback) => {
 };
 export const messageError = (err) => {
     const alertInstance = alert('Ошибка', err, [
-        { text: 'OK', onPress: () => alertInstance.close() },
+        { text: 'OK', onPress: () => alertInstance?.close() },
     ]);
     setTimeout(() => {
-        alertInstance.close();
+        alertInstance?.close();
     }, 5000);
 };
 //--------------------------------------------------------------

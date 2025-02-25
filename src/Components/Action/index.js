@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import ScrollLocker from 'rc-util/lib/Dom/scrollLocker';
 import { Form, Input } from 'antd';
 import { useMediaQuery } from 'react-responsive'
-import { IfElse, Request, messageError, makeFormData, eventExecution, unpackFormFields, pushStateHistoryModal, preventDefault, unsubscribe, subscribe, getLocator } from '../../Tool';
+import { IfElse, Request, messageError, makeFormData, eventExecution, unpackFormFields, pushStateHistoryModal, preventDefault, unsubscribe, subscribe, getLocator, errorCatch } from '../../Tool';
 import useStyles from '../Styles';
 
 import { Spin, Button, Tooltip, Tag, Modal } from 'antd';
@@ -346,7 +346,8 @@ export function Action(props) {
                         onDispatch: (values, context) => () => callback, // callback(response, values, unlock, close, properties),
                         onError: (err, { unlock, close }) => {
                             unlock();
-                            messageError(err);
+                            // messageError(err);
+                            errorCatch(err);
                         },
                     }
                 }
