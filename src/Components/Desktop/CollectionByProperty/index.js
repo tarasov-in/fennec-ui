@@ -4,7 +4,7 @@ import { CollectionServer } from '../CollectionServer';
 import { getDisplay, getObjectValue, QueryFiltersToContextFilters } from '../../../Tool';
 
 export function CollectionByProperty(props) {
-    const { auth, item, object, linksCompareFunction, links, scheme, queryDetail, modelActions, collectionActions } = props;
+    const { auth, item, object, linksCompareFunction, linksModelActions, scheme, queryDetail, modelActions, collectionActions } = props;
 
     const uif = useMemo(() => _.get(item, "relation.uiFilter"), [item]);
     const count = useMemo(() => item?.count || _.get(item, "relation.reference.count") || (()=>(20)), [item]);
@@ -98,7 +98,7 @@ export function CollectionByProperty(props) {
         }}
 
         linksCompareFunction={linksCompareFunction}
-        linksModelActions={links}
+        linksModelActions={linksModelActions}
         scheme={schemeProcessing(scheme)}
         queryDetail={queryDetail || item?.queryDetail}
         modelActions={modelActions}
