@@ -484,8 +484,8 @@ let NavigationContext = createContext(null);
 export function AuthProvider({ children, publicMode, keepAlive }) {
     const auth = new AuthService();
     auth.setPublicMode(publicMode);
-    
-    console.log("AuthProvider");
+
+    // console.log("AuthProvider");
     
     auth.setKeepAlive(keepAlive);
     return <XAuthContext.Provider value={auth}>{children}</XAuthContext.Provider>;
