@@ -694,6 +694,7 @@ function DefaultCollectionServer(props) {
                     if (!funcStat) {
                         setFuncStat(data?.stat);
                     }
+                    setCurrent(data?.number || current);
                     setTotalPages(data?.totalPages);
                     setCount(data?.size);
                     setTotal(data?.totalElements);
@@ -712,6 +713,7 @@ function DefaultCollectionServer(props) {
                 if (!funcStat) {
                     setFuncStat(data?.stat);
                 }
+                setCurrent(data?.number || current);
                 setTotalPages(data?.totalPages);
                 setCount(data?.size);
                 setTotal(data?.totalElements);
@@ -729,6 +731,7 @@ function DefaultCollectionServer(props) {
                 if (!funcStat) {
                     setFuncStat(data?.stat);
                 }
+                setCurrent(data?.number || current);
                 setTotalPages(data?.totalPages);
                 setCount(data?.size);
                 setTotal(data?.totalElements);

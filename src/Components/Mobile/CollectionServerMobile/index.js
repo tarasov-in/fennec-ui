@@ -665,7 +665,11 @@ function DefaultCollectionServer(props) {
                     if (!funcStat) {
                         setFuncStat(data?.stat);
                     }
+
                     setCount(data?.size);
+                    if (data?.number !== state.current) {
+                        setState(o => ({ ...o, current: data?.number || parseInt(state.current) || 1 }));
+                    }
                     setTotal(data?.totalPages /*totalElements*/);
                     setCollection((data && data?.content) ? data?.content : []);
                     // unlock();
@@ -683,6 +687,9 @@ function DefaultCollectionServer(props) {
                     setFuncStat(data?.stat);
                 }
                 setCount(data?.size);
+                if (data?.number !== state.current) {
+                    setState(o => ({ ...o, current: data?.number || parseInt(state.current) || 1 }));
+                }
                 setTotal(data?.totalPages /*totalElements*/);
                 setCollection((data && data?.content) ? data?.content : []);
                 unlock();
@@ -699,6 +706,9 @@ function DefaultCollectionServer(props) {
                     setFuncStat(data?.stat);
                 }
                 setCount(data?.size);
+                if (data?.number !== state.current) {
+                    setState(o => ({ ...o, current: data?.number || parseInt(state.current) || 1 }));
+                }
                 setTotal(data?.totalPages /*totalElements*/);
                 setCollection((data && data?.content) ? data?.content : []);
                 unlock();
@@ -1059,7 +1069,7 @@ function DefaultCollectionServer(props) {
     const trigger = React.useCallback((click) => (
         <div onClick={click} style={{ cursor: "pointer", padding: "5px" }}>
             {!_.isEmpty(state.filter) && <Badge content={Badge.dot}>
-            <i className="fa fa-filter"></i>
+                <i className="fa fa-filter"></i>
             </Badge>}
             {_.isEmpty(state.filter) && <i className="fa fa-filter"></i>}
         </div>
@@ -1148,17 +1158,17 @@ function DefaultCollectionServer(props) {
             />}
             {(!filters?.length) && <div>
                 <div className={"filtered-header"} style={{
-                        // height: "43px",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        // border: "1px solid #f0f0f0",
-                        // padding: "7px",
-                        // borderRadius: "3px",
-                    }}>
-                        <div style={{ flex: "auto", paddingRight: "15px" }}>
-                            {RenderOnCollectionActions()}
-                        </div>
+                    // height: "43px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    // border: "1px solid #f0f0f0",
+                    // padding: "7px",
+                    // borderRadius: "3px",
+                }}>
+                    <div style={{ flex: "auto", paddingRight: "15px" }}>
+                        {RenderOnCollectionActions()}
+                    </div>
                 </div>
                 <MaskWithLoading visible={loading} />
                 {customRender && customRender(collection, customProps)}
@@ -1325,7 +1335,7 @@ function DefaultCollectionServer(props) {
                                 <div>
                                     <Button size='small' onClick={PaginatorLeft} disabled={(state.current <= 1)}>
                                         <Space>
-                                        <i className="fa fa-chevron-left" />
+                                            <i className="fa fa-chevron-left" />
                                         </Space>
                                     </Button>
                                 </div>
