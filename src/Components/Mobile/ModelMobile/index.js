@@ -329,7 +329,8 @@ function Frm(props) {
 
                     className={classes.FormItem}
                     key={idx}
-                    name={uncapitalize(item.name)}
+                    // name={uncapitalize(item.name)}
+                    name={(item.type !== "object" && item.type !== "document") ? uncapitalize(item?.name) : uncapitalize(item?.name) + "ID"}
                     rules={formItemRules(item)}
                 >
                     <FieldMobile

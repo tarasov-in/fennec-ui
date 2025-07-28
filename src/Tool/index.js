@@ -15,10 +15,221 @@ export function getLocator(locator, obj) {
         let uuid = (obj?.uuid) ? `UUID${obj?.uuid}` : "";
         let key = (obj?.key) ? `KEY${obj?.key}` : "";
         let ID = id || uuid || key;
-        return (locator||"") + ID
+        return (locator || "") + ID
     } else if (obj) {
-        return (locator||"") + obj
-    } else return (locator||"")
+        return (locator || "") + obj
+    } else return (locator || "")
+}
+/**
+ * Константы типов элементов для использования в data-locator
+ * Используются для указания типа элемента в функции getLocator
+ */
+export const LOCATOR_TYPES = {
+    // Интерактивные элементы
+    BUTTON: 'button',
+    INPUT: 'input',
+    TEXTAREA: 'textarea',
+    SELECT: 'select',
+    CHECKBOX: 'checkbox',
+    RADIO: 'radio',
+    TOGGLE: 'toggle',
+    LINK: 'link',
+    FILE_INPUT: 'file-input',
+    DATE_PICKER: 'date-picker',
+    SLIDER: 'slider',
+
+    // Структурные элементы
+    CONTAINER: 'container',
+    LIST_ITEM: 'list-item',
+    CARD: 'card',
+    TABLE: 'table',
+    TABLE_ROW: 'table-row',
+    TABLE_CELL: 'table-cell',
+    TABLE_HEADER: 'table-header',
+    NAVIGATION: 'navigation',
+    TAB: 'tab',
+    TAB_PANEL: 'tab-panel',
+
+    // Модальные и всплывающие элементы
+    MODAL: 'modal',
+    DIALOG: 'dialog',
+    POPUP: 'popup',
+    TOOLTIP: 'tooltip',
+    DROPDOWN: 'dropdown',
+    DROPDOWN_ITEM: 'dropdown-item',
+    MENU: 'menu',
+    MENU_ITEM: 'menu-item',
+
+    // Индикаторы состояния
+    STATUS: 'status',
+    NOTIFICATION: 'notification',
+    ALERT: 'alert',
+    BADGE: 'badge',
+    PROGRESS: 'progress',
+    LOADING: 'loading',
+
+    // Текстовые элементы
+    TEXT: 'text',
+    TITLE: 'title',
+    LABEL: 'label',
+    HEADING: 'heading',
+    PARAGRAPH: 'paragraph',
+
+    // Медиа-элементы
+    IMAGE: 'image',
+    VIDEO: 'video',
+    AUDIO: 'audio',
+    ICON: 'icon',
+
+    // Формы
+    FORM: 'form',
+    FORM_GROUP: 'form-group',
+    FORM_FIELD: 'form-field',
+
+    // Специальные элементы приложения
+    SEARCHBAR: 'searchbar',
+    PAGINATION: 'pagination',
+    BREADCRUMBS: 'breadcrumbs',
+    SIDEBAR: 'sidebar',
+    HEADER: 'header',
+    FOOTER: 'footer'
+};
+
+/**
+ * Константы действий для использования в data-locator
+ * Используются для указания возможного действия с элементом в функции getLocator
+ */
+export const LOCATOR_ACTIONS = {
+    // Базовые действия
+    CLICK: 'click',
+    DOUBLE_CLICK: 'double-click',
+    RIGHT_CLICK: 'right-click',
+    HOVER: 'hover',
+    FOCUS: 'focus',
+    BLUR: 'blur',
+
+    // Действия с вводом
+    INPUT: 'input',
+    TYPE: 'type',
+    CLEAR: 'clear',
+    PASTE: 'paste',
+
+    // Действия с выбором
+    SELECT: 'select',
+    DESELECT: 'deselect',
+    CHECK: 'check',
+    UNCHECK: 'uncheck',
+    TOGGLE: 'toggle',
+
+    // Действия с перетаскиванием
+    DRAG: 'drag',
+    DROP: 'drop',
+    DRAG_AND_DROP: 'drag-and-drop',
+
+    // Действия с файлами
+    UPLOAD: 'upload',
+    DOWNLOAD: 'download',
+
+    // Действия с формами
+    SUBMIT: 'submit',
+    RESET: 'reset',
+    VALIDATE: 'validate',
+
+    // Действия с модальными окнами
+    OPEN: 'open',
+    CLOSE: 'close',
+    CONFIRM: 'confirm',
+    CANCEL: 'cancel',
+    DISMISS: 'dismiss',
+
+    // Действия с таблицами и списками
+    SORT: 'sort',
+    FILTER: 'filter',
+    SEARCH: 'search',
+    PAGINATE: 'paginate',
+
+    // Действия внутри приложения
+    CREATE: 'create',
+    READ: 'read',
+    UPDATE: 'update',
+    DELETE: 'delete',
+
+    // Действия с элементами списка
+    ADD_ITEM: 'add-item',
+    REMOVE_ITEM: 'remove-item',
+    EDIT_ITEM: 'edit-item',
+    MOVE_ITEM: 'move-item',
+
+    // Действия просмотра
+    EXPAND: 'expand',
+    COLLAPSE: 'collapse',
+    ZOOM: 'zoom',
+    SCROLL: 'scroll',
+
+    // Прочие действия
+    COPY: 'copy',
+    PRINT: 'print',
+    SHARE: 'share',
+    REFRESH: 'refresh'
+};
+/**
+ * Генерирует значение для атрибута data-locator
+ * @param {string} id - Уникальный человекочитаемый идентификатор
+ * @param {any} value - Значение элемента (опциональное)
+ * @param {Object} options - Дополнительные параметры (опциональные)
+ * @param {string} options.action - Тип действия с элементом (click, input, toggle и т.д.)
+ * @param {string} options.type - Тип элемента (button, input, checkbox, list-item и т.д.)
+ * @param {number} options.index - Индекс элемента в коллекции
+ * @returns {string} - Значение для атрибута data-locator
+ */
+export function getAILocator(id, value = null, options = {}) {
+    if (!id || typeof id !== 'string') {
+        console.warn('getLocator: id должен быть непустой строкой');
+        return '';
+    }
+
+    // Основные компоненты локатора
+    const parts = [id];
+
+    // Добавляем тип элемента, если указан
+    if (options.type) {
+        parts.push(`type-${options.type}`);
+    }
+
+    // Добавляем действие, если указано
+    if (options.action) {
+        parts.push(`action-${options.action}`);
+    }
+
+    // Добавляем индекс для элементов коллекции
+    if (options.index !== undefined) {
+        parts.push(`index-${options.index}`);
+    }
+
+    // Обработка value, если оно передано
+    if (value !== null && value !== undefined) {
+        // Если value - это объект, пытаемся извлечь идентификатор
+        if (typeof value === 'object' && value !== null) {
+            const identifier = value.id || value.ID || value.key || value.uuid || value._id;
+            if (identifier) {
+                parts.push(`id-${identifier}`);
+            }
+        }
+        // Если value - это примитив, добавляем его как значение
+        else if (['string', 'number', 'boolean'].includes(typeof value)) {
+            // Для логических значений используем четкие строки true/false
+            if (typeof value === 'boolean') {
+                parts.push(`value-${value ? 'true' : 'false'}`);
+            }
+            // Для строк и чисел добавляем их напрямую, но обрезаем длину
+            else {
+                const valueStr = String(value).substring(0, 30);
+                parts.push(`value-${valueStr}`);
+            }
+        }
+    }
+
+    return parts.join('::');
 }
 //--------------------------------------------------------------
 export const publish = (msg, data) => {
@@ -384,7 +595,7 @@ export const ContextFiltersToQueryFilters = (contextFilters) => {
             ctx.forEach(item => {
                 if (item) {
                     let v = contextFilterToQueryFilters(item);
-                    if(v){ 
+                    if (v) {
                         ctxFlt.push(v)
                     }
                 }
@@ -424,7 +635,7 @@ export const QueryFiltersToContextFilters = (queryFilters) => {
             ctx.forEach(item => {
                 if (item) {
                     let v = queryFiltersToContextFilter(item);
-                    if(v){ 
+                    if (v) {
                         ctxFlt.push(v)
                     }
                 }
@@ -1527,7 +1738,7 @@ export function priceFormat(price, precision) {
     //     }
     //     format += "0";
     // }
-    
+
     return Number(price.toFixed(precision)).toLocaleString('ru', { minimumFractionDigits: precision })
 }
 
@@ -1647,10 +1858,10 @@ export function formItemRules(item) {
             }
 
             if (item?.validators?.max !== undefined && item?.validators?.max !== null) {
-                res.push({ type: (item?.type=="string" || item?.type=="text")?"string":"number", max: item?.validators?.max, message: `Значение должно быть не больше ${item?.validators?.max}${(item?.type=="string")?" символов":""}!` });
+                res.push({ type: (item?.type == "string" || item?.type == "text") ? "string" : "number", max: item?.validators?.max, message: `Значение должно быть не больше ${item?.validators?.max}${(item?.type == "string") ? " символов" : ""}!` });
             }
             if (item?.validators?.min !== undefined && item?.validators?.min !== null) {
-                res.push({ type: (item?.type=="string" || item?.type=="text")?"string":"number", min: item?.validators?.min, message: `Значение должно быть не меньше ${item?.validators?.mix}${(item?.type=="string")?" символов":""}!` });
+                res.push({ type: (item?.type == "string" || item?.type == "text") ? "string" : "number", min: item?.validators?.min, message: `Значение должно быть не меньше ${item?.validators?.mix}${(item?.type == "string") ? " символов" : ""}!` });
             }
             if (item?.validators?.pattern) {
                 res.push({ pattern: item?.validators?.pattern, message: `Значение должно соответствовать шаблону ${item?.validators?.pattern}!` });

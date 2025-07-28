@@ -7,6 +7,9 @@ import 'dayjs/locale/ru'
 import styles from './styles.module.css'
 import {
   getLocator,
+  getAILocator,
+  LOCATOR_TYPES,
+  LOCATOR_ACTIONS,
   publish,
   subscribe,
   unsubscribe,
@@ -242,6 +245,9 @@ import {
 
 export {
   getLocator,
+  getAILocator,
+  LOCATOR_TYPES,
+  LOCATOR_ACTIONS,
   publish,
   subscribe,
   unsubscribe,
