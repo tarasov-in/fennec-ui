@@ -1081,7 +1081,7 @@ function DefaultCollectionServer(props) {
         } else {
             let sr = selectedRows.filter(e => e?.ID !== item?.ID);
             let srk = selectedRowKeys.filter(e => e !== item?.ID);
-            let vsr = value.filter(e => e?.ID !== item?.ID);
+            let vsr = value?.filter(e => e?.ID !== item?.ID) || [];
             if (sr.length !== selectedRows.length) {
                 setSelectedRowKeys(srk);
                 setSelectedRows(sr);

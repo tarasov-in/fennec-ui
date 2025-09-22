@@ -173,7 +173,7 @@ function ActionsSpace(props) {
                 apply={(obj) => onChange(property(item, obj), item, obj)}
                 lock={() => (!setLoading) ? undefined : setLoading(true)}
                 unlock={() => (!setLoading) ? undefined : setLoading(false)}
-                
+
                 {...e}
             />)
         });
@@ -977,6 +977,387 @@ function Obj({ formItem, auth, item, value, onChange, onAfterChange, changed, co
     </FieldLayout>
     )
 }
+function ObjCollection({ formItem, auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const meta = useMetaContext();
+
+    const PartialReplacementFunc = useFieldPartialReplacement(_.get(item, "relation.reference.object"), partialReplacement)
+
+    const dataOrContent = (data) => {
+        return (data && data.content) ? data.content : (_.has(data, 'content')) ? [] : data
+    }
+    const by = (item) => {
+        if (!!item?.dependence && !!item?.dependence?.field) {
+            if (changed) {
+                if (!!changed[item.dependence.by] && !!item.dependence.eq) {
+                    return changed[item.dependence.by][item.dependence.eq]
+                } else if (!!item.dependence.eq) {
+                    return changed[item.dependence.eq]
+                }
+                return null
+            }
+            return null
+        }
+    };
+    const dependenceValue = by(item);
+    const defaultQueryParams = useCallback((filter) => {
+        var _dependence = (item.dependence?.mode === "server" && item.dependence?.field && by(item)) ? [QueryParam(`w-${item.dependence?.field}`, by(item))] : []
+        if (!filter) {
+            return [
+                QueryDetail("none"),
+                QueryOrder("ID", "ASC"),
+                ..._dependence
+            ]
+        } else if (_.isArray(filter)) {
+            return [
+                ...filter,
+                ..._dependence
+            ]
+        }
+        return [
+            ..._dependence
+        ]
+    }, [item.dependence, changed])
+    // useEffect(() => {
+    //     if (value) {
+    //         if (item.source || item.url || (item && _.get(item, "relation.reference.url")) || (item && _.get(item, "relation.reference.source"))) {
+    //             let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
+    //             let url = item.source || item.relation.reference.url || item.relation.reference.source;
+    //             setLoading(true)
+    //             GETWITH(auth, url, [
+    //                 ...defaultQueryParams(filter),
+    //                 QueryParam("w-ID", value)
+    //             ], ({ data }) => {
+    //                 setData(dataOrContent(data));
+    //                 setLoading(false)
+    //             }, (err) => errorCatch(err, () => setLoading(false)));
+    //             // } else if (item && _.get(item, "relation.reference.data")) {
+    //             //     setData(item.relation.reference.data);
+    //         } else if (item && _.get(item, "relation.reference.object")) {
+    //             let object = getObjectValue(item, "relation.reference.object");
+    //             if (object) {
+    //                 let filter = item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter");
+    //                 setLoading(true)
+    //                 READWITH(auth, object, [
+    //                     ...defaultQueryParams(filter),
+    //                     QueryParam("w-ID", value)
+    //                 ], ({ data }) => {
+    //                     setData(dataOrContent(data));
+    //                     setLoading(false)
+    //                 }, (err) => errorCatch(err, () => setLoading(false)));
+    //             }
+    //         }
+    //     }
+    // }, [
+    //     auth,
+    //     value,
+    //     item?.source,
+    //     item?.url,
+    //     item?.queryFilter,
+    //     item?.relation?.reference?.data,
+    //     item?.relation?.reference?.url,
+    //     item?.relation?.reference?.source,
+    //     item?.relation?.reference?.queryFilter,
+    //     item?.relation?.reference?.filter,
+    //     dependenceValue
+    // ]);
+    const property = (item, value) => {
+        if (item && _.get(item, "relation.reference.property") && value) {
+            return value[item.relation.reference.property];
+        }
+        if (value) {
+            return value.ID;
+        }
+        return undefined;
+    };
+    const itemByProperty = useCallback((item, value) => {
+        if (_.get(item, "relation.reference.property")) {
+            return data.find(e => e[item.relation.reference.property] === value);
+        }
+        return data.find(e => e.ID === value);
+    }, [data]);
+
+    const display = useCallback((item, value) => {
+        if (item && value) {
+            if (item.display && _.isFunction(item.display)) {
+                return item.display(value)
+            } else if (item.relation && item.relation.display && _.isFunction(item.relation.display)) {
+                return item.relation.display(value)
+            } else if (PartialReplacementFunc) {
+                return PartialReplacementFunc({ item, value, changed, contextObject, objectName })
+            } else {
+                let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
+                let _display = ((item?.relation?.display?.fields) ? item?.relation?.display : undefined) || ((fieldMeta?.display?.fields) ? fieldMeta?.display : undefined)
+                return getDisplay(value, _display, fieldMeta, meta)
+            }
+        }
+        return "";
+    }, [meta]);
+    const displayString = useCallback((item, value) => {
+        if (item && value) {
+            if (item.displayString && _.isFunction(item.displayString)) {
+                return item.displayString(value)
+            } else if (item.relation && item.relation.displayString && _.isFunction(item.relation.displayString)) {
+                return item.relation.displayString(value)
+            } else {
+                let labeldisplay = display(item, value);
+                if (_.isString(labeldisplay)) {
+                    return labeldisplay;
+                }
+                let fieldMeta = meta[getObjectValue(item, "relation.reference.object")];
+                let _display = ((item?.relation?.display?.fields) ? item?.relation?.display : undefined) || ((fieldMeta?.display?.fields) ? fieldMeta?.display : undefined)
+                return getDisplay(value, _display, fieldMeta, meta)
+            }
+        }
+        return "";
+    }, [meta]);
+    const suffix = useCallback((item, value) => {
+        if (item && value) {
+            if (item.suffix && _.isFunction(item.suffix)) {
+                return item.suffix(value)
+            } else if (item.relation && item.relation.suffix && _.isFunction(item.relation.suffix)) {
+                return item.relation.suffix(value)
+            }
+        }
+        return undefined;
+    }, [meta]);
+
+    const cAction = (values, unlock, close) => {
+        const { selected } = values;
+        if (selected) {
+            // var h = _.head(selected)
+            // onChange(property(item, h), item, h)
+
+            onChange(selected, item)
+        }
+        close()
+    }
+    const cTrigger = useCallback((click) => (
+        <Button
+            style={{
+                borderLeft: "none"
+                // 1px solid #4096ff
+            }}
+            onClick={click}
+            type="default"
+            size={(item.size) ? item.size : "middle"}
+            disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+        >
+            <i className="fa fa-search" style={{ fontSize: "12px" }}></i>
+        </Button>
+    ), [item, loading])
+
+    const cName = useCallback((item && _.get(item, "relation.reference.object")) ? getObjectValue(item, "relation.reference.object") : undefined, [item]);
+    const cSource = useCallback(item?.source || item?.relation?.reference?.url || item?.relation?.reference?.source, [item]);
+    const cContextFilters = useCallback(() => defaultQueryParams(item.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter")), [item]);
+    const cFilters = useCallback(() => {
+        var uif = _.get(item, "relation.uiFilter");
+        if (uif) {
+            return uif()
+        }
+        return meta[getObjectValue(item, "relation.reference.object")]?.properties?.map(e => ({ ...e, sort: true, filter: true }));
+    }, [meta, item]);
+
+    const cRender = (auth, _item, value, onChange) => {
+        return (<CollectionServer
+            count={_item?.count}
+            floatingFilter={item?.floatingFilter || item?.relation?.floatingFilter}
+            selection={"multiselect"}
+            value={value}
+            onChange={onChange}
+            auth={auth}
+            objectName={objectName}
+            contextObject={contextObject}
+            name={cName}
+            source={cSource}
+            contextFilters={cContextFilters}
+            filters={cFilters}
+            customRender={(items, {
+                objectName,
+                contextObject,
+                collection,
+                setCollection,
+                setCollectionItem,
+                removeCollectionItem,
+                collectionActions,
+                modelActions,
+                onSelection,
+                isSelected,
+                lock,
+                unlock,
+                loading,
+                update
+            }) => {
+                // console.log(value, items);
+                return (
+                    <div>
+                        {(value && value.filter(e => !!e && items.filter(c => c.ID === e.ID) <= 0).length > 0) && <div>
+                            <div style={{ fontWeight: "lighter" }}>Сейчас выбрано</div>
+                            {JSXMap(value, (i, idx) => <div key={idx}>{display(item, i)}</div>)}
+                            <div style={{ fontWeight: "lighter", paddingTop: "10px" }}>Можно выбрать из</div>
+                        </div>}
+                        <div style={{ display: "flex", flexDirection: "column" }}>
+                            <Spin spinning={loading} style={{ paddingTop: "15px", paddingBottom: "15px" }} />
+                            {JSXMap(items, (o, oidx) => {
+                                return (<div key={oidx} onClick={(e) => { e.stopPropagation(); onSelection(o); }}
+                                    className={`bg ${(isSelected(o)) ? "bg-blue dark-3" : "bg-grey-hover light"} pointer`} style={{ textAlign: "left" }}>
+                                    {display(item, o)}
+                                </div>)
+                            })}
+                        </div>
+                    </div>
+                )
+            }}
+            size={"small"}
+        />)
+    }
+    const clear = (str) => {
+        if (!str) {
+            // onChange(value, item, itemByProperty(item, e))
+            onChange(undefined, item, undefined)
+        }
+    }
+
+    // const RendeActions = React.useCallback(() => {
+    //     if (!item?.actions) return <React.Fragment></React.Fragment>;
+    //     let values = clean(unwrap(item?.actions(value, item, meta, contextObject)));
+    //     if (!values || !values.length) return <React.Fragment></React.Fragment>;
+    //     return values?.map((e, idx) => {
+    //         if (_.isFunction(e)) {
+    //             return (e({
+    //                 collection: data,
+    //                 setCollection: setData,
+    //                 objectName: objectName,
+    //                 contextObject: contextObject,
+    //                 setCollectionItem: (item, first) => setData(o => updateInArray(o, item, first)),
+    //                 removeCollectionItem: (item) => setData(o => deleteInArray(o, item)),
+    //                 // onSelection,
+    //                 // isSelected,
+    //                 lock: () => setLoading(true),
+    //                 unlock: () => setLoading(false),
+    //                 loading,
+    //                 property: (obj) => property(item, obj),
+    //                 label: (obj) => display(item, obj),
+    //                 itemByProperty: (value) => itemByProperty(item, value),
+    //                 apply: (obj) => onChange(value, item, itemByProperty(item, value)),
+    //                 // update
+    //             }, idx))
+    //         }
+    //         return (<Action
+    //             key={e.key || idx}
+    //             auth={auth}
+    //             mode={"button"}
+    //             disabled={loading || (item && item.view && item.view.disabled) ? item.view.disabled : false}
+    //             item={item}
+    //             locator={item?.name || objectName}
+    //             object={e.object || itemByProperty(item, value)}
+    //             objectName={objectName}
+    //             contextObject={contextObject}
+    //             collection={data}
+    //             setCollection={setData}
+    //             property={(obj) => property(item, obj)}
+    //             label={(obj) => display(item, obj)}
+    //             itemByProperty={(value) => itemByProperty(item, value)}
+    //             apply={(obj) => onChange(property(item, obj), item, obj)}
+    //             {...e}
+    //         />)
+    //     });
+    // }, [item, data, loading, value, meta, contextObject, objectName]);
+
+    // const RenderDropdownActions = React.useCallback(() => {
+    //     if (!item?.dropdownActions) return <React.Fragment></React.Fragment>;
+    //     let values = clean(unwrap(item?.dropdownActions(value, item, meta, contextObject)));
+    //     if (!values || !values.length) return <React.Fragment></React.Fragment>;
+    //     return <DropdownAction
+    //         button={() => (<Button type="default">
+    //             <i className="fa fa-ellipsis-v"></i>
+    //             {/* <i className="fa fa-ellipsis-h"></i> */}
+    //             {/* <i className="fa fa-angle-down"></i> */}
+    //             {/* <i className="fa fa-chevron-down"></i> */}
+    //             {/* <i className="fa fa-caret-down"></i> */}
+    //             {/* <i className="fa fa-bars"></i> */}
+    //             {/* <i className="fa fa-caret-square-o-down"></i> */}
+    //         </Button>)}
+    //         locator={item?.name || objectName}
+    //         object={itemByProperty(item, value)}
+    //         items={values?.map((e, idx) => ({
+    //             key: e.key || idx,
+    //             auth: auth,
+    //             mode: "MenuItem",
+    //             disabled: loading || (item && item.view && item.view.disabled) ? item.view.disabled : false,
+    //             item: item,
+    //             locator: item?.name || objectName,
+    //             object: e.object || itemByProperty(item, value),
+    //             objectName: objectName,
+    //             contextObject: contextObject,
+    //             collection: data,
+    //             setCollection: setData,
+    //             property: (obj) => property(item, obj),
+    //             label: (obj) => display(item, obj),
+    //             itemByProperty: (value) => itemByProperty(item, value),
+    //             apply: (obj) => onChange(property(item, obj), item, obj),
+    //             ...e
+    //         }))} />
+    // }, [item, data, loading, value, meta, contextObject, objectName]);
+
+    return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
+        <Space.Compact
+            style={{
+                width: '100%',
+            }}
+        >
+            <div style={{
+                width: "100%",
+                border: "1px solid #d9d9d9",
+                borderRadius: "6px 0 0 6px",
+            }}>
+                {JSXMap(value, (i, idx) => <div key={idx}>{display(item, i)}</div>)}
+            </div>
+            {/* <Input
+                data-locator={getLocator(item?.name || objectName, itemByProperty(item, value))}
+                suffix={(loading) ? <Spin size="small" /> : suffix(item, itemByProperty(item, value))}
+                size={(item.size) ? item.size : "middle"}
+                allowClear={true}
+                style={{ width: "100%" }}
+                // readOnly
+                onChange={e => clear(e.target.value)}
+                value={displayString(item, itemByProperty(item, value))}
+                disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+            /> */}
+            <Action
+                // title={`Выберите ${(item.label) ? item.label.toLowerCase() : "элемент"}`}
+                title={<div>
+                    <div style={{ fontSize: "12px", fontStyle: "italic", color: "rgba(0, 0, 0, 0.45)" }}>Выберите элементы</div>
+                    {(item?.label) && <div>{item?.label}</div>}
+                </div>}
+                auth={auth}
+                action={cAction}
+                okText="Выбрать"
+                locator={item?.name || objectName}
+                // object={{ selected: [itemByProperty(item, value)] }}
+                object={{ selected: value }}
+                modal={(item.modal) ? item.modal : { width: "600px" }}
+                form={Model}
+                meta={[{
+                    type: "func",
+                    name: "selected",
+                    count: item?.count,
+                    render: cRender
+                }]}
+                mode={"func"}
+                trigger={cTrigger}
+            />
+            {/* {item?.actions && <React.Fragment>
+                {RendeActions()}
+            </React.Fragment>} */}
+            {/* {item?.dropdownActions && <React.Fragment>
+                {RenderDropdownActions()}
+            </React.Fragment>} */}
+        </Space.Compact>
+    </FieldLayout>
+    )
+}
 function BigObj({ formItem, auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -1598,6 +1979,14 @@ export function Field(props) {
                 case "datetime":
                 case "time.Time":
                     return (<DateTime auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></DateTime>)
+                case "collection":
+                    if (item.SubType) { }
+                    switch (item.SubType) {
+                        // case "int":
+                        //     return (<IntCollection auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></IntCollection>)
+                        default:
+                            return (<ObjCollection auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></ObjCollection>)
+                    }
                 case "object":
                 case "document":
                     if (item.mode === "dialog") {
