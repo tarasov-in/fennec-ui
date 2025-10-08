@@ -227,7 +227,7 @@ function ActionsSpace(props) {
         </React.Fragment>}
     </Space.Compact>)
 }
-function UploadItems({ formItem, auth, item, value, onChange, changed }) {
+function UploadItems({ inputProps, formItem, auth, item, value, onChange, changed }) {
     const [loading, setLoading] = useState(false);
     const [files, setFiles] = useState([]);
     useEffect(() => {
@@ -261,12 +261,13 @@ function UploadItems({ formItem, auth, item, value, onChange, changed }) {
     return (<Upload
         {...uploadingProps}
         data-locator={getLocator(item?.name)}
+        {...inputProps}
     >
         {!item.trigger && <Button data-locator={getLocator(item?.name, "upload")} icon={<UploadOutlined />}>Загрузить файлы</Button>}
         {item?.trigger && item?.trigger()}
     </Upload>)
 }
-function UploadItem({ formItem, auth, item, value, onChange, changed }) {
+function UploadItem({ inputProps, formItem, auth, item, value, onChange, changed }) {
     const [loading, setLoading] = useState(false);
     const [hoverRef, isHovered] = useHover();
     const [files, setFiles] = useState([]);
@@ -314,7 +315,7 @@ function UploadItem({ formItem, auth, item, value, onChange, changed }) {
         </div>
     );
     return (
-        <Dragger {...uploadingProps} data-locator={getLocator(item?.name)}>
+        <Dragger {...uploadingProps} data-locator={getLocator(item?.name)} {...inputProps}>
             {(item.trigger) && <div ref={hoverRef}>
                 {item.trigger()}
                 {(!item.nocontent) && <div
@@ -340,7 +341,7 @@ function UploadItem({ formItem, auth, item, value, onChange, changed }) {
         </Dragger >
     );
 }
-function Image({ formItem, auth, item, value, onChange, changed }) {
+function Image({ inputProps, formItem, auth, item, value, onChange, changed }) {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const close = () => {
@@ -413,12 +414,13 @@ function Image({ formItem, auth, item, value, onChange, changed }) {
                     onChange={onChange}
                     open={open}
                     close={close}
+                    {...inputProps}
                 />
             </div>
         </div>
     );
 }
-function GroupObj({ formItem, auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
+function GroupObj({ inputProps, formItem, auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
     const meta = useMetaContext();
@@ -577,13 +579,14 @@ function GroupObj({ formItem, auth, item, value, onChange, onAfterChange, change
         // filterSort={(optionA, optionB) =>
         //     optionA?.label?.toLowerCase().localeCompare(optionB?.label?.toLowerCase())
         // }
+        {...inputProps}
         >
             {elements(data)}
         </Select>
     </FieldLayout>
     )
 }
-function RangeTime({ formItem, auth, item, value, onChange, onAfterChange }) {
+function RangeTime({ inputProps, formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     const a = useMemo(() => {
         if (value && value[0] && value[1]) {
@@ -592,10 +595,11 @@ function RangeTime({ formItem, auth, item, value, onChange, onAfterChange }) {
         return []
     }, [value])
     return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
-        <TimePicker.RangePicker data-locator={getLocator(item?.name)} changeOnBlur={true} value={a} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }} />
+        <TimePicker.RangePicker data-locator={getLocator(item?.name)} changeOnBlur={true} value={a} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }} 
+        {...inputProps} />
     </FieldLayout>)
 }
-function RangeDate({ formItem, auth, item, value, onChange, onAfterChange }) {
+function RangeDate({ inputProps, formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     const a = useMemo(() => {
         if (value && value[0] && value[1]) {
@@ -604,10 +608,11 @@ function RangeDate({ formItem, auth, item, value, onChange, onAfterChange }) {
         return []
     }, [value])
     return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
-        <DatePicker.RangePicker data-locator={getLocator(item?.name)} changeOnBlur={true} value={a} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }} />
+        <DatePicker.RangePicker data-locator={getLocator(item?.name)} changeOnBlur={true} value={a} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }} 
+        {...inputProps} />
     </FieldLayout>)
 }
-function RangeDateTime({ formItem, auth, item, value, onChange, onAfterChange }) {
+function RangeDateTime({ inputProps, formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     const a = useMemo(() => {
         if (value && value[0] && value[1]) {
@@ -616,10 +621,11 @@ function RangeDateTime({ formItem, auth, item, value, onChange, onAfterChange })
         return []
     }, [value])
     return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
-        <DatePicker.RangePicker data-locator={getLocator(item?.name)} changeOnBlur={true} showTime={{ format: 'HH:mm' }} value={a} onChange={onChange} format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }} />
+        <DatePicker.RangePicker data-locator={getLocator(item?.name)} changeOnBlur={true} showTime={{ format: 'HH:mm' }} value={a} onChange={onChange} format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }} 
+        {...inputProps} />
     </FieldLayout>)
 }
-function RangeFloat({ formItem, auth, item, value, onChange, onAfterChange }) {
+function RangeFloat({ inputProps, formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     const [val, setVal] = useState();
     useEffect(() => {
@@ -640,11 +646,12 @@ function RangeFloat({ formItem, auth, item, value, onChange, onAfterChange }) {
             included={true}
             value={val || def}
             onChange={setVal}
-            onAfterChange={(item.realtime) ? onAfterChange : onChange} />
+            onAfterChange={(item.realtime) ? onAfterChange : onChange} 
+            {...inputProps} />
     </FieldLayout>
     )
 }
-function FloatSlider({ formItem, auth, item, value, onChange, onAfterChange }) {
+function FloatSlider({ inputProps, formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     const [val, setVal] = useState();
     useEffect(() => {
@@ -662,11 +669,12 @@ function FloatSlider({ formItem, auth, item, value, onChange, onAfterChange }) {
             step={xstep}
             value={(item.realtime) ? value : val}
             onChange={(item.realtime) ? onChange : setVal}
-            onAfterChange={(item.realtime) ? onAfterChange : onChange} />
+            onAfterChange={(item.realtime) ? onAfterChange : onChange}
+            {...inputProps} />
     </FieldLayout>
     )
 }
-function RangeInteger({ formItem, auth, item, value, onChange, onAfterChange }) {
+function RangeInteger({ inputProps, formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     const [val, setVal] = useState();
     useEffect(() => {
@@ -688,11 +696,12 @@ function RangeInteger({ formItem, auth, item, value, onChange, onAfterChange }) 
             included={true}
             // onChange={setVal}
             onChange={(item.realtime) ? onChange : setVal}
-            onAfterChange={(item.realtime) ? onAfterChange : onChange} />
+            onAfterChange={(item.realtime) ? onAfterChange : onChange}
+            {...inputProps} />
     </FieldLayout>
     )
 }
-function IntegerSlider({ formItem, auth, item, value, onChange, onAfterChange }) {
+function IntegerSlider({ inputProps, formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     const [val, setVal] = useState();
     useEffect(() => {
@@ -711,11 +720,12 @@ function IntegerSlider({ formItem, auth, item, value, onChange, onAfterChange })
             step={xstep}
             value={(item.realtime) ? value : val}
             onChange={(item.realtime) ? onChange : setVal}
-            onAfterChange={(item.realtime) ? onAfterChange : onChange} />
+            onAfterChange={(item.realtime) ? onAfterChange : onChange}
+            {...inputProps} />
     </FieldLayout>
     )
 }
-function Obj({ formItem, auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
+function Obj({ inputProps, formItem, auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
     const meta = useMetaContext();
@@ -964,6 +974,7 @@ function Obj({ formItem, auth, item, value, onChange, onAfterChange, changed, co
             // filterOption={(input, element) =>
             //     element.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             // }
+            {...inputProps}
             >
                 {elements(data)}
             </Select>
@@ -977,7 +988,7 @@ function Obj({ formItem, auth, item, value, onChange, onAfterChange, changed, co
     </FieldLayout>
     )
 }
-function ObjCollection({ formItem, auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
+function ObjCollection({ inputProps, formItem, auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const meta = useMetaContext();
@@ -1358,7 +1369,7 @@ function ObjCollection({ formItem, auth, item, value, onChange, onAfterChange, c
     </FieldLayout>
     )
 }
-function BigObj({ formItem, auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
+function BigObj({ inputProps, formItem, auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const meta = useMetaContext();
@@ -1705,6 +1716,7 @@ function BigObj({ formItem, auth, item, value, onChange, onAfterChange, changed,
                 onChange={e => clear(e.target.value)}
                 value={displayString(item, itemByProperty(item, value))}
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+                {...inputProps}
             />
             <Action
                 // title={`Выберите ${(item.label) ? item.label.toLowerCase() : "элемент"}`}
@@ -1738,7 +1750,7 @@ function BigObj({ formItem, auth, item, value, onChange, onAfterChange, changed,
     </FieldLayout>
     )
 }
-function DateTime({ formItem, auth, item, value, onChange, onAfterChange }) {
+function DateTime({ inputProps, formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <ActionsSpace auth={auth} item={item} value={value} onChange={onChange} loading={loading} setLoading={setLoading}>
@@ -1746,12 +1758,13 @@ function DateTime({ formItem, auth, item, value, onChange, onAfterChange }) {
                 data-locator={getLocator(item?.name)}
                 changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} showTime format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }}
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+                {...inputProps}
             />
         </ActionsSpace>
     </FieldLayout>
     )
 }
-function Date({ formItem, auth, item, value, onChange, onAfterChange }) {
+function Date({ inputProps, formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <ActionsSpace auth={auth} item={item} value={value} onChange={onChange} loading={loading} setLoading={setLoading}>
@@ -1759,12 +1772,13 @@ function Date({ formItem, auth, item, value, onChange, onAfterChange }) {
                 data-locator={getLocator(item?.name)}
                 changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }}
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+                {...inputProps}
             />
         </ActionsSpace>
     </FieldLayout>
     )
 }
-function Time({ formItem, auth, item, value, onChange, onAfterChange }) {
+function Time({ inputProps, formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <ActionsSpace auth={auth} item={item} value={value} onChange={onChange} loading={loading} setLoading={setLoading}>
@@ -1772,12 +1786,13 @@ function Time({ formItem, auth, item, value, onChange, onAfterChange }) {
                 data-locator={getLocator(item?.name)}
                 changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }}
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+                {...inputProps}
             />
         </ActionsSpace>
     </FieldLayout>
     )
 }
-function Boolean({ formItem, auth, item, value, onChange, onAfterChange }) {
+function Boolean({ inputProps, formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     const change = (e) => {
         onChange(e.target.checked);
@@ -1787,13 +1802,14 @@ function Boolean({ formItem, auth, item, value, onChange, onAfterChange }) {
             data-locator={getLocator(item?.name)}
             checked={value} onChange={change}
             disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+            {...inputProps}
         >
             {item.label}
         </Checkbox>
     </FieldLayout>
     )
 }
-function Float({ formItem, auth, item, value, onChange, onAfterChange }) {
+function Float({ inputProps, formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <ActionsSpace auth={auth} item={item} value={value} onChange={onChange} loading={loading} setLoading={setLoading}>
@@ -1801,12 +1817,13 @@ function Float({ formItem, auth, item, value, onChange, onAfterChange }) {
                 data-locator={getLocator(item?.name)}
                 value={value} onChange={onChange} style={{ width: "100%" }} min={item?.min || item?.validators?.min} max={item?.max || item?.validators?.max}
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+                {...inputProps}
             />
         </ActionsSpace>
     </FieldLayout>
     )
 }
-function Integer({ formItem, auth, item, value, onChange, onAfterChange }) {
+function Integer({ inputProps, formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <ActionsSpace auth={auth} item={item} value={value} onChange={onChange} loading={loading} setLoading={setLoading}>
@@ -1814,12 +1831,13 @@ function Integer({ formItem, auth, item, value, onChange, onAfterChange }) {
                 data-locator={getLocator(item?.name)}
                 value={value} onChange={onChange} style={{ width: "100%" }} min={item?.min || item?.validators?.min} max={item?.max || item?.validators?.max}
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+                {...inputProps}
             />
         </ActionsSpace>
     </FieldLayout>
     )
 }
-function String({ formItem, auth, item, value, onChange, onAfterChange }) {
+function String({ inputProps, formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <ActionsSpace auth={auth} item={item} value={value} onChange={onChange} loading={loading} setLoading={setLoading}>
@@ -1827,12 +1845,13 @@ function String({ formItem, auth, item, value, onChange, onAfterChange }) {
                 data-locator={getLocator(item?.name)}
                 size={(item.size) ? item.size : "middle"} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+                {...inputProps}
             />
         </ActionsSpace>
     </FieldLayout>
     )
 }
-function Password({ formItem, auth, item, value, onChange, onAfterChange }) {
+function Password({ inputProps, formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <ActionsSpace auth={auth} item={item} value={value} onChange={onChange} loading={loading} setLoading={setLoading}>
@@ -1841,12 +1860,13 @@ function Password({ formItem, auth, item, value, onChange, onAfterChange }) {
                 allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
                 iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+                {...inputProps}
             />
         </ActionsSpace>
     </FieldLayout>
     )
 }
-function MultilineText({ formItem, auth, item, value, onChange, onAfterChange }) {
+function MultilineText({ inputProps, formItem, auth, item, value, onChange, onAfterChange }) {
     const [loading, setLoading] = useState(false);
     return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <ActionsSpace auth={auth} item={item} value={value} onChange={onChange} loading={loading} setLoading={setLoading}>
@@ -1854,12 +1874,13 @@ function MultilineText({ formItem, auth, item, value, onChange, onAfterChange })
                 data-locator={getLocator(item?.name)}
                 rows={6} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
+                {...inputProps}
             />
         </ActionsSpace>
     </FieldLayout>
     )
 }
-function Unknown({ formItem, item }) {
+function Unknown({ inputProps, formItem, item }) {
     return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <div key={item.name}>
             <div>{item.label} - {item.name}</div>
@@ -1879,13 +1900,13 @@ function Unknown({ formItem, item }) {
 
 export function Field(props) {
     const { auth, item, value, onChange, onAfterChange, changed, isChanged, partialReplacement,
-        fullReplacement, contextObject, objectName, formItem, data } = props;
+        fullReplacement, contextObject, objectName, formItem, data, inputProps } = props;
     let type = ((item.view) ? item.view.type : undefined) || item.type;
 
     // const FullReplacementFunc = useFieldFullReplacement(item?.name, fullReplacement)
     const FullReplacementFunc = useFieldFullReplacement(type, fullReplacement)
     if (FullReplacementFunc) {
-        return (<FullReplacementFunc data={data} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed} />)
+        return (<FullReplacementFunc {...inputProps} data={data} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed} />)
     }
 
     switch (item.filterType) {
@@ -1895,9 +1916,9 @@ export function Field(props) {
                     return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, { partialReplacement, contextObject, objectName, formItem, data }) : undefined;
                 case "object":
                 case "document":
-                    return (<GroupObj auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></GroupObj>)
+                    return (<GroupObj {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></GroupObj>)
                 default:
-                    return (<Unknown auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
+                    return (<Unknown {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
             }
         case "range":
             switch (type) {
@@ -1910,21 +1931,21 @@ export function Field(props) {
                 case "int32":
                 case "uint64":
                 case "uint32":
-                    return (<RangeInteger auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeInteger>)
+                    return (<RangeInteger {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeInteger>)
                 case "double":
                 case "float":
                 case "float64":
                 case "float32":
-                    return (<RangeFloat auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeFloat>)
+                    return (<RangeFloat {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeFloat>)
                 case "time":
-                    return (<RangeTime auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeTime>)
+                    return (<RangeTime {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeTime>)
                 case "date":
-                    return (<RangeDate auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeDate>)
+                    return (<RangeDate {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeDate>)
                 case "datetime":
                 case "time.Time":
-                    return (<RangeDateTime auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeDateTime>)
+                    return (<RangeDateTime {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeDateTime>)
                 default:
-                    return (<Unknown auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
+                    return (<Unknown {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
             }
         case "slider":
             switch (type) {
@@ -1937,25 +1958,25 @@ export function Field(props) {
                 case "int32":
                 case "uint64":
                 case "uint32":
-                    return (<IntegerSlider auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></IntegerSlider>)
+                    return (<IntegerSlider {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></IntegerSlider>)
                 case "double":
                 case "float":
                 case "float64":
                 case "float32":
-                    return (<FloatSlider auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></FloatSlider>)
+                    return (<FloatSlider {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></FloatSlider>)
                 default:
-                    return (<Unknown auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
+                    return (<Unknown {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
             }
         default:
             switch (type) {
                 case "func":
                     return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, partialReplacement, contextObject, objectName, data) : undefined;
                 case "text":
-                    return (<MultilineText auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></MultilineText>)
+                    return (<MultilineText {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></MultilineText>)
                 case "string":
-                    return (<String auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></String>)
+                    return (<String {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></String>)
                 case "password":
-                    return (<Password auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Password>)
+                    return (<Password {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Password>)
                 case "int":
                 case "uint":
                 case "integer":
@@ -1963,46 +1984,46 @@ export function Field(props) {
                 case "int32":
                 case "uint64":
                 case "uint32":
-                    return (<Integer auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Integer>)
+                    return (<Integer {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Integer>)
                 case "double":
                 case "float":
                 case "float64":
                 case "float32":
-                    return (<Float auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Float>)
+                    return (<Float {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Float>)
                 case "boolean":
                 case "bool":
-                    return (<Boolean auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Boolean>)
+                    return (<Boolean {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Boolean>)
                 case "time":
-                    return (<Time auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Time>)
+                    return (<Time {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Time>)
                 case "date":
-                    return (<Date auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Date>)
+                    return (<Date {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Date>)
                 case "datetime":
                 case "time.Time":
-                    return (<DateTime auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></DateTime>)
+                    return (<DateTime {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></DateTime>)
                 case "collection":
                     if (item.SubType) { }
                     switch (item.SubType) {
                         // case "int":
-                        //     return (<IntCollection auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></IntCollection>)
+                        //     return (<IntCollection {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></IntCollection>)
                         default:
-                            return (<ObjCollection auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></ObjCollection>)
+                            return (<ObjCollection {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></ObjCollection>)
                     }
                 case "object":
                 case "document":
                     if (item.mode === "dialog") {
-                        return (<BigObj auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></BigObj>)
+                        return (<BigObj {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></BigObj>)
                     } else
-                        return (<Obj auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></Obj>)
+                        return (<Obj {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></Obj>)
                 case "file":
-                    return (<UploadItem auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></UploadItem>)
+                    return (<UploadItem {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></UploadItem>)
                 case "files":
-                    return (<UploadItems auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></UploadItems>)
+                    return (<UploadItems {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></UploadItems>)
                 case "imageeditor":
-                    return (<ImageEditor auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></ImageEditor>)
+                    return (<ImageEditor {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></ImageEditor>)
                 case "image":
-                    return (<Image auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Image>)
+                    return (<Image {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Image>)
                 default:
-                    return (<Unknown auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>);
+                    return (<Unknown {...inputProps} auth={auth} formItem={formItem} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>);
             }
 
     }
