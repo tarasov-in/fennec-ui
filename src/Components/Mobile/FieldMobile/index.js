@@ -1513,7 +1513,7 @@ export function FieldMobile({ auth, item, value, onChange, onAfterChange, change
     let type = ((item.view) ? item.view.type : undefined) || item.type;
     const FullReplacementFunc = useFieldFullReplacement(type, fullReplacement)
     if (FullReplacementFunc) {
-        return (<FullReplacementFunc {...inputProps} data={data} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed} />)
+        return (<FullReplacementFunc inputProps={inputProps} data={data} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed} />)
     }
     switch (item.filterType) {
         case "group":
@@ -1522,9 +1522,9 @@ export function FieldMobile({ auth, item, value, onChange, onAfterChange, change
                     return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, { partialReplacement, contextObject, objectName, data }) : undefined;
                 case "object":
                 case "document":
-                    return (<GroupObj {...inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></GroupObj>)
+                    return (<GroupObj inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></GroupObj>)
                 default:
-                    return (<Unknown {...inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
+                    return (<Unknown inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
             }
         case "range":
             switch (item.type) {
@@ -1537,19 +1537,19 @@ export function FieldMobile({ auth, item, value, onChange, onAfterChange, change
                 case "int32":
                 case "uint64":
                 case "uint32":
-                    return (<RangeInteger {...inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeInteger>)
+                    return (<RangeInteger inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeInteger>)
                 case "double":
                 case "float":
                 case "float64":
                 case "float32":
-                    return (<RangeFloat {...inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeFloat>)
+                    return (<RangeFloat inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeFloat>)
                 case "date":
                 case "time":
                 case "datetime":
                 case "time.Time":
-                    return (<RangeDate {...inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeDate>)
+                    return (<RangeDate inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeDate>)
                 default:
-                    return (<Unknown {...inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
+                    return (<Unknown inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
             }
         case "slider":
             switch (item.type) {
@@ -1562,23 +1562,23 @@ export function FieldMobile({ auth, item, value, onChange, onAfterChange, change
                 case "int32":
                 case "uint64":
                 case "uint32":
-                    return (<IntegerSlider {...inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></IntegerSlider>)
+                    return (<IntegerSlider inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></IntegerSlider>)
                 case "double":
                 case "float":
                 case "float64":
                 case "float32":
-                    return (<FloatSlider {...inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></FloatSlider>)
+                    return (<FloatSlider inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></FloatSlider>)
                 default:
-                    return (<Unknown {...inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
+                    return (<Unknown inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
             }
         default:
             switch (item.type) {
                 case "func":
                     return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, { partialReplacement, contextObject, objectName, data }) : undefined;
                 case "string":
-                    return (<String {...inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></String>)
+                    return (<String inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></String>)
                 case "password":
-                    return (<Password {...inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Password>)
+                    return (<Password inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Password>)
                 case "int":
                 case "uint":
                 case "integer":
@@ -1586,37 +1586,37 @@ export function FieldMobile({ auth, item, value, onChange, onAfterChange, change
                 case "int32":
                 case "uint64":
                 case "uint32":
-                    return (<Integer {...inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Integer>)
+                    return (<Integer inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Integer>)
                 case "double":
                 case "float":
                 case "float64":
                 case "float32":
-                    return (<Float {...inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Float>)
+                    return (<Float inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Float>)
                 case "boolean":
                 case "bool":
-                    return (<Boolean {...inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Boolean>)
+                    return (<Boolean inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Boolean>)
                 case "time":
-                    return (<Time {...inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Time>)
+                    return (<Time inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Time>)
                 case "date":
-                    return (<Date {...inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Date>)
+                    return (<Date inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Date>)
                 case "datetime":
                 case "time.Time":
-                    return (<DateTime {...inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></DateTime>)
+                    return (<DateTime inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></DateTime>)
                 case "object":
                 case "document":
-                    return (<Obj {...inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></Obj>)
+                    return (<Obj inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></Obj>)
                 case "action":
-                    return (<ActionItem {...inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></ActionItem>)
+                    return (<ActionItem inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></ActionItem>)
                 case "file":
-                    return (<UploadItem {...inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></UploadItem>)
+                    return (<UploadItem inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></UploadItem>)
                 case "files":
-                    return (<UploadItems {...inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></UploadItems>)
+                    return (<UploadItems inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></UploadItems>)
                 // case "imageeditor":
-                //     return (<ImageEditor {...inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></ImageEditor>)
+                //     return (<ImageEditor inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></ImageEditor>)
                 case "image":
-                    return (<Image {...inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Image>)
+                    return (<Image inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Image>)
                 default:
-                    return (<Unknown {...inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
+                    return (<Unknown inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
             }
     }
 }
