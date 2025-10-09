@@ -11,7 +11,7 @@ import { Action } from '../../Action'
 import uuid from 'react-uuid';
 
 export function DropdownAction(props) {
-    const { button, menuOptions, items, style } = props;
+    const { button, menuOptions, items, style, icon } = props;
     const auth = useAuth();
     const [actions, setActions] = useState([]);
     useEffect(() => {
@@ -25,7 +25,7 @@ export function DropdownAction(props) {
             return button();
         } else {
             return (<Button size={"small"} style={{ padding: "0 6px" }} type="default" data-locator={getLocator(props?.locator || "menu", props?.object)}>
-                <MenuOutlined />
+                {icon || <MenuOutlined />}
             </Button>);
         }
     };

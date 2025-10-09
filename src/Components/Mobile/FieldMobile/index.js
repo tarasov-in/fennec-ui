@@ -22,7 +22,7 @@ if (isIPhone) {
     };
 }
 
-function UploadItems({ inputProps, auth, item, value, onChange, changed }) {
+function UploadItems({wrapperProps, inputProps, auth, item, value, onChange, changed }) {
     const [files, setFiles] = useState([]);
     const [urls, setUrls] = useState([]);
     useEffect(() => {
@@ -87,7 +87,7 @@ function UploadItems({ inputProps, auth, item, value, onChange, changed }) {
         </div>
     );
 }
-function UploadItem({ inputProps, auth, item, value, onChange, changed }) {
+function UploadItem({wrapperProps, inputProps, auth, item, value, onChange, changed }) {
     const [files, setFiles] = useState([]);
     const [urls, setUrls] = useState([]);
     useEffect(() => {
@@ -160,7 +160,7 @@ function UploadItem({ inputProps, auth, item, value, onChange, changed }) {
         </div>
     );
 }
-function Image({ inputProps, auth, item, value, onChange, changed }) {
+function Image({wrapperProps, inputProps, auth, item, value, onChange, changed }) {
     const [open, setOpen] = useState(false);
     const close = () => {
         if (open) {
@@ -245,7 +245,7 @@ function Image({ inputProps, auth, item, value, onChange, changed }) {
         </div>
     );
 }
-function ActionItem({ inputProps, auth, item, value, onChange, onAfterChange, changed }) {
+function ActionItem({wrapperProps, inputProps, auth, item, value, onChange, onAfterChange, changed }) {
     return (<React.Fragment>
         <ActionPickerItem
         data-locator={getLocator(item?.name)}
@@ -258,7 +258,7 @@ function ActionItem({ inputProps, auth, item, value, onChange, onAfterChange, ch
         />
     </React.Fragment>);
 }
-function RangeDate({ inputProps, item, value, onChange, onAfterChange }) {
+function RangeDate({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     const [visible1, setVisible1] = useState(false)
     const [visible2, setVisible2] = useState(false)
     const [val, setVal] = useState([]);
@@ -365,7 +365,7 @@ function RangeDate({ inputProps, item, value, onChange, onAfterChange }) {
         </div>
     )
 }
-function RangeFloat({ inputProps, item, value, onChange, onAfterChange }) {
+function RangeFloat({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     const [val, setVal] = useState();
     useEffect(() => {
         setVal(value);
@@ -448,7 +448,7 @@ function RangeFloat({ inputProps, item, value, onChange, onAfterChange }) {
         </div>
     )
 }
-function FloatSlider({ inputProps, item, value, onChange, onAfterChange }) {
+function FloatSlider({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     const [val, setVal] = useState();
     useEffect(() => {
         setVal(value);
@@ -477,7 +477,7 @@ function FloatSlider({ inputProps, item, value, onChange, onAfterChange }) {
                     <i className="fa fa-times"></i>
                 </Button>
             </div>}
-            <div>
+            <div {...wrapperProps}>
                 <Slider
                 data-locator={getLocator(item?.name,"input")}
                     disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
@@ -494,7 +494,7 @@ function FloatSlider({ inputProps, item, value, onChange, onAfterChange }) {
         </div>
     )
 }
-function RangeInteger({ inputProps, item, value, onChange, onAfterChange }) {
+function RangeInteger({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     const [val, setVal] = useState();
     useEffect(() => {
         setVal(value);
@@ -514,7 +514,7 @@ function RangeInteger({ inputProps, item, value, onChange, onAfterChange }) {
         }
     };
     return (
-        <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
+        <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }} {...wrapperProps}>
             {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
@@ -577,7 +577,7 @@ function RangeInteger({ inputProps, item, value, onChange, onAfterChange }) {
         </div>
     )
 }
-function IntegerSlider({ inputProps, item, value, onChange, onAfterChange }) {
+function IntegerSlider({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     const [val, setVal] = useState();
     useEffect(() => {
         setVal(value);
@@ -587,7 +587,7 @@ function IntegerSlider({ inputProps, item, value, onChange, onAfterChange }) {
     const xmax = item?.max || item?.func?.max || 100000;
 
     return (
-        <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
+        <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }} {...wrapperProps}>
             {(item && item.header !== false) && <div className='bg bg-grey' style={{
                 textAlign: "left",
                 paddingLeft: "5px",
@@ -620,7 +620,7 @@ function IntegerSlider({ inputProps, item, value, onChange, onAfterChange }) {
         </div>
     )
 }
-function Obj({ inputProps, auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
+function Obj({wrapperProps, inputProps, auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
     const [data, setData] = useState([]);
     const meta = useMetaContext();
 
@@ -865,7 +865,7 @@ function Obj({ inputProps, auth, item, value, onChange, onAfterChange, changed, 
         </div >
     )
 }
-function GroupObj({ inputProps, auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
+function GroupObj({wrapperProps, inputProps, auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
     const [data, setData] = useState([]);
     const meta = useMetaContext();
 
@@ -1107,7 +1107,7 @@ function GroupObj({ inputProps, auth, item, value, onChange, onAfterChange, chan
         </div >
     )
 }
-function Date({ inputProps, item, value, onChange, onAfterChange }) {
+function Date({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     const [visible, setVisible] = useState(false)
     const [val, setVal] = useState();
     useEffect(() => {
@@ -1142,7 +1142,7 @@ function Date({ inputProps, item, value, onChange, onAfterChange }) {
                     fontSize: "13px",
                     borderRadius: "4px",
                     padding: "2px 6px"
-                }}>
+                }} {...wrapperProps}>
                     <DatePicker
                         data-locator={getLocator(item?.name, "input")}
                         style={{
@@ -1171,7 +1171,7 @@ function Date({ inputProps, item, value, onChange, onAfterChange }) {
         </div>
     )
 }
-function DateTime({ inputProps, item, value, onChange, onAfterChange }) {
+function DateTime({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     const [visible, setVisible] = useState(false)
     const [val, setVal] = useState();
     useEffect(() => {
@@ -1206,7 +1206,7 @@ function DateTime({ inputProps, item, value, onChange, onAfterChange }) {
                     fontSize: "13px",
                     borderRadius: "4px",
                     padding: "2px 6px"
-                }}>
+                }} {...wrapperProps}>
                     <DatePicker
                         data-locator={getLocator(item?.name, "input")}
                         style={{
@@ -1235,7 +1235,7 @@ function DateTime({ inputProps, item, value, onChange, onAfterChange }) {
         </div>
     )
 }
-function Time({ inputProps, item, value, onChange, onAfterChange }) {
+function Time({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     const [visible, setVisible] = useState(false)
     const [val, setVal] = useState();
     useEffect(() => {
@@ -1270,7 +1270,7 @@ function Time({ inputProps, item, value, onChange, onAfterChange }) {
                     borderRadius: "4px",
                     fontSize: "13px",
                     padding: "2px 6px"
-                }}>
+                }} {...wrapperProps}>
                     <DatePicker
                         data-locator={getLocator(item?.name, "input")}
                         style={{
@@ -1299,8 +1299,9 @@ function Time({ inputProps, item, value, onChange, onAfterChange }) {
         </div>
     )
 }
-function Boolean({ inputProps, item, value, onChange, onAfterChange }) {
+function Boolean({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     return (
+        <div {...wrapperProps}>
         <Checkbox
             data-locator={getLocator(item?.name)}
             disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
@@ -1310,9 +1311,10 @@ function Boolean({ inputProps, item, value, onChange, onAfterChange }) {
         >
             {item?.label}
         </Checkbox>
+        </div>
     )
 }
-function Float({ inputProps, item, value, onChange, onAfterChange }) {
+function Float({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     return (
         <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
             {(item && item.header !== false) && <div className='bg bg-grey' style={{
@@ -1336,7 +1338,7 @@ function Float({ inputProps, item, value, onChange, onAfterChange }) {
                     fontSize: "13px",
                     borderRadius: "4px",
                     padding: "2px 6px"
-                }}>
+                }} {...wrapperProps}>
                     <Input
                         data-locator={getLocator(item?.name, "input")}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
@@ -1355,7 +1357,7 @@ function Float({ inputProps, item, value, onChange, onAfterChange }) {
         </div>
     )
 }
-function Integer({ inputProps, item, value, onChange, onAfterChange }) {
+function Integer({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     return (
         <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
             {(item && item.header !== false) && <div className='bg bg-grey' style={{
@@ -1379,7 +1381,7 @@ function Integer({ inputProps, item, value, onChange, onAfterChange }) {
                     fontSize: "13px",
                     borderRadius: "4px",
                     padding: "2px 6px"
-                }}>
+                }} {...wrapperProps}>
                     <Input
                         data-locator={getLocator(item?.name, "input")}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
@@ -1398,7 +1400,7 @@ function Integer({ inputProps, item, value, onChange, onAfterChange }) {
         </div>
     )
 }
-function String({ inputProps, item, value, onChange, onAfterChange }) {
+function String({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     return (
         <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
             {(item && item.header !== false) && <div className='bg bg-grey' style={{
@@ -1422,7 +1424,7 @@ function String({ inputProps, item, value, onChange, onAfterChange }) {
                     fontSize: "13px",
                     borderRadius: "4px",
                     padding: "2px 6px"
-                }}>
+                }} {...wrapperProps}>
                     <TextArea
                         data-locator={getLocator(item?.name, "input")}
                         style={{
@@ -1441,7 +1443,7 @@ function String({ inputProps, item, value, onChange, onAfterChange }) {
     )
 }
 
-function Password({ inputProps, item, value, onChange, onAfterChange }) {
+function Password({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     const [visible, setVisible] = useState(false)
     return (
         <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
@@ -1467,7 +1469,7 @@ function Password({ inputProps, item, value, onChange, onAfterChange }) {
                     borderRadius: "4px",
                     padding: "2px 6px"
                 }}>
-                    <div className={styles.password}>
+                    <div className={styles.password} {...wrapperProps}>
                         <Input
                             data-locator={getLocator(item?.name, "input")}
                             value={value}
@@ -1507,29 +1509,29 @@ function Unknown({ item }) {
 // }
 
 export function FieldMobile({ auth, item, value, onChange, onAfterChange, changed, isChanged, partialReplacement,
-    fullReplacement, contextObject, objectName, data, inputProps }) {
+    fullReplacement, contextObject, objectName, data, wrapperProps,inputProps }) {
     // const FullReplacementFunc = useFieldReplacement(item?.name, fullReplacement)
     // const FullReplacementFunc = useFieldFullReplacement(item?.name, fullReplacement)
     let type = ((item.view) ? item.view.type : undefined) || item.type;
     const FullReplacementFunc = useFieldFullReplacement(type, fullReplacement)
     if (FullReplacementFunc) {
-        return (<FullReplacementFunc inputProps={inputProps} data={data} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed} />)
+        return (<FullReplacementFunc wrapperProps={wrapperProps} inputProps={inputProps} data={data} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed} />)
     }
     switch (item.filterType) {
         case "group":
             switch (item.type) {
                 case "func":
-                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, { partialReplacement, contextObject, objectName, data }) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, { partialReplacement, contextObject, objectName, data, inputProps, wrapperProps }) : undefined;
                 case "object":
                 case "document":
-                    return (<GroupObj inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></GroupObj>)
+                    return (<GroupObj wrapperProps={wrapperProps} inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></GroupObj>)
                 default:
-                    return (<Unknown inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
+                    return (<Unknown wrapperProps={wrapperProps} inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
             }
         case "range":
             switch (item.type) {
                 case "func":
-                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, { partialReplacement, contextObject, objectName, data }) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, { partialReplacement, contextObject, objectName, data, inputProps, wrapperProps }) : undefined;
                 case "int":
                 case "uint":
                 case "integer":
@@ -1537,24 +1539,24 @@ export function FieldMobile({ auth, item, value, onChange, onAfterChange, change
                 case "int32":
                 case "uint64":
                 case "uint32":
-                    return (<RangeInteger inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeInteger>)
+                    return (<RangeInteger wrapperProps={wrapperProps} inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeInteger>)
                 case "double":
                 case "float":
                 case "float64":
                 case "float32":
-                    return (<RangeFloat inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeFloat>)
+                    return (<RangeFloat wrapperProps={wrapperProps} inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeFloat>)
                 case "date":
                 case "time":
                 case "datetime":
                 case "time.Time":
-                    return (<RangeDate inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeDate>)
+                    return (<RangeDate wrapperProps={wrapperProps} inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></RangeDate>)
                 default:
-                    return (<Unknown inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
+                    return (<Unknown wrapperProps={wrapperProps} inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
             }
         case "slider":
             switch (item.type) {
                 case "func":
-                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, { partialReplacement, contextObject, objectName, data }) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, { partialReplacement, contextObject, objectName, data, inputProps, wrapperProps }) : undefined;
                 case "int":
                 case "uint":
                 case "integer":
@@ -1562,23 +1564,23 @@ export function FieldMobile({ auth, item, value, onChange, onAfterChange, change
                 case "int32":
                 case "uint64":
                 case "uint32":
-                    return (<IntegerSlider inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></IntegerSlider>)
+                    return (<IntegerSlider wrapperProps={wrapperProps} inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></IntegerSlider>)
                 case "double":
                 case "float":
                 case "float64":
                 case "float32":
-                    return (<FloatSlider inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></FloatSlider>)
+                    return (<FloatSlider wrapperProps={wrapperProps} inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></FloatSlider>)
                 default:
-                    return (<Unknown inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
+                    return (<Unknown wrapperProps={wrapperProps} inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
             }
         default:
             switch (item.type) {
                 case "func":
-                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, { partialReplacement, contextObject, objectName, data }) : undefined;
+                    return (props?.item?.render) ? props?.item?.render(auth, item, value, onChange, onAfterChange, isChanged, { partialReplacement, contextObject, objectName, data, inputProps, wrapperProps }) : undefined;
                 case "string":
-                    return (<String inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></String>)
+                    return (<String wrapperProps={wrapperProps} inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></String>)
                 case "password":
-                    return (<Password inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Password>)
+                    return (<Password wrapperProps={wrapperProps} inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Password>)
                 case "int":
                 case "uint":
                 case "integer":
@@ -1586,37 +1588,37 @@ export function FieldMobile({ auth, item, value, onChange, onAfterChange, change
                 case "int32":
                 case "uint64":
                 case "uint32":
-                    return (<Integer inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Integer>)
+                    return (<Integer wrapperProps={wrapperProps} inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Integer>)
                 case "double":
                 case "float":
                 case "float64":
                 case "float32":
-                    return (<Float inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Float>)
+                    return (<Float wrapperProps={wrapperProps} inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Float>)
                 case "boolean":
                 case "bool":
-                    return (<Boolean inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Boolean>)
+                    return (<Boolean wrapperProps={wrapperProps} inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Boolean>)
                 case "time":
-                    return (<Time inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Time>)
+                    return (<Time wrapperProps={wrapperProps} inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Time>)
                 case "date":
-                    return (<Date inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Date>)
+                    return (<Date wrapperProps={wrapperProps} inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Date>)
                 case "datetime":
                 case "time.Time":
-                    return (<DateTime inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></DateTime>)
+                    return (<DateTime wrapperProps={wrapperProps} inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></DateTime>)
                 case "object":
                 case "document":
-                    return (<Obj inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></Obj>)
+                    return (<Obj wrapperProps={wrapperProps} inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged} changed={changed}></Obj>)
                 case "action":
-                    return (<ActionItem inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></ActionItem>)
+                    return (<ActionItem wrapperProps={wrapperProps} inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></ActionItem>)
                 case "file":
-                    return (<UploadItem inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></UploadItem>)
+                    return (<UploadItem wrapperProps={wrapperProps} inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></UploadItem>)
                 case "files":
-                    return (<UploadItems inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></UploadItems>)
+                    return (<UploadItems wrapperProps={wrapperProps} inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></UploadItems>)
                 // case "imageeditor":
-                //     return (<ImageEditor inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></ImageEditor>)
+                //     return (<ImageEditor wrapperProps={wrapperProps} inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></ImageEditor>)
                 case "image":
-                    return (<Image inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Image>)
+                    return (<Image wrapperProps={wrapperProps} inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Image>)
                 default:
-                    return (<Unknown inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
+                    return (<Unknown wrapperProps={wrapperProps} inputProps={inputProps} auth={auth} partialReplacement={partialReplacement} contextObject={contextObject} objectName={objectName} item={item} value={value} onChange={onChange} onAfterChange={onAfterChange} isChanged={isChanged}></Unknown>)
             }
     }
 }

@@ -166,7 +166,8 @@ import {
 } from './Components/Context'
 
 import {
-  Field
+  Field,
+  FieldWrapper
 } from './Components/Desktop/Field'
 
 import {
@@ -385,6 +386,7 @@ export {
   useClipboardContext,
 
   Field,
+  FieldWrapper,
   FieldMobile,
   Model,
   SortingFieldsUI,
