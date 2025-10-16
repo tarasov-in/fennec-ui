@@ -75,7 +75,7 @@ function UploadItems({wrapperProps, inputProps, auth, item, value, onChange, cha
                     upload={upload}
                     {...uploadingProps}
                     showUpload={urls.length < uploadingProps.maxCount}
-                    {...inputProps}
+                    {...inputProps}  {...item?.inputProps}
                 >
                     {(item.trigger && _.isFunction(item.trigger)) && item.trigger(item)}
                     {/* {(item.trigger && !_.isFunction(item.trigger)) && content(item)} */}
@@ -148,7 +148,7 @@ function UploadItem({wrapperProps, inputProps, auth, item, value, onChange, chan
                     upload={upload}
                     {...uploadingProps}
                     showUpload={urls.length < uploadingProps.maxCount}
-                    {...inputProps}
+                    {...inputProps}  {...item?.inputProps}
                 >
                     {(item.trigger && _.isFunction(item.trigger)) && item.trigger(item)}
                     {(item.trigger && !_.isFunction(item.trigger)) && content(item)}
@@ -239,7 +239,7 @@ function Image({wrapperProps, inputProps, auth, item, value, onChange, changed }
                     onChange={onChange}
                     open={open}
                     close={close}
-                    {...inputProps}
+                    {...inputProps}  {...item?.inputProps}
                 />
             </div>
         </div>
@@ -254,7 +254,7 @@ function ActionItem({wrapperProps, inputProps, auth, item, value, onChange, onAf
             item={item}
             value={value}
             onChange={onChange}
-            {...inputProps}
+            {...inputProps}  {...item?.inputProps}
         />
     </React.Fragment>);
 }
@@ -488,7 +488,7 @@ function FloatSlider({wrapperProps, inputProps, item, value, onChange, onAfterCh
                     value={(item.realtime) ? value : val}
                     onChange={(item.realtime) ? onChange : setVal}
                     onAfterChange={(item.realtime) ? onAfterChange : onChange}
-                    {...inputProps}
+                    {...inputProps}  {...item?.inputProps}
                 />
             </div>
         </div>
@@ -615,7 +615,7 @@ function IntegerSlider({wrapperProps, inputProps, item, value, onChange, onAfter
                 value={(item.realtime) ? value : val}
                 onChange={(item.realtime) ? onChange : setVal}
                 onAfterChange={(item.realtime) ? onAfterChange : onChange}
-                {...inputProps}
+                {...inputProps}  {...item?.inputProps}
             />
         </div>
     )
@@ -1160,7 +1160,7 @@ function Date({wrapperProps, inputProps, item, value, onChange, onAfterChange })
                         }}
                         onConfirm={value => onChange(moment(value))}
                         value={val || null}
-                        {...inputProps}
+                        {...inputProps}  {...item?.inputProps}
                     >
                         {value =>
                             value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item?.label) ? item?.label?.toLowerCase() : "значение"}`)}</span>
@@ -1224,7 +1224,7 @@ function DateTime({wrapperProps, inputProps, item, value, onChange, onAfterChang
                         }}
                         onConfirm={value => onChange(moment(value))}
                         value={val || null}
-                        {...inputProps}
+                        {...inputProps}  {...item?.inputProps}
                     >
                         {value =>
                             value ? moment(value).format('YYYY-MM-DD HH:mm:ss') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item?.label) ? item?.label?.toLowerCase() : "значение"}`)}</span>
@@ -1288,7 +1288,7 @@ function Time({wrapperProps, inputProps, item, value, onChange, onAfterChange })
                         }}
                         onConfirm={value => onChange(moment(value))}
                         value={val || null}
-                        {...inputProps}
+                        {...inputProps}  {...item?.inputProps}
                     >
                         {value =>
                             value ? moment(value).format('HH:mm:ss') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item?.label) ? item?.label?.toLowerCase() : "значение"}`)}</span>
@@ -1307,7 +1307,7 @@ function Boolean({wrapperProps, inputProps, item, value, onChange, onAfterChange
             disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
             onChange={onChange}
             checked={value}
-            {...inputProps}
+            {...inputProps}  {...item?.inputProps}
         >
             {item?.label}
         </Checkbox>
@@ -1350,7 +1350,7 @@ function Float({wrapperProps, inputProps, item, value, onChange, onAfterChange }
                             }
                         }}
                         value={value || ""}
-                        {...inputProps}
+                        {...inputProps}  {...item?.inputProps}
                     />
                 </div>
             </div>
@@ -1393,7 +1393,7 @@ function Integer({wrapperProps, inputProps, item, value, onChange, onAfterChange
                             }
                         }}
                         value={value || ""}
-                        {...inputProps}
+                        {...inputProps}  {...item?.inputProps}
                     />
                 </div>
             </div>
@@ -1435,7 +1435,7 @@ function String({wrapperProps, inputProps, item, value, onChange, onAfterChange 
                         onChange={onChange}
                         value={value || ""}
                         placeholder={item.placeholder || ("введите " + ((item?.label) ? item?.label?.toLowerCase() : "значение"))}
-                        {...inputProps}
+                        {...inputProps}  {...item?.inputProps}
                     />
                 </div>
             </div>
@@ -1477,7 +1477,7 @@ function Password({wrapperProps, inputProps, item, value, onChange, onAfterChang
                             className={styles.input}
                             placeholder={item.placeholder || ("введите " + ((item?.label) ? item?.label?.toLowerCase() : "значение"))}
                             type={visible ? 'text' : 'password'}
-                            {...inputProps}
+                            {...inputProps}  {...item?.inputProps}
                         />
                         <div className={styles.eye}>
                             {!visible ? (

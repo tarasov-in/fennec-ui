@@ -1285,7 +1285,7 @@ function DefaultCollectionServer(props) {
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
-                        paddingBottom: "10px",
+                        paddingBottom: (filters && filters.length > 0)?"10px":"0px",
                         ...(headerStyle) ? headerStyle : {}
                     }}>
                     <div style={{ flex: "1 1 auto", paddingRight: "15px", display: "flex", gap: "5px" }}>

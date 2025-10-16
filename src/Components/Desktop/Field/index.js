@@ -267,7 +267,7 @@ function UploadItems({ wrapperProps, inputProps, formItem, auth, item, value, on
     return (<Upload
         {...uploadingProps}
         data-locator={getLocator(item?.name)}
-        {...inputProps}
+        {...inputProps}  {...item?.inputProps}
     >
         {!item.trigger && <Button data-locator={getLocator(item?.name, "upload")} icon={<UploadOutlined />}>Загрузить файлы</Button>}
         {item?.trigger && item?.trigger()}
@@ -321,7 +321,7 @@ function UploadItem({ wrapperProps, inputProps, formItem, auth, item, value, onC
         </div>
     );
     return (
-        <Dragger {...uploadingProps} data-locator={getLocator(item?.name)} {...inputProps}>
+        <Dragger {...uploadingProps} data-locator={getLocator(item?.name)} {...inputProps}  {...item?.inputProps}>
             {(item.trigger) && <div ref={hoverRef}>
                 {item.trigger()}
                 {(!item.nocontent) && <div
@@ -421,7 +421,7 @@ function Image({ wrapperProps, inputProps, formItem, auth, item, value, onChange
                     onChange={onChange}
                     open={open}
                     close={close}
-                    {...inputProps}
+                    {...inputProps}  {...item?.inputProps}
                 />
             </div>
         </div>
@@ -587,7 +587,7 @@ function GroupObj({ wrapperProps, inputProps, formItem, auth, item, value, onCha
             // filterSort={(optionA, optionB) =>
             //     optionA?.label?.toLowerCase().localeCompare(optionB?.label?.toLowerCase())
             // }
-            {...inputProps}
+            {...inputProps}  {...item?.inputProps}
         >
             {elements(data)}
         </Select>
@@ -606,7 +606,7 @@ function RangeTime({ wrapperProps, inputProps, formItem, auth, item, value, onCh
     return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <div {...wrapperProps}>
             <TimePicker.RangePicker data-locator={getLocator(item?.name)} changeOnBlur={true} value={a} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }}
-            {...inputProps} />
+            {...inputProps}  {...item?.inputProps} />
             </div>
     </FieldLayout>)
 }
@@ -621,7 +621,7 @@ function RangeDate({ wrapperProps, inputProps, formItem, auth, item, value, onCh
     return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <div {...wrapperProps}>
             <DatePicker.RangePicker data-locator={getLocator(item?.name)} changeOnBlur={true} value={a} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }}
-            {...inputProps} />
+            {...inputProps}  {...item?.inputProps} />
             </div>
     </FieldLayout>)
 }
@@ -636,7 +636,7 @@ function RangeDateTime({ wrapperProps, inputProps, formItem, auth, item, value, 
     return (<FieldLayout formItem={formItem} item={item} style={(item?.fieldLayoutStyle) ? item.fieldLayoutStyle : { width: "100%" }}>
         <div {...wrapperProps}>
             <DatePicker.RangePicker data-locator={getLocator(item?.name)} changeOnBlur={true} showTime={{ format: 'HH:mm' }} value={a} onChange={onChange} format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }}
-            {...inputProps} />
+            {...inputProps}  {...item?.inputProps} />
             </div>
     </FieldLayout>)
 }
@@ -663,7 +663,7 @@ function RangeFloat({ wrapperProps, inputProps, formItem, auth, item, value, onC
             value={val || def}
             onChange={setVal}
             onAfterChange={(item.realtime) ? onAfterChange : onChange}
-            {...inputProps} />
+            {...inputProps}  {...item?.inputProps} />
             </div>
     </FieldLayout>
     )
@@ -688,7 +688,7 @@ function FloatSlider({ wrapperProps, inputProps, formItem, auth, item, value, on
             value={(item.realtime) ? value : val}
             onChange={(item.realtime) ? onChange : setVal}
             onAfterChange={(item.realtime) ? onAfterChange : onChange}
-            {...inputProps} />
+            {...inputProps}  {...item?.inputProps} />
             </div>
     </FieldLayout>
     )
@@ -717,7 +717,7 @@ function RangeInteger({ wrapperProps, inputProps, formItem, auth, item, value, o
             // onChange={setVal}
             onChange={(item.realtime) ? onChange : setVal}
             onAfterChange={(item.realtime) ? onAfterChange : onChange}
-            {...inputProps} />
+            {...inputProps}  {...item?.inputProps} />
             </div>
     </FieldLayout>
     )
@@ -743,7 +743,7 @@ function IntegerSlider({ wrapperProps, inputProps, formItem, auth, item, value, 
             value={(item.realtime) ? value : val}
             onChange={(item.realtime) ? onChange : setVal}
             onAfterChange={(item.realtime) ? onAfterChange : onChange}
-            {...inputProps} />
+            {...inputProps}  {...item?.inputProps} />
             </div>
     </FieldLayout>
     )
@@ -998,7 +998,7 @@ function Obj({ wrapperProps, inputProps, formItem, auth, item, value, onChange, 
                 // filterOption={(input, element) =>
                 //     element.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 // }
-                {...inputProps}
+                {...inputProps}  {...item?.inputProps}
             >
                 {elements(data)}
             </Select>
@@ -1742,7 +1742,7 @@ function BigObj({ wrapperProps, inputProps, formItem, auth, item, value, onChang
                 onChange={e => clear(e.target.value)}
                 value={displayString(item, itemByProperty(item, value))}
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
-                {...inputProps}
+                {...inputProps}  {...item?.inputProps}
             />
             <Action
                 // title={`Выберите ${(item.label) ? item.label.toLowerCase() : "элемент"}`}
@@ -1784,7 +1784,7 @@ function DateTime({ wrapperProps, inputProps, formItem, auth, item, value, onCha
                 data-locator={getLocator(item?.name)}
                 changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} showTime format="DD.MM.YYYY HH:mm" locale={locale} style={{ width: "100%" }}
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
-                {...inputProps}
+                {...inputProps}  {...item?.inputProps}
             />
         </ActionsSpace>
     </FieldLayout>
@@ -1798,7 +1798,7 @@ function Date({ wrapperProps, inputProps, formItem, auth, item, value, onChange,
                 data-locator={getLocator(item?.name)}
                 changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} format="DD.MM.YYYY" locale={locale} style={{ width: "100%" }}
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
-                {...inputProps}
+                {...inputProps}  {...item?.inputProps}
             />
         </ActionsSpace>
     </FieldLayout>
@@ -1812,7 +1812,7 @@ function Time({ wrapperProps, inputProps, formItem, auth, item, value, onChange,
                 data-locator={getLocator(item?.name)}
                 changeOnBlur={true} value={(value) ? dayjs(value) : undefined} onChange={onChange} type="time" format="HH:mm:ss" locale={locale} style={{ width: "100%" }}
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
-                {...inputProps}
+                {...inputProps}  {...item?.inputProps}
             />
         </ActionsSpace>
     </FieldLayout>
@@ -1828,7 +1828,7 @@ function Boolean({ wrapperProps, inputProps, formItem, auth, item, value, onChan
             data-locator={getLocator(item?.name)}
             checked={value} onChange={change}
             disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
-            {...inputProps}
+            {...inputProps}  {...item?.inputProps}
         >
             {item.label}
         </Checkbox>
@@ -1843,7 +1843,7 @@ function Float({ wrapperProps, inputProps, formItem, auth, item, value, onChange
                 data-locator={getLocator(item?.name)}
                 value={value} onChange={onChange} style={{ width: "100%" }} min={item?.min || item?.validators?.min} max={item?.max || item?.validators?.max}
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
-                {...inputProps}
+                {...inputProps}  {...item?.inputProps}
             />
         </ActionsSpace>
     </FieldLayout>
@@ -1857,7 +1857,7 @@ function Integer({ wrapperProps, inputProps, formItem, auth, item, value, onChan
                 data-locator={getLocator(item?.name)}
                 value={value} onChange={onChange} style={{ width: "100%" }} min={item?.min || item?.validators?.min} max={item?.max || item?.validators?.max}
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
-                {...inputProps}
+                {...inputProps}  {...item?.inputProps}
             />
         </ActionsSpace>
     </FieldLayout>
@@ -1871,7 +1871,7 @@ function String({ wrapperProps, inputProps, formItem, auth, item, value, onChang
                 data-locator={getLocator(item?.name)}
                 size={(item.size) ? item.size : "middle"} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
-                {...inputProps}
+                {...inputProps}  {...item?.inputProps}
             />
         </ActionsSpace>
     </FieldLayout>
@@ -1886,7 +1886,7 @@ function Password({ wrapperProps, inputProps, formItem, auth, item, value, onCha
                 allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
                 iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
-                {...inputProps}
+                {...inputProps}  {...item?.inputProps}
             />
         </ActionsSpace>
     </FieldLayout>
@@ -1900,7 +1900,7 @@ function MultilineText({ wrapperProps, inputProps, formItem, auth, item, value, 
                 data-locator={getLocator(item?.name)}
                 rows={6} allowClear value={value} onChange={(v) => onChange(v.target.value)} style={{ width: "100%" }}
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
-                {...inputProps}
+                {...inputProps}  {...item?.inputProps}
             />
         </ActionsSpace>
     </FieldLayout>
