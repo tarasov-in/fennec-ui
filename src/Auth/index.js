@@ -323,7 +323,8 @@ export class AuthService {
             headers['Authorization'] = 'Bearer ' + this.getToken()
         }
         var end = this.PerformanceStart(url);
-        return this.fetchRfToken(this.domain + url, {
+        // return this.fetchRfToken(this.domain + url, {
+        return this.fetchRfToken(url, {
             ...options,
             headers,
         })
@@ -347,7 +348,8 @@ export class AuthService {
             headers['Authorization'] = 'Bearer ' + this.getToken()
         }
         var end = this.PerformanceStart(url);
-        return this.fetchRfToken(this.domain + url, {
+        // return this.fetchRfToken(this.domain + url, {
+        return this.fetchRfToken(url, {
             ...options,
             headers,
         })
@@ -388,7 +390,8 @@ export class AuthService {
             headers['Authorization'] = 'Bearer ' + this.getToken()
         }
         var end = this.PerformanceStart(url);
-        return this.fetchRfToken(this.domain + url, {
+        // return this.fetchRfToken(this.domain + url, {
+        return this.fetchRfToken(url, {
             ...options,
             headers,
         })
@@ -422,7 +425,8 @@ export class AuthService {
             headers['Authorization'] = 'Bearer ' + this.getToken()
         }
         var end = this.PerformanceStart(url);
-        return this.fetchRfToken(this.domain + url, {
+        // return this.fetchRfToken(this.domain + url, {
+        return this.fetchRfToken(url, {
             ...options,
             headers,
         })
