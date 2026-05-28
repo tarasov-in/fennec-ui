@@ -15,6 +15,11 @@ export function useTranslateContext() {
     return React.useContext(TranslateContext);
 }
 
+export const LanguageContext = createContext();
+export function useLanguageContext() {
+    return React.useContext(LanguageContext);
+}
+
 export const MetaContext = createContext();
 export function useMetaContext() {
     return React.useContext(MetaContext);
