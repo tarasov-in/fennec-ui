@@ -22,7 +22,7 @@ if (isIPhone) {
     };
 }
 
-function UploadItems({wrapperProps, inputProps, auth, item, value, onChange, changed }) {
+function UploadItems({ wrapperProps, inputProps, auth, item, value, onChange, changed }) {
     const [files, setFiles] = useState([]);
     const [urls, setUrls] = useState([]);
     useEffect(() => {
@@ -87,7 +87,7 @@ function UploadItems({wrapperProps, inputProps, auth, item, value, onChange, cha
         </div>
     );
 }
-function UploadItem({wrapperProps, inputProps, auth, item, value, onChange, changed }) {
+function UploadItem({ wrapperProps, inputProps, auth, item, value, onChange, changed }) {
     const [files, setFiles] = useState([]);
     const [urls, setUrls] = useState([]);
     useEffect(() => {
@@ -160,7 +160,7 @@ function UploadItem({wrapperProps, inputProps, auth, item, value, onChange, chan
         </div>
     );
 }
-function Image({wrapperProps, inputProps, auth, item, value, onChange, changed }) {
+function Image({ wrapperProps, inputProps, auth, item, value, onChange, changed }) {
     const [open, setOpen] = useState(false);
     const close = () => {
         if (open) {
@@ -204,12 +204,12 @@ function Image({wrapperProps, inputProps, auth, item, value, onChange, changed }
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
-                <Button fill='none' size='mini' 
-                data-locator={getLocator(item?.name, "clear")}
-                onClick={(v) => {
-                    onChange(null);
-                }}>
+                <div className={(item?.validators?.required) ? 'item-required' : ''}>{item?.label}</div>
+                <Button fill='none' size='mini'
+                    data-locator={getLocator(item?.name, "clear")}
+                    onClick={(v) => {
+                        onChange(null);
+                    }}>
                     <i className="fa fa-times"></i>
                 </Button>
             </div>}
@@ -227,9 +227,9 @@ function Image({wrapperProps, inputProps, auth, item, value, onChange, changed }
                         src={toUrl(value)}
                     />
                 </div>
-                <Button 
-                data-locator={getLocator(item?.name, "edit")}
-                onClick={onOpenChange} size="small" fill='none'>
+                <Button
+                    data-locator={getLocator(item?.name, "edit")}
+                    onClick={onOpenChange} size="small" fill='none'>
                     <i className="fa fa-pencil-square-o"></i>
                 </Button>
                 <ImageEditor
@@ -245,10 +245,10 @@ function Image({wrapperProps, inputProps, auth, item, value, onChange, changed }
         </div>
     );
 }
-function ActionItem({wrapperProps, inputProps, auth, item, value, onChange, onAfterChange, changed }) {
+function ActionItem({ wrapperProps, inputProps, auth, item, value, onChange, onAfterChange, changed }) {
     return (<React.Fragment>
         <ActionPickerItem
-        data-locator={getLocator(item?.name)}
+            data-locator={getLocator(item?.name)}
             auth={auth}
             mode="input"
             item={item}
@@ -258,7 +258,7 @@ function ActionItem({wrapperProps, inputProps, auth, item, value, onChange, onAf
         />
     </React.Fragment>);
 }
-function RangeDate({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
+function RangeDate({ wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     const [visible1, setVisible1] = useState(false)
     const [visible2, setVisible2] = useState(false)
     const [val, setVal] = useState([]);
@@ -282,29 +282,29 @@ function RangeDate({wrapperProps, inputProps, item, value, onChange, onAfterChan
                     display: "flex",
                     justifyContent: "space-between"
                 }}>
-                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
-                <Button fill='none' size='mini' 
-                data-locator={getLocator(item?.name, "clear")}
-                onClick={(v) => {
-                    onChange();
-                }}>
+                <div className={(item?.validators?.required) ? 'item-required' : ''}>{item?.label}</div>
+                <Button fill='none' size='mini'
+                    data-locator={getLocator(item?.name, "clear")}
+                    onClick={(v) => {
+                        onChange();
+                    }}>
                     <i className="fa fa-times"></i>
                 </Button>
             </div>}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px" }}>
-                <div 
-                data-locator={getLocator(item?.name,"visible1")}
-                onClick={() => {
-                    setVisible1(true)
-                }} style={{
-                    flex: "1",
-                    border: "1px solid #e5e5e5",
-                    fontSize: "13px",
-                    borderRadius: "4px",
-                    padding: "2px 6px"
-                }}>
+                <div
+                    data-locator={getLocator(item?.name, "visible1")}
+                    onClick={() => {
+                        setVisible1(true)
+                    }} style={{
+                        flex: "1",
+                        border: "1px solid #e5e5e5",
+                        fontSize: "13px",
+                        borderRadius: "4px",
+                        padding: "2px 6px"
+                    }}>
                     <DatePicker
-                    data-locator={getLocator(item?.name, "input1")}
+                        data-locator={getLocator(item?.name, "input1")}
                         style={{
                             "--item-font-size": "13px"
                         }}
@@ -327,19 +327,19 @@ function RangeDate({wrapperProps, inputProps, item, value, onChange, onAfterChan
                         }
                     </DatePicker>
                 </div>
-                <div 
-                data-locator={getLocator(item?.name,"visible2")}
-                onClick={() => {
-                    setVisible2(true)
-                }} style={{
-                    flex: "1",
-                    border: "1px solid #e5e5e5",
-                    fontSize: "13px",
-                    borderRadius: "4px",
-                    padding: "2px 6px"
-                }}>
+                <div
+                    data-locator={getLocator(item?.name, "visible2")}
+                    onClick={() => {
+                        setVisible2(true)
+                    }} style={{
+                        flex: "1",
+                        border: "1px solid #e5e5e5",
+                        fontSize: "13px",
+                        borderRadius: "4px",
+                        padding: "2px 6px"
+                    }}>
                     <DatePicker
-                    data-locator={getLocator(item?.name,"input2")}
+                        data-locator={getLocator(item?.name, "input2")}
                         style={{
                             "--item-font-size": "13px"
                         }}
@@ -365,7 +365,7 @@ function RangeDate({wrapperProps, inputProps, item, value, onChange, onAfterChan
         </div>
     )
 }
-function RangeFloat({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
+function RangeFloat({ wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     const [val, setVal] = useState();
     useEffect(() => {
         setVal(value);
@@ -393,12 +393,12 @@ function RangeFloat({wrapperProps, inputProps, item, value, onChange, onAfterCha
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
-                <Button fill='none' size='mini' 
-                data-locator={getLocator(item?.name,"clear")}
-                onClick={(v) => {
-                    onChange();
-                }}>
+                <div className={(item?.validators?.required) ? 'item-required' : ''}>{item?.label}</div>
+                <Button fill='none' size='mini'
+                    data-locator={getLocator(item?.name, "clear")}
+                    onClick={(v) => {
+                        onChange();
+                    }}>
                     <i className="fa fa-times"></i>
                 </Button>
             </div>}
@@ -411,7 +411,7 @@ function RangeFloat({wrapperProps, inputProps, item, value, onChange, onAfterCha
                     padding: "2px 6px"
                 }}>
                     <Input
-                    data-locator={getLocator(item?.name,"left")}
+                        data-locator={getLocator(item?.name, "left")}
                         type={"number"}
                         onChange={onChangeLeft}
                         value={(val && val.length > 1) ? val[0] : def[0]}
@@ -425,7 +425,7 @@ function RangeFloat({wrapperProps, inputProps, item, value, onChange, onAfterCha
                     padding: "2px 6px"
                 }}>
                     <Input
-                    data-locator={getLocator(item?.name,"right")}
+                        data-locator={getLocator(item?.name, "right")}
                         type={"number"}
                         onChange={onChangeRight}
                         value={(val && val.length > 1) ? val[1] : def[1]}
@@ -434,7 +434,7 @@ function RangeFloat({wrapperProps, inputProps, item, value, onChange, onAfterCha
             </div>
             <div>
                 <Slider
-                data-locator={getLocator(item?.name,"input")}
+                    data-locator={getLocator(item?.name, "input")}
                     range
                     defaultValue={def}
                     min={(xmin - (xmin % xstep))}
@@ -448,7 +448,7 @@ function RangeFloat({wrapperProps, inputProps, item, value, onChange, onAfterCha
         </div>
     )
 }
-function FloatSlider({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
+function FloatSlider({ wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     const [val, setVal] = useState();
     useEffect(() => {
         setVal(value);
@@ -466,11 +466,11 @@ function FloatSlider({wrapperProps, inputProps, item, value, onChange, onAfterCh
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
+                <div className={(item?.validators?.required) ? 'item-required' : ''}>{item?.label}</div>
                 <Button
                     disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
-                    fill='none' size='mini' 
-                    data-locator={getLocator(item?.name,"clear")}
+                    fill='none' size='mini'
+                    data-locator={getLocator(item?.name, "clear")}
                     onClick={(v) => {
                         onChange();
                     }}>
@@ -479,7 +479,7 @@ function FloatSlider({wrapperProps, inputProps, item, value, onChange, onAfterCh
             </div>}
             <div {...wrapperProps}>
                 <Slider
-                data-locator={getLocator(item?.name,"input")}
+                    data-locator={getLocator(item?.name, "input")}
                     disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
                     range
                     min={xmin}
@@ -494,7 +494,7 @@ function FloatSlider({wrapperProps, inputProps, item, value, onChange, onAfterCh
         </div>
     )
 }
-function RangeInteger({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
+function RangeInteger({ wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     const [val, setVal] = useState();
     useEffect(() => {
         setVal(value);
@@ -522,12 +522,12 @@ function RangeInteger({wrapperProps, inputProps, item, value, onChange, onAfterC
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
+                <div className={(item?.validators?.required) ? 'item-required' : ''}>{item?.label}</div>
                 <Button fill='none' size='mini'
-                data-locator={getLocator(item?.name,"clear")}
-                 onClick={(v) => {
-                    onChange();
-                }}>
+                    data-locator={getLocator(item?.name, "clear")}
+                    onClick={(v) => {
+                        onChange();
+                    }}>
                     <i className="fa fa-times"></i>
                 </Button>
             </div>}
@@ -540,7 +540,7 @@ function RangeInteger({wrapperProps, inputProps, item, value, onChange, onAfterC
                     padding: "2px 6px"
                 }}>
                     <Input
-                    data-locator={getLocator(item?.name, "left")}
+                        data-locator={getLocator(item?.name, "left")}
                         type={"number"}
                         onChange={onChangeLeft}
                         value={(val && val.length > 1) ? val[0] : def[0]}
@@ -554,7 +554,7 @@ function RangeInteger({wrapperProps, inputProps, item, value, onChange, onAfterC
                     padding: "2px 6px"
                 }}>
                     <Input
-                    data-locator={getLocator(item?.name, "right")}
+                        data-locator={getLocator(item?.name, "right")}
                         type={"number"}
                         onChange={onChangeRight}
                         value={(val && val.length > 1) ? val[1] : def[1]}
@@ -562,7 +562,7 @@ function RangeInteger({wrapperProps, inputProps, item, value, onChange, onAfterC
                 </div>
             </div>
             <Slider
-            data-locator={getLocator(item?.name, "input")}
+                data-locator={getLocator(item?.name, "input")}
                 // style={{ marginLeft: 15, marginRight: 15, height: "22px" }}
                 range
                 defaultValue={def}
@@ -577,7 +577,7 @@ function RangeInteger({wrapperProps, inputProps, item, value, onChange, onAfterC
         </div>
     )
 }
-function IntegerSlider({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
+function IntegerSlider({ wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     const [val, setVal] = useState();
     useEffect(() => {
         setVal(value);
@@ -595,10 +595,10 @@ function IntegerSlider({wrapperProps, inputProps, item, value, onChange, onAfter
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
+                <div className={(item?.validators?.required) ? 'item-required' : ''}>{item?.label}</div>
                 <Button
                     disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
-                    fill='none' size='mini' 
+                    fill='none' size='mini'
                     data-locator={getLocator(item?.name, "clear")}
                     onClick={(v) => {
                         onChange();
@@ -607,7 +607,7 @@ function IntegerSlider({wrapperProps, inputProps, item, value, onChange, onAfter
                 </Button>
             </div>}
             <Slider
-            data-locator={getLocator(item?.name, "input")}
+                data-locator={getLocator(item?.name, "input")}
                 disabled={(item && item.view && item.view.disabled) ? item.view.disabled : false}
                 min={xmin}
                 max={xmax}
@@ -620,7 +620,7 @@ function IntegerSlider({wrapperProps, inputProps, item, value, onChange, onAfter
         </div>
     )
 }
-function Obj({wrapperProps, inputProps, auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
+function Obj({ wrapperProps, inputProps, auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
     const [data, setData] = useState([]);
     const meta = useMetaContext();
 
@@ -794,7 +794,7 @@ function Obj({wrapperProps, inputProps, auth, item, value, onChange, onAfterChan
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
+                <div className={(item?.validators?.required) ? 'item-required' : ''}>{item?.label}</div>
                 <Button fill='none' size='mini' onClick={(v) => {
                     onChange(undefined, item, undefined);
                 }}>
@@ -822,7 +822,7 @@ function Obj({wrapperProps, inputProps, auth, item, value, onChange, onAfterChan
                         <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
                             <div style={{ flex: "0", padding: "0 10px" }}>
                                 <div style={{ display: "flex", justifyContent: "center", padding: "10px 30px 10px 15px", fontSize: "16px" }}>
-                                    <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
+                                    <div className={(item?.validators?.required) ? 'item-required' : ''}>{item?.label}</div>
                                 </div>
                             </div>
                             <div style={{ flex: "0", padding: "0 10px" }}>
@@ -865,7 +865,7 @@ function Obj({wrapperProps, inputProps, auth, item, value, onChange, onAfterChan
         </div >
     )
 }
-function GroupObj({wrapperProps, inputProps, auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
+function GroupObj({ wrapperProps, inputProps, auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
     const [data, setData] = useState([]);
     const meta = useMetaContext();
 
@@ -1036,7 +1036,7 @@ function GroupObj({wrapperProps, inputProps, auth, item, value, onChange, onAfte
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
+                <div className={(item?.validators?.required) ? 'item-required' : ''}>{item?.label}</div>
                 <Button fill='none' size='mini' onClick={(v) => {
                     onChange(undefined, item, undefined);
                 }}>
@@ -1064,7 +1064,7 @@ function GroupObj({wrapperProps, inputProps, auth, item, value, onChange, onAfte
                         <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
                             <div style={{ flex: "0", padding: "0 10px" }}>
                                 <div style={{ display: "flex", justifyContent: "center", padding: "10px 30px 10px 15px", fontSize: "16px" }}>
-                                    <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
+                                    <div className={(item?.validators?.required) ? 'item-required' : ''}>{item?.label}</div>
                                 </div>
                             </div>
                             <div style={{ flex: "0", padding: "0 10px" }}>
@@ -1107,7 +1107,7 @@ function GroupObj({wrapperProps, inputProps, auth, item, value, onChange, onAfte
         </div >
     )
 }
-function Date({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
+function Date({ wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     const [visible, setVisible] = useState(false)
     const [val, setVal] = useState();
     useEffect(() => {
@@ -1126,7 +1126,7 @@ function Date({wrapperProps, inputProps, item, value, onChange, onAfterChange })
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
+                <div className={(item?.validators?.required) ? 'item-required' : ''}>{item?.label}</div>
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
@@ -1171,7 +1171,7 @@ function Date({wrapperProps, inputProps, item, value, onChange, onAfterChange })
         </div>
     )
 }
-function DateTime({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
+function DateTime({ wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     const [visible, setVisible] = useState(false)
     const [val, setVal] = useState();
     useEffect(() => {
@@ -1190,7 +1190,7 @@ function DateTime({wrapperProps, inputProps, item, value, onChange, onAfterChang
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
+                <div className={(item?.validators?.required) ? 'item-required' : ''}>{item?.label}</div>
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
@@ -1235,7 +1235,7 @@ function DateTime({wrapperProps, inputProps, item, value, onChange, onAfterChang
         </div>
     )
 }
-function Time({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
+function Time({ wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     const [visible, setVisible] = useState(false)
     const [val, setVal] = useState();
     useEffect(() => {
@@ -1254,7 +1254,7 @@ function Time({wrapperProps, inputProps, item, value, onChange, onAfterChange })
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
+                <div className={(item?.validators?.required) ? 'item-required' : ''}>{item?.label}</div>
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
@@ -1299,22 +1299,22 @@ function Time({wrapperProps, inputProps, item, value, onChange, onAfterChange })
         </div>
     )
 }
-function Boolean({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
+function Boolean({ wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     return (
         <div {...wrapperProps}>
-        <Checkbox
-            data-locator={getLocator(item?.name)}
-            disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
-            onChange={onChange}
-            checked={value}
-            {...inputProps}  {...item?.inputProps}
-        >
-            {item?.label}
-        </Checkbox>
+            <Checkbox
+                data-locator={getLocator(item?.name)}
+                disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
+                onChange={onChange}
+                checked={value}
+                {...inputProps}  {...item?.inputProps}
+            >
+                {item?.label}
+            </Checkbox>
         </div>
     )
 }
-function Float({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
+function Float({ wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     return (
         <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
             {(item && item.header !== false) && <div className='bg bg-grey' style={{
@@ -1324,7 +1324,7 @@ function Float({wrapperProps, inputProps, item, value, onChange, onAfterChange }
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
+                <div className={(item?.validators?.required) ? 'item-required' : ''}>{item?.label}</div>
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
@@ -1357,7 +1357,7 @@ function Float({wrapperProps, inputProps, item, value, onChange, onAfterChange }
         </div>
     )
 }
-function Integer({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
+function Integer({ wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     return (
         <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
             {(item && item.header !== false) && <div className='bg bg-grey' style={{
@@ -1367,7 +1367,7 @@ function Integer({wrapperProps, inputProps, item, value, onChange, onAfterChange
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
+                <div className={(item?.validators?.required) ? 'item-required' : ''}>{item?.label}</div>
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
@@ -1400,7 +1400,7 @@ function Integer({wrapperProps, inputProps, item, value, onChange, onAfterChange
         </div>
     )
 }
-function String({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
+function String({ wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     return (
         <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
             {(item && item.header !== false) && <div className='bg bg-grey' style={{
@@ -1410,7 +1410,7 @@ function String({wrapperProps, inputProps, item, value, onChange, onAfterChange 
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
+                <div className={(item?.validators?.required) ? 'item-required' : ''}>{item?.label}</div>
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clean")} onClick={(v) => {
                     onChange();
                 }}>
@@ -1443,7 +1443,7 @@ function String({wrapperProps, inputProps, item, value, onChange, onAfterChange 
     )
 }
 
-function Password({wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
+function Password({ wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
     const [visible, setVisible] = useState(false)
     return (
         <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
@@ -1454,7 +1454,7 @@ function Password({wrapperProps, inputProps, item, value, onChange, onAfterChang
                 display: "flex",
                 justifyContent: "space-between"
             }}>
-                <div className={(item?.validators?.required)?'item-required':''}>{item?.label}</div>
+                <div className={(item?.validators?.required) ? 'item-required' : ''}>{item?.label}</div>
                 <Button fill='none' size='mini' data-locator={getLocator(item?.name, "clear")} onClick={(v) => {
                     onChange();
                 }}>
@@ -1469,17 +1469,32 @@ function Password({wrapperProps, inputProps, item, value, onChange, onAfterChang
                     borderRadius: "4px",
                     padding: "2px 6px"
                 }}>
-                    <div className={styles.password} {...wrapperProps}>
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center"
+                        }}
+                        // className={styles.password}
+                        {...wrapperProps}>
                         <Input
                             data-locator={getLocator(item?.name, "input")}
                             value={value}
                             onChange={onChange}
-                            className={styles.input}
+                            // className={styles.input}
+                            style={{ flex: "auto" }}
                             placeholder={item.placeholder || ("введите " + ((item?.label) ? item?.label?.toLowerCase() : "значение"))}
                             type={visible ? 'text' : 'password'}
                             {...inputProps}  {...item?.inputProps}
                         />
-                        <div className={styles.eye}>
+                        <div
+                            style={{
+                                flex: "none",
+                                marginLeft: "8px",
+                                padding: "4px",
+                                cursor: "pointer"
+                            }}
+                            // className={styles.eye}
+                        >
                             {!visible ? (
                                 <EyeInvisibleOutline data-locator={getLocator(item?.name, "visible")} onClick={() => setVisible(true)} />
                             ) : (
@@ -1509,7 +1524,7 @@ function Unknown({ item }) {
 // }
 
 export function FieldMobile({ auth, item, value, onChange, onAfterChange, changed, isChanged, partialReplacement,
-    fullReplacement, contextObject, objectName, data, wrapperProps,inputProps }) {
+    fullReplacement, contextObject, objectName, data, wrapperProps, inputProps }) {
     // const FullReplacementFunc = useFieldReplacement(item?.name, fullReplacement)
     // const FullReplacementFunc = useFieldFullReplacement(item?.name, fullReplacement)
     let type = ((item.view) ? item.view.type : undefined) || item.type;
