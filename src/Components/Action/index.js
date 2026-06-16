@@ -380,6 +380,7 @@ export function Action(props) {
         }
         if ((!steps && ContentForm) || steps) {
             if (available == true) {
+                setStepObject({});
                 pushStateHistoryModal(setOpened, getStack);
                 setOpened(true);
             };
