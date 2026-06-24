@@ -28,6 +28,7 @@ function Frm(props) {
     const [visible, setVisible] = useState(false);
     const [excludeFields, setExcludeFields] = useState();
     // const [fieldsFilters, setFieldsFilters] = useState({});
+    const [fieldsValues, setFieldsValues] = useState({});
 
     useEffect(() => {
         form.resetFields();
@@ -166,7 +167,7 @@ function Frm(props) {
                     {propertiesFiltered?.filter(e => (e.name && (excludeFields[e.name?.toLowerCase()] || excludeFields[e.name?.toLowerCase() + "ID"])) ? false : true)?.map((item, idx) => {
                         if (!item?.name && item.type === "func" && item.render) {
                             return <div key={"func_" + idx}>
-                                {item.render(auth, item, { form, data, object, contextObject, funcStat })}
+                                {item.render(auth, item, { form, data, object, contextObject, funcStat, fieldsValues })}
                             </div>
                         }
                         return (<Form.Item
@@ -186,10 +187,16 @@ function Frm(props) {
                                 auth={auth}
                                 form={form}
                                 formItem={true}
+                                fieldsValues={fieldsValues}
                                 data={data}
                                 // filter={fieldsFilters[item?.name?.toLowerCase()]}
                                 item={{ ...item, filterType: undefined, func: (funcStat && funcStat[item?.name?.toLowerCase()]) ? funcStat[item?.name?.toLowerCase()] : {} }}
-
+                                onChange={(value, item, itemByProperty) => {
+                                    setFieldsValues(o => ({
+                                        ...o,
+                                        [item?.name]: { value, item, itemByProperty }
+                                    }))
+                                }}
                                 isChanged={(isChangedField) ? isChangedField((item.type !== "object" && item.type !== "document") ? uncapitalize(item?.name) : uncapitalize(item?.name) + "ID") : undefined}
                             />
                         </Form.Item>);
