@@ -166,7 +166,7 @@ function Frm(props) {
                     {propertiesFiltered?.filter(e => (e.name && (excludeFields[e.name?.toLowerCase()] || excludeFields[e.name?.toLowerCase() + "ID"])) ? false : true)?.map((item, idx) => {
                         if (!item?.name && item.type === "func" && item.render) {
                             return <div key={"func_" + idx}>
-                                {item.render(auth, item, { data, object, contextObject, funcStat })}
+                                {item.render(auth, item, { form, data, object, contextObject, funcStat })}
                             </div>
                         }
                         return (<Form.Item
@@ -184,6 +184,7 @@ function Frm(props) {
                                 objectName={name}
                                 contextObject={contextObject}
                                 auth={auth}
+                                form={form}
                                 formItem={true}
                                 data={data}
                                 // filter={fieldsFilters[item?.name?.toLowerCase()]}
