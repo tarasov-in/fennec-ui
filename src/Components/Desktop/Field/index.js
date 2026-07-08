@@ -505,7 +505,8 @@ function GroupObj({ wrapperProps, inputProps, formItem, auth, item, value, onCha
     ]);
     const property = (item, value) => {
         if (item && _.get(item, "relation.reference.property") && value) {
-            return value[item.relation.reference.property];
+            // return value[item.relation.reference.property];
+            return _.get(value, item.relation.reference.property)
         }
         if (value) {
             return value.ID;
@@ -825,7 +826,8 @@ function Obj({ wrapperProps, inputProps, formItem, auth, item, value, onChange, 
     ]);
     const property = (item, value) => {
         if (item && _.get(item, "relation.reference.property") && value) {
-            return value[item.relation.reference.property];
+           // return value[item.relation.reference.property];
+            return _.get(value, item.relation.reference.property)
         }
         if (value) {
             return value.ID;
@@ -1062,7 +1064,7 @@ function ObjCollection({ wrapperProps, inputProps, formItem, auth, item, value, 
     //             setLoading(true)
     //             GETWITH(auth, url, [
     //                 ...defaultQueryParams(filter),
-    //                 QueryParam("w-ID", value)
+    //                 QueryParam("w-"+_.get(item, "relation.reference.property","ID"), value)
     //             ], ({ data }) => {
     //                 setData(dataOrContent(data));
     //                 setLoading(false)
@@ -1076,7 +1078,7 @@ function ObjCollection({ wrapperProps, inputProps, formItem, auth, item, value, 
     //                 setLoading(true)
     //                 READWITH(auth, object, [
     //                     ...defaultQueryParams(filter),
-    //                     QueryParam("w-ID", value)
+    //                     QueryParam("w-"+_.get(item, "relation.reference.property","ID"), value)
     //                 ], ({ data }) => {
     //                     setData(dataOrContent(data));
     //                     setLoading(false)
@@ -1099,7 +1101,8 @@ function ObjCollection({ wrapperProps, inputProps, formItem, auth, item, value, 
     // ]);
     const property = (item, value) => {
         if (item && _.get(item, "relation.reference.property") && value) {
-            return value[item.relation.reference.property];
+            // return value[item.relation.reference.property];
+            return _.get(value, item.relation.reference.property)
         }
         if (value) {
             return value.ID;
@@ -1444,7 +1447,7 @@ function BigObj({ wrapperProps, inputProps, formItem, auth, item, value, onChang
                 setLoading(true)
                 GETWITH(auth, url, [
                     ...defaultQueryParams(filter),
-                    QueryParam("w-ID", value)
+                    QueryParam("w-"+_.get(item, "relation.reference.property","ID"), value)
                 ], ({ data }) => {
                     setData(dataOrContent(data));
                     setLoading(false)
@@ -1458,7 +1461,7 @@ function BigObj({ wrapperProps, inputProps, formItem, auth, item, value, onChang
                     setLoading(true)
                     READWITH(auth, object, [
                         ...defaultQueryParams(filter),
-                        QueryParam("w-ID", value)
+                        QueryParam("w-"+_.get(item, "relation.reference.property","ID"), value)
                     ], ({ data }) => {
                         setData(dataOrContent(data));
                         setLoading(false)
@@ -1481,7 +1484,8 @@ function BigObj({ wrapperProps, inputProps, formItem, auth, item, value, onChang
     ]);
     const property = (item, value) => {
         if (item && _.get(item, "relation.reference.property") && value) {
-            return value[item.relation.reference.property];
+            // return value[item.relation.reference.property];
+            return _.get(value, item.relation.reference.property)
         }
         if (value) {
             return value.ID;

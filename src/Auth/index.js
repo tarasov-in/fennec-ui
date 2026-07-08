@@ -308,7 +308,7 @@ export class AuthService {
     setKeepAlive(value) {
         this.keepAlive = value;
     }
-    
+
     fetchRfToken = configureRefreshFetch(this)
 
     fetchRaw(url, options) {
@@ -490,7 +490,7 @@ export function AuthProvider({ children, publicMode, keepAlive }) {
     auth.setPublicMode(publicMode);
 
     // console.log("AuthProvider");
-    
+
     auth.setKeepAlive(keepAlive);
     return <XAuthContext.Provider value={auth}>{children}</XAuthContext.Provider>;
 }
@@ -504,7 +504,7 @@ export function useNavigation() {
 }
 export function RequireAuth({ children, inline }) {
     let auth = useAuth();
-    auth.setPublicMode(true);
+
     // let location = useLocation();
     let navigate = useNavigate();
 
