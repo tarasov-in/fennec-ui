@@ -7,7 +7,7 @@ import { createUseStyles } from 'react-jss';
 import { FilterOutlined, SortAscendingOutlined, SortDescendingOutlined } from '@ant-design/icons';
 import { Field } from '../Field';
 import { Model } from '../Model';
-import { useMetaContext } from '../../Context';
+import { useDynamicTranslateContext, useMetaContext, useStaticTranslateContext } from '../../Context';
 import { ExclamationCircleOutlined, FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons';
 import { useCollectionFullReplacement, useCollectionPartialReplacement } from '../../../ComponetsReplacement';
 import { useAuth } from '../../../Auth';
@@ -78,13 +78,15 @@ const useStyles = createUseStyles({
 })
 
 export function SortingFieldsUI(props) {
+        const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     const { filters, value, onChange } = props;
     return (
         <React.Fragment>
             <Divider type="horizontal"
                 orientation="left"
                 style={{ margin: "12px 0", fontSize: "13px", fontWeight: "600", padding: "0px 15px 0px 0px" }} >
-                Сортировка
+                {tn("Сортировка")}
             </Divider>
             <div data-locator={getLocator(props?.locator || "sorting", props?.object)} style={{}}>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -104,10 +106,10 @@ export function SortingFieldsUI(props) {
                         ))}
                     </Select>
                     <div>
-                        {value.order === "ASC" && <Tooltip title="Восходящий">
+                        {value.order === "ASC" && <Tooltip title={tn("Восходящий")}>
                             <Button icon={<SortAscendingOutlined />} data-locator={getLocator(props?.locator || "sortingasc", props?.object)} onClick={() => onChange({ name: value.name, order: (value.order === "ASC") ? "DESC" : "ASC" })} />
                         </Tooltip>}
-                        {value.order === "DESC" && <Tooltip title="Нисходящий">
+                        {value.order === "DESC" && <Tooltip title={tn("Нисходящий")}>
                             <Button icon={<SortDescendingOutlined />} data-locator={getLocator(props?.locator || "sortingdesc", props?.object)} onClick={() => onChange({ name: value.name, order: (value.order === "ASC") ? "DESC" : "ASC" })} />
                         </Tooltip>}
                     </div>
@@ -136,7 +138,7 @@ export function FiltersFieldsUI(props) {
             <Divider type="horizontal"
                 orientation="left"
                 style={{ margin: "12px 0", fontSize: "13px", fontWeight: "600", padding: "0px 15px 0px 0px" }} >
-                Фильтры
+                {tn("Фильтры")}
             </Divider>
             <div data-locator={getLocator(props?.locator || "filters", props?.object)} style={{}}>
                 <div>
@@ -339,6 +341,8 @@ function FilterButton(props) {
     </div>)
 }
 function FilterContent({ auth, filters, sorting, setSorting, state, funcStat, filtered, locator, object, name, fieldName, _onFilterChange, applyFilter, clearFilter }) {
+        const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     return (<React.Fragment>
         {JSX(() => {
             const fl = filters?.filter(i => i.filter);
@@ -347,12 +351,12 @@ function FilterContent({ auth, filters, sorting, setSorting, state, funcStat, fi
                     <div style={{}}>
                         <Button
                             data-locator={getLocator(locator || "collectionfilterapply-" + name || "collectionfilterapply-" + fieldName || "collectionfilterapply", object)}
-                            style={{ width: "100%" }} disabled={!state.filterChanged} type="primary" onClick={applyFilter}>Применить</Button>
+                            style={{ width: "100%" }} disabled={!state.filterChanged} type="primary" onClick={applyFilter}>{tn("Применить")}</Button>
                     </div>
                     <div style={{ marginTop: "5px" }}>
                         <Button
                             data-locator={getLocator(locator || "collectionfilterclear-" + name || "collectionfilterclear-" + fieldName || "collectionfilterclear", object)}
-                            style={{ width: "100%" }} disabled={_.isEmpty(state.filter)} onClick={clearFilter}>Очистить</Button>
+                            style={{ width: "100%" }} disabled={_.isEmpty(state.filter)} onClick={clearFilter}>{tn("Очистить")}</Button>
                     </div>
                 </React.Fragment>)
             }
@@ -364,6 +368,8 @@ function FilterContent({ auth, filters, sorting, setSorting, state, funcStat, fi
 }
 function DefaultCollectionServer(props) {
     const classes = useStyles()
+        const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     const {
         auth,
         name,
@@ -837,7 +843,7 @@ function DefaultCollectionServer(props) {
     const defaultModelAction = React.useCallback((item, index) => (!name) ? [] : [
         {
             key: "update",
-            title: "Изменить",
+            title: tn("Изменить"),
             action: {
                 method: "POST",
                 path: "/api/query-update/" + name.toLowerCase(),
@@ -874,10 +880,10 @@ function DefaultCollectionServer(props) {
         },
         {
             key: "delete",
-            title: <span style={{ color: "red" }}>Удалить</span>,
+            title: <span style={{ color: "red" }}>{tn("Удалить")}</span>,
             action: (values, unlock, close, { collection, setCollection }) => {
                 Modal.confirm({
-                    title: `Вы уверены что хотите удалить элемент?`,
+                    title: tn(`Вы уверены что хотите удалить элемент?`),
                     icon: <ExclamationCircleOutlined />,
                     content: (<div>
                         {(mobject) && <div style={{ fontSize: "12px", color: "grey" }}>
@@ -885,9 +891,9 @@ function DefaultCollectionServer(props) {
                         </div>}
                         <div>{getObjectDisplay(item, name, meta)}</div>
                     </div>),
-                    okText: "Да",
+                    okText: tn("Да"),
                     okType: 'danger',
-                    cancelText: "Нет",
+                    cancelText: tn("Нет"),
                     onOk: () => {
                         GET(auth, "/api/query-delete/" + name.toLowerCase() + '/' + item.ID,
                             () => {
@@ -954,7 +960,7 @@ function DefaultCollectionServer(props) {
     const defaultCollectionAction = React.useCallback(() => (!name) ? [] : [
         {
             key: "create",
-            title: "Создать",
+            title: tn("Создать"),
             action: {
                 method: "POST",
                 path: "/api/query-create/" + name.toLowerCase(),
@@ -1185,7 +1191,7 @@ function DefaultCollectionServer(props) {
                 <List
                     data-locator={getLocator(props?.locator || "filtered-list-" + name || "filtered-list-" + fieldName || "filtered-list", props?.object)}
                     loading={loading}
-                    locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Нет данных" /> }}
+                    locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={tn("Нет данных")} /> }}
                     itemLayout="horizontal"
                     dataSource={items}
                     renderItem={((item, index) => (
@@ -1214,7 +1220,7 @@ function DefaultCollectionServer(props) {
                 }}
                 dataSource={(items && items.length) ? items : undefined}
                 locale={{
-                    emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={"Нет данных"}></Empty>
+                    emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={tn("Нет данных")}></Empty>
                 }}
                 size="small"
                 {...selectionConfig(selectionType)}
@@ -1311,12 +1317,12 @@ function DefaultCollectionServer(props) {
                             {(isFullscreen) && <FullscreenExitOutlined />}
                         </div>}
                         <div>
-                            <Tooltip title="Фильтр и сортировка">
+                            <Tooltip title={tn("Фильтр и сортировка")}>
 
                                 {(floatingFilter && !isFullscreen) && <PopoverModal
                                     // placement={(filterPopoverPlacement) ? filterPopoverPlacement : "bottomRight"}
                                     // autoAdjustOverflow={false}
-                                    title="Фильтр и сортировка"
+                                    title={tn("Фильтр и сортировка")}
                                     open={filtered}
                                     setOpen={setFiltered}
                                     trigger={
@@ -1350,39 +1356,6 @@ function DefaultCollectionServer(props) {
                                         }
                                     </div>
                                 </PopoverModal>}
-                                {/* {(floatingFilter && !isFullscreen) && <Popover
-                                    placement={(filterPopoverPlacement) ? filterPopoverPlacement : "bottomRight"}
-                                    autoAdjustOverflow={false}
-                                    content={<div style={{
-                                        maxWidth: "425px",
-                                        ...(filterPopoverStyle) ? filterPopoverStyle : {}
-                                    }}>
-                                        {((filters && filters.length > 0) && filtered) &&
-                                            <FilterContent
-                                                auth={auth}
-                                                filters={filters}
-                                                sorting={sorting}
-                                                setSorting={setSorting}
-                                                state={state}
-                                                funcStat={funcStat}
-                                                filtered={filtered}
-                                                locator={props?.locator}
-                                                object={props?.object}
-                                                name={name}
-                                                fieldName={fieldName}
-                                                _onFilterChange={_onFilterChange}
-                                                applyFilter={applyFilter}
-                                                clearFilter={clearFilter}
-                                            />
-                                        }
-                                    </div>}
-                                    title="Фильтр и сортировка"
-                                    trigger="click"
-                                    open={filtered}
-                                    onOpenChange={setFiltered}
-                                >
-                                    <FilterButton filtered={filtered} setFiltered={setFiltered} state={state} locator={props?.locator} object={props?.object} name={name} fieldName={fieldName} />
-                                </Popover>} */}
                                 {(!floatingFilter || isFullscreen) &&
                                     <FilterButton filtered={filtered} setFiltered={setFiltered} state={state} locator={props?.locator} object={props?.object} name={name} fieldName={fieldName} />
                                 }
@@ -1424,26 +1397,6 @@ function DefaultCollectionServer(props) {
                                 applyFilter={applyFilter}
                                 clearFilter={clearFilter}
                             />
-                            {/* {JSX(() => {
-                                const fl = filters?.filter(i => i.filter);
-                                if (filtered && fl.length > 0) {
-                                    return (<React.Fragment>
-                                        <div style={{}}>
-                                            <Button
-                                                data-locator={getLocator(props?.locator || "collectionfilterapply-" + name || "collectionfilterapply-" + fieldName || "collectionfilterapply", props?.object)}
-                                                style={{ width: "100%" }} disabled={!state.filterChanged} type="primary" onClick={applyFilter}>Применить</Button>
-                                        </div>
-                                        <div style={{ marginTop: "5px" }}>
-                                            <Button
-                                                data-locator={getLocator(props?.locator || "collectionfilterclear-" + name || "collectionfilterclear-" + fieldName || "collectionfilterclear", props?.object)}
-                                                style={{ width: "100%" }} disabled={_.isEmpty(state.filter)} onClick={clearFilter}>Очистить</Button>
-                                        </div>
-                                    </React.Fragment>)
-                                }
-                                return (<React.Fragment></React.Fragment>)
-                            })}
-                            <SortingFieldsUI value={sorting} onChange={setSorting} filters={filters} />
-                            <FiltersFieldsUI auth={auth} value={state.newFilter} onChange={_onFilterChange} filters={filters} funcs={funcStat} /> */}
                         </Sider>
                     }
                 </Layout>
@@ -1456,7 +1409,7 @@ function DefaultCollectionServer(props) {
                             // fontWeight: "lighter",
                             // color: "#818181"
                         }}>
-                            Элементов: {collection?.length} из {total}
+                            {tn("Элементов")}: {collection?.length} {tn("из")} {total}
                         </div>
                         {pagination && pagination({
                             current: current,

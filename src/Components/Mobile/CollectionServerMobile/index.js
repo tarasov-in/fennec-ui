@@ -6,7 +6,7 @@ import { createUseStyles } from 'react-jss';
 import { Action, ActionPickerItem } from '../../Action';
 import { SortAscendingOutlined, SortDescendingOutlined } from '@ant-design/icons';
 import { FieldMobile } from '../FieldMobile';
-import { useMetaContext } from '../../Context';
+import { useDynamicTranslateContext, useMetaContext, useStaticTranslateContext } from '../../Context';
 import { BlockHeaderMobile } from '../BlockHeaderMobile';
 import { DropdownMobile } from '../DropdownMobile'
 import "./index.css"
@@ -114,6 +114,8 @@ const MaskWithLoading = ({ visible, setVisible }) => {
 
 export function SortingFieldsUIMobile(props) {
     const classes = useStyles()
+        const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     const { filters, value, onChange } = props;
     // const [state, setState] = useState({ name: "", order: "ASC" })
     // console.log("SortingField", value);
@@ -161,13 +163,13 @@ export function SortingFieldsUIMobile(props) {
                     padding: "0px 21px 0px 11px",
                     // fontSize:"14px"
                 }}>
-                    Сортировка
+                    {tn("Сортировка")}
                 </div>
                 <div style={{ flex: "auto", margin: "10px 10px", height: "1px", backgroundColor: "#f0f0f0" }}></div>
             </div>
             <div style={{ padding: "5px 0px", margin: "10px" }}>
                 <div className='bg bg-grey' style={{ textAlign: "left", paddingLeft: "5px", marginBottom: "5px" }}>
-                    Сортировать по
+                    {tn("Сортировать по")}
                 </div>
                 <div style={{ paddingBottom: "10px", display: "flex", gap: "5px" }}>
                     <div onClick={() => {
@@ -185,8 +187,8 @@ export function SortingFieldsUIMobile(props) {
                             onClose={() => {
                                 setVisible(false)
                             }}
-                            cancelText="Отмена"
-                            confirmText="Выбрать"
+                            cancelText={tn("Отмена")}
+                            confirmText={tn("Выбрать")}
                             value={[value.name]}
                             onConfirm={onOk}
                         />
@@ -216,6 +218,8 @@ export function SortingFieldsUIMobile(props) {
 }
 export function FiltersFieldsUIMobile(props) {
     const classes = useStyles()
+        const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     const { auth, filters, funcStat, value, onChange } = props;
     const f = React.useMemo(() => {
         const fl = filters?.filter(i => i.filter);
@@ -255,7 +259,7 @@ export function FiltersFieldsUIMobile(props) {
                     color: "rgba(0, 0, 0, 0.85)",
                     padding: "0px 21px 0px 11px"
                 }}>
-                    Фильтры
+                    {tn("Фильтры")}
                 </div>
                 <div style={{ flex: "auto", margin: "10px 10px", height: "1px", backgroundColor: "#f0f0f0" }}></div>
             </div>
@@ -302,6 +306,8 @@ export function FilteringUIMobile(props) {
 
 function DefaultCollectionServer(props) {
     const classes = useStyles()
+        const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     const {
         auth,
         name,
@@ -760,7 +766,7 @@ function DefaultCollectionServer(props) {
     const defaultModelAction = React.useCallback((item, index) => (!name) ? [] : [
         {
             key: "update",
-            title: "Изменить",
+            title: tn("Изменить"),
             action: {
                 method: "POST",
                 path: "/api/query-update/" + name.toLowerCase(),
@@ -793,7 +799,7 @@ function DefaultCollectionServer(props) {
         },
         {
             key: "delete",
-            title: "Удалить",
+            title: tn("Удалить"),
             action: (values, unlock, close, { collection, setCollection }) => {
                 GET(auth, "/api/query-delete/" + name.toLowerCase() + '/' + item.ID,
                     () => setCollection(deleteInArray(collection, item)), errorCatch
@@ -833,7 +839,7 @@ function DefaultCollectionServer(props) {
         if (!values || !values.length) return <React.Fragment>{trigger && trigger()}</React.Fragment>;
         return <DropdownMobile
             auth={auth}
-            titles={titles || { header: "Выберите действие" }}
+            titles={titles || { header: tn("Выберите действие") }}
             items={values?.map((e, idx) => ({
                 key: e.key || idx,
                 auth: auth,
@@ -866,7 +872,7 @@ function DefaultCollectionServer(props) {
     const defaultCollectionAction = React.useCallback(() => (!name) ? [] : [
         {
             key: "create",
-            title: "Создать",
+            title: tn("Создать"),
             action: {
                 method: "POST",
                 path: "/api/query-create/" + name.toLowerCase(),
@@ -1054,7 +1060,7 @@ function DefaultCollectionServer(props) {
         loading
     }) => [
             {
-                name: "Очистить",
+                name: tn("Очистить"),
                 callback: () => {
                     // clearFilter
                     setState({ ...object, filter: {}, current: 1 });
@@ -1062,7 +1068,7 @@ function DefaultCollectionServer(props) {
                 },
             },
             {
-                name: "Применить",
+                name: tn("Применить"),
                 callback: OkFunction,
             },
         ], []);
@@ -1195,7 +1201,7 @@ function DefaultCollectionServer(props) {
                         padding: "20px 0px"
                     }}>
                         <EmptyMobile />
-                        <div>Нет данных</div>
+                        <div>{tn("Нет данных")}</div>
                     </div>}
                 </div>}
                 {pagination && pagination({
@@ -1262,8 +1268,8 @@ function DefaultCollectionServer(props) {
                                 action={act}
                                 object={state}
                                 locator={props?.locator || ("collection-filter-" + name) || ("collection-filter-" + fieldName) || "collection-filter"}
-                                okText={"Применить"}
-                                dismissText={"Очистить"}
+                                okText={tn("Применить")}
+                                dismissText={tn("Очистить")}
                                 footer={footer}
                                 mode={"func"}
                                 form={FilteringUIMobile}
@@ -1312,7 +1318,7 @@ function DefaultCollectionServer(props) {
                             padding: "20px 0px"
                         }}>
                             <EmptyMobile />
-                            <div>Нет данных</div>
+                            <div>{tn("Нет данных")}</div>
                         </div>}
                     </List>}
                     {pagination && pagination({

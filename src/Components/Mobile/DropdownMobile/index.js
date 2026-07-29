@@ -7,9 +7,12 @@ import './index.css'
 import { Action } from '../../Action'
 import { JSXMap, getLocator, unwrap } from '../../../Tool';
 import uuid from 'react-uuid';
+import { useDynamicTranslateContext, useStaticTranslateContext } from '../../Context';
 var _ = require('lodash');
 
 export function DropdownMobile(props) {
+        const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     const { auth, buttonStyle, icon, titles, items, trigger } = props;
     const [actions, setActions] = useState([]);
     useEffect(() => {
@@ -35,7 +38,7 @@ export function DropdownMobile(props) {
                 readonly={true}
                 form={(props) => {
                     return (
-                        <List className="dropdown-list" renderHeader={() => (titles && titles.block !== undefined) ? titles.block : "Выберите действие"} style={{paddingTop: "5px"}}>
+                        <List className="dropdown-list" renderHeader={() => (titles && titles.block !== undefined) ? titles.block : tn("Выберите действие")} style={{paddingTop: "5px"}}>
                             {JSXMap(actions, (e, idx) => (<div key={idx}>
                                 <Action
                                     key={e.key || idx}

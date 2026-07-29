@@ -15,6 +15,18 @@ export function useTranslateContext() {
     return React.useContext(TranslateContext);
 }
 
+export const StaticTranslateContext = createContext();
+export function useStaticTranslateContext() {
+    let o = React.useContext(StaticTranslateContext)
+    return (o)?o: (text)=>(text);
+}
+
+export const DynamicTranslateContext = createContext();
+export function useDynamicTranslateContext() {
+    let o = React.useContext(DynamicTranslateContext)
+    return (o)?o: (text)=>(text);
+}
+
 export const LanguageContext = createContext();
 export function useLanguageContext() {
     return React.useContext(LanguageContext);

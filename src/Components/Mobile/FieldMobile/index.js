@@ -3,7 +3,7 @@ import 'moment/locale/ru';
 import { errorCatch, getDisplay, getLocator, getObjectValue, GETWITH, IfElse, JSXMap, pushStateHistoryModal, QueryDetail, QueryOrder, QueryParam, READWITH } from '../../../Tool';
 import moment from 'moment';
 import { Checkbox, Input, TextArea, Slider, DatePicker, Button, ImageUploader, Popup, CheckList, SearchBar, Image as AntImage } from 'antd-mobile';
-import { useMetaContext } from '../../Context';
+import { useDynamicTranslateContext, useMetaContext, useStaticTranslateContext } from '../../Context';
 import { ActionPickerItem } from '../../Action';
 
 
@@ -88,6 +88,8 @@ function UploadItems({ wrapperProps, inputProps, auth, item, value, onChange, ch
     );
 }
 function UploadItem({ wrapperProps, inputProps, auth, item, value, onChange, changed }) {
+        const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     const [files, setFiles] = useState([]);
     const [urls, setUrls] = useState([]);
     useEffect(() => {
@@ -116,9 +118,9 @@ function UploadItem({ wrapperProps, inputProps, auth, item, value, onChange, cha
     };
     const content = (item) => (
         <div style={{ padding: "0 15px" }}>
-            <p className="ant-upload-text" style={{ fontSize: "14px", marginBottom: "3px" }}>Нажмите для выбора файла</p>
+            <p className="ant-upload-text" style={{ fontSize: "14px", marginBottom: "3px" }}>{tn("Нажмите для выбора файла")}</p>
             <p className="ant-upload-hint" style={{ fontSize: "13px", marginBottom: "0px" }}>
-                {(item.accept) ? "Поддерживается загрузка файлов " + item.accept : "Поддерживается загрузка любых типов файлов"}
+                {(item.accept) ? tn("Поддерживается загрузка файлов")+" " + item.accept : tn("Поддерживается загрузка любых типов файлов")}
             </p>
         </div>
     );
@@ -259,6 +261,8 @@ function ActionItem({ wrapperProps, inputProps, auth, item, value, onChange, onA
     </React.Fragment>);
 }
 function RangeDate({ wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
+        const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     const [visible1, setVisible1] = useState(false)
     const [visible2, setVisible2] = useState(false)
     const [val, setVal] = useState([]);
@@ -313,8 +317,8 @@ function RangeDate({ wrapperProps, inputProps, item, value, onChange, onAfterCha
                         min={moment().subtract(100, "years").toDate()}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
                         title={item?.label}
-                        confirmText={item.okText || "Выбрать"}
-                        cancelText={item.dismissText || "Отмена"}
+                        confirmText={item.okText || tn("Выбрать")}
+                        cancelText={item.dismissText || tn("Отмена")}
                         visible={visible1}
                         onClose={() => {
                             setVisible1(false)
@@ -323,7 +327,7 @@ function RangeDate({ wrapperProps, inputProps, item, value, onChange, onAfterCha
                         value={val[0] || null}
                     >
                         {value =>
-                            value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item?.label) ? item?.label?.toLowerCase() : "значение"}`)}</span>
+                            value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`${tn("выберите")}  ${(item?.label) ? item?.label?.toLowerCase() : tn("значение")}`)}</span>
                         }
                     </DatePicker>
                 </div>
@@ -347,8 +351,8 @@ function RangeDate({ wrapperProps, inputProps, item, value, onChange, onAfterCha
                         min={val[0]}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
                         title={item?.label}
-                        confirmText={item.okText || "Выбрать"}
-                        cancelText={item.dismissText || "Отмена"}
+                        confirmText={item.okText || tn("Выбрать")}
+                        cancelText={item.dismissText || tn("Отмена")}
                         visible={visible2}
                         onClose={() => {
                             setVisible2(false)
@@ -357,7 +361,7 @@ function RangeDate({ wrapperProps, inputProps, item, value, onChange, onAfterCha
                         value={val[1] || null}
                     >
                         {value =>
-                            value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item?.label) ? item?.label?.toLowerCase() : "значение"}`)}</span>
+                            value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`${tn("выберите")}  ${(item?.label) ? item?.label?.toLowerCase() : tn("значение")}`)}</span>
                         }
                     </DatePicker>
                 </div>
@@ -621,6 +625,8 @@ function IntegerSlider({ wrapperProps, inputProps, item, value, onChange, onAfte
     )
 }
 function Obj({ wrapperProps, inputProps, auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
+        const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     const [data, setData] = useState([]);
     const meta = useMetaContext();
 
@@ -850,7 +856,7 @@ function Obj({ wrapperProps, inputProps, auth, item, value, onChange, onAfterCha
                                 <div style={{ display: "flex", justifyContent: "space-between", gap: "10px", padding: "10px" }}>
                                     <Button style={{ flex: "auto" }} type="ghost" onClick={() => {
                                         setVisible(false)
-                                    }}>Закрыть</Button>
+                                    }}>{tn("Закрыть")}</Button>
                                 </div>
                             </div>
                         </div>
@@ -859,13 +865,15 @@ function Obj({ wrapperProps, inputProps, auth, item, value, onChange, onAfterCha
                         {JSXMap(current, (i, idx) => (
                             <span key={idx}>{label(item, i)}{(idx < current.length - 1) ? ", " : ""}</span>
                         ))}
-                    </span> : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item?.label) ? item?.label?.toLowerCase() : "значение"}`)}</span>}
+                    </span> : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`${tn("выберите")}  ${(item?.label) ? item?.label?.toLowerCase() : tn("значение")}`)}</span>}
                 </div>
             </div >
         </div >
     )
 }
 function GroupObj({ wrapperProps, inputProps, auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
+        const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     const [data, setData] = useState([]);
     const meta = useMetaContext();
 
@@ -1092,7 +1100,7 @@ function GroupObj({ wrapperProps, inputProps, auth, item, value, onChange, onAft
                                 <div style={{ display: "flex", justifyContent: "space-between", gap: "10px", padding: "10px" }}>
                                     <Button style={{ flex: "auto" }} type="ghost" onClick={() => {
                                         setVisible(false)
-                                    }}>Закрыть</Button>
+                                    }}>{tn("Закрыть")}</Button>
                                 </div>
                             </div>
                         </div>
@@ -1101,13 +1109,15 @@ function GroupObj({ wrapperProps, inputProps, auth, item, value, onChange, onAft
                         {JSXMap(current, (i, idx) => (
                             <span key={idx}>{label(item, i)}{(idx < current.length - 1) ? ", " : ""}</span>
                         ))}
-                    </span> : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item?.label) ? item?.label?.toLowerCase() : "значение"}`)}</span>}
+                    </span> : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`${tn("выберите")}  ${(item?.label) ? item?.label?.toLowerCase() : tn("значение")}`)}</span>}
                 </div>
             </div >
         </div >
     )
 }
 function Date({ wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
+        const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     const [visible, setVisible] = useState(false)
     const [val, setVal] = useState();
     useEffect(() => {
@@ -1152,8 +1162,8 @@ function Date({ wrapperProps, inputProps, item, value, onChange, onAfterChange }
                         min={moment().subtract(100, "years").toDate()}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
                         title={item?.label}
-                        confirmText={item.okText || "Выбрать"}
-                        cancelText={item.dismissText || "Отмена"}
+                        confirmText={item.okText || tn("Выбрать")}
+                        cancelText={item.dismissText || tn("Отмена")}
                         visible={visible}
                         onClose={() => {
                             setVisible(false)
@@ -1163,7 +1173,7 @@ function Date({ wrapperProps, inputProps, item, value, onChange, onAfterChange }
                         {...inputProps}  {...item?.inputProps}
                     >
                         {value =>
-                            value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item?.label) ? item?.label?.toLowerCase() : "значение"}`)}</span>
+                            value ? moment(value).format('YYYY-MM-DD') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`${tn("выберите")}  ${(item?.label) ? item?.label?.toLowerCase() : tn("значение")}`)}</span>
                         }
                     </DatePicker>
                 </div>
@@ -1172,6 +1182,8 @@ function Date({ wrapperProps, inputProps, item, value, onChange, onAfterChange }
     )
 }
 function DateTime({ wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
+        const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     const [visible, setVisible] = useState(false)
     const [val, setVal] = useState();
     useEffect(() => {
@@ -1216,8 +1228,8 @@ function DateTime({ wrapperProps, inputProps, item, value, onChange, onAfterChan
                         min={moment().subtract(100, "years").toDate()}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
                         title={item?.label}
-                        confirmText={item.okText || "Выбрать"}
-                        cancelText={item.dismissText || "Отмена"}
+                        confirmText={item.okText || tn("Выбрать")}
+                        cancelText={item.dismissText || tn("Отмена")}
                         visible={visible}
                         onClose={() => {
                             setVisible(false)
@@ -1227,7 +1239,7 @@ function DateTime({ wrapperProps, inputProps, item, value, onChange, onAfterChan
                         {...inputProps}  {...item?.inputProps}
                     >
                         {value =>
-                            value ? moment(value).format('YYYY-MM-DD HH:mm:ss') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item?.label) ? item?.label?.toLowerCase() : "значение"}`)}</span>
+                            value ? moment(value).format('YYYY-MM-DD HH:mm:ss') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`${tn("выберите")}  ${(item?.label) ? item?.label?.toLowerCase() : tn("значение")}`)}</span>
                         }
                     </DatePicker>
                 </div>
@@ -1236,6 +1248,8 @@ function DateTime({ wrapperProps, inputProps, item, value, onChange, onAfterChan
     )
 }
 function Time({ wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
+        const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     const [visible, setVisible] = useState(false)
     const [val, setVal] = useState();
     useEffect(() => {
@@ -1280,8 +1294,8 @@ function Time({ wrapperProps, inputProps, item, value, onChange, onAfterChange }
                         min={moment().subtract(100, "years").toDate()}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
                         title={item?.label}
-                        confirmText={item.okText || "Выбрать"}
-                        cancelText={item.dismissText || "Отмена"}
+                        confirmText={item.okText || tn("Выбрать")}
+                        cancelText={item.dismissText || tn("Отмена")}
                         visible={visible}
                         onClose={() => {
                             setVisible(false)
@@ -1291,7 +1305,7 @@ function Time({ wrapperProps, inputProps, item, value, onChange, onAfterChange }
                         {...inputProps}  {...item?.inputProps}
                     >
                         {value =>
-                            value ? moment(value).format('HH:mm:ss') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`выберите  ${(item?.label) ? item?.label?.toLowerCase() : "значение"}`)}</span>
+                            value ? moment(value).format('HH:mm:ss') : <span style={{ color: "rgb(177 177 177)" }}>{item.placeholder || (`${tn("выберите")}  ${(item?.label) ? item?.label?.toLowerCase() : tn("значение")}`)}</span>
                         }
                     </DatePicker>
                 </div>
@@ -1315,6 +1329,8 @@ function Boolean({ wrapperProps, inputProps, item, value, onChange, onAfterChang
     )
 }
 function Float({ wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
+        const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     return (
         <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
             {(item && item.header !== false) && <div className='bg bg-grey' style={{
@@ -1342,7 +1358,7 @@ function Float({ wrapperProps, inputProps, item, value, onChange, onAfterChange 
                     <Input
                         data-locator={getLocator(item?.name, "input")}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
-                        placeholder={item.placeholder || ("введите " + ((item?.label) ? item?.label?.toLowerCase() : "значение"))}
+                        placeholder={item.placeholder || (tn("введите")+" " + ((item?.label) ? item?.label?.toLowerCase() : tn("значение")))}
                         // clearable
                         onChange={v => {
                             if (!isNaN(v)) {
@@ -1358,6 +1374,8 @@ function Float({ wrapperProps, inputProps, item, value, onChange, onAfterChange 
     )
 }
 function Integer({ wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
+        const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     return (
         <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
             {(item && item.header !== false) && <div className='bg bg-grey' style={{
@@ -1385,7 +1403,7 @@ function Integer({ wrapperProps, inputProps, item, value, onChange, onAfterChang
                     <Input
                         data-locator={getLocator(item?.name, "input")}
                         disabled={(item.view && item.view.disabled) ? item.view.disabled : false}
-                        placeholder={item.placeholder || ("введите " + ((item?.label) ? item?.label?.toLowerCase() : "значение"))}
+                        placeholder={item.placeholder || (tn("введите")+" " + ((item?.label) ? item?.label?.toLowerCase() : tn("значение")))}
                         // clearable
                         onChange={v => {
                             if (!isNaN(v) && _.isInteger(+v)) {
@@ -1401,6 +1419,8 @@ function Integer({ wrapperProps, inputProps, item, value, onChange, onAfterChang
     )
 }
 function String({ wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
+        const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     return (
         <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
             {(item && item.header !== false) && <div className='bg bg-grey' style={{
@@ -1434,7 +1454,7 @@ function String({ wrapperProps, inputProps, item, value, onChange, onAfterChange
                         autoSize={{ minRows: 2, maxRows: 5 }}
                         onChange={onChange}
                         value={value || ""}
-                        placeholder={item.placeholder || ("введите " + ((item?.label) ? item?.label?.toLowerCase() : "значение"))}
+                        placeholder={item.placeholder || (tn("введите")+" " + ((item?.label) ? item?.label?.toLowerCase() : tn("значение")))}
                         {...inputProps}  {...item?.inputProps}
                     />
                 </div>
@@ -1444,6 +1464,8 @@ function String({ wrapperProps, inputProps, item, value, onChange, onAfterChange
 }
 
 function Password({ wrapperProps, inputProps, item, value, onChange, onAfterChange }) {
+        const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     const [visible, setVisible] = useState(false)
     return (
         <div data-locator={getLocator(item?.name)} style={{ padding: "5px 0px" }}>
@@ -1482,7 +1504,7 @@ function Password({ wrapperProps, inputProps, item, value, onChange, onAfterChan
                             onChange={onChange}
                             // className={styles.input}
                             style={{ flex: "auto" }}
-                            placeholder={item.placeholder || ("введите " + ((item?.label) ? item?.label?.toLowerCase() : "значение"))}
+                            placeholder={item.placeholder || (tn("введите")+" " + ((item?.label) ? item?.label?.toLowerCase() : tn("значение")))}
                             type={visible ? 'text' : 'password'}
                             {...inputProps}  {...item?.inputProps}
                         />
@@ -1525,6 +1547,8 @@ function Unknown({ item }) {
 
 export function FieldMobile({ auth, item, value, onChange, onAfterChange, changed, isChanged, partialReplacement,
     fullReplacement, contextObject, objectName, data, wrapperProps, inputProps }) {
+            const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     // const FullReplacementFunc = useFieldReplacement(item?.name, fullReplacement)
     // const FullReplacementFunc = useFieldFullReplacement(item?.name, fullReplacement)
     let type = ((item.view) ? item.view.type : undefined) || item.type;

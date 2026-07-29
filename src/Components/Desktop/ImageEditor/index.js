@@ -4,12 +4,14 @@ import { Button, Modal } from 'antd';
 import { Field, useAuth, useUserContext } from 'fennec-ui';
 import { SwapOutlined } from '@ant-design/icons';
 import { UserAddOutline } from 'antd-mobile-icons'
+import { useDynamicTranslateContext, useStaticTranslateContext } from '../../Context';
 
 var _ = require('lodash');
 
 export default function ImageEditor(props) {
     const { item, value, onChange, onAfterChange, open, close } = props;
-
+    const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     const auth = useAuth();
     const user = useUserContext();
 
@@ -218,14 +220,14 @@ export default function ImageEditor(props) {
                 width={"400px"}
                 forceRender={true}
                 footer={[
-                    <Button key="1" style={{ flex: "1 1 auto" }} onClick={close}>Отмена</Button>,
+                    <Button key="1" style={{ flex: "1 1 auto" }} onClick={close}>{tn("Отмена")}</Button>,
                     <Button key="2"
                         color='primary'
                         style={{ flex: "1 1 auto" }}
                         onClick={e => {
                             triggerChange();
                             close();
-                        }}>Готово</Button>
+                        }}>{tn("Готово")}</Button>
                 ]}
                 keyboard={false}
                 afterClose={() => {
@@ -252,7 +254,7 @@ export default function ImageEditor(props) {
                                         key={"photo"}
                                         auth={auth}
                                         item={{
-                                            label: "Фото",
+                                            label: tn("Фото"),
                                             name: "file",
                                             type: "file",
                                             showUploadList: false,
@@ -300,7 +302,7 @@ export default function ImageEditor(props) {
                                                         key={"angle"}
                                                         auth={auth}
                                                         item={{
-                                                            label: 'Поворот',
+                                                            label: tn('Поворот'),
                                                             name: "angle",
                                                             type: "int",
                                                             filterType: "slider",

@@ -8,7 +8,7 @@ import {
 } from 'antd';
 import { GetMeta, GetMetaProperties, formItemRules, isRequired, validator, getObjectDisplay, uncapitalize, getObjectValue, QueryDetail, QueryOrder, clean, QueryParam, queryFiltersToContextFilter, contextFilterToObject, QueryFiltersToContextFilters, getDisplay, getLocator } from '../../../Tool';
 import { Field } from '../Field';
-import { useFormObserverContext, useMetaContext } from '../../Context';
+import { useDynamicTranslateContext, useFormObserverContext, useMetaContext, useStaticTranslateContext } from '../../Context';
 import { CollectionServer } from '../CollectionServer';
 import { useModelFullReplacement, useModelPartialReplacement } from '../../../ComponetsReplacement';
 import { CollectionByProperty } from '../CollectionByProperty';
@@ -23,6 +23,9 @@ function Frm(props) {
         collectionActions,
         partialReplacement
     } = props;
+
+    const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
 
     const PartialReplacementFunc = useModelPartialReplacement(name, partialReplacement)
     const [visible, setVisible] = useState(false);
@@ -133,7 +136,7 @@ function Frm(props) {
                         <div>{(meta.name && visible == true) && getObjectDisplay(object, meta.name, gmeta)}</div>
                     </div>
                     <div style={{ flex: "0 0" }}>
-                        <Tooltip title="Связи">
+                        <Tooltip title={tn("Связи")}>
                             <CheckableTag
 
                                 style={{ margin: "0px", marginInlineEnd: "0px" }}

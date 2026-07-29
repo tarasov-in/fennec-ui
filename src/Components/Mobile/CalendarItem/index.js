@@ -3,6 +3,7 @@ import { List, Calendar } from 'antd-mobile';
 import { createUseStyles } from 'react-jss'
 import moment from 'moment-timezone';
 import 'moment/locale/ru';
+import { useDynamicTranslateContext, useStaticTranslateContext } from '../../Context';
 
 const useStyles = createUseStyles({
     Obj: {
@@ -45,6 +46,8 @@ const useStyles = createUseStyles({
 
 export function CalendarItem(props) {
     const classes = useStyles()
+        const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     const { onChange, value, name, placeholder, pickTime } = props;
     const [visible, setVisible] = useState(false);
 
@@ -91,30 +94,30 @@ export function CalendarItem(props) {
             // selectionMode='range'
         locale={{
             am: "AM",
-            begin: "Начало",
+            begin: tn("Начало"),
             begin_over: "S/E",
-            clear: "Очистить",
-            confirm: "Выбрать",
+            clear: tn("Очистить"),
+            confirm: tn("Выбрать"),
             dateFormat: "yyyy-MM-dd",
             dateTimeFormat: "dd-MM-yyyy hh:mm",
-            end: "Конец",
-            lastMonth: "Этот месяц",
-            lastWeek: "Эта неделя",
-            loadPrevMonth: "Загрузка предыдущего месяца",
-            month: "Месяц",
+            end: tn("Конец"),
+            lastMonth: tn("Этот месяц"),
+            lastWeek: tn("Эта неделя"),
+            loadPrevMonth: tn("Загрузка предыдущего месяца"),
+            month: tn("Месяц"),
             monthTitle: "yyyy-MM",
-            noChoose: "Не выбрана",
-            over: "Конец",
+            noChoose: tn("Не выбрана"),
+            over: tn("Конец"),
             pm: "PM",
-            selectEndTime: "Выберите время окончания",
-            selectStartTime: "Выберите время начала",
-            selectTime: "Выберете время",
-            start: "Начало",
-            title: "Календарь",
-            today: "Сегодня",
-            week: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
-            year: "Год",
-            yesterday: "Вчера",
+            selectEndTime: tn("Выберите время окончания"),
+            selectStartTime: tn("Выберите время начала"),
+            selectTime: tn("Выберете время"),
+            start: tn("Начало"),
+            title: tn("Календарь"),
+            today: tn("Сегодня"),
+            week: [tn("Вс"), tn("Пн"), tn("Вт"), tn("Ср"), tn("Чт"), tn("Пт"), tn("Сб")],
+            year: tn("Год"),
+            yesterday: tn("Вчера"),
         }}
         pickTime={pickTime}
         showShortcut={false}

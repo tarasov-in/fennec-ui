@@ -15,7 +15,7 @@ import {
     Spin,
 } from 'antd';
 import { clean, deleteInArray, errorCatch, getDisplay, getLocator, getObjectValue, GETWITH, JSXMap, pushStateHistoryModal, QueryDetail, QueryOrder, QueryParam, READWITH, unwrap, updateInArray, useHover } from '../../../Tool';
-import { useMetaContext } from '../../Context';
+import { useDynamicTranslateContext, useMetaContext, useStaticTranslateContext } from '../../Context';
 import { InboxOutlined } from '@ant-design/icons';
 import { EyeInvisibleOutlined, EyeTwoTone, UploadOutlined } from '@ant-design/icons';
 import ImageEditor from '../ImageEditor';
@@ -234,6 +234,8 @@ function ActionsSpace(props) {
     </Space.Compact>)
 }
 function UploadItems({ wrapperProps, inputProps, formItem, auth, item, value, onChange, changed }) {
+        const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     const [loading, setLoading] = useState(false);
     const [files, setFiles] = useState([]);
     useEffect(() => {
@@ -269,11 +271,13 @@ function UploadItems({ wrapperProps, inputProps, formItem, auth, item, value, on
         data-locator={getLocator(item?.name)}
         {...inputProps}  {...item?.inputProps}
     >
-        {!item.trigger && <Button data-locator={getLocator(item?.name, "upload")} icon={<UploadOutlined />}>Загрузить файлы</Button>}
+        {!item.trigger && <Button data-locator={getLocator(item?.name, "upload")} icon={<UploadOutlined />}>{tn("Загрузить файлы")}</Button>}
         {item?.trigger && item?.trigger()}
     </Upload>)
 }
 function UploadItem({ wrapperProps, inputProps, formItem, auth, item, value, onChange, changed }) {
+        const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     const [loading, setLoading] = useState(false);
     const [hoverRef, isHovered] = useHover();
     const [files, setFiles] = useState([]);
@@ -314,9 +318,9 @@ function UploadItem({ wrapperProps, inputProps, formItem, auth, item, value, onC
             <p className="ant-upload-drag-icon" style={{ marginBottom: "12px" }}>
                 <InboxOutlined />
             </p>
-            <p className="ant-upload-text" style={{ fontSize: "14px" }}>Нажмите для выбора или перетащите файл <br />в выделенную область</p>
+            <p className="ant-upload-text" style={{ fontSize: "14px" }}>{tn("Нажмите для выбора или перетащите файл в выделенную область")}</p>
             <p className="ant-upload-hint" style={{ fontSize: "13px" }}>
-                {(item.accept) ? "Поддерживается загрузка файлов " + item.accept : "Поддерживается загрузка любых типов файлов"}
+                {(item.accept) ? tn("Поддерживается загрузка файлов")+" " + item.accept : tn("Поддерживается загрузка любых типов файлов")}
             </p>
         </div>
     );
@@ -1015,6 +1019,8 @@ function Obj({ wrapperProps, inputProps, formItem, auth, item, value, onChange, 
     )
 }
 function ObjCollection({ wrapperProps, inputProps, formItem, auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
+        const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const meta = useMetaContext();
@@ -1231,9 +1237,9 @@ function ObjCollection({ wrapperProps, inputProps, formItem, auth, item, value, 
                 return (
                     <div>
                         {(value && value.filter(e => !!e && items.filter(c => c.ID === e.ID) <= 0).length > 0) && <div>
-                            <div style={{ fontWeight: "lighter" }}>Сейчас выбрано</div>
+                            <div style={{ fontWeight: "lighter" }}>{tn("Сейчас выбрано")}</div>
                             {JSXMap(value, (i, idx) => <div key={idx}>{display(item, i)}</div>)}
-                            <div style={{ fontWeight: "lighter", paddingTop: "10px" }}>Можно выбрать из</div>
+                            <div style={{ fontWeight: "lighter", paddingTop: "10px" }}>{tn("Можно выбрать из")}</div>
                         </div>}
                         <div style={{ display: "flex", flexDirection: "column" }}>
                             <Spin spinning={loading} style={{ paddingTop: "15px", paddingBottom: "15px" }} />
@@ -1353,26 +1359,15 @@ function ObjCollection({ wrapperProps, inputProps, formItem, auth, item, value, 
             }}>
                 {JSXMap(value, (i, idx) => <div key={idx}>{display(item, i)}</div>)}
             </div>
-            {/* <Input
-                data-locator={getLocator(item?.name || objectName, itemByProperty(item, value))}
-                suffix={(loading) ? <Spin size="small" /> : suffix(item, itemByProperty(item, value))}
-                size={(item.size) ? item.size : "middle"}
-                allowClear={true}
-                style={{ width: "100%" }}
-                // readOnly
-                onChange={e => clear(e.target.value)}
-                value={displayString(item, itemByProperty(item, value))}
-                disabled={(item && item.view && item.view.disabled) ? item.view.disabled : (loading) ? loading : false}
-            /> */}
+            
             <Action
-                // title={`Выберите ${(item.label) ? item.label.toLowerCase() : "элемент"}`}
                 title={<div>
-                    <div style={{ fontSize: "12px", fontStyle: "italic", color: "rgba(0, 0, 0, 0.45)" }}>Выберите элементы</div>
+                    <div style={{ fontSize: "12px", fontStyle: "italic", color: "rgba(0, 0, 0, 0.45)" }}>{tn("Выберите элементы")}</div>
                     {(item?.label) && <div>{item?.label}</div>}
                 </div>}
                 auth={auth}
                 action={cAction}
-                okText="Выбрать"
+                okText={tn("Выбрать")}
                 locator={item?.name || objectName}
                 // object={{ selected: [itemByProperty(item, value)] }}
                 object={{ selected: value }}
@@ -1398,6 +1393,8 @@ function ObjCollection({ wrapperProps, inputProps, formItem, auth, item, value, 
     )
 }
 function BigObj({ wrapperProps, inputProps, formItem, auth, item, value, onChange, onAfterChange, changed, contextObject, objectName, partialReplacement }) {
+        const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const meta = useMetaContext();
@@ -1621,9 +1618,9 @@ function BigObj({ wrapperProps, inputProps, formItem, auth, item, value, onChang
                 return (
                     <div>
                         {(value && value.filter(e => !!e && items.filter(c => c.ID === e.ID) <= 0).length > 0) && <div>
-                            <div style={{ fontWeight: "lighter" }}>Сейчас выбрано</div>
+                            <div style={{ fontWeight: "lighter" }}>{tn("Сейчас выбрано")}</div>
                             {JSXMap(value, (i, idx) => <div key={idx}>{display(item, i)}</div>)}
-                            <div style={{ fontWeight: "lighter", paddingTop: "10px" }}>Можно выбрать из</div>
+                            <div style={{ fontWeight: "lighter", paddingTop: "10px" }}>{tn("Можно выбрать из")}</div>
                         </div>}
                         <div style={{ display: "flex", flexDirection: "column" }}>
                             <Spin spinning={loading} style={{ paddingTop: "15px", paddingBottom: "15px" }} />
@@ -1749,14 +1746,13 @@ function BigObj({ wrapperProps, inputProps, formItem, auth, item, value, onChang
                 {...inputProps}  {...item?.inputProps}
             />
             <Action
-                // title={`Выберите ${(item.label) ? item.label.toLowerCase() : "элемент"}`}
                 title={<div>
-                    <div style={{ fontSize: "12px", fontStyle: "italic", color: "rgba(0, 0, 0, 0.45)" }}>Выберите элемент</div>
+                    <div style={{ fontSize: "12px", fontStyle: "italic", color: "rgba(0, 0, 0, 0.45)" }}>{tn("Выберите элемент")}</div>
                     {(item?.label) && <div>{item?.label}</div>}
                 </div>}
                 auth={auth}
                 action={cAction}
-                okText="Выбрать"
+                okText={tn("Выбрать")}
                 locator={item?.name || objectName}
                 object={{ selected: [itemByProperty(item, value)] }}
                 modal={(item.modal) ? item.modal : { width: "600px" }}

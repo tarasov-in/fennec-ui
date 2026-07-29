@@ -14,7 +14,7 @@ class WSocket extends React.Component {
         const { auth } = this.props;
 
         if (this.state.ws[wsName] && this.state.ws[wsName].cancelConnect) {
-            console.warn("Отмена открытия соединения с идентификатором " + wsName);
+            console.warn("Отмена открытия соединения с идентификатором"+" " + wsName);
             return Promise.resolve(1);
         }
 

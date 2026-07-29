@@ -6,6 +6,7 @@ import { SwapOutlined } from '@ant-design/icons';
 
 import { Button, Popup } from 'antd-mobile';
 import { PictureOutline, UserAddOutline } from 'antd-mobile-icons'
+import { useDynamicTranslateContext, useStaticTranslateContext } from '../../Context';
 
 var _ = require('lodash');
 
@@ -14,7 +15,8 @@ export default function ImageEditor(props) {
 
     const auth = useAuth();
     const user = useUserContext();
-
+    const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
     const [object, setObject] = useState({
         angle: 0,
     });
@@ -378,7 +380,7 @@ export default function ImageEditor(props) {
                 <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
                     <div style={{ flex: "0", padding: "0 10px" }}>
                         <div style={{ display: "flex", justifyContent: "center", padding: "10px 30px 10px 15px", fontSize: "16px" }}>
-                            Редактор изображения
+                            {tn("Редактор изображения")}
                         </div> 
                     </div>
                     <div style={{ overflowY: 'scroll', flex: "1", height: "100%" }}>
@@ -400,7 +402,7 @@ export default function ImageEditor(props) {
                                                 key={"photo"}
                                                 auth={auth}
                                                 item={{
-                                                    label: "Фото",
+                                                    label: tn("Фото"),
                                                     name: "file",
                                                     type: "file",
                                                     showUploadList: false,
@@ -452,7 +454,7 @@ export default function ImageEditor(props) {
                                                         key={"angle"}
                                                         auth={auth}
                                                         item={{
-                                                            label: 'Поворот',
+                                                            label: tn('Поворот'),
                                                             name: "angle",
                                                             type: "int",
                                                             filterType: "slider",
@@ -474,14 +476,14 @@ export default function ImageEditor(props) {
                     </div>
                     <div style={{ flex: "0" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", gap: "10px", padding: "10px" }}>
-                            <Button style={{ flex: "1 1 auto" }} onClick={close}>Отмена</Button>
+                            <Button style={{ flex: "1 1 auto" }} onClick={close}>{tn("Отмена")}</Button>
                             <Button                              
                                 color='primary' 
                                 style={{ flex: "1 1 auto" }} 
                                 onClick={e => {
                                     triggerChange();
                                     close();
-                                }}>Готово</Button>
+                                }}>{tn("Готово")}</Button>
                         </div>
                     </div>
                 </div>

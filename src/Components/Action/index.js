@@ -16,7 +16,7 @@ import {
 import RenderToLayer from '../RenderToLayer'
 import { EllipsisOutlined } from '@ant-design/icons';
 import { DeviceUUID } from "device-uuid"
-import { FormObserverContext } from '../Context';
+import { FormObserverContext, useDynamicTranslateContext, useStaticTranslateContext } from '../Context';
 import fuuid from 'react-uuid';
 
 var _ = require('lodash');
@@ -76,14 +76,17 @@ const CurrentForm = (props) => {
 };
 
 export function ActionPickerItem({ auth, item, mode, value, onChange }) {
+    const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
+
     const classes = useStyles()
     const _brief = React.useMemo(() => (!value) ? undefined : (item.display) ? item.display(value) : value, [value, item]);
-    const okText = React.useMemo(() => item.okText || "Выбрать", [item]);
-    const dismissText = React.useMemo(() => item.dismissText || "Отмена", [item]);
+    const okText = React.useMemo(() => item.okText || tn("Выбрать"), [item]);
+    const dismissText = React.useMemo(() => item.dismissText || tn("Отмена"), [item]);
     const triggerOptions = {
         className: classes.Act
     };
-    const placeholder = React.useMemo(() => item.placeholder || "выберите " + item.label.toLowerCase(), [item]);
+    const placeholder = React.useMemo(() => item.placeholder || tn("выберите")+" " + item.label.toLowerCase(), [item]);
     const titles = React.useMemo(() => (item.titles) ? item.titles : {
         header: item.label,
         subheader: "",
@@ -157,6 +160,8 @@ export const FooterButton = ({ key, name, callback, options, isDesktopOrLaptop, 
 }
 export function Action(props) {
     const classes = useStyles()
+    const t = useDynamicTranslateContext();
+    const tn = useStaticTranslateContext();
 
     let isMobile = false;
     try {
@@ -461,7 +466,7 @@ export function Action(props) {
             return [
                 FooterButton({
                     key: "dismiss",
-                    name: steps[currentStep]?.dismissText || backText || 'Назад',
+                    name: steps[currentStep]?.dismissText || backText || tn('Назад'),
                     callback: FooterDismissFunction(),
                     options: {
                         type: "ghost"
@@ -474,7 +479,7 @@ export function Action(props) {
                 return [
                     FooterButton({
                         key: "dismiss",
-                        name: dismissText || 'Закрыть',
+                        name: dismissText || tn('Закрыть'),
                         callback: FooterDismissFunction(),
                         options: {
                             type: "ghost"
@@ -491,7 +496,7 @@ export function Action(props) {
                 IfElse(currentStep < steps.length - 1,
                     FooterButton({
                         key: "next",
-                        name: steps[currentStep]?.okText || nextText || 'Далее',
+                        name: steps[currentStep]?.okText || nextText || tn('Далее'),
                         callback: FooterOkFunction(),
                         options: {
                             type: "primary",
@@ -501,7 +506,7 @@ export function Action(props) {
                     }),
                     FooterButton({
                         key: "ok",
-                        name: steps[currentStep]?.okText || okText || 'Отправить',
+                        name: steps[currentStep]?.okText || okText || tn('Отправить'),
                         callback: FooterOkFunction(),
                         options: {
                             type: "primary",
@@ -514,7 +519,7 @@ export function Action(props) {
             return [
                 FooterButton({
                     key: "ok",
-                    name: okText || 'Отправить',
+                    name: okText || tn('Отправить'),
                     callback: FooterOkFunction(),
                     options: {
                         type: "primary",
@@ -804,7 +809,7 @@ export function Action(props) {
                                 <div style={{ display: "flex", justifyContent: "center" }}>
                                     <SpinLoading style={{ '--size': '48px' }} />
                                 </div>
-                                <span style={{ marginTop: 8 }}>Отправка ...</span>
+                                <span style={{ marginTop: 8 }}>{tn("Отправка")} ...</span>
                             </div>
                         </div>}
                         <div style={{
@@ -876,7 +881,7 @@ export function Action(props) {
                                         <div style={{ display: "flex", justifyContent: "center" }}>
                                             <SpinLoading style={{ '--size': '48px' }} />
                                         </div>
-                                        <span style={{ marginTop: 8 }}>Отправка ...</span>
+                                        <span style={{ marginTop: 8 }}>{tn("Отправка")} ...</span>
                                     </div>
                                 </div>}
                             </div>
