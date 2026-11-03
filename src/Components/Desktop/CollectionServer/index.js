@@ -119,6 +119,8 @@ export function SortingFieldsUI(props) {
     );
 }
 export function FiltersFieldsUI(props) {
+     const t = useDynamicTranslateContext();
+        const tn = useStaticTranslateContext();
     const { auth, filters, funcs, value, onChange } = props;
 
     const _onFilterChange = React.useMemo(() => (v, item) => {
@@ -303,13 +305,19 @@ export function collectionQueryParams(filters, contextFilters, filter, sorting, 
     }
     let params = [
         QueryDetail(queryDetail || "model"),
-        QueryParam(`page`, current),
-        QueryParam(`count`, count),
+        // QueryParam(`page`, current),
+        // QueryParam(`count`, count),
         ...sort,
         ...flt,
         ...func,
         ...ctxFlt
     ]
+    if(current){
+        params.push(QueryParam(`page`, current))
+    }
+    if(count){
+        params.push(QueryParam(`count`, count))
+    }
     return params;
 }
 function FilterButton(props) {
@@ -432,6 +440,7 @@ function DefaultCollectionServer(props) {
         // openFullscreen,
         // closeFullscreen
         pagination,
+        withoutPagination
     } = props;
 
     // const PartialReplacementFunc = useCollectionPartialReplacement(fieldName, partialReplacement)
@@ -487,8 +496,12 @@ function DefaultCollectionServer(props) {
     const [filters, setFilters] = useState();
     const [mobject, setMObject] = useState();
     const [sorting, setSorting] = useState(defSorting((props.filters) ? fltrs : []));
-    const [current, _setCurrent] = useState((props.page) ? (parseInt(props.page()) || 1) : 1);
-    const [count, setCount] = useState((props.count) ? (parseInt(props.count()) || 20) : 20);
+    
+    const undefinedOnTrue = (value,def) => (value)?undefined:def;
+
+    const [current, _setCurrent] = useState((props.page) ? (parseInt(props.page()) || undefinedOnTrue(withoutPagination,1)) : undefinedOnTrue(withoutPagination,1));
+    const [count, setCount] = useState((props.count) ? (parseInt(props.count()) || undefinedOnTrue(withoutPagination,20)) : undefinedOnTrue(withoutPagination,20));
+
     const [total, setTotal] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
@@ -496,7 +509,7 @@ function DefaultCollectionServer(props) {
         if (onChangeRequestParameters) {
             onChangeRequestParameters({
                 filters,
-                page: (parseInt(current) || 1),
+                page: undefinedOnTrue(withoutPagination,(parseInt(current) || 1)),
                 count,
                 queryDetail,
                 contextFilters,
@@ -582,7 +595,9 @@ function DefaultCollectionServer(props) {
         setFuncStat(undefined);
         setLastFuncStat(undefined);
         setState({ ...state, filterChanged: false, newFilter: {}, filter: {} });
-        setCurrent(1);
+        if(current) {
+            setCurrent(1);
+        }
         if (onApplyFilter) {
             onApplyFilter({
                 filters,
@@ -600,7 +615,9 @@ function DefaultCollectionServer(props) {
     const applyFilter = React.useMemo(() => () => {
         let o = { ...state, filterChanged: false, filter: state.newFilter }
         setState(o);
-        setCurrent(1);
+        if(current) {
+            setCurrent(1);
+        }
         if (onApplyFilter) {
             onApplyFilter({
                 filters,
@@ -704,7 +721,7 @@ function DefaultCollectionServer(props) {
                     setTotalPages(data?.totalPages);
                     setCount(data?.size);
                     setTotal(data?.totalElements);
-                    setCollection((data && data?.content) ? data?.content : []);
+                    setCollection((data && data?.content) ? data?.content : (data && _.isArray(data)) ? data : []);
                     // unlock();
                 }
             });
@@ -723,7 +740,7 @@ function DefaultCollectionServer(props) {
                 setTotalPages(data?.totalPages);
                 setCount(data?.size);
                 setTotal(data?.totalElements);
-                setCollection((data && data?.content) ? data?.content : []);
+                setCollection((data && data?.content) ? data?.content : (data && _.isArray(data)) ? data : []);
                 unlock();
             }, (err) => errorCatch(err, unlock));
         } else {
@@ -741,7 +758,7 @@ function DefaultCollectionServer(props) {
                 setTotalPages(data?.totalPages);
                 setCount(data?.size);
                 setTotal(data?.totalElements);
-                setCollection((data && data?.content) ? data?.content : []);
+                setCollection((data && data?.content) ? data?.content : (data && _.isArray(data)) ? data : []);
                 unlock();
             }, (err) => errorCatch(err, unlock));
         }

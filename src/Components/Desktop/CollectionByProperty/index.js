@@ -4,18 +4,29 @@ import { CollectionServer } from '../CollectionServer';
 import { getDisplay, getObjectValue, QueryFiltersToContextFilters } from '../../../Tool';
 
 export function CollectionByProperty(props) {
-    const { auth, item, object, linksCompareFunction, linksModelActions, scheme, queryDetail, modelActions, collectionActions } = props;
+    const { auth, item, object, linksCompareFunction,
+        linksModelActions, scheme, queryDetail, modelActions,
+        collectionActions,
+        allowFullscreen,
+        pagination,
+        customRender } = props;
 
     const uif = useMemo(() => _.get(item, "relation.uiFilter"), [item]);
-    const count = useMemo(() => item?.count || _.get(item, "relation.reference.count") || (()=>(20)), [item]);
+    const count = useMemo(() => item?.count || _.get(item, "relation.reference.count") || (() => (20)), [item]);
     const url = useMemo(() => item?.source || getObjectValue(item, "relation.reference.url") || getObjectValue(item, "relation.reference.source"), [item]);
     const n = useMemo(() => getObjectValue(item, "relation.reference.object"), [item]);
     const f = useMemo(() => getObjectValue(item, "name"), [item]);
     const p = useMemo(() => getObjectValue(item, "relation.reference.property"), [item]);
     const queryFilter = useMemo(() => item?.queryFilter || _.get(item, "relation.reference.queryFilter") || _.get(item, "relation.reference.filter"), [item]);
-    
+
+    // const itemModelActions = useMemo(() => getObjectValue(item, "modelActions"), [item]);
+    // const itemCollectionActions = useMemo(() => getObjectValue(item, "collectionActions"), [item]);
+    // const itemScheme = useMemo(() => getObjectValue(item, "scheme"), [item]);
+    // const itemLinksCompareFunction = useMemo(() => getObjectValue(item, "linksCompareFunction"), [item]);
+    // const itemLinksModelActions = useMemo(() => getObjectValue(item, "linksModelActions"), [item]);
+
     const floatingFilter = useMemo(() => item?.floatingFilter || _.get(item, "relation.floatingFilter"), [item]);
-    
+
     const gmeta = useMetaContext();
     const filtersFromMeta = React.useCallback((name) => {
         let prop = [];
@@ -92,10 +103,15 @@ export function CollectionByProperty(props) {
         contextFilters={FilterFromContextFilter}
         filters={() => (uif) ? uif() : filtersFromMeta(n)}
         floatingFilter={floatingFilter}
+
         mode="list"
         render={(o, idx) => {
             return display(item, o)
         }}
+
+        allowFullscreen={allowFullscreen || item?.allowFullscreen}
+        pagination={pagination || item?.pagination}
+        customRender={customRender || item?.customRender}
 
         linksCompareFunction={linksCompareFunction}
         linksModelActions={linksModelActions}
